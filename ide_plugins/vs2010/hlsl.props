@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Props file for converting HLSL files into includable source -->
+<!-- Copyright Rebecca Ann Heineman -->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<!-- Build after CustomBuild, but before C# and C++ -->
+	<PropertyGroup
+		Condition="'$(HLSLBeforeTargets)' == '' and '$(HLSLAfterTargets)' == '' and '$(ConfigurationType)' != 'Makefile'">
+		<HLSLBeforeTargets>Midl</HLSLBeforeTargets>
+		<HLSLAfterTargets>CustomBuild</HLSLAfterTargets>
+	</PropertyGroup>
+	
+	<!-- Defaults and the command line to invoke -->
+	<ItemDefinitionGroup>
+		<HLSL>
+			<!-- /T<profile> target profile -->
+			<TargetProfile>ps_2_0</TargetProfile>
+
+			<!-- /E<name> entrypoint name -->
+			<!-- EntryPointName>main</EntryPointName -->
+
+			<!-- /I<include> additional include path -->
+			<!-- AdditionalIncludeDirectories></AdditionalIncludeDirectories -->
+			
+			<!-- /Vi display details about the include process -->
+			<ShowIncludeProcess>false</ShowIncludeProcess>
+
+			<!-- /Od /O0-/O3 optimization level 0..3. -->
+			<Optimization>4</Optimization>
+
+			<!-- /Op disable preshaders -->
+			<DisablePreshaders>false</DisablePreshaders>
+
+			<!-- /WX treat warnings as errors -->
+			<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+
+			<!-- /Vd disable validation -->
+			<DisableValidation>false</DisableValidation>
+
+			<!-- /Zi enable debugging information -->
+			<GenerateDebugInformation>false</GenerateDebugInformation>
+
+			<!-- Pack matrices in /Zpr row-major, /Zpc column-major order -->
+			<!-- MatricesPacking>Column</MatricesPacking -->
+			
+			<!-- /Gpp force partial precision -->
+			<ForcePartialPrecision>false</ForcePartialPrecision>
+
+			<!-- /Gfa avoid or /Gfp prefer flow control constructs -->
+			<!-- FlowControl>Prefer</FlowControl -->
+			
+			<!-- /Gdp disable effect performance mode -->
+			<DisableEffectPerformanceMode>false</DisableEffectPerformanceMode>
+
+			<!-- /Ges enable strict mode -->
+			<EnableStrictMode>false</EnableStrictMode>
+			
+			<!-- /Gec enable backwards compatibility mode -->
+			<EnableBackwardsCompatibility>false</EnableBackwardsCompatibility>
+
+			<!-- /Gis force IEEE strictness -->
+			<ForceIEEEStrictness>false</ForceIEEEStrictness>
+
+			<!-- /Gch compile as a child effect for FX 4.x targets -->
+			<CompileChildFx4>false</CompileChildFx4>
+			
+			<!-- /Fo<file> output object file -->
+			<!-- ObjectFileName>$(IntDir)%(FileName).bin</ObjectFileName -->
+
+			<!-- /Fc<file> or /Fx<file> output assembly code listing file -->
+			<AssemblerOutput>NoListing</AssemblerOutput>
+			<AssemblyListingFileName>$(IntDir)%(FileName).asm</AssemblyListingFileName>
+
+			<!-- /Fh<file> output header file containing object code -->
+			<HeaderFileName>%(RootDir)%(Directory)%(FileName).h</HeaderFileName>
+
+			<!-- /Fe<file> output warnings and errors to a specific file -->
+			<GenerateWarningFile>false</GenerateWarningFile>
+			<WarningsFileName>$(IntDir)%(FileName).log</WarningsFileName>
+
+			<!-- /Vn<name> use <name> as variable name in header file -->
+			<VariableName>g_%(FileName)</VariableName>
+
+			<!-- /Cc output color coded assembly listings -->
+			<ColorCodeAssembly>false</ColorCodeAssembly>
+			
+			<!-- /Ni output instruction numbers in assembly listings -->
+			<OutputInstructionNumbers>false</OutputInstructionNumbers>
+
+			<!-- /P<file> preprocess to file (must be used alone) -->
+			<GeneratePreprocessedSourceListing>false</GeneratePreprocessedSourceListing>
+			<PreprocessedSourceListingName>$(IntDir)%(FileName).lst</PreprocessedSourceListingName>
+
+			<!-- /Qstrip_reflect strip reflection data from 4_0+ shader bytecode -->
+			<StripReflectionData>false</StripReflectionData>
+			
+			<!-- /Qstrip_debug strip debug information from 4_0+ shader bytecode -->
+			<StripDebugInformation>false</StripDebugInformation>
+
+			<!-- /compress compress DX10 shader bytecode from files -->
+			<CompressDX10>false</CompressDX10>
+
+			<!-- /decompress decompress bytecode from first file -->
+			<DecompressDX10>false</DecompressDX10>
+
+			<!-- /D<id>=<text> define macro -->
+			<!-- PreprocessorDefinitions></PreprocessorDefinitions -->
+
+			<!-- /LD Load d3dx9_31.dll -->
+			<LoadDX931>false</LoadDX931>
+
+			<!-- /nologo suppress copyright message -->
+			<NoLogo>true</NoLogo>
+
+			<!-- Decide if the 64 bit version or the 32 bit version of the tool should be executed -->
+			<CommandLineTemplate Condition="'$(PROCESSOR_ARCHITECTURE)' == 'AMD64' OR '$(PROCESSOR_ARCHITEW6432)' == 'AMD64'">"$(dxsdk_dir)utilities\bin\x64\fxc.exe" [Inputs] [AllOptions] [AdditionalOptions]</CommandLineTemplate>
+			<CommandLineTemplate Condition="'$(PROCESSOR_ARCHITECTURE)' != 'AMD64' AND '$(PROCESSOR_ARCHITEW6432)' != 'AMD64'">"$(dxsdk_dir)utilities\bin\x86\fxc.exe" [Inputs] [AllOptions] [AdditionalOptions]</CommandLineTemplate>
+
+			<!-- Line to print in Visual Studio's output -->
+			<ExecutionDescription>fxc %(FileName)%(Extension)...</ExecutionDescription>
+		</HLSL>
+	</ItemDefinitionGroup>
+</Project>

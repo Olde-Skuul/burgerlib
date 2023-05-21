@@ -97,8 +97,8 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
-    <Import Project="$(VCTargetsPath)\BuildCustomizations\glsl.props" Condition="exists('$(VCTargetsPath)\BuildCustomizations\glsl.props')" />
-    <Import Project="$(VCTargetsPath)\BuildCustomizations\hlsl.props" Condition="exists('$(VCTargetsPath)\BuildCustomizations\hlsl.props')" />
+    <Import Project="$(ProjectDir)..\ide_plugins\vs2010\glsl.props" Condition="exists('$(ProjectDir)..\ide_plugins\vs2010\glsl.props')" />
+    <Import Project="$(ProjectDir)..\ide_plugins\vs2010\hlsl.props" Condition="exists('$(ProjectDir)..\ide_plugins\vs2010\hlsl.props')" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -992,7 +992,7 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="$(VCTargetsPath)\BuildCustomizations\glsl.targets" Condition="exists('$(VCTargetsPath)\BuildCustomizations\glsl.targets')" />
-    <Import Project="$(VCTargetsPath)\BuildCustomizations\hlsl.targets" Condition="exists('$(VCTargetsPath)\BuildCustomizations\hlsl.targets')" />
+    <Import Project="$(ProjectDir)..\ide_plugins\vs2010\glsl.targets" Condition="exists('$(ProjectDir)..\ide_plugins\vs2010\glsl.targets')" />
+    <Import Project="$(ProjectDir)..\ide_plugins\vs2010\hlsl.targets" Condition="exists('$(ProjectDir)..\ide_plugins\vs2010\hlsl.targets')" />
   </ImportGroup>
 </Project>

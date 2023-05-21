@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ProjectSchemaDefinitions xmlns="http://schemas.microsoft.com/build/2009/properties" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+	<!-- Declare the name of this tool in Visual Studio's Properties dialog box -->
+	<Rule Name="GLSL" PageTemplate="tool" DisplayName="Comment stripper tool" Order="200">
+		
+		<!-- Store the data in the project file -->
+		<Rule.DataSource>
+			<DataSource Persistence="ProjectFile" ItemType="GLSL" />
+		</Rule.DataSource>
+		
+		<!-- List of categories in the dialog box -->
+		<Rule.Categories>
+			<Category Name="General" DisplayName="General" />
+			<Category Name="Command Line" DisplayName="Command Line" Subtype="CommandLine" />
+		</Rule.Categories>
+		
+		<!-- Options for the General sub menu -->
+		<BoolProperty Category="General" Name="CPP"
+			DisplayName="Convert to C/C++ source"
+			Description="Convert the text to a C++ const char array. (/c)"
+			Switch="/c" />
+
+		<StringListProperty Category="General" Name="VariableName"
+			DisplayName="Variable name override"
+			Description="Defines C++ label for the const char array. (/l [symbol])"
+			Switch="/l " />
+			
+		<StringListProperty Category="General" Name="ObjectFileName"
+			DisplayName="Object File Name"
+			Description="Specifies the name of the output object file. ([file])"
+			Switch=" " />
+		
+		<!-- Display the build order -->
+		<DynamicEnumProperty Category="General" Name="GLSLBeforeTargets" EnumProvider="Targets" IncludeInCommandLine="False"
+			DisplayName="Execute Before"
+			Description="Specifies the targets for the build customization to run before.">
+			<DynamicEnumProperty.ProviderSettings>
+				<NameValuePair Name="Exclude" Value="^GLSLBeforeTargets|^Compute" />
+			</DynamicEnumProperty.ProviderSettings>
+			<DynamicEnumProperty.DataSource>
+				<DataSource Persistence="ProjectFile" ItemType="" HasConfigurationCondition="true" />
+			</DynamicEnumProperty.DataSource>
+		</DynamicEnumProperty>
+		<DynamicEnumProperty Category="General" Name="GLSLAfterTargets" EnumProvider="Targets" IncludeInCommandLine="False"
+			DisplayName="Execute After"
+			Description="Specifies the targets for the build customization to run after.">
+			<DynamicEnumProperty.ProviderSettings>
+				<NameValuePair Name="Exclude" Value="^GLSLAfterTargets|^Compute" />
+			</DynamicEnumProperty.ProviderSettings>
+			<DynamicEnumProperty.DataSource>
+				<DataSource Persistence="ProjectFile" ItemType="" HasConfigurationCondition="true" />
+			</DynamicEnumProperty.DataSource>
+		</DynamicEnumProperty>
+		
+		<!-- Options for the sample command line -->	
+		<StringProperty Category="Command Line" Name="Inputs" IsRequired="true">
+			<StringProperty.DataSource>
+				<DataSource Persistence="ProjectFile" ItemType="GLSL" SourceType="Item" />
+			</StringProperty.DataSource>
+		</StringProperty>
+		
+		<StringProperty Name="CommandLineTemplate" DisplayName="Command Line" Visible="False" IncludeInCommandLine="False" />
+
+		<!-- Hidden data -->
+		<StringProperty Name="ExecutionDescription" DisplayName="Execution Description" IncludeInCommandLine="False" Visible="False" />
+		<StringListProperty Name="AdditionalDependencies" DisplayName="Additional Dependencies" IncludeInCommandLine="False" Visible="False" />
+
+	</Rule>
+	
+	<!-- Name of the tool for the list of tools -->
+	<ItemType Name="GLSL" DisplayName="Comment stripper tool" />
+	
+	<!-- File extensions this compiler will work with -->
+	<FileExtension Name="*.glsl" ContentType="GLSL" />
+	
+	<!-- Type of content -->
+	<ContentType Name="GLSL" DisplayName="Comment stripper tool" ItemType="GLSL" />
+</ProjectSchemaDefinitions>

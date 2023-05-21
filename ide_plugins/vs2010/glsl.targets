@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Targets file for converting GLSL files into includable source -->
+<!-- Copyright Rebecca Ann Heineman -->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<!-- Include the xml file that describes the menus in Visual Studio -->
+	<ItemGroup>
+		<PropertyPageSchema Include="$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml" />
+		<AvailableItemName Include="GLSL">
+			<Targets>_GLSL</Targets>
+		</AvailableItemName>
+	</ItemGroup>
+	
+	<!-- Send the output to the linkers -->
+	<!-- Note: Disabled because this tool outputs headers -->
+	<!-- instead of .obj files -->
+	<!-- PropertyGroup>
+		<ComputeLinkInputsTargets>$(ComputeLinkInputsTargets);ComputeGLSLOutput;</ComputeLinkInputsTargets>
+		<ComputeLibInputsTargets>$(ComputeLibInputsTargets);ComputeGLSLOutput;</ComputeLibInputsTargets>
+	</PropertyGroup -->
+	
+	<!-- Use the built-in XamlTaskFactory to perform the build processing -->
+	<!-- Use the xml file to get the command line description -->
+	<UsingTask TaskName="GLSL" TaskFactory="XamlTaskFactory"
+		AssemblyName="Microsoft.Build.Tasks.v4.0">
+		<Task>$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml</Task>
+	</UsingTask>
+	
+	<!-- Describe building a GLSL target -->
+	<!-- BeforeTargets = When to build (Found in glsl.props) -->
+	<!-- Condition = Build if a file is found -->
+	<!-- Outputs = What file does this output? -->
+	<!-- Inputs = Files that if modified, build -->
+	<!-- DependsOnTargets = Get the list of files Visual Studio determined to build -->
+
+	<Target Name="_GLSL"
+		BeforeTargets="$(GLSLBeforeTargets)"
+		AfterTargets="$(GLSLAfterTargets)"
+		Condition="'@(GLSL)' != ''"
+		Outputs="%(GLSL.ObjectFileName)"
+		Inputs="%(GLSL.Identity);%(GLSL.AdditionalDependencies);$(MSBuildProjectFile)"
+		DependsOnTargets="_SelectedFiles">
+		
+		<!-- Remove files that weren't selected -->
+		<ItemGroup Condition="'@(SelectedFiles)' != ''">
+			<GLSL Remove="@(GLSL)" Condition="'%(Identity)' != '@(SelectedFiles)'" />
+		</ItemGroup>
+		
+		<!-- Collect the dependency information -->
+		<ItemGroup>
+			<GLSL_tlog Include="%(GLSL.ObjectFileName)" Condition="'%(GLSL.ObjectFileName)' != '' and '%(GLSL.ExcludedFromBuild)' != 'true'">
+				<Source>@(GLSL,'|')</Source>
+			</GLSL_tlog>
+		</ItemGroup>
+		
+		<!-- Message to print when the file is compiled -->
+		<Message Importance="High" Text="%(GLSL.ExecutionDescription)" />
+
+		<!-- Write out the dependency information to $(ProjectName).write.1.tlog -->
+		<!-- Use ^ to denote source files and full paths for output files for clean -->
+		<WriteLinesToFile
+			Condition="'@(GLSL_tlog)' != '' and '%(GLSL_tlog.ExcludedFromBuild)' != 'true'"
+			File="$(IntDir)$(ProjectName).write.1.tlog"
+			Encoding="utf-8"
+			Lines="^%(GLSL_tlog.Source);@(GLSL_tlog-&gt;'%(Fullpath)')"/>
+		
+		<!-- Extract the variables declared in the XML file to prep for a build -->
+		<GLSL Condition="'@(GLSL)' != '' and '%(GLSL.ExcludedFromBuild)' != 'true'"
+			CPP="%(GLSL.CPP)"
+			VariableName="%(GLSL.VariableName)"
+			ObjectFileName="%(GLSL.ObjectFileName)"
+			
+			CommandLineTemplate="%(GLSL.CommandLineTemplate)"
+			Inputs="%(GLSL.Identity)" />
+	</Target>
+	
+	<!-- Create a list of .obj files to send to the linkers -->
+	<!-- Removed due to no .obj files output 
+	<Target Name="ComputeGLSLOutput" Condition="'@(GLSL)' != ''">
+		<ItemGroup>
+			<Link Include="@(GLSL->Metadata('ObjectFileName')->Distinct()->ClearMetadata())" Condition="'%(GLSL.ExcludedFromBuild)' != 'true'"/>
+			<Lib Include="@(GLSL->Metadata('ObjectFileName')->Distinct()->ClearMetadata())" Condition="'%(GLSL.ExcludedFromBuild)' != 'true'"/>
+		</ItemGroup>
+	</Target>
+	-->
+
+</Project>

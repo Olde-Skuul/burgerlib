@@ -783,13 +783,6 @@ def project_settings(project):
 
     if platform.is_xboxone():
         source_folders_list.extend(BURGER_LIB_XBOX_ONE)
-        # vs_props.append("$(VCTargetsPath)\\BuildCustomizations\\x360sl.props")
-        # vs_targets.append(
-        #    "$(VCTargetsPath)\\BuildCustomizations\\x360sl.targets")
-        # find_generated_source(
-        #    source_files_list, working_directory,
-        #    "../source/graphics/shadersxbox360",
-        #    _X360SL_MATCH)
 
     # Android
     if platform.is_android():
@@ -839,9 +832,9 @@ def project_settings(project):
     if platform.is_windows() or platform.is_android() or \
             platform is PlatformTypes.linux:
         vs_props.append(
-            "$(VCTargetsPath)\\BuildCustomizations\\glsl.props")
+            "$(ProjectDir)..\\ide_plugins\\vs2010\\glsl.props")
         vs_targets.append(
-            "$(VCTargetsPath)\\BuildCustomizations\\glsl.targets")
+            "$(ProjectDir)..\\ide_plugins\\vs2010\\glsl.targets")
         find_generated_source(
             source_files_list, project.working_directory,
             "../source/graphics/shadersopengl",
@@ -850,8 +843,8 @@ def project_settings(project):
     # Enable hlsl extensions
     if platform.is_windows():
         vs_props.append(
-            "$(VCTargetsPath)\\BuildCustomizations\\hlsl.props")
-        vs_targets.append("$(VCTargetsPath)\\BuildCustomizations\\hlsl.targets")
+            "$(ProjectDir)..\\ide_plugins\\vs2010\\hlsl.props")
+        vs_targets.append("$(ProjectDir)..\\ide_plugins\\vs2010\\hlsl.targets")
         find_generated_source(
             source_files_list,
             project.working_directory,
