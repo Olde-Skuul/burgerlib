@@ -680,7 +680,6 @@ def project_settings(project):
     source_folders_list = list(BURGER_LIB_SOURCE)
     include_folders_list = []
     source_files_list = list(BURGER_LIB_GENERATED)
-    library_folders_list = []
     vs_targets = []
     vs_props = []
 
@@ -873,7 +872,6 @@ def project_settings(project):
     project.source_folders_list = source_folders_list
     project.include_folders_list = include_folders_list
     project.source_files_list = source_files_list
-    project.library_folders_list = library_folders_list
     project.vs_props = vs_props
     project.vs_targets = vs_targets
 
