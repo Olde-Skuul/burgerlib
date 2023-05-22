@@ -24,68 +24,12 @@
 
 /***************************************
 
-	Initialize the spin count to 1000 since this
-	class is usually used for quick data locks
-
-***************************************/
-
-Burger::CriticalSection::CriticalSection() BURGER_NOEXCEPT
-{
-	// Safety switch to verify the declaration in brshieldtypes.h matches the
-	// real thing
-	BURGER_STATIC_ASSERT(
-		sizeof(Burgerpthread_mutex_t) == sizeof(pthread_mutex_t));
-
-	pthread_mutex_init(reinterpret_cast<pthread_mutex_t*>(&m_Lock), nullptr);
-}
-
-Burger::CriticalSection::~CriticalSection()
-{
-	pthread_mutex_destroy(reinterpret_cast<pthread_mutex_t*>(&m_Lock));
-}
-
-/***************************************
-
-	Lock the Mutex
-
-***************************************/
-
-void Burger::CriticalSection::Lock(void) BURGER_NOEXCEPT
-{
-	pthread_mutex_lock(reinterpret_cast<pthread_mutex_t*>(&m_Lock));
-}
-
-/***************************************
-
-	Try to lock the Mutex
-
-***************************************/
-
-uint_t Burger::CriticalSection::TryLock(void) BURGER_NOEXCEPT
-{
-	return pthread_mutex_trylock(reinterpret_cast<pthread_mutex_t*>(&m_Lock)) !=
-		EBUSY;
-}
-
-/***************************************
-
-	Unlock the Mutex
-
-***************************************/
-
-void Burger::CriticalSection::Unlock(void) BURGER_NOEXCEPT
-{
-	pthread_mutex_unlock(reinterpret_cast<pthread_mutex_t*>(&m_Lock));
-}
-
-/***************************************
-
 	Initialize the semaphore
 
 ***************************************/
 
 Burger::Semaphore::Semaphore(uint32_t uCount):
-	m_bInitialized(FALSE), m_uCount(uCount)
+	m_uCount(uCount), m_bInitialized(FALSE)
 {
 	// Safety switch to verify the declaration in brshieldtypes.h matches the
 	// real thing
@@ -118,7 +62,7 @@ Burger::Semaphore::~Semaphore()
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::Semaphore::TryAcquire(uint_t uMilliseconds)
+Burger::eError BURGER_API Burger::Semaphore::try_acquire(uint32_t uMilliseconds)
 {
 	// Assume failure
 	eError uResult = kErrorCantLock;
@@ -188,7 +132,7 @@ Burger::eError BURGER_API Burger::Semaphore::TryAcquire(uint_t uMilliseconds)
 		}
 		// If the lock was acquired, decrement the count
 		if (!uResult) {
-			AtomicPreDecrement(&m_uCount);
+			atomic_add(&m_uCount, static_cast<uint32_t>(-1));
 		}
 	}
 	return uResult;
@@ -200,7 +144,7 @@ Burger::eError BURGER_API Burger::Semaphore::TryAcquire(uint_t uMilliseconds)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::Semaphore::Release(void)
+Burger::eError BURGER_API Burger::Semaphore::release(void)
 {
 	eError uResult = kErrorCantUnlock;
 	if (m_bInitialized) {
@@ -208,10 +152,10 @@ Burger::eError BURGER_API Burger::Semaphore::Release(void)
 		// possible that another thread, waiting for this semaphore,
 		// can execute before the call to ReleaseSemaphore()
 		// returns
-		AtomicPreIncrement(&m_uCount);
+		atomic_add(&m_uCount, 1);
 		if (sem_post(reinterpret_cast<sem_t*>(&m_Semaphore))) {
-			// Error!!! Undo the AtomicPreIncrement()
-			AtomicPreDecrement(&m_uCount);
+			// Error!!! Undo the atomic_add()
+			atomic_add(&m_uCount, static_cast<uint32_t>(-1));
 		} else {
 			// A-Okay!
 			uResult = kErrorNone;

@@ -22,6 +22,9 @@
 /* BEGIN */
 #if defined(BURGER_ANDROID) && !defined(DOXYGEN)
 
+struct _JNIEnv;
+struct _JavaVM;
+
 struct Burgerpthread_mutex_t {
 	int volatile value;
 #if defined(BURGER_64BITCPU)
