@@ -24,6 +24,7 @@
 #endif
 
 /* BEGIN */
+extern "C" const GUID IID_IXAudio2_2_7;
 extern "C" const GUID CLSID_XAudio2;
 extern "C" const GUID IID_IXAudio2_2_8;
 extern "C" const GUID CLSID_AudioVolumeMeter_2_8;

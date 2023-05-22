@@ -296,7 +296,7 @@ uint_t Burger::Display::GetVideoModes(ClassArray<VideoCardDescription>* pOutput)
 
 		// Create a buffer to the display IDs
 		CGDirectDisplayID* pDisplayIDs = static_cast<CGDirectDisplayID*>(
-			AllocClear(uDisplayCount * sizeof(CGDirectDisplayID)));
+			alloc_clear(uDisplayCount * sizeof(CGDirectDisplayID)));
 
 		// Get the active display count (Some are mirrored or unplugged)
 		uint32_t uActiveDisplayCount;

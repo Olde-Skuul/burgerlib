@@ -587,7 +587,7 @@ uint_t BURGER_API Burger::Win32::has_XAudio2(void) BURGER_NOEXCEPT
 	IXAudio2* pXAudio2 = nullptr;
 	const HRESULT hResult =
 		CoCreateInstance(CLSID_XAudio2, nullptr, CLSCTX_INPROC_SERVER,
-			IID_IXAudio2, reinterpret_cast<void**>(&pXAudio2));
+			IID_IXAudio2_2_7, reinterpret_cast<void**>(&pXAudio2));
 
 	// Did the call succeed?
 	uint_t bResult = FALSE;

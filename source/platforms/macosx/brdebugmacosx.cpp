@@ -46,7 +46,6 @@
 // Make it thread safe
 
 static Burger::CriticalSectionStatic g_LockString;
-static uint_t g_uDebugger = 0;
 
 void BURGER_API Burger::Debug::PrintString(const char* pString) BURGER_NOEXCEPT
 {
@@ -55,9 +54,9 @@ void BURGER_API Burger::Debug::PrintString(const char* pString) BURGER_NOEXCEPT
 	if (pString) {
 		uintptr_t i = StringLength(pString);
 		if (i) {
-			if (!IsDebuggerPresent()) {
+			if (!is_debugger_present()) {
 				// Send the string to the log file
-				g_LockString.Lock();
+				g_LockString.lock();
 				File MyFile;
 				if (MyFile.open("9:logfile.txt", File::kAppend) == kErrorNone) {
 					MyFile.write(pString, i);
@@ -65,56 +64,12 @@ void BURGER_API Burger::Debug::PrintString(const char* pString) BURGER_NOEXCEPT
 				}
 			} else {
 				// Output to the debugger window
-				g_LockString.Lock();
+				g_LockString.lock();
 				fwrite(pString, 1, i, stdout);
 			}
-			g_LockString.Unlock();
+			g_LockString.unlock();
 		}
 	}
-}
-
-/***************************************
-
-	\brief Detect if a debugger is attached
-
-	Return \ref TRUE if a debugger is attached
-
-***************************************/
-
-uint_t BURGER_API Burger::Debug::IsDebuggerPresent(void) BURGER_NOEXCEPT
-{
-	uint_t uResult = g_uDebugger;
-	// Already tested?
-	if (!(uResult & 0x80U)) {
-
-		// Set up for querying the kernel about this process
-
-		int ManagementInfobase[4];
-		ManagementInfobase[0] = CTL_KERN;  // Query the kernel
-		ManagementInfobase[1] = KERN_PROC; // Asking for a kinfo_proc structure
-		ManagementInfobase[2] = KERN_PROC_PID; // This process ID
-		ManagementInfobase[3] = getpid();      // Here's the application's ID
-
-		// Prepare the output structure
-
-		struct kinfo_proc Output;
-		MemoryClear(&Output, sizeof(Output));
-		size_t uOutputSize = sizeof(Output);
-
-		// Call BSD for the state of the process
-		int iResult = sysctl(ManagementInfobase,
-			static_cast<u_int>(BURGER_ARRAYSIZE(ManagementInfobase)), &Output,
-			&uOutputSize, nullptr, 0);
-		uResult = 0x80U;
-		if (!iResult) {
-			// Test for tracing (Debugging)
-			uResult |= (Output.kp_proc.p_flag & P_TRACED) != 0;
-		}
-		// Save the debugger flag
-		g_uDebugger = uResult;
-	}
-	// Return TRUE or FALSE
-	return uResult & 1U;
 }
 
 /***************************************

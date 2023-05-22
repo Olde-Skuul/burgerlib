@@ -22,6 +22,7 @@
 #include "broscursor.h"
 #include "brstringfunctions.h"
 #include "brtick.h"
+
 #import <AppKit/NSApplication.h>
 #include <AppKit/NSApplicationScripting.h>
 #import <AppKit/NSEvent.h>
@@ -605,7 +606,7 @@ typedef enum {
 	FixNSRectOrigin(&rect);
 
 	if (s_moveHack) {
-		uint_t blockMove = ((Burger::Tick::Read() - s_moveHack) < 500);
+		uint_t blockMove = ((Burger::Tick::read() - s_moveHack) < 500);
 
 		s_moveHack = 0;
 
@@ -1106,6 +1107,7 @@ Burger::GameApp::GameApp(uintptr_t uDefaultMemorySize,
 	  m_pListener(nullptr),
 	  m_bCenterWindow(FALSE)
 {
+	Tick::init();
 	InitDefaults();
 	//
 	// Ensure our app is the foreground app
@@ -1215,6 +1217,7 @@ Burger::GameApp::~GameApp()
 	// Release the cursor
 	OSCursor::Shutdown();
 	ShutdownDefaults();
+	Tick::shutdown();
 }
 
 /*! ************************************

@@ -1191,7 +1191,7 @@ uint_t BURGER_API Burger::SoundManager::GetAudioModes(
 		AudioDeviceID MyDeviceList[16];
 		AudioDeviceID* pDeviceList = MyDeviceList;
 		if (uSize > sizeof(MyDeviceList)) {
-			pDeviceList = static_cast<AudioDeviceID*>(AllocClear(uSize));
+			pDeviceList = static_cast<AudioDeviceID*>(alloc_clear(uSize));
 			// What?
 			if (!pDeviceList) {
 				pDeviceList = MyDeviceList;

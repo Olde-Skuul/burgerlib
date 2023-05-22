@@ -19,6 +19,7 @@
 #include "brfloatingpoint.h"
 #include "brglobals.h"
 #include "brstringfunctions.h"
+#include "brtick.h"
 
 #import <UIKit/UIKit.h>
 
@@ -387,6 +388,7 @@ Burger::GameApp::GameApp(uintptr_t uDefaultMemorySize,
 	  m_pViewController(nullptr),
 	  m_pView(nullptr)
 {
+	Tick::init();
 	InitDefaults();
 	g_piOSApp = this;
 
@@ -413,6 +415,7 @@ Burger::GameApp::~GameApp()
 	// Release the file system
 	FileManager::shut_down();
 	ShutdownDefaults();
+	Tick::shutdown();
 }
 
 /*! ************************************
