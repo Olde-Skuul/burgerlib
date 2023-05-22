@@ -42,11 +42,11 @@
 #define _WIN32_WINNT 0x0501 // Windows XP
 #endif
 
-#include <Windows.h>
-
 #if defined(BURGER_METROWERKS)
-#include <salmwerks.h>
+#include <sal.h>
 #endif
+
+#include <Windows.h>
 
 #include <dxgi.h>
 

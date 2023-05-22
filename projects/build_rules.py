@@ -520,6 +520,44 @@ def watcom_rules(project):
             if is_git():
                 project.solution.post_process = watcom_stripcomments
 
+
+########################################
+
+
+def codewarrior_rules(configuration):
+    """
+    Handle special cases for Metrowerks Codewarrior
+
+    Args:
+        configuration: Project configuration
+    """
+
+    platform = configuration.platform
+    ide = configuration.ide
+
+    # Codewarrior needs to have their folders BEFORE the CodeWarrior folders.
+    if platform.is_windows() and ide.is_codewarrior():
+
+        # Include these BEFORE the default headers
+        configuration.library_folders_list[0:0] = [
+            dplay_folder(),
+            window_opengl_folder(),
+            # The DirectX Headers need sal.h, supply it manually for VS 2003
+            "../source/platforms/windows/vc7compat",
+            # Direct X June 2010 sdk
+            "$(DXSDK_DIR)/Include",
+            steam_folder()]
+
+        # Fix to allow dwrite.h to compile on Codewarrior
+        configuration.define_list.append("DWRITE_NO_WINDOWS_H")
+
+        # If at Olde Skuul, use the BURGER_SDKS variable
+        if not is_git:
+            configuration.cw_environment_variables.append("BURGER_SDKS")
+
+        # Everyone has to have DirectX June 2010
+        configuration.cw_environment_variables.append("DXSDK_DIR")
+
 ########################################
 
 
@@ -868,9 +906,6 @@ def project_settings(project):
     project.vs_props = vs_props
     project.vs_targets = vs_targets
 
-    if platform.is_windows():
-        project.cw_environment_variables = ["BURGER_SDKS"]
-
     # Default to Unicode APIs on Windows
     if platform.is_windows() or platform.is_xbox():
         project.vs_CharacterSet = "Unicode"
@@ -935,13 +970,8 @@ def configuration_settings(configuration):
     if platform is PlatformTypes.win32:
         configuration.fastcall = True
 
-    # Codewarrior needs to have their folders BEFORE the CodeWarrior folders.
-    if platform.is_windows() and ide.is_codewarrior():
-        configuration.library_folders_list[0:0] = [
-            dplay_folder(),
-            window_opengl_folder(),
-            "$(BURGER_SDKS)/windows/directx9",
-            steam_folder()]
+    # Handle all the special cases for codewarrior
+    codewarrior_rules(configuration)
 
     # Special case for Direct X SDK
     if ide is IDETypes.vs2017 and \

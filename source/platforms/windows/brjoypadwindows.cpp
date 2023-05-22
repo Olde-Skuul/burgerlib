@@ -35,11 +35,17 @@
 #include "brgameapp.h"
 #include "brglobals.h"
 #include "brmemoryfunctions.h"
+
+#if defined(BURGER_METROWERKS)
+#include <sal.h>
+#endif
+
+#include <windows.h>
+
 #include <WbemCli.h>
 #include <Xinput.h>
 #include <dinput.h>
 #include <dinputd.h>
-#include <windows.h>
 
 // Needed for Code Warrior
 #ifndef DIDFT_OPTIONAL

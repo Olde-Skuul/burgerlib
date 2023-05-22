@@ -32,6 +32,10 @@
 #define _WIN32_WINNT 0x0501 // Windows XP
 #endif
 
+#if defined(BURGER_METROWERKS)
+#include <sal.h>
+#endif
+
 #include <Windows.h>
 
 #include <d3d11.h>

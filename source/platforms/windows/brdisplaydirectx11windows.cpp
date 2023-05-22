@@ -31,6 +31,10 @@
 #define WIN32_LEAN_AND_MEAN
 #endif
 
+#if defined(BURGER_METROWERKS)
+#include <sal.h>
+#endif
+
 #include <Windows.h>
 #include <d3d11.h>
 #include <ddraw.h>

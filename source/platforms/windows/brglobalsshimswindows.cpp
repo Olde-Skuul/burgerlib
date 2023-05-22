@@ -53,6 +53,10 @@
 #define BUILD_WINDOWS
 #endif
 
+#if defined(BURGER_METROWERKS)
+#include <sal.h>
+#endif
+
 #include <Windows.h>
 
 #include <MMSystem.h>

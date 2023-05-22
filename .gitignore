@@ -21,6 +21,7 @@
 **/* Data
 **/*_Data
 **/xcuserdata
+.vscode
 
 # Allow this folder to be saved
 # !/tools/bin
@@ -35,7 +36,6 @@
 *.xcworkspace
 *.pyc
 *.Auto.XGD
-*.mcp.xml
 *.dump
 
 # Ignore Mac desktop services store files 
