@@ -566,6 +566,7 @@
 		<Unit filename="../source/platforms/windows/win_user32.h" />
 		<Unit filename="../source/platforms/windows/win_version.cpp" />
 		<Unit filename="../source/platforms/windows/win_version.h" />
+		<Unit filename="../source/platforms/windows/win_windows.h" />
 		<Unit filename="../source/platforms/windows/win_winmm.cpp" />
 		<Unit filename="../source/platforms/windows/win_winmm.h" />
 		<Unit filename="../source/platforms/windows/win_winutils.cpp" />
