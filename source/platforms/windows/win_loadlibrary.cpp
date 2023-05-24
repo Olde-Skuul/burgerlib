@@ -16,13 +16,7 @@
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 
-#if !defined(DOXYGEN)
-#if !defined(WIN32_LEAN_AND_MEAN)
-#define WIN32_LEAN_AND_MEAN
-#endif
-
-#include <windows.h>
-#endif
+#include "win_windows.h"
 
 /*! ************************************
 

@@ -533,7 +533,7 @@ Burger::eError BURGER_API Burger::Filename::get_FSSpec(
 				pFSSpec->parID = m_lDirID;
 				pFSSpec->vRefNum = m_sVRefNum;
 				char TempString[64];
-				MacRomanUS::TranslateFromUTF8(
+				MacRomanUS::translate_from_UTF8(
 					TempString, sizeof(TempString), pNative);
 				CStringToPString(pFSSpec->name, TempString);
 			} else {
@@ -554,7 +554,7 @@ Burger::eError BURGER_API Burger::Filename::get_FSSpec(
 		{
 			// Convert from UTF8 to Mac Roman
 			char NameBuffer[64];
-			MacRomanUS::TranslateFromUTF8(
+			MacRomanUS::translate_from_UTF8(
 				NameBuffer, sizeof(NameBuffer), pNative);
 
 			// Set the values of the FSSpec
@@ -955,7 +955,7 @@ Burger::eError BURGER_API Burger::Filename::get_native_internal(
 			long lNewDirID;
 			uint_t bDirectory;
 			uint8_t Temp[256 + 1];
-			uintptr_t uLength = MacRomanUS::TranslateFromUTF8(
+			uintptr_t uLength = MacRomanUS::translate_from_UTF8(
 				reinterpret_cast<char*>(Temp + 1), 256, TempString.c_str());
 			Temp[0] = static_cast<uint8_t>(uLength);
 

@@ -16,7 +16,9 @@
 #include "brshaders.h"
 
 #if defined(BURGER_WINDOWS) && !defined(DOXYGEN)
-#include <windows.h>
+
+#include "win_windows.h"
+
 #include <d3d9.h>
 BURGER_CREATE_STATICRTTI_PARENT(Burger::Shader2DColorVertexDX9,Burger::Shader2DColorVertex);
 BURGER_CREATE_STATICRTTI_PARENT(Burger::Shader2DColorVertexOpenGL,Burger::Shader2DColorVertex);

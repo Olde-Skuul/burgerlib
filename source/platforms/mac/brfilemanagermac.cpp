@@ -963,7 +963,7 @@ Burger::eError Burger::FileManager::create_directory_path(
 				}
 
 				// Convert the filename to Mac Roman US
-				uintptr_t uRomanLength = MacRomanUS::TranslateFromUTF8(
+				uintptr_t uRomanLength = MacRomanUS::translate_from_UTF8(
 					reinterpret_cast<char*>(MacRoman + 1), 256, pNative);
 				MacRoman[0] = static_cast<uint8_t>(uRomanLength);
 				// Restore the filename

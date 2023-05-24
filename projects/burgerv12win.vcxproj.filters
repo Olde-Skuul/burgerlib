@@ -664,6 +664,9 @@
     <ClInclude Include="..\source\platforms\windows\win_version.h">
       <Filter>source\platforms\windows</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\platforms\windows\win_windows.h">
+      <Filter>source\platforms\windows</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\platforms\windows\win_winmm.h">
       <Filter>source\platforms\windows</Filter>
     </ClInclude>

@@ -19,23 +19,8 @@
 #include "brmemoryfunctions.h"
 
 #if !defined(DOXYGEN)
-#if !defined(DIRECTDRAW_VERSION)
-#define DIRECTDRAW_VERSION 0x700
-#endif
+#include "win_windows.h"
 
-#if !defined(DIRECT3D_VERSION)
-#define DIRECT3D_VERSION 0x900
-#endif
-
-#if !defined(WIN32_LEAN_AND_MEAN)
-#define WIN32_LEAN_AND_MEAN
-#endif
-
-#if defined(BURGER_METROWERKS)
-#include <sal.h>
-#endif
-
-#include <Windows.h>
 #include <d3d11.h>
 #include <ddraw.h>
 

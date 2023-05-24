@@ -2376,6 +2376,9 @@
 						RelativePath="..\source\platforms\windows\win_version.h">
 					</File>
 					<File
+						RelativePath="..\source\platforms\windows\win_windows.h">
+					</File>
+					<File
 						RelativePath="..\source\platforms\windows\win_winmm.cpp">
 					</File>
 					<File

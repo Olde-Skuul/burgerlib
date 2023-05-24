@@ -69,13 +69,6 @@ struct tagPOINT;
 struct tagSTICKYKEYS;
 struct tagTOGGLEKEYS;
 struct tagWINDOWPLACEMENT;
-struct IXAudio2;
-struct IXAudio2Voice;
-struct IXAudio2SourceVoice;
-struct IXAudio2SubmixVoice;
-struct IXAudio2MasteringVoice;
-struct IXAudio2EngineCallback;
-struct IXAudio2VoiceCallback;
 
 struct Burger_tagSTICKYKEYS {
 	uint_t cbSize;

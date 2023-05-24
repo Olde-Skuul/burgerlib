@@ -43,36 +43,11 @@
 // have
 //
 
-#if !defined(WIN32_LEAN_AND_MEAN)
-#define WIN32_LEAN_AND_MEAN
-#endif
-
-// Windows 8 API level
-#if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x0602
-#endif
-
-#if !defined(DIRECTINPUT_VERSION)
-#define DIRECTINPUT_VERSION 0x800
-#endif
-
-#if !defined(DIRECT3D_VERSION)
-#define DIRECT3D_VERSION 0x900
-#endif
-
-#if !defined(DIRECTDRAW_VERSION)
-#define DIRECTDRAW_VERSION 0x700
-#endif
-
 #if !defined(BUILD_WINDOWS)
 #define BUILD_WINDOWS
 #endif
 
-#if defined(BURGER_METROWERKS)
-#include <sal.h>
-#endif
-
-#include <Windows.h>
+#include "win_windows.h"
 
 #include <MMSystem.h>
 
@@ -88,44 +63,6 @@
 #include <shellapi.h>
 #include <shlobj.h>
 #include <winnt.h>
-
-//
-// These defines are missing from some versions of windows.h
-// especially when building against older versions of the
-// windows SDK (Necessary, since some obscure compilers
-// don't ship with up to date headers)
-//
-
-#if !defined(GET_SC_WPARAM)
-#define GET_SC_WPARAM(wParam) ((int)wParam & 0xFFF0)
-#endif
-
-#if !defined(PBT_APMQUERYSUSPEND)
-#define PBT_APMQUERYSUSPEND 0x0000
-#endif
-
-#if !defined(PBT_APMRESUMESUSPEND)
-#define PBT_APMRESUMESUSPEND 0x0007
-#endif
-
-#if !defined(WM_MOUSEHWHEEL)
-#define WM_MOUSEHWHEEL 0x020E
-#endif
-
-#if !defined(WM_NCMOUSELEAVE)
-#define WM_NCMOUSELEAVE 0x02A2
-#endif
-
-#if !defined(INVALID_ATOM)
-#define INVALID_ATOM ((ATOM)0)
-#endif
-
-#if !defined(_WIN32_WINNT_VISTA) && !defined(_WIN32_WINNT_LONGHORN)
-#define TokenElevation static_cast<TOKEN_INFORMATION_CLASS>(20)
-struct _TOKEN_ELEVATION {
-	DWORD TokenIsElevated;
-};
-#endif
 
 //
 // Globals

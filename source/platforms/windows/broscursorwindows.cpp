@@ -21,11 +21,7 @@
 #include "brimage.h"
 #include "win_globals.h"
 
-#if !defined(WIN32_LEAN_AND_MEAN)
-#define WIN32_LEAN_AND_MEAN
-#endif
-
-#include <Windows.h>
+#include "win_windows.h"
 
 //
 // Lookup table to convert Burgerlib cursors to system default cursors

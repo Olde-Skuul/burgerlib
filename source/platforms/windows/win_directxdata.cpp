@@ -18,16 +18,9 @@
 #include "brwatcom.h"
 
 #if !defined(DOXYGEN)
-#define DIRECTINPUT_VERSION 0x800
-#define DIRECT3D_VERSION 0x900
-#define DIRECTDRAW_VERSION 0x700
-
-#if !defined(WIN32_LEAN_AND_MEAN)
-#define WIN32_LEAN_AND_MEAN
-#endif
 
 // Windows.h always comes first
-#include <windows.h>
+#include "win_windows.h"
 
 #include <d3d9.h>
 #include <dinput.h>

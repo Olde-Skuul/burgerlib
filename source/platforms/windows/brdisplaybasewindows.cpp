@@ -25,11 +25,8 @@
 #include "brstring16.h"
 #include "win_ddraw.h"
 
-#if !defined(WIN32_LEAN_AND_MEAN)
-#define WIN32_LEAN_AND_MEAN
-#endif
+#include "win_windows.h"
 
-#include <Windows.h>
 #include <d3d9.h>
 #include <ddraw.h>
 

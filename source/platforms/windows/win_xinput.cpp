@@ -23,20 +23,7 @@
 // Handle some annoying defines that some windows SDKs may or may not have
 //
 
-#if !defined(WIN32_LEAN_AND_MEAN)
-#define WIN32_LEAN_AND_MEAN
-#endif
-
-// Windows 8 API level
-#if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x0602
-#endif
-
-#if defined(BURGER_METROWERKS)
-#include <sal.h>
-#endif
-
-#include <Windows.h>
+#include "win_windows.h"
 
 #include <Xinput.h>
 

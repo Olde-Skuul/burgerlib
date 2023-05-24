@@ -22,14 +22,6 @@
 
 // Windows defines for the windows headers
 #if !defined(DOXYGEN)
-#if !defined(WIN32_LEAN_AND_MEAN)
-#define WIN32_LEAN_AND_MEAN
-#endif
-
-// Windows 8 API level
-#if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x0602
-#endif
 
 // This crap is needed to get XAudio2.h to include with watcom
 #if defined(BURGER_WATCOM)
@@ -53,26 +45,16 @@
 #endif
 
 #include <stdlib.h>
-#include <windows.h>
+
+#include "win_windows.h"
 
 // Must be included AFTER windows.h
 #include <xaudio2.h>
-
-#if !defined(DOXYGEN)
-//
-// Old Windows SDKs doesn't have this defined.
-//
-
-#if !defined(LOAD_LIBRARY_SEARCH_SYSTEM32)
-#define LOAD_LIBRARY_SEARCH_SYSTEM32 0x00000800
-#endif
 
 // A fix for atexit() callback warning
 #if defined(BURGER_WATCOM)
 // converted function type has different #pragma from original function type
 #pragma warning 601 9
-#endif
-
 #endif
 
 /***************************************

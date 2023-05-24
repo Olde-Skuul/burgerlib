@@ -19,12 +19,7 @@
 #include <stdlib.h>
 
 #if defined(BURGER_WINDOWS)
-
-#if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x0501 // Windows XP minimum
-#endif
-
-#include <windows.h>
+#include "win_windows.h"
 #endif
 
 #if defined(BURGER_XBOX360)

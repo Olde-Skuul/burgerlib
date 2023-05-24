@@ -20,21 +20,9 @@
 #include "brstringfunctions.h"
 #include "win_loadlibrary.h"
 
-// Windows defines for the windows headers
-#if !defined(DOXYGEN)
-#if !defined(WIN32_LEAN_AND_MEAN)
-#define WIN32_LEAN_AND_MEAN
-#endif
-
-// Windows XP minimum
-#if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x0501
-#endif
-
-#endif
-
 #include <io.h>
-#include <windows.h>
+
+#include "win_windows.h"
 
 #if !defined(DOXYGEN)
 // String for registry

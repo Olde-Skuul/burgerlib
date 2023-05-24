@@ -1,29 +1,33 @@
 /***************************************
 
-    60Hz timer
+	60Hz timer
 
-    MacOS Carbon specific code
+	MacOS Carbon specific code
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
 #include "brtick.h"
 
 #if defined(BURGER_MAC)
-#include "brcodelibrary.h"
+#include "mac_timer.h"
+
 #include <DateTimeUtils.h>
+#include <DriverServices.h>
 #include <Gestalt.h>
 #include <LowMem.h>
+#include <Math64.h>
 #include <Timer.h>
 
-#if TARGET_API_MAC_CARBON
+#if !defined(DOXYGEN)
+#if defined(BURGER_CFM)
 #define LMGetTicks() TickCount()
 #else
 #define LMGetTicks() ((volatile uint32_t*)0x16A)[0]
@@ -31,96 +35,16 @@
 
 /***************************************
 
-	Get the 60hz timer
-
-***************************************/
-
-uint32_t Burger::Tick::Read(void) BURGER_NOEXCEPT
-{
-	return LMGetTicks(); /* Call the mac native function */
-}
-
-/***************************************
-
 	Accurate timers for Burgerlib
 	Original code by Matt Slot <fprefect@ambrosiasw.com>
+
 	Optimized and included into Burgerlib by Rebecca Ann Heineman
 	<becky@burgerbecky.com>
 
-***************************************/
-
-/***************************************
-
-	Here is the "C" reference code. This works fine
-
-***************************************/
-
-#if 0
-uint32_t BURGER_API ReadTickMicroseconds(void)
-{
-	UnsignedWide wide;
-	Microseconds(&wide);	/* Get the value from MacOS */
-	return wide.lo;			/* Return just the low 32 bits */
-}
-
-uint32_t BURGER_API ReadTickMilliseconds(void)
-{
-	unsigned long long wide;
-	Microseconds((UnsignedWide *)&wide);	/* Get the time in microseconds */
-	return (uint32_t)((wide / 1000ULL));
-}
-#endif
-
-/***************************************
-
-	For 68K macs, I just use Microseconds, it's accurate and fast
-	I rewrote the routines in 68K asm for all the speed I can muster
-
-***************************************/
-
-#if !defined(BURGER_POWERPC)
-
-/***************************************
-
-	Here is the above code but written in 68K assembly.
-	Of course this means that I can only use Metrowerks 68K compilers
-	to compile this. If anyone cares in the future (It is 1999 after all)
-	then I'll support the alternate compilers.
-
-***************************************/
-
-extern void __rt_divu64(void); // A Metrowerks internal function
-
-// clang-format off
-asm uint32_t BURGER_API Burger::Tick::ReadMicroseconds(void) BURGER_NOEXCEPT
-{
-	0xA193	// _Microseconds
-	rts		// Get out NOW!
-}
-
-asm uint32_t BURGER_API Burger::Tick::ReadMilliseconds(void) BURGER_NOEXCEPT
-{
-	0xA193				// _Microseconds
-	subq.w #8,a7		// Space for result of divide
-	pea 1000			// Div by 1000
-	clr.l	-(a7)		// 64 bit
-	move.l	d0,-(a7)	// Save the returned value
-	move.l	a0,-(a7)
-	pea		16(a7)		// Address for the result
-	jsr		__rt_divu64 // 64 bit divide
-	move.l	4(a0),d0	// Get the low 32 bits of the result
-	lea		28(a7),a7	// Fix the stack
-	rts					// Exit
-}
-// clang-format on
-
-#else
-
-/***************************************
-
 	On PowerPC machines, we try several methods:
 		* DriverServicesLib is available on all PCI PowerMacs, and perhaps
-			some NuBus PowerMacs. If it is, we use UpTime() : Overhead = 2.1 usec.
+			some NuBus PowerMacs. If it is, we use UpTime() : Overhead = 2.1
+			usec.
 		* The PowerPC 601 has a built-in "real time clock" RTC, and we fall
 			back to that, accessing it directly from asm. Overhead = 1.3 usec.
 		* Later PowerPCs have an accurate "time base register" TBR, and we
@@ -149,238 +73,357 @@ asm uint32_t BURGER_API Burger::Tick::ReadMilliseconds(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-typedef AbsoluteTime (*UpTimeProcPtr)(void);
+#if defined(BURGER_PPC)
 
-#define WideToDouble(w) ((double)(w).hi * (65536.0 * 65536.0) + (double)(w).lo)
-#define RTCToNano(w) ((double)(w).hi * PowerPCBillion + (double)(w).lo)
-#define WideTo64bit(w) (*(unsigned long long*)&(w))
+// Which time to use?
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-extern void PollRTC601(uint64_t* Output);
-extern void PollTBR603(uint64_t* Output);
-extern void BurgerInitTimers(void);
-#ifdef __cplusplus
-}
-#endif
+enum eTimerType {
+	// UpTime as is
+	kTimerTypeUpTime,
 
-uint_t PowerPCTimeMethod;			 /* How shall I read the timer? 0-3 */
-double PowerPCScale = 1000000.0; /* Standard scale */
-double PowerPCScale2 = 1000.0;   /* Microsecond accuracy */
-UpTimeProcPtr PowerPCUpTime;	 /* UpTime pointer */
-Fixed32 PowerPCFScale, PowerPCFScale2;
-double PowerPCBillion = 1000000000.0;
-double PowerPCThousand = 1000.0;
-double PowerPCFix = 65536.0 * 65536.0 * 65536.0 * 16.0;
+	// UpTime using a scaled timebase
+	kTimerTypeUpTimeScaled,
+
+	// PPC 601 RTC
+	kTimerType601RTC,
+
+	// PPC 603 TBR
+	kTimerType603TBR,
+
+	// Microseconds
+	kTimerTypeMicroseconds
+};
 
 /***************************************
 
-	Return a pointer to a DLL or shared library
-	I do not release the library. This is a quick and dirty
-	routine for getting things like DirectDraw and OpenTransport
+	Return a pointer to a function in DriverServicesLib
+
+	Note: This function seems to always fail on Rosetta
 
 ***************************************/
 
-static void* BURGER_API LibRefGetFunctionInLib(
-	const char* pFilename, const char* pFunctionName)
+static void* BURGER_API LibRefGetFunctionInLib(StringPtr pFunctionName)
 {
-	Burger::CodeLibrary MyLib;
-	void* pFunction = NULL;
+	// Possible error message
+	Str255 ErrorString;
 
-	if (!MyLib.init(pFilename)) { /* Load the library */
-		pFunction =
-			MyLib.get_function(pFunctionName); /* Load the function if found */
-		if (!pFunction) {
-			/* Return the proc pointer (NOTE: I don't release the reference!) */
-			MyLib.shutdown(); /* At least attempt to keep myself clean */
-		}
+	// Function pointer found
+	Ptr pFunction;
+
+	// Connection ID
+	CFragConnectionID uConnID;
+
+	// See if the library can be loaded.
+	if (GetSharedLibrary("\pDriverServicesLib", kCompiledCFragArch, kLoadCFrag,
+			&uConnID, &pFunction, ErrorString)) {
+		return nullptr;
+	}
+
+	// Yes this leaks a connection, but it will be released on program exit
+	if (FindSymbol(uConnID, pFunctionName, &pFunction, nullptr)) {
+		return nullptr;
 	}
 	return pFunction;
 }
 
-/***************************************
-
-	Determine what timing method to use.
-	UpTime, RTC, TBR or Microseconds()
-
-***************************************/
-
-void BurgerInitTimers(void)
-{
-	uint_t Method;
-	long result;
-
-	Method = 4; /* Assume Microseconds() */
-	if (!Gestalt(gestaltNativeCPUtype, &result)) {
-		if (result == gestaltCPU601) {
-			Method = 3; /* Use 601 method */
-		} else if (result > gestaltCPU601) {
-			Method = 2; /* Use 603+ method */
-		}
-	}
-
-	/* See if UpTime is present in DriverServicesLib */
-
-	if (Method == 4) {
-		PowerPCUpTime = (UpTimeProcPtr)LibRefGetFunctionInLib(
-			"DriverServicesLib", "UpTime");
-
-		/* If no DriverServicesLib, use Gestalt() to get the processor type.
-			Only NuBus PowerMacs with old System Software won't have DSL, so
-			we know it should either be a 601 or 603. */
-
-		if (PowerPCUpTime) {
-			Method = 1;
-		}
-	}
-	PowerPCTimeMethod = Method; /* Save the method */
-
-	/* Now calculate a scale factor to keep us accurate. */
-
-	if (Method != 4) {
-		uint32_t Mark, Mark2;
-		unsigned long long usec1, usec2;
-		UnsignedWide wide;
-
-		/* Wait for the beginning of the very next tick */
-
-		Mark2 = LMGetTicks(); /* Get the anchor */
-		do {
-			Mark = LMGetTicks(); /* Check ... */
-		} while (Mark2 == Mark); /* Time? */
-
-		/* Poll the selected timer and prepare it (since we have time) */
-
-		if (Method == 1) {
-			wide = PowerPCUpTime();
-			usec1 = WideTo64bit(wide);
-		} else if (Method == 2) {
-			PollTBR603((uint64_t*)&wide);
-			usec1 = WideTo64bit(wide);
-		} else {
-			PollRTC601((uint64_t*)&wide);
-			usec1 = static_cast<unsigned long long>(RTCToNano(wide));
-		}
-
-		/* Wait for the exact 60th second to roll over */
-
-		do {
-			Mark2 = LMGetTicks();
-		} while ((Mark2 - Mark) < 60);
-
-		/* Poll the selected timer again and prepare it */
-
-		if (Method == 1) {
-			wide = PowerPCUpTime();
-			usec2 = WideTo64bit(wide);
-		} else if (Method == 2) {
-			PollTBR603((uint64_t*)&wide);
-			usec2 = WideTo64bit(wide);
-		} else {
-			PollRTC601((uint64_t*)&wide);
-			usec2 = static_cast<unsigned long long>(RTCToNano(wide));
-		}
-
-		/* Calculate a scale value that will give microseconds per second.
-			Remember, there are actually 60.15 ticks in a second, not 60. */
-
-		PowerPCScale = 60000000.0 / ((usec2 - usec1) * 60.15);
-		PowerPCScale2 = PowerPCScale / 1000.0;
-		PowerPCFScale = static_cast<long>(PowerPCScale * 65536.0 * 65536.0);
-		PowerPCFScale2 = static_cast<long>(PowerPCScale2 * 65536.0 * 65536.0);
-	}
-}
-
-/***************************************
-
-	Read the tick value in microsecond accuracy
-
-***************************************/
-
-#if defined(__MRC__) /* assembly version of this depends on CW libraries */
-
-#pragma options opt = off
-
-uint32_t Burger::Tick::ReadMicroseconds(void) BURGER_NOEXCEPT
-{
-	UnsignedWide wide;
-	uint_t Temp;
-	double Foo;
-
-	/* Initialize globals the first time we are called */
-
-	Temp = PowerPCTimeMethod;
-	if (!Temp) { /* Initialized? */
-		BurgerInitTimers();
-		Temp = PowerPCTimeMethod;
-	}
-	if (Temp == 1) {
-		/* Use DriverServices if it's available -- it's fast and compatible */
-		wide = PowerPCUpTime();
-		Foo = (double)((unsigned long long*)&wide)[0];
-		return (unsigned long long)(Foo * PowerPCScale);
-	}
-	if (Temp == 2) {
-		/* On a recent PowerPC, we poll the TBR directly */
-		PollTBR603((uint64_t*)&wide);
-		Foo = (double)((unsigned long long*)&wide)[0];
-		return (unsigned long long)(Foo * PowerPCScale);
-	}
-	if (Temp == 3) {
-		/* On a 601, we can poll the RTC instead */
-		PollRTC601((uint64_t*)&wide);
-		return (unsigned long long)(RTCToNano(wide) * PowerPCScale);
-	}
-	/* If all else fails, suffer the mixed mode overhead */
-	Microseconds(&wide);
-	return wide.lo;
-}
-
-/***************************************
-
-	Read the tick value in millisecond accuracy
-
-***************************************/
-
-uint32_t Burger::Tick::ReadMilliseconds(void) BURGER_NOEXCEPT
-{
-	uint_t Temp;
-	double Foo;
-	UnsignedWide wide;
-
-	/* Initialize globals the first time we are called */
-
-	Temp = PowerPCTimeMethod;
-	if (!Temp) { /* Initialized? */
-		BurgerInitTimers();
-		Temp = PowerPCTimeMethod;
-	}
-
-	if (Temp == 1) {
-		/* Use DriverServices if it's available -- it's fast and compatible */
-		wide = PowerPCUpTime();
-		Foo = (double)((unsigned long long*)&wide)[0];
-		return (unsigned long long)(Foo * PowerPCScale2);
-	}
-	if (Temp == 2) {
-		/* On a recent PowerPC, we poll the TBR directly */
-		PollTBR603((uint64_t*)&wide);
-		Foo = (double)((unsigned long long*)&wide)[0];
-		return (unsigned long long)(Foo * PowerPCScale2);
-	}
-	if (Temp == 3) {
-		/* On a 601, we can poll the RTC instead */
-		PollRTC601((uint64_t*)&wide);
-		return (unsigned long long)(RTCToNano(wide) * PowerPCScale2);
-	}
-	/* If all else fails, suffer the mixed mode overhead */
-	Microseconds(&wide);
-	return (unsigned long long)(((double)WideTo64bit(wide)) * (1.0 / 1000.0));
-}
-
-#pragma options opt = speed
-
 #endif
 #endif
+
+/***************************************
+
+	\brief Initialize the low level timer manager
+
+	Start up the low level timer
+
+	\sa shutdown()
+
+***************************************/
+
+void BURGER_API Burger::Tick::init(void) BURGER_NOEXCEPT
+{
+	Tick* pThis = &Tick::g_Tick;
+	if (!pThis->m_bInitialized) {
+
+#if defined(BURGER_PPC)
+		// Welcome to hell
+
+		// Timing on 68000 machines is simple, use Microseconds(). Why? The
+		// fastest 68000 mac is 40Mhz, so any timing faster than that is pretty
+		// much pointless.
+
+		// The PowerPC on the hand can hit gigahertz speed, so timing actually
+		// matters. However, Apple, in their infinite wisdom, decided to not
+		// implement any sort of high accuracy time until way late into the
+		// PowerPC mac line with the inclusion of UpTime() and
+		// AbsoluteToNanoseconds(). If both functions exist, then if it's native
+		// PowerPC code, it's pretty accurate. Failing that, use direct PowerPC
+		// 601 or PowerPC 603 real time clock instructions in order to get
+		// timing values with the smallest cost to the calling function.
+
+		// Note: Yes, there's functions in InputSprocket and OpenTransport, but
+		// they aren't as fast as this method Microseconds is only used as a
+		// last resort, because it's written in 68000 if UpTime does not exist.
+		// This is slow. Your soul will feel the burn. So, toasty...
+
+		// Which timer are we using?
+		// Assume worst case
+		uint_t uMethod = kTimerTypeMicroseconds;
+
+		// Let's try the best method
+		void* pUpTime = LibRefGetFunctionInLib("\pUpTime");
+		void* pAbsoluteToNanoseconds =
+			LibRefGetFunctionInLib("\pAbsoluteToNanoseconds");
+
+		// Save the pointers for later
+		pThis->m_pUpTime = pUpTime;
+
+		// Is UpTime() a valid choice?
+		if (pUpTime && pAbsoluteToNanoseconds) {
+
+			// Looking good! Is the time manager native?
+			long lTimeVersion;
+			uMethod = kTimerTypeUpTimeScaled;
+
+			// Check if it's native
+			if (!Gestalt(gestaltTimeMgrVersion, &lTimeVersion)) {
+				if (lTimeVersion > gestaltExtendedTimeMgr) {
+
+					// Good, now get NanosecondsToAbsolute()
+					void* pNanosecondsToAbsolute =
+						LibRefGetFunctionInLib("\pNanosecondsToAbsolute");
+					if (pNanosecondsToAbsolute) {
+
+						// It's native
+						uMethod = kTimerTypeUpTime;
+
+						// Use this dirty trick to make sure the timebase is
+						// indeed nanoseconds. If not, it's captured here
+						Nanoseconds TempTime;
+						TempTime.hi = 0;
+						TempTime.lo = 1000000000U;
+
+						// Convert nanoseconds to what it's really using. Most
+						// of the time it returns the same value
+						AbsoluteTime Scale =
+							static_cast<AbsoluteTime (*)(Nanoseconds)>(
+								pNanosecondsToAbsolute)(TempTime);
+
+						// Save it
+						pThis->m_uHighPrecisionFrequency =
+							UnsignedWideToUInt64(Scale);
+					}
+				}
+			}
+
+			// Note: If uMethod is kTimerTypeUpTimeScaled, it will need the time
+			// trick below, otherwise, it's a solid 1Ghz
+		}
+
+		// Method not found yet? Try 601/603
+		if (uMethod == kTimerTypeMicroseconds) {
+
+			// Gestalt result
+			long lGestalCPU;
+
+			// First, check if an original PPC 601 or 603
+			if (!Gestalt(gestaltNativeCPUtype, &lGestalCPU)) {
+				if (lGestalCPU == gestaltCPU601) {
+					// Use 601 method
+					uMethod = kTimerType601RTC;
+				} else if (lGestalCPU > gestaltCPU601) {
+					// Use 603+ method
+					uMethod = kTimerType603TBR;
+				}
+			}
+		}
+		// Save the method being used
+		pThis->m_uMethod = uMethod;
+
+		// Microseconds is a known time
+		if (uMethod == kTimerTypeMicroseconds) {
+			pThis->m_uHighPrecisionFrequency = 1000000U;
+
+		} else if (uMethod != kTimerTypeUpTime) {
+
+			// Now calculate a scale factor to keep us accurate.
+			uint32_t uTickMark;
+
+			// Wait for the beginning of the very next tick
+			// Get the anchor
+			uint32_t uTempMark = LMGetTicks();
+			do {
+				// Check ...
+				uTickMark = LMGetTicks();
+
+				// Time?
+			} while (uTempMark == uTickMark);
+
+			// Poll the selected timer and prepare it (since we have time)
+			uint64_t uStart = read_high_precision();
+
+			// Wait for the exact 60th second to roll over
+			do {
+				uTempMark = LMGetTicks();
+			} while (static_cast<uint32_t>(uTempMark - uTickMark) < 60U);
+
+			// Poll the selected timer again and prepare it
+			uint64_t uEnd = read_high_precision();
+
+			// Calculate a scale value that will give microseconds per second.
+			// Remember, there are actually 60.15 ticks in a second, not 60.
+			pThis->m_uHighPrecisionFrequency =
+				((uEnd - uStart) * 6000U) / 6015U;
+		}
+#endif
+
+		// Get the speed of the most accurate timer
+		pThis->m_uLast60HertzMark = 1;
+
+		// Init the sub-timers
+		pThis->m_1KHertz.init(1000U);
+
+		// Not needs for 68K, since it used Microseconds()
+#if !defined(BURGER_68K)
+		pThis->m_1MHertz.init(1000000U);
+#endif
+
+		pThis->m_bInitialized = TRUE;
+	}
+}
+
+/***************************************
+
+	\brief Return the ticks per second at the system's highest precision
+
+	This platform specific code will ask the operating system what is the
+	highest precision timer tick rate and then will return that value.
+
+	This value is cached and is available from get_high_precision_frequency()
+
+	\sa get_high_precision_frequency(), or read_high_precision()
+
+***************************************/
+
+uint64_t BURGER_API Burger::Tick::get_high_precision_rate(void) BURGER_NOEXCEPT
+{
+	// 68K used Microseconds()
+#if defined(BURGER_68K)
+	return 1000000U;
+#else
+	// PowerPC is a buffet
+	return g_Tick.m_uHighPrecisionFrequency;
+#endif
+}
+
+/***************************************
+
+	\brief Return the tick at the system's highest precision
+
+	The value returns a tick that will increment at
+	get_high_precision_frequency() ticks per second.
+
+	\sa get_high_precision_frequency()
+
+***************************************/
+
+uint64_t BURGER_API Burger::Tick::read_high_precision(void) BURGER_NOEXCEPT
+{
+	// Tick value from MacOS
+	UnsignedWide uTick;
+
+	// Register version for result
+	uint64_t uResult;
+
+	// 68K mac has only one method
+#if defined(BURGER_68K)
+	Microseconds(&uTick);
+	uResult = UnsignedWideToUInt64(uTick);
+#else
+
+	Tick* pThis = &g_Tick;
+
+	// PowerPC Macs have many choices
+
+	switch (pThis->m_uMethod) {
+
+		// UpTime()
+	case kTimerTypeUpTime:
+	case kTimerTypeUpTimeScaled:
+		uTick = static_cast<AbsoluteTime (*)(void)>(pThis->m_pUpTime)();
+		uResult = UnsignedWideToUInt64(uTick);
+		break;
+
+		// PowerPC 601 Real Time Clock
+	case kTimerType601RTC:
+		uResult = MacOS::PollRTC601();
+		break;
+
+		// PowerPC 603 Time Base Register
+	case kTimerType603TBR:
+		uResult = MacOS::PollTBR603();
+		break;
+
+		// Microseconds for a "None of the above"
+	default:
+		Microseconds(&uTick);
+		uResult = UnsignedWideToUInt64(uTick);
+		break;
+	}
+#endif
+	return uResult;
+}
+
+/***************************************
+
+	\brief Retrieve the 60 hertz timer system time
+
+	When init() is called, a 60 hertz timer is created and via a background
+	interrupt or other means, will increment 60 times a second.
+
+	The value can be zero for 1/60th of a second, so do not assume that a zero
+	is an uninitialized state.
+
+	\return 32 bit time value that increments 60 times a second
+	\sa read_and_mark()
+
+***************************************/
+
+uint32_t Burger::Tick::read(void) BURGER_NOEXCEPT
+{
+	// Call the mac native function
+	return LMGetTicks();
+}
+
+/***************************************
+
+	\brief Retrieve the 1Mhz timer
+
+	Upon application start up, a 1Mhz hertz timer is created and via
+	a hardward timer, it will increment 1Mhz times a second.
+
+	The value can be zero for 1/1,000,000th of a second, so do not assume that a
+	zero is an uninitialized state.
+
+	\note Due to hardware limitations, do NOT assume this timer is accurate to
+		1/1,000,000th of a second. The granularity could be much courser,
+		however, it will be incrementing at a rate to remain in sync to
+		1,000,000 ticks a second.
+
+	\return 32 bit time value that increments at 1Mhz
+	\sa read() or read_ms()
+
+***************************************/
+
+#if defined(BURGER_68K)
+uint32_t BURGER_API Burger::Tick::read_us(void) BURGER_NOEXCEPT
+{
+	// Get the value from MacOS
+	UnsignedWide uTick;
+	Microseconds(&uTick);
+
+	// Return just the low 32 bits
+	return uTick.lo;
+}
+#endif
+
 #endif

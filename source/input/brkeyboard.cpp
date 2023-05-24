@@ -19,13 +19,9 @@
 
 #if defined(BURGER_WINDOWS) && !defined(DOXYGEN)
 
-#if !defined(WIN32_LEAN_AND_MEAN)
-#define WIN32_LEAN_AND_MEAN
-#endif
-
 //#define ENABLE_DIRECTINPUT
 
-#include <Windows.h>
+#include "win_windows.h"
 #endif
 
 #if !defined(DOXYGEN)

@@ -22,10 +22,7 @@
 #include "brstring16.h"
 #include "win_loadlibrary.h"
 
-#if !defined(WIN32_LEAN_AND_MEAN) && !defined(DOXYGEN)
-#define WIN32_LEAN_AND_MEAN
-#endif
-#include <windows.h>
+#include "win_windows.h"
 
 /***************************************
 

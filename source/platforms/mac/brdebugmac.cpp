@@ -4,7 +4,7 @@
 
 	MacOS specific version
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -16,15 +16,26 @@
 
 #include "brdebug.h"
 
-#if defined(BURGER_MAC)
+#if defined(BURGER_MAC) || defined(DOXYGEN)
 #include "brcriticalsection.h"
 #include "brfile.h"
 #include "brmemoryfunctions.h"
 #include "broscursor.h"
 #include "brstring16.h"
 
+#include <Debugging.h>
 #include <Dialogs.h>
+#include <Gestalt.h>
 #include <Quickdraw.h>
+
+#if !defined(DOXYGEN)
+// Gestalt signature for MetroNub debugger
+#define kMetroNubUserSignature 'MnUI'
+
+// Cached result for is_metronub_installed()
+static uint8_t g_bMetroNubInstalled = 0;
+
+#endif
 
 /***************************************
 
@@ -225,6 +236,107 @@ uint_t BURGER_API Burger::OkCancelAlertMessage(
 	// Restore my grafport
 	SetPort(MyPort);
 	return bResult;
+}
+
+/*! ************************************
+
+	\brief Test if macsbug is installed.
+
+	For pre-MacOSX and Carbon systems, the MacsBug system extension can be
+	installed to capture application crashes. This function will detect if
+	MacsBug is present.
+
+	\note Since MacsBug doesn't work with MacOS Carbon or MacOSX 10, always
+		return \ref FALSE
+
+	\maconly
+
+	\returns \ref TRUE if MacsBug is running
+
+***************************************/
+
+uint_t BURGER_API Burger::is_macsbug_installed(void) BURGER_NOEXCEPT
+{
+#if defined(BURGER_MACCLASSIC)
+	// Mac jump flag is not 0xFF if it's valid.
+	// If valid the flags of interest are...
+	// 0x20 Debugger is installed
+	// 0x40 Debugger is initialized
+	// 0x80 Debugger is not busy
+	uint8_t uMacJmpFlag = LocalLMGetMacJmpFlag();
+
+	// Pointer to the debugger, 0 and -1 are invalid
+	uint32_t pMacJmp = LocalLMGetMacJmp();
+
+	return (uMacJmpFlag != 0xFFU) && ((uMacJmpFlag & 0xE0U) == 0x60U) &&
+		pMacJmp && (pMacJmp != UINT32_MAX);
+#else
+
+	// MacsBug doesn't work in MacOS Carbon
+	return FALSE;
+#endif
+}
+
+/*! ************************************
+
+	\brief Test if Metrowerks Metronub is installed.
+
+	For pre-MacOSX and Carbon systems, the Metrowerks Metronub system extension
+	can be installed to capture application crashes. This function will detect
+	if Metrowerks Metronub is present.
+
+	\note The Metronub only runs on pre-MacOS X
+
+	\maconly
+
+	\returns \ref TRUE if Metrowerks Metronub is running
+
+***************************************/
+
+uint_t BURGER_API Burger::is_metronub_installed(void) BURGER_NOEXCEPT
+{
+	// Get the cached value
+	uint8_t bResult = g_bMetroNubInstalled;
+
+	// Not initialized?
+	if (!bResult) {
+
+		// Assume not found
+		bResult = 0x80U;
+
+		// Gestalt result
+		long lResult;
+
+		// Check the OS version. Only MacOS 7-9 are valid. The nub doesn't
+		// work on MacOSX
+		if (!Gestalt(gestaltSystemVersion, &lResult) && (lResult < 0x1000)) {
+
+			// If this succeeds, MetroNub is installed.
+			if (!Gestalt(kMetroNubUserSignature, &lResult)) {
+
+				// Set the low bit, so the function always returns true
+				bResult = 0x81U;
+			}
+		}
+
+		// Save the result so checking is not needed anymore
+		g_bMetroNubInstalled = bResult;
+	}
+	return bResult & 0x7FU;
+}
+
+/***************************************
+
+	\brief Detect if a debugger is attached
+
+	Return \ref TRUE if a debugger is attached
+
+***************************************/
+
+uint_t BURGER_API Burger::is_debugger_present(void) BURGER_NOEXCEPT
+{
+	// If either debugger is present, return TRUE
+	return is_metronub_installed() || is_macsbug_installed();
 }
 
 #endif

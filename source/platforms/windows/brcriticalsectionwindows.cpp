@@ -19,17 +19,7 @@
 #include "bratomic.h"
 #include "brthread.h"
 
-// InitializeCriticalSectionAndSpinCount() is minimum XP
-
-#if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x0501 // Windows XP
-#endif
-
-#if !defined(WIN32_LEAN_AND_MEAN)
-#define WIN32_LEAN_AND_MEAN
-#endif
-
-#include <windows.h>
+#include "win_windows.h"
 
 /***************************************
 

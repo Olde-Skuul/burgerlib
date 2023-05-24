@@ -16,28 +16,33 @@
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 #include "win_platformshims.h"
+#include "win_version.h"
 
 #if !defined(DOXYGEN)
 
-//
-// Handle some annoying defines that some windows SDKs may or may not have
-//
+// This crap is needed to get XAudio2.h to include with watcom
+#if defined(BURGER_WATCOM)
+#include <comdecl.h>
+#undef DEFINE_CLSID
+#undef DEFINE_IID
+#define DEFINE_CLSID(className, l, w1, w2, b1, b2, b3, b4, b5, b6, b7, b8) \
+	DEFINE_GUID(CLSID_##className, 0x##l, 0x##w1, 0x##w2, 0x##b1, 0x##b2, \
+		0x##b3, 0x##b4, 0x##b5, 0x##b6, 0x##b7, 0x##b8)
 
-#if !defined(WIN32_LEAN_AND_MEAN)
-#define WIN32_LEAN_AND_MEAN
+#define DEFINE_IID(interfaceName, l, w1, w2, b1, b2, b3, b4, b5, b6, b7, b8) \
+	DEFINE_GUID(IID_##interfaceName, 0x##l, 0x##w1, 0x##w2, 0x##b1, 0x##b2, \
+		0x##b3, 0x##b4, 0x##b5, 0x##b6, 0x##b7, 0x##b8)
+#define KSDATAFORMAT_SUBTYPE_PCM
+#define KSDATAFORMAT_SUBTYPE_ADPCM
+#define KSDATAFORMAT_SUBTYPE_IEEE_FLOAT
+#define CLSID_IXAudio2 IID_IXAudio2
+#define __uuidof(x) CLSID_##x
 #endif
 
-#if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x0501 // Windows XP
-#endif
+#include "win_windows.h"
 
-#if !defined(DIRECTSOUND_VERSION)
-#define DIRECTSOUND_VERSION 0x800
-#endif
-
-#include <Windows.h>
-
-#include <MMSystem.h>
+// Must be included AFTER windows.h
+#include <xaudio2.h>
 
 #include <dsound.h>
 
@@ -478,6 +483,106 @@ HRESULT BURGER_API Burger::Win32::GetDeviceID(
 			static_cast<GetDeviceIDPtr>(pGetDeviceID)(pGuidSrc, pGuidDest);
 	}
 	return lResult;
+}
+
+/*! ************************************
+
+	\brief XAudio2Create() for older compilers
+
+	To allow maximum compatibility, this function will manually load
+	xaudio2_9.dll, xaudio2_8.dll, up to xaudio2_7.dll and stop when one is
+	found.
+
+	It will then invoke XAudio2CreateWithVersionInfo() or XAudio2Create()
+
+	\windowsonly
+
+	\param ppXAudio2 Address of a variable that will receive the IXAudio2
+		instance
+
+	\param Flags Flags to pass to XAudio2Create()
+
+	\param XAudio2Processor Value to pass to XAudio2Create()
+
+	\return DD_OK if no error. Any other value means an error occurred
+
+***************************************/
+
+#if !defined(DOXYGEN)
+static const char* s_DLLNames[3] = {
+	"xaudio2_9.dll", "xaudio2_8.dll", "xaudio2_7.dll"};
+#endif
+
+HRESULT Burger::Win32::XAudio2Create(
+	IXAudio2** ppXAudio2, uint_t Flags, uint_t XAudio2Processor) BURGER_NOEXCEPT
+{
+	// Set to TRUE once tested
+	static uint_t s_bTested = FALSE;
+
+	// Check if the newer XAudio2CreateWithVersionInfo() exists, and if so, call
+	// it. Otherwise, fall back to XAudio2Create()
+	typedef HRESULT(__stdcall * XAudio2CreateWithVersionInfoProc)(
+		IXAudio2**, UINT32, XAUDIO2_PROCESSOR, DWORD);
+	typedef HRESULT(__stdcall * XAudio2CreateInfoProc)(
+		IXAudio2**, UINT32, XAUDIO2_PROCESSOR);
+	static XAudio2CreateWithVersionInfoProc s_pXAudio2CreateWithVersion =
+		nullptr;
+	static XAudio2CreateInfoProc s_pXAudio2Create = nullptr;
+
+	// Was there an attempt to load the DLL?
+	if (!s_bTested) {
+
+		// Don't do it again
+		s_bTested = TRUE;
+
+		// Check if running under XP. If so, the flag can't be used
+		uint32_t uFlags = 0;
+		if (is_vista_or_higher()) {
+			uFlags = LOAD_LIBRARY_SEARCH_SYSTEM32;
+		}
+
+		// Scan the DLLs until one is hit
+		uintptr_t i = 0;
+		HMODULE hXAudio2Instance;
+		do {
+			hXAudio2Instance = LoadLibraryExA(s_DLLNames[i], nullptr, uFlags);
+			if (hXAudio2Instance) {
+				break;
+			}
+		} while (++i < BURGER_ARRAYSIZE(s_DLLNames));
+
+		// Nothing loaded at all?
+		if (!hXAudio2Instance) {
+
+			// We're boned
+			return HRESULT_FROM_WIN32(GetLastError());
+		}
+
+		// Load in the functions
+		s_pXAudio2CreateWithVersion =
+			reinterpret_cast<XAudio2CreateWithVersionInfoProc>(GetProcAddress(
+				hXAudio2Instance, "XAudio2CreateWithVersionInfo"));
+
+		s_pXAudio2Create = reinterpret_cast<XAudio2CreateInfoProc>(
+			GetProcAddress(hXAudio2Instance, "XAudio2Create"));
+	}
+
+	// If the newer function exists, use it
+	if (s_pXAudio2CreateWithVersion) {
+
+		// Fake Windows 10 SDK
+		return s_pXAudio2CreateWithVersion(ppXAudio2, Flags,
+			static_cast<XAUDIO2_PROCESSOR>(XAudio2Processor), 0x0A00000C);
+	}
+
+	// Use the older function
+	if (s_pXAudio2Create) {
+		return s_pXAudio2Create(
+			ppXAudio2, Flags, static_cast<XAUDIO2_PROCESSOR>(XAudio2Processor));
+	}
+
+	// XAudio2 does not exit
+	return ERROR_PROC_NOT_FOUND;
 }
 
 #endif

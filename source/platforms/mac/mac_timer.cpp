@@ -16,8 +16,6 @@
 
 #if defined(BURGER_MAC) || defined(DOXYGEN)
 
-#if defined(BURGER_PPC) || defined(DOXYGEN)
-
 /*! ************************************
 
 	\fn Burger::MacOS::PollRTC601(void)
@@ -34,20 +32,6 @@
 
 ***************************************/
 
-// clang-format off
-asm uint64_t Burger::MacOS::PollRTC601(void) BURGER_NOEXCEPT
-{
-	machine 601
-@XLoop:
-	mfrtcu	r3			// RTCU (High)
-	mfrtcl	r4			// RTCL (Low)
-	mfrtcu	r5			// Did the upper 32 bits change?
-	cmpw	r3,r5		// Match?
-	bne		@XLoop		// Try again
-	blr					// Exit (Result in r3,r4)
-}
-// clang-format on
-
 /*! ************************************
 
 	\fn Burger::MacOS::PollTBR603(void)
@@ -62,19 +46,4 @@ asm uint64_t Burger::MacOS::PollRTC601(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-// clang-format off
-asm uint64_t Burger::MacOS::PollTBR603(void) BURGER_NOEXCEPT
-{
-	machine 604
-@XLoop2:
-	mftbu	r3			// Upper 32 bits
-	mftb	r4 			// Lower 32 bits
-	mftbu	r5			// Did the upper 32 bits change?
-	cmpw	r3,r5		// Match?
-	bne		@XLoop2		// Try again
-	blr					// Exit (Result in r3, r4)
-}
-// clang-format off
-
-#endif
 #endif

@@ -21,7 +21,8 @@
 #endif
 
 #if defined(BURGER_WINDOWS) && !defined(DOXYGEN)
-#include <windows.h>
+#include "win_windows.h"
+
 #include <d3d9.h>
 #endif
 

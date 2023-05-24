@@ -21,6 +21,7 @@
 #include "brstring.h"
 #include "brstring16.h"
 #include "brstringfunctions.h"
+
 #include <Devices.h>
 #include <DrawSprocket.h>
 #include <FSM.h>
@@ -53,6 +54,21 @@ static const uint16_t g_AppleShareVer[] = {0x000, 0x350, 0x360, 0x361, 0x362,
 #endif
 
 Burger::Mac Burger::Mac::g_Globals;
+
+/*! ************************************
+
+	\enum Burger::Mac::ePowerMacType
+	\brief Type of detected Power Mac.
+
+	The function GetPowerMacType() checks the mac if it's a specific type of
+	Power Macintosh and returns this enumeration so a higher level function can
+	make assumptions about the built-in hardware available on the motherboard.
+
+	\maconly
+
+	\sa GetPowerMacType()
+
+***************************************/
 
 #if defined(BURGER_METROWERKS)
 #pragma mark === MacOS convenience routines ===
@@ -813,6 +829,84 @@ uint_t BURGER_API Burger::Mac::IsColorGrafPort(
 	// Do a version check to detect for color
 	return reinterpret_cast<const CGrafPort*>(pInput)->portVersion < 0;
 #endif
+}
+
+/*! ************************************
+
+	\brief Determine class of Power Mac
+
+	Using Gestalt(), determine the type of Power Mac the code is running on.
+	This is useful in determining the presence of a built-in ethernet port.
+
+	\maconly
+
+	\return Mac::ePowerMacType enumeration. ePowerMacType::kUnknown if not a
+		Power Mac.
+
+***************************************/
+
+Burger::Mac::ePowerMacType BURGER_API Burger::Mac::GetPowerMacType(
+	void) BURGER_NOEXCEPT
+{
+
+	// Assume failure
+	ePowerMacType uResult = kUnknown;
+
+	// What type of Power Mac is this?
+	long lGestalt;
+	if (!Gestalt(gestaltMachineType, &lGestalt)) {
+
+		switch (lGestalt) {
+		case gestaltAWS9150_80:
+		case gestaltAWS9150_120:
+		case gestaltPowerMac6100_60:
+		case gestaltPowerMac6100_66:
+		case gestaltPowerMac7100_66:
+		case gestaltPowerMac7100_80:
+		case gestaltPowerMac8100_80:
+		case gestaltPowerMac8100_100:
+		case gestaltPowerMac8100_110:
+		case gestaltPowerMac8100_120:
+			uResult = kPiltdownMan;
+			break;
+
+		case gestaltPowerMac7200:
+		case gestaltPowerMac7300:
+		case gestaltPowerMac7500:
+		case gestaltPowerMac8500:
+		case gestaltPowerMac9500:
+		case gestaltPowerBook3400:
+		case gestaltPowerBookG3:
+		case gestaltPowerBookG3Series:
+		case gestaltPowerBookG3Series2:
+		case gestaltPowerMacG3:
+		case gestaltPowerMacNewWorld:
+			uResult = kPCIMachine;
+			break;
+
+		case gestaltPowerMac5200:
+		case gestaltPowerMac6200:
+			uResult = kCommSlotMachine;
+			break;
+
+		case gestaltPowerMac4400:
+		case gestaltPowerMac4400_160:
+		case gestaltPowerMac5400:
+		case gestaltPowerMac5500:
+		case gestaltPowerMac6400:
+		case gestaltPowerMac6500:
+			uResult = kPCIComm2Machine;
+			break;
+
+		// Check other machines
+		default:
+			if (!Gestalt(gestaltNameRegistryVersion, &lGestalt)) {
+				// PowerMac G3 or higher
+				uResult = kPCIMachine;
+			}
+		}
+	}
+	return uResult;
 }
 
 #if defined(BURGER_METROWERKS)
@@ -1929,8 +2023,8 @@ uint_t BURGER_API Burger::DoesUserHaveNoAccess(int8_t ioACUser) BURGER_NOEXCEPT
 	When creating a file on MacOS, a file type and creator code needs to be
 	assigned. The default for generic files is file type "BINA" for binary and
 	the creator code is "????" for unknown. It's up to the app developer to call
-	set_creator_and_file_type() to assign the proper values after the file is created or
-	modified.
+	set_creator_and_file_type() to assign the proper values after the file is
+	created or modified.
 
 	\maconly
 
@@ -2814,18 +2908,20 @@ int BURGER_API Burger::CopyFileMgrAttributes(const FSRef* pDestRef,
 		// Make sure that we're using the correct user and group
 		MyInfo.permissions[0] = MyInfo.permissions[1] = 0;
 
-		uint_t bObjectIsDirectory = MyInfo.nodeFlags & kFSNodeIsDirectoryMask;
+		uint_t bObjectIsDirectory =
+			static_cast<uint_t>(MyInfo.nodeFlags & kFSNodeIsDirectoryMask);
 
 		// Clear the "Has been initialized" bit so the OS can consider this a
 		// fresh file and then save the metadata
-		(*((FileInfo*)(MyInfo.finderInfo))).finderFlags &= ~kHasBeenInited;
+		(*((FileInfo*)(MyInfo.finderInfo))).finderFlags &=
+			static_cast<uint16_t>(~kHasBeenInited);
 
 		// Save the lock bit (Bit is cleared below)
 		uint_t bSetLockBit =
 			bCopyLockBit && (MyInfo.nodeFlags & kFSNodeLockedMask);
 
 		// Clear the flag when setting
-		MyInfo.nodeFlags &= ~kFSNodeLockedMask;
+		MyInfo.nodeFlags &= static_cast<uint16_t>(~kFSNodeLockedMask);
 
 		iMacError = FSSetCatalogInfo(pDestRef, kFSCatInfoSettableInfo, &MyInfo);
 
@@ -4304,6 +4400,8 @@ int BURGER_API Burger::PreflightFileCopySpace(short svRefNumSource,
 	const uint8_t* pVolumenameDest, short svRefNumDest,
 	uint_t* pbSpaceAvailable) BURGER_NOEXCEPT
 {
+	BURGER_UNUSED(pVolumenameDest);
+
 	// Get the information on the destination volume for blocks used
 	XVolumeParam MyXVolumeParam;
 	int iMacError = GetVolumeInfo(&MyXVolumeParam, svRefNumDest);

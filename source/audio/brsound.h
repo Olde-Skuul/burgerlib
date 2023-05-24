@@ -61,7 +61,8 @@ struct IDirectSoundNotify;
 struct IDirectSound8;
 struct IDirectSound3DListener;
 struct IDirectSoundBuffer;
-
+struct IXAudio2;
+struct IXAudio2MasteringVoice;
 
 namespace Burger {
 

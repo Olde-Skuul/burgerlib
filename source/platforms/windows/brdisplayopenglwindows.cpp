@@ -25,11 +25,8 @@
 #define GL_GLEXT_PROTOTYPES
 #endif
 
-#if !defined(WIN32_LEAN_AND_MEAN) && !defined(DOXYGEN)
-#define WIN32_LEAN_AND_MEAN
-#endif
+#include "win_windows.h"
 
-#include <windows.h>
 #include <gl/gl.h>
 #undef GL_EXT_paletted_texture
 #include <gl/glext.h>

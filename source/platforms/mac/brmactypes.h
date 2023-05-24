@@ -87,6 +87,20 @@ typedef pascal void (*ListClickLoopUPP)(void);
 
 namespace Burger {
 class Mac {
+public:
+	enum ePowerMacType {
+		/** Unknown machine */
+		kUnknown = 0,
+		/** Piltdown Man Power Mac */
+		kPiltdownMan = 1,
+		/** PCI slot Power Mac */
+		kPCIMachine = 2,
+		/** Communication slot Power Mac */
+		kCommSlotMachine = 3,
+		/** Communication slot 2 w/PCI Power Mac */
+		kPCIComm2Machine = 4
+	};
+
 private:
 	/** Discovered version of NavServices (Mac only) */
 	uint32_t m_uNavServicesVersion;
@@ -160,6 +174,7 @@ public:
 	static uint_t BURGER_API HaveColorQuickDraw(void) BURGER_NOEXCEPT;
 	static uint_t BURGER_API IsColorGrafPort(
 		const GrafPort* pInput) BURGER_NOEXCEPT;
+	static ePowerMacType BURGER_API GetPowerMacType(void) BURGER_NOEXCEPT;
 };
 
 extern short BURGER_API GetInfoVersion(

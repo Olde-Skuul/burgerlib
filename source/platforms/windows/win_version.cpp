@@ -21,11 +21,6 @@
 
 #if !defined(DOXYGEN)
 
-// Windows defines for the windows headers
-#if !defined(WIN32_LEAN_AND_MEAN)
-#define WIN32_LEAN_AND_MEAN
-#endif
-
 // Win32::eVersion as set by get_version_flags().
 static uint32_t s_uVersionFlags;
 
@@ -36,7 +31,7 @@ static uint8_t s_bDirectXVersionValid;
 
 #endif
 
-#include <windows.h>
+#include "win_windows.h"
 
 /*! ************************************
 

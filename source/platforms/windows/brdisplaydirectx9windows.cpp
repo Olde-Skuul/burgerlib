@@ -26,19 +26,8 @@
 #include "win_user32.h"
 #include "win_winutils.h"
 
-#if !defined(DIRECTDRAW_VERSION) && !defined(DOXYGEN)
-#define DIRECTDRAW_VERSION 0x700
-#endif
+#include "win_windows.h"
 
-#if !defined(DIRECT3D_VERSION) && !defined(DOXYGEN)
-#define DIRECT3D_VERSION 0x900
-#endif
-
-#if !defined(WIN32_LEAN_AND_MEAN) && !defined(DOXYGEN)
-#define WIN32_LEAN_AND_MEAN
-#endif
-
-#include <Windows.h>
 #include <d3d9.h>
 #include <d3dx9math.h>
 #include <ddraw.h>

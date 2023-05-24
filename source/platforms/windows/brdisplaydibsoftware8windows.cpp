@@ -17,10 +17,9 @@
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 #include "brgameapp.h"
-#if !defined(WIN32_LEAN_AND_MEAN) && !defined(DOXYGEN)
-#define WIN32_LEAN_AND_MEAN
-#endif
-#include <Windows.h>
+
+#include "win_windows.h"
+
 #include <WindowsX.h>
 
 /*! ************************************

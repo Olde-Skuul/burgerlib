@@ -23,24 +23,12 @@
 #include "win_xinput.h"
 #if !defined(DOXYGEN)
 
-#ifndef DIRECTINPUT_VERSION
-#define DIRECTINPUT_VERSION 0x0800
-#endif
-
-#if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x0501 // Windows XP
-#endif
-
 #include "brfixedpoint.h"
 #include "brgameapp.h"
 #include "brglobals.h"
 #include "brmemoryfunctions.h"
 
-#if defined(BURGER_METROWERKS)
-#include <sal.h>
-#endif
-
-#include <windows.h>
+#include "win_windows.h"
 
 #include <WbemCli.h>
 #include <Xinput.h>

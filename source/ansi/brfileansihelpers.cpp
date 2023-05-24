@@ -30,7 +30,9 @@
 #include <io.h>
 #if defined(BURGER_METROWERKS)
 #include <crtl.h>
-#include <windows.h>
+
+#include "win_windows.h"
+
 #endif
 #endif
 

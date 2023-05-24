@@ -24,7 +24,9 @@
 #include "brfilemanager.h"
 #include "brutf8.h"
 #include "win_shlwapi.h"
-#include <windows.h>
+
+#include "win_windows.h"
+
 #include <shlwapi.h>
 
 /***************************************

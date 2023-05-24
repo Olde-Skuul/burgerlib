@@ -26,17 +26,6 @@
 #include "win_winutils.h"
 
 #if !defined(DOXYGEN)
-#if !defined(WIN32_LEAN_AND_MEAN)
-#define WIN32_LEAN_AND_MEAN
-#endif
-
-#if !defined(WAVE_FORMAT_IEEE_FLOAT)
-#define WAVE_FORMAT_IEEE_FLOAT 0x0003
-#endif
-
-#if !defined(DIRECTSOUND_VERSION)
-#define DIRECTSOUND_VERSION 0x800
-#endif
 
 // This crap is needed to get XAudio2.h to include with watcom
 #if defined(BURGER_WATCOM)
@@ -60,7 +49,7 @@
 
 // Include in THIS ORDER!
 
-#include <Windows.h>
+#include "win_windows.h"
 
 #include <xaudio2.h>
 
@@ -762,8 +751,8 @@ uint_t BURGER_API Burger::SoundManager::Init(void)
 										->CommitDeferredSettings();
 
 									// Start up XAudio2
-									uResult = XAudio2Create(&m_pIXAudio2, 0,
-										XAUDIO2_DEFAULT_PROCESSOR);
+									uResult = Win32::XAudio2Create(&m_pIXAudio2, 0,
+										static_cast<uint_t>(XAUDIO2_DEFAULT_PROCESSOR));
 									if (uResult == S_OK) {
 										uResult =
 											m_pIXAudio2->CreateMasteringVoice(
@@ -772,7 +761,7 @@ uint_t BURGER_API Burger::SoundManager::Init(void)
 											return 0;
 										}
 										m_pIXAudio2->Release();
-										m_pIXAudio2 = NULL;
+										m_pIXAudio2 = nullptr;
 									}
 								}
 							}

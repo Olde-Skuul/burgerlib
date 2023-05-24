@@ -33,31 +33,11 @@
 // have
 //
 
-#if !defined(WIN32_LEAN_AND_MEAN)
-#define WIN32_LEAN_AND_MEAN
-#endif
-
-#if !defined(DIRECTINPUT_VERSION)
-#define DIRECTINPUT_VERSION 0x800
-#endif
-
-#if !defined(DIRECT3D_VERSION)
-#define DIRECT3D_VERSION 0x900
-#endif
-
-#if !defined(DIRECTDRAW_VERSION)
-#define DIRECTDRAW_VERSION 0x700
-#endif
-
 #if !defined(BUILD_WINDOWS)
 #define BUILD_WINDOWS
 #endif
 
-#if defined(BURGER_METROWERKS)
-#include <sal.h>
-#endif
-
-#include <Windows.h>
+#include "win_windows.h"
 
 #include <MMSystem.h>
 

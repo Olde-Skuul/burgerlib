@@ -18,15 +18,8 @@
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 
-#if !defined(WIN32_LEAN_AND_MEAN)
-#define WIN32_LEAN_AND_MEAN
-#endif
+#include "win_windows.h"
 
-#if !defined(DIRECTSOUND_VERSION)
-#define DIRECTSOUND_VERSION 0x800
-#endif
-
-#include <windows.h>
 #include <mmsystem.h>
 #include <dsound.h>
 

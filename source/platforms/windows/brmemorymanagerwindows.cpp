@@ -15,7 +15,7 @@
 #include "brmemorymanager.h"
 
 #if defined(BURGER_WINDOWS)
-#include <windows.h>
+#include "win_windows.h"
 
 /***************************************
 

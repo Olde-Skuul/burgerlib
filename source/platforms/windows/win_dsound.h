@@ -55,6 +55,9 @@ extern long BURGER_API DirectSoundFullDuplexCreate(
 	IUnknown* pOuter = nullptr) BURGER_NOEXCEPT;
 extern long BURGER_API GetDeviceID(
 	const GUID* pGuidSrc, GUID* pGuidDest) BURGER_NOEXCEPT;
+
+extern long XAudio2Create(IXAudio2** ppXAudio2, uint_t Flags = 0,
+	uint_t XAudio2Processor = 0x00000001) BURGER_NOEXCEPT;
 }}
 /* END */
 

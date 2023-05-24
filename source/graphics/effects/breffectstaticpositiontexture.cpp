@@ -16,8 +16,9 @@
 #include "brshaders.h"
 
 #if defined(BURGER_WINDOWS) && !defined(DOXYGEN)
+#include "win_windows.h"
+
 #include <d3d9.h>
-#include <windows.h>
 BURGER_CREATE_STATICRTTI_PARENT(
     Burger::EffectPositionTextureDX9, Burger::EffectPositionTexture);
 BURGER_CREATE_STATICRTTI_PARENT(

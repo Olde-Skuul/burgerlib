@@ -46,12 +46,7 @@
 using namespace Burger;
 
 #if defined(BURGER_WINDOWS)
-
-#if !defined(WIN32_LEAN_AND_MEAN)
-#define WIN32_LEAN_AND_MEAN
-#endif
-
-#include <windows.h>
+#include "win_windows.h"
 #endif
 
 #if (defined(_MSC_VER) && (_MSC_VER < 1400)) || \

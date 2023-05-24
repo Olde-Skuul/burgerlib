@@ -19,6 +19,7 @@
 #include "brglobals.h"
 #include "brmactypes.h"
 #include "brstringfunctions.h"
+#include "brtick.h"
 
 #if defined(__MSL__)
 #include <SIOUX.h>
@@ -82,6 +83,7 @@ Burger::ConsoleApp::ConsoleApp(int iArgc, const char** ppArgv, uint_t uFlags) BU
 	SIOUXSettings.asktosaveonclose = FALSE; // Don't ask to save on close
 #endif
 
+	Tick::init();
 	// Init the file system
 	FileManager::initialize();
 }

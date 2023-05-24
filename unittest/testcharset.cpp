@@ -26,7 +26,7 @@
 #include <stdio.h>
 
 #if defined(BURGER_WINDOWS)
-#include <Windows.h>
+#include "win_windows.h"
 #endif
 
 #if defined(BURGER_MACOSX)

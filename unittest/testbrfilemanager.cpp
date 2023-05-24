@@ -23,7 +23,7 @@
 #include "brmemoryfunctions.h"
 
 #if defined(BURGER_WINDOWS)
-#include <windows.h>
+#include "win_windows.h"
 #endif
 
 // Characters shared among classic character sets

@@ -17,14 +17,6 @@
 
 #if defined(BURGER_WINDOWS) && !defined(DOXYGEN)
 
-#if !defined(WIN32_LEAN_AND_MEAN)
-#define WIN32_LEAN_AND_MEAN
-#endif
-
-#if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x0501 // Windows XP
-#endif
-
 #if !defined(SECURITY_WIN32)
 #define SECURITY_WIN32
 #endif
@@ -32,7 +24,7 @@
 #include "brstring.h"
 #include "brstring16.h"
 
-#include <windows.h>
+#include "win_windows.h"
 
 #include <lm.h>
 #include <security.h>

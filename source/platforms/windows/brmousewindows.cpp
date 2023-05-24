@@ -17,10 +17,6 @@
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 
 #if !defined(DOXYGEN)
-#define DIRECTINPUT_VERSION 0x0800
-#if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x0501				// Windows XP
-#endif
 #include "brgameapp.h"
 #include "brglobals.h"
 #include "brcriticalsection.h"
@@ -29,6 +25,9 @@
 #include "win_dinput.h"
 #include "win_hid.h"
 #include "win_setupapi.h"
+
+#include "win_windows.h"
+
 #include <dinput.h>
 #include <stdio.h>
 #include <winreg.h>

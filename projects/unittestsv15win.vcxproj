@@ -653,6 +653,7 @@
     <ClInclude Include="..\source\platforms\windows\win_types.h" />
     <ClInclude Include="..\source\platforms\windows\win_user32.h" />
     <ClInclude Include="..\source\platforms\windows\win_version.h" />
+    <ClInclude Include="..\source\platforms\windows\win_windows.h" />
     <ClInclude Include="..\source\platforms\windows\win_winmm.h" />
     <ClInclude Include="..\source\platforms\windows\win_winutils.h" />
     <ClInclude Include="..\source\platforms\windows\win_xinput.h" />

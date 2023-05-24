@@ -17,11 +17,7 @@
 #if defined(BURGER_WINDOWS)
 #include "brstring16.h"
 
-#if !defined(WIN32_LEAN_AND_MEAN)
-#define WIN32_LEAN_AND_MEAN
-#endif
-
-#include <windows.h>
+#include "win_windows.h"
 
 /***************************************
 

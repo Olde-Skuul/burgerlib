@@ -29,13 +29,6 @@
 #include "brtick.h"
 
 #if !defined(DOXYGEN)
-#if !defined(WIN32_LEAN_AND_MEAN)
-#define WIN32_LEAN_AND_MEAN
-#endif
-
-#if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x0501 // Windows XP
-#endif
 
 #if !defined(_CRT_DECLARE_GLOBAL_VARIABLES_DIRECTLY)
 // Needed for Visual Studio 2015 or higher
@@ -43,7 +36,7 @@
 #endif
 #endif
 
-#include <windows.h>
+#include "win_windows.h"
 
 #include <CommCtrl.h>
 #include <ObjBase.h>
