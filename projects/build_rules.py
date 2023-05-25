@@ -473,6 +473,29 @@ def watcom_stripcomments(line_list):
                       "..\\tools\\windows\\x64\\stripcomments")
             for x in line_list]
 
+########################################
+
+
+def make_stripcomments(line_list):
+    """
+    Force stripcomments to a specific path for GNU Make
+
+    Makeprojects will generate the make project file and pass it to
+    this function where it will replace all occurances of stripcomments
+    with a prefix to ensure it will use the local copy found in github
+
+    Note: If the tool is in the path, then remove the line that sets the
+    solution.post_process variable so this isn't performed.
+
+    Args:
+        line_list: List of lines of text
+    Return:
+        List of adjusted lines
+    """
+    return [x.replace("stripcomments",
+                      "../tools/linux/stripcomments")
+            for x in line_list]
+
 
 ########################################
 
@@ -705,9 +728,8 @@ def project_settings(project):
         configuration: Configuration to modify.
     """
 
-    # Too many branches
-    # Too many statements
-    # pylint: disable=R0912,R0915
+    # pylint: disable=too-many-branches
+    # pylint: disable=too-many-statements
 
     project.solution.perforce = not is_git()
 
@@ -715,39 +737,38 @@ def project_settings(project):
     ide = project.solution.ide
 
     # Initialize lists
-    source_folders_list = list(BURGER_LIB_SOURCE)
-    include_folders_list = []
-    source_files_list = list(BURGER_LIB_GENERATED)
-    vs_targets = []
-    vs_props = []
+    project.source_folders_list.extend(BURGER_LIB_SOURCE)
+    project.source_files_list.extend(BURGER_LIB_GENERATED)
 
     # Windows specific files
     if platform.is_windows():
-        source_folders_list.extend(BURGER_LIB_WINDOWS)
+        project.source_folders_list.extend(BURGER_LIB_WINDOWS)
 
         # Add in the headers for Windows, but there be dragons
         if not ide.is_codewarrior() and ide is not IDETypes.watcom:
 
             # For Directplay support, include first to guarantee the most recent
             # SDK is included
-            include_folders_list.append(dplay_folder())
+            project.include_folders_list.append(dplay_folder())
 
             # For OpenGL support since the compiler has an old sdk
-            include_folders_list.append(window_opengl_folder())
+            project.include_folders_list.append(window_opengl_folder())
 
             # For legacy directx 9 support with modern IDEs
             if ide in (IDETypes.vs2017, IDETypes.vs2019, IDETypes.vs2022):
-                include_folders_list.append(
+                project.include_folders_list.append(
                     "../source/platforms/windows/directx9")
 
             # Older IDEs need DirectX from the June 2010 SDK
             if ide in (IDETypes.vs2010, IDETypes.vs2012, IDETypes.vs2013,
                        IDETypes.vs2015):
-                include_folders_list.append("$(DXSDK_DIR)/Include")
+                project.include_folders_list.append("$(DXSDK_DIR)/Include")
 
             if ide is IDETypes.codeblocks:
-                include_folders_list.append("$(BURGER_SDKS)/windows/windows5")
-                include_folders_list.append("$(BURGER_SDKS)/windows/directx9")
+                project.include_folders_list.append(
+                    "$(BURGER_SDKS)/windows/windows5")
+                project.include_folders_list.append(
+                    "$(BURGER_SDKS)/windows/directx9")
                 project.define_list.append("GLUT_DISABLE_ATEXIT_HACK")
 
         if ide is not IDETypes.watcom:
@@ -758,103 +779,109 @@ def project_settings(project):
                 "_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"])
 
         find_generated_source(
-            source_files_list,
+            project.source_files_list,
             project.working_directory,
             "../source/platforms/windows",
             _HLSL_MATCH)
 
     # MS/DOS
     if platform.is_msdos():
-        source_folders_list.extend(BURGER_LIB_DOS)
-        include_folders_list.append(x32_folder())
+        project.source_folders_list.extend(BURGER_LIB_DOS)
+        project.include_folders_list.append(x32_folder())
 
     # Linux
     if platform is PlatformTypes.linux:
-        source_folders_list.extend(BURGER_LIB_LINUX)
+        project.source_folders_list.extend(BURGER_LIB_LINUX)
+        # If building on git, stripcomments.exe may not be on the path
+        # Force it
+        if is_git():
+            project.solution.post_process = make_stripcomments
+
+    if platform is PlatformTypes.stadia:
+        project.source_folders_list.extend(BURGER_LIB_STADIA)
 
     # Apple platforms
     if platform.is_macosx():
-        source_folders_list.extend(BURGER_LIB_MACOSX)
+        project.source_folders_list.extend(BURGER_LIB_MACOSX)
 
     if platform.is_ios():
-        source_folders_list.extend(BURGER_LIB_IOS)
+        project.source_folders_list.extend(BURGER_LIB_IOS)
 
     if platform.is_macos():
-        source_folders_list.extend(BURGER_LIB_MAC)
+        project.source_folders_list.extend(BURGER_LIB_MAC)
 
     if platform.is_darwin():
-        source_folders_list.extend(BURGER_LIB_DARWIN)
+        project.source_folders_list.extend(BURGER_LIB_DARWIN)
 
     # Sony platforms
     if platform is PlatformTypes.ps3:
-        source_folders_list.extend(BURGER_LIB_PS3)
+        project.source_folders_list.extend(BURGER_LIB_PS3)
 
     if platform is PlatformTypes.ps4:
-        source_folders_list.extend(BURGER_LIB_PS4)
+        project.source_folders_list.extend(BURGER_LIB_PS4)
 
     if platform is PlatformTypes.ps5:
-        source_folders_list.extend(BURGER_LIB_PS4)
-        source_folders_list.extend(BURGER_LIB_PS5)
+        project.source_folders_list.extend(BURGER_LIB_PS4)
+        project.source_folders_list.extend(BURGER_LIB_PS5)
 
     if platform is PlatformTypes.vita:
-        source_folders_list.extend(BURGER_LIB_VITA)
+        project.source_folders_list.extend(BURGER_LIB_VITA)
 
-        vs_props.append("$(VCTargetsPath)\\BuildCustomizations\\vitacg.props")
-        vs_targets.append(
+        project.vs_props.append(
+            "$(VCTargetsPath)\\BuildCustomizations\\vitacg.props")
+        project.vs_targets.append(
             "$(VCTargetsPath)\\BuildCustomizations\\vitacg.targets")
         find_generated_source(
-            source_files_list,
+            project.source_files_list,
             project.working_directory,
             "../source/graphics/shadersvita",
             _VITACG_MATCH)
 
     # Microsoft platforms
     if platform is PlatformTypes.xbox360:
-        source_folders_list.extend(BURGER_LIB_XBOX_360)
-        vs_props.append("$(VCTargetsPath)\\BuildCustomizations\\x360sl.props")
-        vs_targets.append(
+        project.source_folders_list.extend(BURGER_LIB_XBOX_360)
+        project.vs_props.append(
+            "$(VCTargetsPath)\\BuildCustomizations\\x360sl.props")
+        project.vs_targets.append(
             "$(VCTargetsPath)\\BuildCustomizations\\x360sl.targets")
         find_generated_source(
-            source_files_list, project.working_directory,
+            project.source_files_list, project.working_directory,
             "../source/graphics/shadersxbox360",
             _X360SL_MATCH)
 
     if platform.is_xboxone():
-        source_folders_list.extend(BURGER_LIB_XBOX_ONE)
+        project.source_folders_list.extend(BURGER_LIB_XBOX_ONE)
 
     # Android
     if platform.is_android():
-        source_folders_list.extend(BURGER_LIB_ANDROID)
+        project.source_folders_list.extend(BURGER_LIB_ANDROID)
 
     if platform is PlatformTypes.shield:
         # Override for Shield, even though it's an Android
         # platform
-        source_folders_list.extend(BURGER_LIB_SHIELD)
-
-    if platform is PlatformTypes.stadia:
-        source_folders_list.extend(BURGER_LIB_STADIA)
+        project.source_folders_list.extend(BURGER_LIB_SHIELD)
 
     # Nintendo
     if platform is PlatformTypes.wiiu:
-        source_folders_list.extend(BURGER_LIB_WIIU)
+        project.source_folders_list.extend(BURGER_LIB_WIIU)
 
     if platform is PlatformTypes.switch:
-        source_folders_list.extend(BURGER_LIB_SWITCH)
+        project.source_folders_list.extend(BURGER_LIB_SWITCH)
 
     # Unix platforms
     if platform.is_darwin() or platform.is_android() or \
             platform in (PlatformTypes.linux, PlatformTypes.stadia):
-        source_folders_list.extend(BURGER_LIB_UNIX)
+        project.source_folders_list.extend(BURGER_LIB_UNIX)
 
     # Folder to store the output
     platform_folder = platform.get_platform_folder()
 
     # Add property files for unittests or burgerlib
     if project.name == "unittests":
-        source_folders_list.append("../unittest")
+        project.source_folders_list.append("../unittest")
 
         if platform.is_xboxone():
-            source_files_list.append(
+            project.source_files_list.append(
                 "../unittest/xboxone/unittestxboxone.appxmanifest")
 
         if platform is PlatformTypes.linux:
@@ -869,22 +896,24 @@ def project_settings(project):
     # Enable OpenGL extensions
     if platform.is_windows() or platform.is_android() or \
             platform is PlatformTypes.linux:
-        vs_props.append(
+        project.vs_props.append(
             "$(ProjectDir)..\\ide_plugins\\vs2010\\glsl.props")
-        vs_targets.append(
+        project.vs_targets.append(
             "$(ProjectDir)..\\ide_plugins\\vs2010\\glsl.targets")
         find_generated_source(
-            source_files_list, project.working_directory,
+            project.source_files_list,
+            project.working_directory,
             "../source/graphics/shadersopengl",
             _GLSL_MATCH)
 
     # Enable hlsl extensions
     if platform.is_windows():
-        vs_props.append(
+        project.vs_props.append(
             "$(ProjectDir)..\\ide_plugins\\vs2010\\hlsl.props")
-        vs_targets.append("$(ProjectDir)..\\ide_plugins\\vs2010\\hlsl.targets")
+        project.vs_targets.append(
+            "$(ProjectDir)..\\ide_plugins\\vs2010\\hlsl.targets")
         find_generated_source(
-            source_files_list,
+            project.source_files_list,
             project.working_directory,
             "../source/graphics/shadersdx9",
             _HLSL_MATCH)
@@ -893,18 +922,11 @@ def project_settings(project):
     if platform.is_windows() or platform.is_macosx() or \
             platform is PlatformTypes.linux:
         if not ide.is_codewarrior() and ide is not IDETypes.watcom:
-            include_folders_list.append(steam_folder())
+            project.include_folders_list.append(steam_folder())
 
     # Hack to allow compilation of dbus on Darwin
     if platform.is_darwin():
-        include_folders_list.append("../source/platforms/unix")
-
-    # Store the values into the project
-    project.source_folders_list = source_folders_list
-    project.include_folders_list = include_folders_list
-    project.source_files_list = source_files_list
-    project.vs_props = vs_props
-    project.vs_targets = vs_targets
+        project.include_folders_list.append("../source/platforms/unix")
 
     # Default to Unicode APIs on Windows
     if platform.is_windows() or platform.is_xbox():

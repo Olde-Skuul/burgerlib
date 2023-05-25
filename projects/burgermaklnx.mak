@@ -1090,35 +1090,35 @@ $(TEMP_DIR)/brwin437.o: ../source/text/brwin437.cpp ; $(BUILD_CPP)
 
 ../source/graphics/shadersopengl/Generated/pscclr4gl.h : ../source/graphics/shadersopengl/pscclr4gl.glsl
 	@echo Stripcomments pscclr4gl.glsl...
-	@stripcomments "../source/graphics/shadersopengl/pscclr4gl.glsl" -c "../source/graphics/shadersopengl/Generated/pscclr4gl.h" -l g_pscclr4gl
+	@../tools/linux/stripcomments "../source/graphics/shadersopengl/pscclr4gl.glsl" -c "../source/graphics/shadersopengl/Generated/pscclr4gl.h" -l g_pscclr4gl
 
 ../source/graphics/shadersopengl/Generated/pstex2clr4gl.h : ../source/graphics/shadersopengl/pstex2clr4gl.glsl
 	@echo Stripcomments pstex2clr4gl.glsl...
-	@stripcomments "../source/graphics/shadersopengl/pstex2clr4gl.glsl" -c "../source/graphics/shadersopengl/Generated/pstex2clr4gl.h" -l g_pstex2clr4gl
+	@../tools/linux/stripcomments "../source/graphics/shadersopengl/pstex2clr4gl.glsl" -c "../source/graphics/shadersopengl/Generated/pstex2clr4gl.h" -l g_pstex2clr4gl
 
 ../source/graphics/shadersopengl/Generated/pstexturecolorgl.h : ../source/graphics/shadersopengl/pstexturecolorgl.glsl
 	@echo Stripcomments pstexturecolorgl.glsl...
-	@stripcomments "../source/graphics/shadersopengl/pstexturecolorgl.glsl" -c "../source/graphics/shadersopengl/Generated/pstexturecolorgl.h" -l g_pstexturecolorgl
+	@../tools/linux/stripcomments "../source/graphics/shadersopengl/pstexturecolorgl.glsl" -c "../source/graphics/shadersopengl/Generated/pstexturecolorgl.h" -l g_pstexturecolorgl
 
 ../source/graphics/shadersopengl/Generated/pstexturegl.h : ../source/graphics/shadersopengl/pstexturegl.glsl
 	@echo Stripcomments pstexturegl.glsl...
-	@stripcomments "../source/graphics/shadersopengl/pstexturegl.glsl" -c "../source/graphics/shadersopengl/Generated/pstexturegl.h" -l g_pstexturegl
+	@../tools/linux/stripcomments "../source/graphics/shadersopengl/pstexturegl.glsl" -c "../source/graphics/shadersopengl/Generated/pstexturegl.h" -l g_pstexturegl
 
 ../source/graphics/shadersopengl/Generated/vs20pos22dgl.h : ../source/graphics/shadersopengl/vs20pos22dgl.glsl
 	@echo Stripcomments vs20pos22dgl.glsl...
-	@stripcomments "../source/graphics/shadersopengl/vs20pos22dgl.glsl" -c "../source/graphics/shadersopengl/Generated/vs20pos22dgl.h" -l g_vs20pos22dgl
+	@../tools/linux/stripcomments "../source/graphics/shadersopengl/vs20pos22dgl.glsl" -c "../source/graphics/shadersopengl/Generated/vs20pos22dgl.h" -l g_vs20pos22dgl
 
 ../source/graphics/shadersopengl/Generated/vs20pos2tex2clr42dgl.h : ../source/graphics/shadersopengl/vs20pos2tex2clr42dgl.glsl
 	@echo Stripcomments vs20pos2tex2clr42dgl.glsl...
-	@stripcomments "../source/graphics/shadersopengl/vs20pos2tex2clr42dgl.glsl" -c "../source/graphics/shadersopengl/Generated/vs20pos2tex2clr42dgl.h" -l g_vs20pos2tex2clr42dgl
+	@../tools/linux/stripcomments "../source/graphics/shadersopengl/vs20pos2tex2clr42dgl.glsl" -c "../source/graphics/shadersopengl/Generated/vs20pos2tex2clr42dgl.h" -l g_vs20pos2tex2clr42dgl
 
 ../source/graphics/shadersopengl/Generated/vs20sprite2dgl.h : ../source/graphics/shadersopengl/vs20sprite2dgl.glsl
 	@echo Stripcomments vs20sprite2dgl.glsl...
-	@stripcomments "../source/graphics/shadersopengl/vs20sprite2dgl.glsl" -c "../source/graphics/shadersopengl/Generated/vs20sprite2dgl.h" -l g_vs20sprite2dgl
+	@../tools/linux/stripcomments "../source/graphics/shadersopengl/vs20sprite2dgl.glsl" -c "../source/graphics/shadersopengl/Generated/vs20sprite2dgl.h" -l g_vs20sprite2dgl
 
 ../source/graphics/shadersopengl/Generated/vsstaticpositiongl.h : ../source/graphics/shadersopengl/vsstaticpositiongl.glsl
 	@echo Stripcomments vsstaticpositiongl.glsl...
-	@stripcomments "../source/graphics/shadersopengl/vsstaticpositiongl.glsl" -c "../source/graphics/shadersopengl/Generated/vsstaticpositiongl.h" -l g_vsstaticpositiongl
+	@../tools/linux/stripcomments "../source/graphics/shadersopengl/vsstaticpositiongl.glsl" -c "../source/graphics/shadersopengl/Generated/vsstaticpositiongl.h" -l g_vsstaticpositiongl
 
 #
 # Create final binaries
