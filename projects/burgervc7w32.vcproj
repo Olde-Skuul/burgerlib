@@ -1343,7 +1343,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments pscclr4gl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments.exe &quot;../source/graphics/shadersopengl/pscclr4gl.glsl&quot; /c &quot;../source/graphics/shadersopengl/Generated\pscclr4gl.h&quot; /l g_pscclr4gl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pscclr4gl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pscclr4gl.h&quot; -l g_pscclr4gl"
 								Outputs="../source/graphics/shadersopengl/Generated/pscclr4gl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1351,7 +1351,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments pscclr4gl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments.exe &quot;../source/graphics/shadersopengl/pscclr4gl.glsl&quot; /c &quot;../source/graphics/shadersopengl/Generated\pscclr4gl.h&quot; /l g_pscclr4gl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pscclr4gl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pscclr4gl.h&quot; -l g_pscclr4gl"
 								Outputs="../source/graphics/shadersopengl/Generated/pscclr4gl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1359,7 +1359,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments pscclr4gl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments.exe &quot;../source/graphics/shadersopengl/pscclr4gl.glsl&quot; /c &quot;../source/graphics/shadersopengl/Generated\pscclr4gl.h&quot; /l g_pscclr4gl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pscclr4gl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pscclr4gl.h&quot; -l g_pscclr4gl"
 								Outputs="../source/graphics/shadersopengl/Generated/pscclr4gl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1367,7 +1367,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments pscclr4gl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments.exe &quot;../source/graphics/shadersopengl/pscclr4gl.glsl&quot; /c &quot;../source/graphics/shadersopengl/Generated\pscclr4gl.h&quot; /l g_pscclr4gl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pscclr4gl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pscclr4gl.h&quot; -l g_pscclr4gl"
 								Outputs="../source/graphics/shadersopengl/Generated/pscclr4gl.h"/>
 						</FileConfiguration>
 					</File>
@@ -1378,7 +1378,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments pstex2clr4gl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments.exe &quot;../source/graphics/shadersopengl/pstex2clr4gl.glsl&quot; /c &quot;../source/graphics/shadersopengl/Generated\pstex2clr4gl.h&quot; /l g_pstex2clr4gl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstex2clr4gl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstex2clr4gl.h&quot; -l g_pstex2clr4gl"
 								Outputs="../source/graphics/shadersopengl/Generated/pstex2clr4gl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1386,7 +1386,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments pstex2clr4gl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments.exe &quot;../source/graphics/shadersopengl/pstex2clr4gl.glsl&quot; /c &quot;../source/graphics/shadersopengl/Generated\pstex2clr4gl.h&quot; /l g_pstex2clr4gl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstex2clr4gl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstex2clr4gl.h&quot; -l g_pstex2clr4gl"
 								Outputs="../source/graphics/shadersopengl/Generated/pstex2clr4gl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1394,7 +1394,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments pstex2clr4gl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments.exe &quot;../source/graphics/shadersopengl/pstex2clr4gl.glsl&quot; /c &quot;../source/graphics/shadersopengl/Generated\pstex2clr4gl.h&quot; /l g_pstex2clr4gl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstex2clr4gl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstex2clr4gl.h&quot; -l g_pstex2clr4gl"
 								Outputs="../source/graphics/shadersopengl/Generated/pstex2clr4gl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1402,7 +1402,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments pstex2clr4gl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments.exe &quot;../source/graphics/shadersopengl/pstex2clr4gl.glsl&quot; /c &quot;../source/graphics/shadersopengl/Generated\pstex2clr4gl.h&quot; /l g_pstex2clr4gl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstex2clr4gl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstex2clr4gl.h&quot; -l g_pstex2clr4gl"
 								Outputs="../source/graphics/shadersopengl/Generated/pstex2clr4gl.h"/>
 						</FileConfiguration>
 					</File>
@@ -1413,7 +1413,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments pstexturecolorgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments.exe &quot;../source/graphics/shadersopengl/pstexturecolorgl.glsl&quot; /c &quot;../source/graphics/shadersopengl/Generated\pstexturecolorgl.h&quot; /l g_pstexturecolorgl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstexturecolorgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstexturecolorgl.h&quot; -l g_pstexturecolorgl"
 								Outputs="../source/graphics/shadersopengl/Generated/pstexturecolorgl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1421,7 +1421,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments pstexturecolorgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments.exe &quot;../source/graphics/shadersopengl/pstexturecolorgl.glsl&quot; /c &quot;../source/graphics/shadersopengl/Generated\pstexturecolorgl.h&quot; /l g_pstexturecolorgl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstexturecolorgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstexturecolorgl.h&quot; -l g_pstexturecolorgl"
 								Outputs="../source/graphics/shadersopengl/Generated/pstexturecolorgl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1429,7 +1429,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments pstexturecolorgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments.exe &quot;../source/graphics/shadersopengl/pstexturecolorgl.glsl&quot; /c &quot;../source/graphics/shadersopengl/Generated\pstexturecolorgl.h&quot; /l g_pstexturecolorgl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstexturecolorgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstexturecolorgl.h&quot; -l g_pstexturecolorgl"
 								Outputs="../source/graphics/shadersopengl/Generated/pstexturecolorgl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1437,7 +1437,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments pstexturecolorgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments.exe &quot;../source/graphics/shadersopengl/pstexturecolorgl.glsl&quot; /c &quot;../source/graphics/shadersopengl/Generated\pstexturecolorgl.h&quot; /l g_pstexturecolorgl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstexturecolorgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstexturecolorgl.h&quot; -l g_pstexturecolorgl"
 								Outputs="../source/graphics/shadersopengl/Generated/pstexturecolorgl.h"/>
 						</FileConfiguration>
 					</File>
@@ -1448,7 +1448,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments pstexturegl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments.exe &quot;../source/graphics/shadersopengl/pstexturegl.glsl&quot; /c &quot;../source/graphics/shadersopengl/Generated\pstexturegl.h&quot; /l g_pstexturegl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstexturegl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstexturegl.h&quot; -l g_pstexturegl"
 								Outputs="../source/graphics/shadersopengl/Generated/pstexturegl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1456,7 +1456,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments pstexturegl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments.exe &quot;../source/graphics/shadersopengl/pstexturegl.glsl&quot; /c &quot;../source/graphics/shadersopengl/Generated\pstexturegl.h&quot; /l g_pstexturegl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstexturegl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstexturegl.h&quot; -l g_pstexturegl"
 								Outputs="../source/graphics/shadersopengl/Generated/pstexturegl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1464,7 +1464,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments pstexturegl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments.exe &quot;../source/graphics/shadersopengl/pstexturegl.glsl&quot; /c &quot;../source/graphics/shadersopengl/Generated\pstexturegl.h&quot; /l g_pstexturegl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstexturegl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstexturegl.h&quot; -l g_pstexturegl"
 								Outputs="../source/graphics/shadersopengl/Generated/pstexturegl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1472,7 +1472,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments pstexturegl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments.exe &quot;../source/graphics/shadersopengl/pstexturegl.glsl&quot; /c &quot;../source/graphics/shadersopengl/Generated\pstexturegl.h&quot; /l g_pstexturegl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstexturegl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstexturegl.h&quot; -l g_pstexturegl"
 								Outputs="../source/graphics/shadersopengl/Generated/pstexturegl.h"/>
 						</FileConfiguration>
 					</File>
@@ -1483,7 +1483,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments vs20pos22dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments.exe &quot;../source/graphics/shadersopengl/vs20pos22dgl.glsl&quot; /c &quot;../source/graphics/shadersopengl/Generated\vs20pos22dgl.h&quot; /l g_vs20pos22dgl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20pos22dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20pos22dgl.h&quot; -l g_vs20pos22dgl"
 								Outputs="../source/graphics/shadersopengl/Generated/vs20pos22dgl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1491,7 +1491,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments vs20pos22dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments.exe &quot;../source/graphics/shadersopengl/vs20pos22dgl.glsl&quot; /c &quot;../source/graphics/shadersopengl/Generated\vs20pos22dgl.h&quot; /l g_vs20pos22dgl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20pos22dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20pos22dgl.h&quot; -l g_vs20pos22dgl"
 								Outputs="../source/graphics/shadersopengl/Generated/vs20pos22dgl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1499,7 +1499,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments vs20pos22dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments.exe &quot;../source/graphics/shadersopengl/vs20pos22dgl.glsl&quot; /c &quot;../source/graphics/shadersopengl/Generated\vs20pos22dgl.h&quot; /l g_vs20pos22dgl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20pos22dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20pos22dgl.h&quot; -l g_vs20pos22dgl"
 								Outputs="../source/graphics/shadersopengl/Generated/vs20pos22dgl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1507,7 +1507,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments vs20pos22dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments.exe &quot;../source/graphics/shadersopengl/vs20pos22dgl.glsl&quot; /c &quot;../source/graphics/shadersopengl/Generated\vs20pos22dgl.h&quot; /l g_vs20pos22dgl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20pos22dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20pos22dgl.h&quot; -l g_vs20pos22dgl"
 								Outputs="../source/graphics/shadersopengl/Generated/vs20pos22dgl.h"/>
 						</FileConfiguration>
 					</File>
@@ -1518,7 +1518,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments vs20pos2tex2clr42dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments.exe &quot;../source/graphics/shadersopengl/vs20pos2tex2clr42dgl.glsl&quot; /c &quot;../source/graphics/shadersopengl/Generated\vs20pos2tex2clr42dgl.h&quot; /l g_vs20pos2tex2clr42dgl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20pos2tex2clr42dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20pos2tex2clr42dgl.h&quot; -l g_vs20pos2tex2clr42dgl"
 								Outputs="../source/graphics/shadersopengl/Generated/vs20pos2tex2clr42dgl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1526,7 +1526,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments vs20pos2tex2clr42dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments.exe &quot;../source/graphics/shadersopengl/vs20pos2tex2clr42dgl.glsl&quot; /c &quot;../source/graphics/shadersopengl/Generated\vs20pos2tex2clr42dgl.h&quot; /l g_vs20pos2tex2clr42dgl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20pos2tex2clr42dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20pos2tex2clr42dgl.h&quot; -l g_vs20pos2tex2clr42dgl"
 								Outputs="../source/graphics/shadersopengl/Generated/vs20pos2tex2clr42dgl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1534,7 +1534,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments vs20pos2tex2clr42dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments.exe &quot;../source/graphics/shadersopengl/vs20pos2tex2clr42dgl.glsl&quot; /c &quot;../source/graphics/shadersopengl/Generated\vs20pos2tex2clr42dgl.h&quot; /l g_vs20pos2tex2clr42dgl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20pos2tex2clr42dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20pos2tex2clr42dgl.h&quot; -l g_vs20pos2tex2clr42dgl"
 								Outputs="../source/graphics/shadersopengl/Generated/vs20pos2tex2clr42dgl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1542,7 +1542,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments vs20pos2tex2clr42dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments.exe &quot;../source/graphics/shadersopengl/vs20pos2tex2clr42dgl.glsl&quot; /c &quot;../source/graphics/shadersopengl/Generated\vs20pos2tex2clr42dgl.h&quot; /l g_vs20pos2tex2clr42dgl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20pos2tex2clr42dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20pos2tex2clr42dgl.h&quot; -l g_vs20pos2tex2clr42dgl"
 								Outputs="../source/graphics/shadersopengl/Generated/vs20pos2tex2clr42dgl.h"/>
 						</FileConfiguration>
 					</File>
@@ -1553,7 +1553,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments vs20sprite2dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments.exe &quot;../source/graphics/shadersopengl/vs20sprite2dgl.glsl&quot; /c &quot;../source/graphics/shadersopengl/Generated\vs20sprite2dgl.h&quot; /l g_vs20sprite2dgl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20sprite2dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20sprite2dgl.h&quot; -l g_vs20sprite2dgl"
 								Outputs="../source/graphics/shadersopengl/Generated/vs20sprite2dgl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1561,7 +1561,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments vs20sprite2dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments.exe &quot;../source/graphics/shadersopengl/vs20sprite2dgl.glsl&quot; /c &quot;../source/graphics/shadersopengl/Generated\vs20sprite2dgl.h&quot; /l g_vs20sprite2dgl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20sprite2dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20sprite2dgl.h&quot; -l g_vs20sprite2dgl"
 								Outputs="../source/graphics/shadersopengl/Generated/vs20sprite2dgl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1569,7 +1569,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments vs20sprite2dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments.exe &quot;../source/graphics/shadersopengl/vs20sprite2dgl.glsl&quot; /c &quot;../source/graphics/shadersopengl/Generated\vs20sprite2dgl.h&quot; /l g_vs20sprite2dgl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20sprite2dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20sprite2dgl.h&quot; -l g_vs20sprite2dgl"
 								Outputs="../source/graphics/shadersopengl/Generated/vs20sprite2dgl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1577,7 +1577,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments vs20sprite2dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments.exe &quot;../source/graphics/shadersopengl/vs20sprite2dgl.glsl&quot; /c &quot;../source/graphics/shadersopengl/Generated\vs20sprite2dgl.h&quot; /l g_vs20sprite2dgl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20sprite2dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20sprite2dgl.h&quot; -l g_vs20sprite2dgl"
 								Outputs="../source/graphics/shadersopengl/Generated/vs20sprite2dgl.h"/>
 						</FileConfiguration>
 					</File>
@@ -1588,7 +1588,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments vsstaticpositiongl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments.exe &quot;../source/graphics/shadersopengl/vsstaticpositiongl.glsl&quot; /c &quot;../source/graphics/shadersopengl/Generated\vsstaticpositiongl.h&quot; /l g_vsstaticpositiongl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vsstaticpositiongl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vsstaticpositiongl.h&quot; -l g_vsstaticpositiongl"
 								Outputs="../source/graphics/shadersopengl/Generated/vsstaticpositiongl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1596,7 +1596,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments vsstaticpositiongl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments.exe &quot;../source/graphics/shadersopengl/vsstaticpositiongl.glsl&quot; /c &quot;../source/graphics/shadersopengl/Generated\vsstaticpositiongl.h&quot; /l g_vsstaticpositiongl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vsstaticpositiongl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vsstaticpositiongl.h&quot; -l g_vsstaticpositiongl"
 								Outputs="../source/graphics/shadersopengl/Generated/vsstaticpositiongl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1604,7 +1604,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments vsstaticpositiongl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments.exe &quot;../source/graphics/shadersopengl/vsstaticpositiongl.glsl&quot; /c &quot;../source/graphics/shadersopengl/Generated\vsstaticpositiongl.h&quot; /l g_vsstaticpositiongl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vsstaticpositiongl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vsstaticpositiongl.h&quot; -l g_vsstaticpositiongl"
 								Outputs="../source/graphics/shadersopengl/Generated/vsstaticpositiongl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1612,7 +1612,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments vsstaticpositiongl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments.exe &quot;../source/graphics/shadersopengl/vsstaticpositiongl.glsl&quot; /c &quot;../source/graphics/shadersopengl/Generated\vsstaticpositiongl.h&quot; /l g_vsstaticpositiongl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vsstaticpositiongl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vsstaticpositiongl.h&quot; -l g_vsstaticpositiongl"
 								Outputs="../source/graphics/shadersopengl/Generated/vsstaticpositiongl.h"/>
 						</FileConfiguration>
 					</File>

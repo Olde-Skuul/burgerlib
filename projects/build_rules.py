@@ -469,8 +469,8 @@ def watcom_stripcomments(line_list):
     Return:
         List of adjusted lines
     """
-    return [x.replace("stripcomments.exe",
-                      "..\\tools\\windows\\x64\\stripcomments.exe")
+    return [x.replace("stripcomments",
+                      "..\\tools\\windows\\x64\\stripcomments")
             for x in line_list]
 
 
@@ -579,11 +579,11 @@ def vs2003_stripcomments(line_list):
     """
 
     if is_git():
-        strip_comments = "..\\tools\\windows\\x64\\stripcomments.exe"
+        strip_comments = "..\\tools\\windows\\x64\\stripcomments"
     else:
-        strip_comments = "$(BURGER_SDKS)\\windows\\bin\\x64\\stripcomments.exe"
+        strip_comments = "$(BURGER_SDKS)\\windows\\bin\\x64\\stripcomments"
 
-    return [x.replace("stripcomments.exe", strip_comments)
+    return [x.replace("stripcomments", strip_comments)
             for x in line_list]
 
 ########################################

@@ -601,35 +601,35 @@ OBJS= $(A)/bradler16.obj &
 
 ../source/graphics/shadersopengl/Generated/pscclr4gl.h : ../source/graphics/shadersopengl/pscclr4gl.glsl
 	@echo Stripcomments pscclr4gl.glsl...
-	@cmd /c & ..\tools\windows\x64\stripcomments.exe "../source/graphics/shadersopengl/pscclr4gl.glsl" /c "../source/graphics/shadersopengl/Generated\pscclr4gl.h" /l g_pscclr4gl
+	@cmd /c & ..\tools\windows\x64\stripcomments "../source/graphics/shadersopengl/pscclr4gl.glsl" -c "../source/graphics/shadersopengl/Generated\pscclr4gl.h" -l g_pscclr4gl
 
 ../source/graphics/shadersopengl/Generated/pstex2clr4gl.h : ../source/graphics/shadersopengl/pstex2clr4gl.glsl
 	@echo Stripcomments pstex2clr4gl.glsl...
-	@cmd /c & ..\tools\windows\x64\stripcomments.exe "../source/graphics/shadersopengl/pstex2clr4gl.glsl" /c "../source/graphics/shadersopengl/Generated\pstex2clr4gl.h" /l g_pstex2clr4gl
+	@cmd /c & ..\tools\windows\x64\stripcomments "../source/graphics/shadersopengl/pstex2clr4gl.glsl" -c "../source/graphics/shadersopengl/Generated\pstex2clr4gl.h" -l g_pstex2clr4gl
 
 ../source/graphics/shadersopengl/Generated/pstexturecolorgl.h : ../source/graphics/shadersopengl/pstexturecolorgl.glsl
 	@echo Stripcomments pstexturecolorgl.glsl...
-	@cmd /c & ..\tools\windows\x64\stripcomments.exe "../source/graphics/shadersopengl/pstexturecolorgl.glsl" /c "../source/graphics/shadersopengl/Generated\pstexturecolorgl.h" /l g_pstexturecolorgl
+	@cmd /c & ..\tools\windows\x64\stripcomments "../source/graphics/shadersopengl/pstexturecolorgl.glsl" -c "../source/graphics/shadersopengl/Generated\pstexturecolorgl.h" -l g_pstexturecolorgl
 
 ../source/graphics/shadersopengl/Generated/pstexturegl.h : ../source/graphics/shadersopengl/pstexturegl.glsl
 	@echo Stripcomments pstexturegl.glsl...
-	@cmd /c & ..\tools\windows\x64\stripcomments.exe "../source/graphics/shadersopengl/pstexturegl.glsl" /c "../source/graphics/shadersopengl/Generated\pstexturegl.h" /l g_pstexturegl
+	@cmd /c & ..\tools\windows\x64\stripcomments "../source/graphics/shadersopengl/pstexturegl.glsl" -c "../source/graphics/shadersopengl/Generated\pstexturegl.h" -l g_pstexturegl
 
 ../source/graphics/shadersopengl/Generated/vs20pos22dgl.h : ../source/graphics/shadersopengl/vs20pos22dgl.glsl
 	@echo Stripcomments vs20pos22dgl.glsl...
-	@cmd /c & ..\tools\windows\x64\stripcomments.exe "../source/graphics/shadersopengl/vs20pos22dgl.glsl" /c "../source/graphics/shadersopengl/Generated\vs20pos22dgl.h" /l g_vs20pos22dgl
+	@cmd /c & ..\tools\windows\x64\stripcomments "../source/graphics/shadersopengl/vs20pos22dgl.glsl" -c "../source/graphics/shadersopengl/Generated\vs20pos22dgl.h" -l g_vs20pos22dgl
 
 ../source/graphics/shadersopengl/Generated/vs20pos2tex2clr42dgl.h : ../source/graphics/shadersopengl/vs20pos2tex2clr42dgl.glsl
 	@echo Stripcomments vs20pos2tex2clr42dgl.glsl...
-	@cmd /c & ..\tools\windows\x64\stripcomments.exe "../source/graphics/shadersopengl/vs20pos2tex2clr42dgl.glsl" /c "../source/graphics/shadersopengl/Generated\vs20pos2tex2clr42dgl.h" /l g_vs20pos2tex2clr42dgl
+	@cmd /c & ..\tools\windows\x64\stripcomments "../source/graphics/shadersopengl/vs20pos2tex2clr42dgl.glsl" -c "../source/graphics/shadersopengl/Generated\vs20pos2tex2clr42dgl.h" -l g_vs20pos2tex2clr42dgl
 
 ../source/graphics/shadersopengl/Generated/vs20sprite2dgl.h : ../source/graphics/shadersopengl/vs20sprite2dgl.glsl
 	@echo Stripcomments vs20sprite2dgl.glsl...
-	@cmd /c & ..\tools\windows\x64\stripcomments.exe "../source/graphics/shadersopengl/vs20sprite2dgl.glsl" /c "../source/graphics/shadersopengl/Generated\vs20sprite2dgl.h" /l g_vs20sprite2dgl
+	@cmd /c & ..\tools\windows\x64\stripcomments "../source/graphics/shadersopengl/vs20sprite2dgl.glsl" -c "../source/graphics/shadersopengl/Generated\vs20sprite2dgl.h" -l g_vs20sprite2dgl
 
 ../source/graphics/shadersopengl/Generated/vsstaticpositiongl.h : ../source/graphics/shadersopengl/vsstaticpositiongl.glsl
 	@echo Stripcomments vsstaticpositiongl.glsl...
-	@cmd /c & ..\tools\windows\x64\stripcomments.exe "../source/graphics/shadersopengl/vsstaticpositiongl.glsl" /c "../source/graphics/shadersopengl/Generated\vsstaticpositiongl.h" /l g_vsstaticpositiongl
+	@cmd /c & ..\tools\windows\x64\stripcomments "../source/graphics/shadersopengl/vsstaticpositiongl.glsl" -c "../source/graphics/shadersopengl/Generated\vsstaticpositiongl.h" -l g_vsstaticpositiongl
 
 ../source/platforms/windows/Generated/ps20display8bitdx9.h : ../source/platforms/windows/ps20display8bitdx9.hlsl
 	@echo fxc ps20display8bitdx9.hlsl...
