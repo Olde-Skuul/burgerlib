@@ -543,6 +543,15 @@ def watcom_rules(project):
             if is_git():
                 project.solution.post_process = watcom_stripcomments
 
+        # Handle the DOS version
+        if platform.is_msdos():
+
+            # Add the assembly functions for gluing to the dos extender
+            project.source_files_list.extend(
+                ("../source/asm/wasm/x32_zero_base.x86",
+                 "../source/asm/wasm/call_int.x86",
+                 "../source/asm/wasm/msdos_interrupt_asm.x86"))
+
 
 ########################################
 

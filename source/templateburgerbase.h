@@ -75,6 +75,7 @@
 
 #define BURGER_NULL_MACRO_PARAM /**/
 #include "brtypes.h"
+#include "brvectortypes.h"
 
 #ifndef _INC_STDIO
 #include <stdio.h>
@@ -94,6 +95,8 @@
 #endif
 
 // clang-format off
+#include "brstructs.h"
+
 #include "brwatcom.h"
 #include "brvisualstudio.h"
 #include "brintelcompiler.h"
@@ -106,7 +109,7 @@
 #include "brerror.h"
 #include "brassert.h"
 #include "brguid.h"
-#include "brstructs.h"
+
 #include "brstaticrtti.h"
 #include "brbase.h"
 #include "brmemorymanager.h"
@@ -210,7 +213,6 @@
 #include "brfilemanager.h"
 #include "brfile.h"
 #include "brdirectorysearch.h"
-#include "brdosextender.h"
 #include "brautorepeat.h"
 #include "brrunqueue.h"
 #include "brdetectmultilaunch.h"
@@ -366,6 +368,8 @@ typedef VertexBuffer VertexBufferDefault;
 
 #if defined(BURGER_WINDOWS)
 #include "burgerwindows.h"
+#elif defined(BURGER_MSDOS)
+#include "burgermsdos.h"
 #elif defined(BURGER_XBOX360)
 #include "burgerxbox360.h"
 #elif defined(BURGER_PS4) || defined(BURGER_PS5)

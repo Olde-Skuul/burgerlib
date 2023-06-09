@@ -1,0 +1,282 @@
+;
+; Assembly code for X32 / Dos4GW compatibility
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+;
+; It is released under an MIT Open Source license. Please see LICENSE
+; for license details. Yes, you can use it in a
+; commercial title without paying anything, just give me a credit.
+; Please? It's not like I'm asking you for money!
+;
+
+;
+; Set to build 386 code for a flat memory model using the WATCOM WASM
+; assembler
+;
+
+	.386
+	.MODEL FLAT,SYSCALL
+
+;
+; ASM version of Regs16_t
+; This MUST match what's in msdos_structs.h or the world will end
+;
+
+REGS16 STRUCT
+reg_ax		DW	?		;0
+reg_bx		DW	?		;2
+reg_cx		DW	?		;4
+reg_dx		DW	?		;6
+reg_si		DW	?		;8
+reg_di		DW	?		;10
+reg_bp		DW	?		;12
+reg_ds		DW	?		;14
+reg_es		DW	?		;16
+reg_flags	DW	?		;18
+REGS16 ENDS
+
+	.CODE
+
+;
+; This program simply calls INT 10 to invoke the system video bios.
+; uint32_t BURGER_API Burger::MSDos::set_video_mode_int10h(uint32_t uMode)
+;
+
+	PUBLIC `W?set_video_mode_int10h$:MSDos$:Burger$n(ui)ui`
+
+`W?set_video_mode_int10h$:MSDos$:Burger$n(ui)ui` PROC
+	and		eax,0FFH		;Make sure AH is zero
+	int		010H			;Perform int 10H
+	and		eax,0FFFFH		;Make sure it's 16 bit
+	ret						;Exit with result in eax
+
+`W?set_video_mode_int10h$:MSDos$:Burger$n(ui)ui` ENDP
+
+;
+; Direct entry to call the serial BIOS
+; uint32_t BURGER_API Burger::MSDos::init_serial_port_int14h(
+;	uint32_t uPortFlags, uint32_t uPortNumber)
+;
+
+	PUBLIC	`W?init_serial_port_int14h$:MSDos$:Burger$n(uiui)ui`
+`W?init_serial_port_int14h$:MSDos$:Burger$n(uiui)ui` PROC
+
+	and		eax,0FFH		;Make sure AH is zero
+	int		014H			;Call the serial bios with EAX/EDX
+	and		eax,0FFFFH		;Force the return value to 16 bit
+	ret
+
+`W?init_serial_port_int14h$:MSDos$:Burger$n(uiui)ui` ENDP
+
+;
+; Direct entry to call the printer BIOS
+; uint32_t BURGER_API Burger::MSDos::printer_port_int17h(uint32_t EAX, uint32_t EDX)
+;
+
+	PUBLIC `W?printer_port_int17h$:MSDos$:Burger$n(uiui)ui`
+`W?printer_port_int17h$:MSDos$:Burger$n(uiui)ui` PROC
+
+	and		eax,0FFFFH		;Make sure it's 16 bit
+	int		017H			;Call printer bios
+	and		eax,0FFFFH		;Force the return value to 16 bit
+	ret
+
+`W?printer_port_int17h$:MSDos$:Burger$n(uiui)ui` ENDP
+
+
+;
+; This routine will allow a DOS application to call an INT
+; routine via the current DOS extender.
+;
+; int32_t BURGER_API real_mode_interrupt(uint32_t uInterrupt,
+;	const Regs16_t* pInput, Regs16_t* pOutput)
+;
+
+	PUBLIC	`W?real_mode_interrupt$:MSDos$:Burger$n(uipnx$Regs16_t$:1:2$pn$3:1:2$)i`
+
+;
+; X32 DOS extender version
+;
+	IFDEF	__X32__
+
+;
+; http://www.ctyme.com/intr/rb-2619.htm#Table1361
+; Phar Lap Issure Real Mode Interrupt parameter block
+;
+
+	.DATA
+MYINT	DW	0	;Interrupt # to invoke
+MYDS	DW	0	;Data segment register
+MYES	DW	0	;Extra segment register
+MYFS	DW	0	;FS register
+MYGS	DW	0	;GS register
+MYEAX	DD	0	;EAX register contents
+MYEDX	DD	0	;EDX register contents
+
+	.CODE
+
+`W?real_mode_interrupt$:MSDos$:Burger$n(uipnx$Regs16_t$:1:2$pn$3:1:2$)i` PROC
+
+	mov		[MYINT],ax			;Save the interrupt number
+
+	push	ebp					;Save all other registers
+	push	esi
+	push	edi
+	push	ecx
+
+	push	ebx					;Save the pointer to the dest array
+
+	mov		bx,[edx].reg_bx		;Load all the registers for the call
+	mov		cx,[edx].reg_cx		;CX
+	mov		ax,[edx].reg_dx		;Save DX in array
+	mov		[MYEDX],eax
+	mov		si,[edx].reg_si		;SI
+	mov		di,[edx].reg_di		;DI
+	mov		bp,[edx].reg_bp		;BP
+	mov		ax,[edx].reg_ds		;Save DS in array
+	mov		[MYDS],ax
+	mov		ax,[edx].reg_es		;Save ES in array
+	mov		[MYES],ax
+	mov		ax,[edx].reg_ax		;Save AX in array
+	mov		[MYEAX],eax
+
+; Docs on the Phar Lap 386 Issue Real Mode Interrupt call
+; http://www.ctyme.com/intr/rb-2619.htm
+
+	mov		edx,OFFSET MYINT	;Get address to structure
+	mov		eax,02511H			;Call X32 to invoke the IRQ
+	stc							;Assume error for non-supported calls
+	int		021H
+
+	pop		edx					;Get the dest structure address
+	mov		[edx].reg_ax,ax		;Save AX
+
+	pushfd						;Get returned flags into eax
+	pop		eax		
+
+	mov		[edx].reg_flags,AX
+	mov		[edx].reg_bx,bx		;Save the result in result array
+	mov		[edx].reg_cx,cx		;CX
+	mov		eax,[MYEDX]			;Get DX from array
+	mov		[edx].reg_dx,ax
+	mov		[edx].reg_si,si		;SI
+	mov		[edx].reg_di,di		;DI
+	mov		[edx].reg_bp,bp		;BP
+	mov		ax,[MYDS]			;Get DS from array
+	mov		[edx].reg_ds,ax
+	mov		ax,[MYES]			;Get ES from array
+	mov		[edx].reg_es,ax
+
+	mov		ax,[edx].reg_ax	;Get the result
+	and		eax,0FFFFH		;Force 16 bit
+
+	pop		ecx		;Restore all the registers
+	pop		edi
+	pop		esi
+	pop		ebp
+	ret
+`W?real_mode_interrupt$:MSDos$:Burger$n(uipnx$Regs16_t$:1:2$pn$3:1:2$)i` ENDP
+
+	ELSE
+
+;
+; This code is for the DOS4GW dos extender ONLY
+;
+
+;
+; This structure is used by DPMI (0.9) to call a real mode interrupt
+; http://www.ctyme.com/intr/rb-5831.htm
+;
+
+	.DATA
+
+MYEDI	DD	0		;EDI register contents
+MYESI	DD	0		;ESI register contents
+MYEBP	DD	0		;EBP register contents
+MYX1	DD	0		;Reserved, must be zero
+MYEBX	DD	0		;EBX register contents
+MYEDX	DD	0		;EDX register contents
+MYECX	DD	0		;ECX register contents
+MYEAX	DD	0		;EAX register contents
+MYFLAGS	DW	0		;Processor flags
+MYES	DW	0		;Extra segment register
+MYDS	DW	0		;Data segment register
+MYFS	DW	0		;FS register
+MYGS	DW	0		;GS register
+MYIP	DW	0		;Instruction pointer (Not used)
+MYCS	DW	0		;Code segment (Not used)
+MYSP	DW	0		;Stack pointer (Must be zero)
+MYSS	DW	0		;Stack segment (Must be zero)
+
+	.CODE
+
+`W?real_mode_interrupt$:MSDos$:Burger$n(uipnx$Regs16_t$:1:2$pn$3:1:2$)i` PROC
+	push	edi				;Save all other registers
+	push	ecx
+
+	push	ebx				;Save the pointer to the dest array
+	mov		ebx,eax			;BL has the interrupt number
+	xor		ecx,ecx			;No words to copy from the stack
+	and		ebx,0FFH		;All other bits cleared
+
+	mov		eax,1			;Set the carry flag
+	mov		[MYFLAGS],ax	;Save the flag
+	mov		ax,[edx].reg_ax	;Save AX in array
+	mov		[MYEAX],eax
+	mov		ax,[edx].reg_bx	;Load all the registers for the call
+	mov		[MYEBX],eax
+	mov		ax,[edx].reg_cx	;CX
+	mov		[MYECX],eax
+	mov		ax,[edx].reg_dx	;Save DX in array
+	mov		[MYEDX],eax
+	mov		ax,[edx].reg_si	;SI
+	mov		[MYESI],eax
+	mov		ax,[edx].reg_di	;DI
+	mov		[MYEDI],eax
+	mov		ax,[edx].reg_bp	;BP
+	mov		[MYEBP],eax
+	mov		ax,[edx].reg_ds	;Save DS in array
+	mov		[MYDS],ax
+	mov		ax,[edx].reg_es	;Save ES in array
+	mov		[MYES],ax
+
+; Call DPMI 0.9+ Simulate Real Mode Interrupt
+
+	mov		edi,OFFSET MYEDI	;Get address to structure
+	mov		eax,0300H		;Call DPMI to invoke the IRQ
+	int		031H
+	pop		edx				;Get the structure address
+
+; Get the results
+
+	MOV		eax,[MYEBX]
+	MOV		[edx].reg_bx,ax		;Save the result in result array
+	MOV		eax,[MYECX]
+	MOV		[edx].reg_cx,ax		;CX
+	MOV		eax,[MYEDX]		;Get DX from array
+	MOV		[edx].reg_dx,ax
+	MOV		eax,[MYESI]
+	MOV		[edx].reg_si,ax		;SI
+	MOV		eax,[MYEDI]
+	MOV		[edx].reg_di,ax		;DI
+	MOV		eax,[MYEBP]
+	MOV		[edx].reg_bp,ax		;BP
+	MOV		ax,[MYDS]		;Get DS from array
+	MOV		[edx].reg_ds,ax
+	MOV		ax,[MYES]		;Get ES from array
+	MOV		[edx].reg_es,ax
+	MOV		ax,[MYFLAGS]	;Get processor flags
+	MOV		[edx].reg_flags,ax
+
+	mov		eax,[MYEAX]		;Get the result
+	mov		[edx].reg_ax,ax
+	and		eax,0FFFFH		;Force 16 bit
+
+	pop		ecx				;Restore all the registers
+	pop		edi
+	ret
+`W?real_mode_interrupt$:MSDos$:Burger$n(uipnx$Regs16_t$:1:2$pn$3:1:2$)i` ENDP
+
+	ENDIF
+
+	END

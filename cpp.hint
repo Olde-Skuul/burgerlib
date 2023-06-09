@@ -3,7 +3,8 @@
 // IDE to get the assumed values of these macros so Intellisense
 // will parse the C++ source code properly.
 //
-// For more information see https://go.microsoft.com/fwlink/?linkid=865984
+// For more information see
+// https://learn.microsoft.com/en-us/cpp/build/reference/hint-files?view=msvc-170
 
 #define BURGER_LONGLONG long long
 #define BURGER_ULONGLONG unsigned long long
@@ -24,6 +25,7 @@
 #define BURGER_ALIGN(x, s) alignas(s) x
 #define BURGER_PREALIGN(s) alignas(s)
 #define BURGER_POSTALIGN(s)
+#define BURGER_MSVC_SUPPRESS(__T)
 
 #define BURGER_DISABLE_COPY(x) \
 private: \

@@ -597,6 +597,7 @@
     <ClInclude Include="..\source\lowlevel\brtick.h" />
     <ClInclude Include="..\source\lowlevel\brtimedate.h" />
     <ClInclude Include="..\source\lowlevel\brtypes.h" />
+    <ClInclude Include="..\source\lowlevel\brvectortypes.h" />
     <ClInclude Include="..\source\lowlevel\brvisualstudio.h" />
     <ClInclude Include="..\source\lowlevel\brwatcom.h" />
     <ClInclude Include="..\source\lowlevel\brxcode.h" />
@@ -630,6 +631,7 @@
     <ClInclude Include="..\source\platforms\windows\brvertexbufferdirectx9.h" />
     <ClInclude Include="..\source\platforms\windows\brwindowstypes.h" />
     <ClInclude Include="..\source\platforms\windows\generated\ps20display8bitdx9.h" />
+    <ClInclude Include="..\source\platforms\windows\templatewindows.h" />
     <ClInclude Include="..\source\platforms\windows\win_d3d11.h" />
     <ClInclude Include="..\source\platforms\windows\win_d3d9.h" />
     <ClInclude Include="..\source\platforms\windows\win_ddraw.h" />
@@ -661,10 +663,6 @@
     <ClInclude Include="..\source\random\brrandom.h" />
     <ClInclude Include="..\source\random\brrandombase.h" />
     <ClInclude Include="..\source\templateburgerbase.h" />
-    <ClInclude Include="..\source\templatelinux.h" />
-    <ClInclude Include="..\source\templatemac.h" />
-    <ClInclude Include="..\source\templateunix.h" />
-    <ClInclude Include="..\source\templatewindows.h" />
     <ClInclude Include="..\source\text\brasciito.h" />
     <ClInclude Include="..\source\text\brcodepage.h" />
     <ClInclude Include="..\source\text\brisolatin1.h" />

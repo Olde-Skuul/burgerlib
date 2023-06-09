@@ -15,7 +15,8 @@
 #include "brtick.h"
 
 #if defined(BURGER_MSDOS)
-#include "brdosextender.h"
+#include "msdos_interrupts.h"
+
 #include <conio.h>
 #include <dos.h>
 #include <stdlib.h>
@@ -209,15 +210,15 @@ void BURGER_API Burger::Tick::init(void) BURGER_NOEXCEPT
 
 		// Get old timer 0 Interrupt Service Routine
 		pThis->m_pPreviousINT8 =
-			static_cast<void(__interrupt __far*)()>(GetProtInt(8));
+			static_cast<void(__interrupt __far*)()>(MSDos::get_interrupt_protected(8));
 
-		pThis->m_uPreviousRealService = GetRealInt(8);
+		pThis->m_uPreviousRealService = MSDos::get_interrupt_real(8);
 
 		// Init the sound IRQ code
 		InitTimer8Irq();
 
 		// Set to my timer 0 ISR
-		SetBothInts(8, Timer8Irq);
+		MSDos::set_interrupt_both(8, Timer8Irq);
 		const uint32_t uStepUnits = 1192030UL / 60UL;
 
 		// Save the speed value
@@ -256,8 +257,8 @@ void BURGER_API Burger::Tick::shutdown(void) BURGER_NOEXCEPT
 		pThis->m_uStepUnits = 0x10000;
 
 		// Restore the vectors
-		SetRealInt(8, pThis->m_uPreviousRealService);
-		SetProtInt(8, pThis->m_pPreviousINT8);
+		MSDos::set_interrupt_real(8, pThis->m_uPreviousRealService);
+		MSDos::set_interrupt_protected(8, pThis->m_pPreviousINT8);
 		pThis->m_pPreviousINT8 = nullptr;
 		pThis->m_bInitialized = FALSE;
 	}

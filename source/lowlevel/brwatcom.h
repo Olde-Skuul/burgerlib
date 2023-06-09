@@ -21,40 +21,6 @@
 
 /* BEGIN */
 #if defined(BURGER_WATCOM) || defined(DOXYGEN)
-namespace Burger {
-
-struct Regs16_t {
-	/** 80x86 ax register */
-	uint16_t ax;
-
-	/** 80x86 bx register */
-	uint16_t bx;
-
-	/** 80x86 cx register */
-	uint16_t cx;
-
-	/** 80x86 dx register */
-	uint16_t dx;
-
-	/** 80x86 si register */
-	uint16_t si;
-
-	/** 80x86 di register */
-	uint16_t di;
-
-	/** 80x86 bp register */
-	uint16_t bp;
-
-	/** 80x86 ds segment register */
-	uint16_t ds;
-
-	/** 80x86 es segment register */
-	uint16_t es;
-
-	/** 80x86 flags register */
-	uint16_t flags;
-};
-}
 
 #if !defined(DOXYGEN)
 

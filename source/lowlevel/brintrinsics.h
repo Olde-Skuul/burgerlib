@@ -48,6 +48,9 @@ extern uint32_t __builtin_rev(uint32_t);
 extern int __cdecl _bswap(int);
 extern __int64 __cdecl _bswap64(__int64);
 
+#elif defined(BURGER_PS3)
+#include <ppu_intrinsics.h>
+
 #elif (defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_PPC)
 
 // clang-format off

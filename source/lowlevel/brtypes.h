@@ -510,8 +510,9 @@
 #error Unknown MSDOS extender, try using Dos4g
 #endif
 
-#elif defined(__NT__) || defined(_WINDOWS) || defined(__WIN32__) || defined(__WINDOWS__) || \
-	defined(__TOS_WIN__) || defined(_WIN32) || defined(_WIN64)
+#elif defined(__NT__) || defined(_WINDOWS) || defined(__WIN32__) || \
+	defined(__WINDOWS__) || defined(__TOS_WIN__) || defined(_WIN32) || \
+	defined(_WIN64)
 #if defined(BURGER_64BITCPU)
 #define BURGER_WIN64
 #define BURGER_PLATFORM_NAME "Microsoft Windows 64 bit"
@@ -1024,9 +1025,7 @@
 #define BURGER_EQUALS_DELETE
 #define BURGER_EQUALS_DEFAULT
 #define BURGER_DEFAULT_CONSTRUCTOR \
-	BURGER_NOEXCEPT \
-	{ \
-	}
+	BURGER_NOEXCEPT {}
 #define BURGER_DEFAULT_DESTRUCTOR \
 	{ \
 	}
@@ -1147,6 +1146,13 @@
 // Round a value up to the nearest power of 2
 #define BURGER_ROUNDUP(__value, __alignment) \
 	(((__value) + (__alignment)-1) & ~((__alignment)-1))
+
+// Suppress warnings in Visual Studio (VS2005 or higher)
+#if (BURGER_MSVC >= 140000000)
+#define BURGER_MSVC_SUPPRESS(__T) __pragma(warning(suppress : __T))
+#else
+#define BURGER_MSVC_SUPPRESS(__T)
+#endif
 
 // Macro to create copy constructors to disable the feature
 #if defined(BURGER_RVALUE_REFERENCES) || defined(DOXYGEN)
@@ -1377,98 +1383,6 @@ struct ulonglong_t {
 	}
 };
 }
-
-/***************************************
-
-	Vector data types and vector intrinsics
-
-***************************************/
-
-#if defined(BURGER_PS2) || defined(BURGER_PSP)
-typedef unsigned int Vector_128 __attribute__((mode(TI)));
-
-#elif defined(BURGER_PS3)
-#include <altivec.h>
-#include <ppu_intrinsics.h>
-#ifndef __VEC_TYPES_H__
-#include <vec_types.h>
-#endif
-typedef vec_float4 Vector_128;
-
-#elif defined(BURGER_PS4) || defined(BURGER_PS5)
-#ifndef __XMMINTRIN_H
-#include <xmmintrin.h>
-#endif
-typedef __m128 Vector_128;
-
-#elif defined(BURGER_INTEL) && \
-	(defined(BURGER_MSVC) || defined(BURGER_INTEL_COMPILER) || \
-		defined(BURGER_GNUC) || defined(BURGER_CLANG))
-#ifndef _INCLUDED_EMM
-#include <emmintrin.h>
-#endif
-typedef __m128 Vector_128;
-
-#elif defined(BURGER_XBOX360)
-#ifndef __PPCINTRINSICS_H__
-#include <ppcintrinsics.h>
-#endif
-#ifndef __VECTORINTRINSICS_H__
-#include <vectorintrinsics.h>
-#endif
-typedef __vector4 Vector_128;
-
-#elif defined(BURGER_METROWERKS) && defined(BURGER_X86)
-#ifndef _XMMINTRIN_H
-#include <xmmintrin.h>
-#endif
-typedef __m128 Vector_128;
-
-#elif defined(BURGER_DARWIN) && defined(BURGER_INTEL)
-#ifndef __EMMINTRIN_H
-#include <emmintrin.h>
-#endif
-typedef __m128 Vector_128;
-
-#elif defined(BURGER_ANDROID) || defined(BURGER_SWITCH)
-#ifndef __ARM_FP16_H
-#include <arm_fp16.h>
-#endif
-
-#ifndef __ARM_NEON_H
-#include <arm_neon.h>
-#endif
-typedef float32x4_t Vector_128;
-
-#elif defined(BURGER_WIIU)
-#include <ppc_ghs.h>
-#define __fsel __FSEL
-#define __lwarx __LWARX
-#define __stwcx __STWCX
-struct Vector_128 {
-	/** Opaque contents to the 128 bit vector register */
-	BURGER_ALIGN(float, m128_f32[4], 16);
-};
-
-#elif defined(BURGER_MINGW)
-#ifndef _XMMINTRIN_H_INCLUDED
-#include <xmmintrin.h>
-#endif
-typedef __m128 Vector_128;
-
-#else
-
-#if defined(BURGER_WATCOM)
-#ifndef _MMINTRIN_H_INCLUDED
-#include <mmintrin.h>
-#endif
-#endif
-
-struct Vector_128 {
-	/** Opaque contents to the 128 bit vector register */
-	BURGER_ALIGN(float, m128_f32[4], 16);
-};
-#endif
 
 /***************************************
 

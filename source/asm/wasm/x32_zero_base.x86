@@ -1,0 +1,41 @@
+;
+; Assembly code for X32 / Dos4GW compatibility
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+;
+; It is released under an MIT Open Source license. Please see LICENSE
+; for license details. Yes, you can use it in a
+; commercial title without paying anything, just give me a credit.
+; Please? It's not like I'm asking you for money!
+;
+
+;
+; Set to build 386 code for a flat memory model using the WATCOM WASM
+; assembler
+;
+
+	.386
+	.MODEL FLAT,SYSCALL
+
+;
+; These variables exist in the X32 dos extender, but not in
+; DOS4GW. Declare them here so code can assume they
+; exist when using either extender
+;
+
+	.DATA
+
+	IFDEF __DOS4G__
+
+	PUBLIC	__x32_zero_base_ptr
+	PUBLIC	__x32_zero_base_selector
+
+; DOS4GW maps directly, so the offset is always zero
+__x32_zero_base_ptr DD	0
+
+; DOS4GW uses the data segment
+__x32_zero_base_selector DW SEG _DATA
+
+	ENDIF
+
+	END

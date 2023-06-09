@@ -19,6 +19,10 @@
 #include "brtypes.h"
 #endif
 
+#ifndef __BRVECTORTYPES_H__
+#include "brvectortypes.h"
+#endif
+
 #ifndef __BRALGORITHM_H__
 #include "bralgorithm.h"
 #endif

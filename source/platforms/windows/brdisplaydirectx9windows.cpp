@@ -400,20 +400,26 @@ const \brief Get the adapter ordinal
 
 /*! ************************************
 
-	\fn const _D3DCAPS9* Burger::DisplayDirectX9::DeviceInfo::GetCaps(void)
-const \brief Obtain a pointer to the contained D3DCAPS9 structure
+	\fn const _D3DCAPS9* Burger::DisplayDirectX9::DeviceInfo::GetCaps(
+		void) const
+
+	\brief Obtain a pointer to the contained D3DCAPS9 structure
 
 	Use this accessor to query the D3DCAPS9 for this specific rendering device.
 
 	\note This is a read-only pointer by design. The contents are managed
-internally. \return Read-only pointer to the D3DCAP9 data in this structure.
+		internally.
+
+	\return Read-only pointer to the D3DCAP9 data in this structure.
 
 ***************************************/
 
 /*! ************************************
 
-	\fn uintptr_t Burger::DisplayDirectX9::DeviceInfo::GetBufferListSize(void)
-const \brief Get number of BufferFormatGroup entries stored in this class
+	\fn uintptr_t Burger::DisplayDirectX9::DeviceInfo::GetBufferListSize(
+		void) const
+
+	\brief Get number of BufferFormatGroup entries stored in this class
 
 	\return The size of the BufferFormatGroup list in entries.
 	\sa GetBufferList(void) const
@@ -422,9 +428,10 @@ const \brief Get number of BufferFormatGroup entries stored in this class
 
 /*! ************************************
 
-	\fn BufferFormatGroup * const *
-Burger::DisplayDirectX9::DeviceInfo::GetBufferList(void) const \brief Get the
-pointer to the base of the BufferFormatGroup * array
+	\fn BufferFormatGroup* const*Burger::DisplayDirectX9::DeviceInfo:: \
+		GetBufferList(void) const
+
+	\brief Get the pointer to the base of the BufferFormatGroup * array
 
 	\return A pointer to an array of BufferFormatGroup * entries
 	\sa GetBufferListSize(void) const
@@ -454,7 +461,7 @@ void BURGER_API Burger::DisplayDirectX9::DeviceInfo::AddToList(
 	\brief Search for a BufferFormatGroup
 
 	Given an adapter driver format, a back buffer format and if it's windowed,
-locate the BufferFormatGroup that matches the criteria.
+	locate the BufferFormatGroup that matches the criteria.
 
 	\param uAdapterFormat Hardware/Software format
 	\param uBackBufferFormat D3DFORMAT of the back buffer
@@ -552,9 +559,10 @@ Burger::DisplayDirectX9::AdapterInfo::~AdapterInfo()
 
 /*! ************************************
 
-	\fn const _D3DADAPTER_IDENTIFIER9
-*Burger::DisplayDirectX9::AdapterInfo::GetAdapterIdentifier(void) const \brief
-Get pointer to D3DADAPTER_IDENTIFIER9 record for this adapter
+	\fn const _D3DADAPTER_IDENTIFIER9* Burger::DisplayDirectX9::AdapterInfo:: \
+		GetAdapterIdentifier(void) const
+
+	\brief Get pointer to D3DADAPTER_IDENTIFIER9 record for this adapter
 
 	\windowsonly
 	\return Pointer to the contained D3DADAPTER_IDENTIFIER9 structure
@@ -563,8 +571,10 @@ Get pointer to D3DADAPTER_IDENTIFIER9 record for this adapter
 
 /*! ************************************
 
-	\fn uint_t Burger::DisplayDirectX9::AdapterInfo::GetAdapterOrdinal(void)
-const \brief Get ordinal index for the adapter this class describes
+	\fn uint_t Burger::DisplayDirectX9::AdapterInfo::GetAdapterOrdinal(
+		void) const
+
+	\brief Get ordinal index for the adapter this class describes
 
 	\windowsonly
 	\return Adapter ordinal index
@@ -573,25 +583,31 @@ const \brief Get ordinal index for the adapter this class describes
 
 /*! ************************************
 
-	\fn uintptr_t
-Burger::DisplayDirectX9::AdapterInfo::GetDisplayModeListSize(void) const \brief
-Get number of entries in the display mode list
+	\fn uintptr_t Burger::DisplayDirectX9::AdapterInfo::GetDisplayModeListSize(
+		void) const
+
+	\brief Get number of entries in the display mode list
 
 	\windowsonly
 	\return Number of entries in the display mode list, zero means the list is
-empty. \sa GetDisplayModeList(void) const
+		empty.
+
+	\sa GetDisplayModeList(void) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn const DisplayMode_t *
-Burger::DisplayDirectX9::AdapterInfo::GetDisplayModeList(void) const \brief Get
-the pointer to the base of the DisplayMode_t array
+	\fn const DisplayMode_t *Burger::DisplayDirectX9::AdapterInfo:: \
+		GetDisplayModeList(void) const
+
+	\brief Get the pointer to the base of the DisplayMode_t array
 
 	\windowsonly
-	\return Pointer to the DisplayMode_t array, it can be \ref NULL if the array
-is empty. \sa GetDisplayModeListSize(void) const
+	\return Pointer to the DisplayMode_t array, it can be \ref nullptr if the
+		array is empty.
+
+	\sa GetDisplayModeListSize(void) const
 
 ***************************************/
 
@@ -615,25 +631,29 @@ void BURGER_API Burger::DisplayDirectX9::AdapterInfo::AddToList(
 
 /*! ************************************
 
-	\fn uintptr_t
-Burger::DisplayDirectX9::AdapterInfo::GetDisplayInfoListSize(void) const \brief
-Get number of entries in the display info list
+	\fn uintptr_t Burger::DisplayDirectX9::AdapterInfo::GetDisplayInfoListSize(
+		void) const
+
+	\brief Get number of entries in the display info list
 
 	\windowsonly
 	\return Number of entries in the display info list, zero means the list is
-empty. \sa GetDisplayInfoList(void) const
+		empty.
+	\sa GetDisplayInfoList(void) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn const DeviceInfo *
-Burger::DisplayDirectX9::AdapterInfo::GetDisplayInfoList(void) const \brief Get
-the pointer to the base of the DeviceInfo * array
+	\fn const DeviceInfo *Burger::DisplayDirectX9::AdapterInfo:: \
+		GetDisplayInfoList(void) const
+
+	\brief Get the pointer to the base of the DeviceInfo * array
 
 	\windowsonly
-	\return Pointer to the DeviceInfo * array, it can be \ref NULL if the array
-is empty. \sa GetDisplayInfoListSize(void) const
+	\return Pointer to the DeviceInfo * array, it can be \ref nullptr if the
+		array is empty.
+	\sa GetDisplayInfoListSize(void) const
 
 ***************************************/
 
@@ -646,7 +666,7 @@ is empty. \sa GetDisplayInfoListSize(void) const
 
 	\windowsonly
 	\param pDisplayInfo Pointer to the DeviceInfo to take ownership and append
-to the pointer array.
+		to the pointer array.
 
 ***************************************/
 
@@ -660,12 +680,12 @@ void BURGER_API Burger::DisplayDirectX9::AdapterInfo::AddToList(
 
 	\brief Find a DeviceInfo * in the list.
 
-	Iterate over the DeviceInfo pointer array and return
-	the entry that matches the passed device type.
+	Iterate over the DeviceInfo pointer array and return the entry that matches
+	the passed device type.
 
 	\windowsonly
 	\param uDeviceType Type of device to locate
-	\return Pointer to the located DeviceInfo or \ref NULL if not found.
+	\return Pointer to the located DeviceInfo or \ref nullptr if not found.
 
 ***************************************/
 
@@ -720,7 +740,7 @@ Burger::DisplayDirectX9::AdapterInfo::Find(uint_t uDeviceType) const
 
 	\struct Burger::DisplayDirectX9::BufferFormatGroup::DSMSConflict_t
 	\brief Structure to describe incompatible D3DFORMAT / D3DMULTISAMPLE_TYPE
-pairs
+		pairs
 
 	\windowsonly
 
@@ -767,8 +787,9 @@ Burger::DisplayDirectX9::BufferFormatGroup::~BufferFormatGroup() {}
 
 /*! ************************************
 
-	\fn void Burger::DisplayDirectX9::BufferFormatGroup::SetParent(const
-AdapterInfo *pAdapterInfo) \brief Set the parent AdapterInfo pointer
+	\fn void Burger::DisplayDirectX9::BufferFormatGroup::SetParent(
+		const AdapterInfo *pAdapterInfo)
+	\brief Set the parent AdapterInfo pointer
 
 	\param pAdapterInfo Pointer to the parent AdapterInfo
 	\sa GetAdapterInfo(void) const
@@ -777,9 +798,10 @@ AdapterInfo *pAdapterInfo) \brief Set the parent AdapterInfo pointer
 
 /*! ************************************
 
-	\fn const AdapterInfo *
-Burger::DisplayDirectX9::BufferFormatGroup::GetAdapterInfo(void) const \brief
-Get the parent AdapterInfo pointer
+	\fn const AdapterInfo *Burger::DisplayDirectX9::BufferFormatGroup:: \
+		GetAdapterInfo(void) const
+
+	\brief Get the parent AdapterInfo pointer
 
 	\return Pointer to the parent AdapterInfo
 	\sa SetParent(const AdapterInfo *)
@@ -788,8 +810,9 @@ Get the parent AdapterInfo pointer
 
 /*! ************************************
 
-	\fn void Burger::DisplayDirectX9::BufferFormatGroup::SetParent(const
-DeviceInfo *pDeviceInfo) \brief Set the parent DeviceInfo pointer
+	\fn void Burger::DisplayDirectX9::BufferFormatGroup::SetParent(
+		const DeviceInfo *pDeviceInfo)
+	\brief Set the parent DeviceInfo pointer
 
 	\param pDeviceInfo Pointer to the parent DeviceInfo
 	\sa GetDeviceInfo(void) const
@@ -798,9 +821,10 @@ DeviceInfo *pDeviceInfo) \brief Set the parent DeviceInfo pointer
 
 /*! ************************************
 
-	\fn const DeviceInfo *
-Burger::DisplayDirectX9::BufferFormatGroup::GetDeviceInfo(void) const \brief Get
-the parent DeviceInfo pointer
+	\fn const DeviceInfo* Burger::DisplayDirectX9::BufferFormatGroup:: \
+		GetDeviceInfo(void) const
+
+	\brief Get the parent DeviceInfo pointer
 
 	\return Pointer to the parent DeviceInfo
 	\sa SetParent(const DeviceInfo *)
@@ -809,9 +833,9 @@ the parent DeviceInfo pointer
 
 /*! ************************************
 
-	\fn uint_t
-Burger::DisplayDirectX9::BufferFormatGroup::GetAdapterOrdinal(void) const \brief
-Get the adapter ordinal value
+	\fn uint_t Burger::DisplayDirectX9::BufferFormatGroup::GetAdapterOrdinal(
+		void) const
+	\brief Get the adapter ordinal value
 
 	\return The ordinal value index for the display adapter
 
@@ -819,8 +843,10 @@ Get the adapter ordinal value
 
 /*! ************************************
 
-	\fn uint_t Burger::DisplayDirectX9::BufferFormatGroup::GetDeviceType(void)
-const \brief Get the device driver type
+	\fn uint_t Burger::DisplayDirectX9::BufferFormatGroup::GetDeviceType(
+		void) const
+
+	\brief Get the device driver type
 
 	\return The D3DDEVTYPE device type for the buffer group
 
@@ -828,9 +854,10 @@ const \brief Get the device driver type
 
 /*! ************************************
 
-	\fn uint_t
-Burger::DisplayDirectX9::BufferFormatGroup::GetAdapterFormat(void) const \brief
-Get the pixel format of the device adapter
+	\fn uint_t Burger::DisplayDirectX9::BufferFormatGroup::GetAdapterFormat(
+		void) const
+
+	\brief Get the pixel format of the device adapter
 
 	\return The D3DFORMAT of the pixel type for the adapter screen
 
@@ -838,8 +865,9 @@ Get the pixel format of the device adapter
 
 /*! ************************************
 
-	\fn uint_t
-Burger::DisplayDirectX9::BufferFormatGroup::GetBackBufferFormat(void) const
+	\fn uint_t Burger::DisplayDirectX9::BufferFormatGroup::GetBackBufferFormat(
+		void) const
+
 	\brief Get the pixel format of the back buffer for the driver
 
 	\return The D3DFORMAT of the pixel type for the back buffer
@@ -848,20 +876,22 @@ Burger::DisplayDirectX9::BufferFormatGroup::GetBackBufferFormat(void) const
 
 /*! ************************************
 
-	\fn uint_t Burger::DisplayDirectX9::BufferFormatGroup::IsWindowed(void)
-const \brief \ref TRUE if the driver is for a window, \ref FALSE for full
-screen.
+	\fn uint_t Burger::DisplayDirectX9::BufferFormatGroup::IsWindowed(
+		void) const
+
+	\brief \ref TRUE if the driver is for a window, \ref FALSE for full screen.
 
 	\return The boolean value if the buffer is intended for a window or a full
-screen context.
+		screen context.
 
 ***************************************/
 
 /*! ************************************
 
-	\fn uintptr_t
-Burger::DisplayDirectX9::BufferFormatGroup::GetMultiSampleQualityListSize(void)
-const \brief Number of entries in the multisample quality list.
+	\fn uintptr_t Burger::DisplayDirectX9::BufferFormatGroup:: \
+		GetMultiSampleQualityListSize(void) const
+
+	\brief Number of entries in the multisample quality list.
 
 	\return Zero if the list is empty or the number of entries in the list.
 	\sa GetMultiSampleQualityList(void) const
@@ -870,12 +900,15 @@ const \brief Number of entries in the multisample quality list.
 
 /*! ************************************
 
-	\fn const MSQuality_t *
-Burger::DisplayDirectX9::BufferFormatGroup::GetMultiSampleQualityList(void)
-const \brief Get the base pointer to the multisample maximum quality list
+	\fn const MSQuality_t * Burger::DisplayDirectX9::BufferFormatGroup:: \
+		GetMultiSampleQualityList(void) const
+
+	\brief Get the base pointer to the multisample maximum quality list
 
 	\return The base pointer to the quality list and it's possible to be \ref
-NULL if the list is empty. \sa GetMultiSampleQualityListSize(void) const
+		nullptr if the list is empty.
+
+	\sa GetMultiSampleQualityListSize(void) const
 
 ***************************************/
 
@@ -888,7 +921,7 @@ NULL if the list is empty. \sa GetMultiSampleQualityListSize(void) const
 	incompatible pairs.
 
 	\param pDirect3D9 Pointer to the Direct3D9 instance the device is attached
-to.
+		to.
 
 ***************************************/
 
@@ -930,8 +963,10 @@ void BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::CreateConflictList(
 	internal depth/stencil format list.
 
 	\param pDirect3D9 Pointer to the Direct3D9 instance the device is attached
-to. \param pPossibleList Pointer to the array of possible depth / stencil
-combinations.
+		to.
+
+	\param pPossibleList Pointer to the array of possible depth / stencil
+		combinations.
 
 ***************************************/
 
@@ -1013,7 +1048,9 @@ Burger::DisplayDirectX9::BufferFormatGroup::CreatePresentIntervalList(
 	\brief Enumerate DirectX 9 multi-sample types for the device
 
 	\param pDirect3D9 Pointer to the Direct3D9 instance the device is attached
-to. \param pPossibleList Pointer to the array of possible multisample settings
+		to.
+
+	\param pPossibleList Pointer to the array of possible multisample settings
 	\param uMaxQuality Maximum quality allowed during enumeration
 
 ***************************************/
@@ -1061,8 +1098,9 @@ Burger::DisplayDirectX9::BufferFormatGroup::CreateMultiSampleTypeList(
 
 	\param uDSFormat Depth/stencil pixel format
 	\param uMSType Multisample data type
+
 	\return \ref TRUE if the pair is not supported, \ref FALSE if there is no
-conflict.
+		conflict.
 
 ***************************************/
 
@@ -1092,12 +1130,15 @@ uint_t BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::IsConflicted(
 
 	Returns a ranking number that describes how closely this device
 	combo matches the optimal combo based on the match options and the optimal
-device settings
+	device settings
 
 	\param pOptimalDeviceSettings Pointer to the format requested
 	\param pAdapterDesktopDisplayMode Pointer to DirectX 9 display mode to test
-against \param pBestModeIndex Pointer to best found mode index \param
-pBestMSAAIndex Pointer to best anti-aliasing index
+		against
+
+	\param pBestModeIndex Pointer to best found mode index
+
+	\param pBestMSAAIndex Pointer to best anti-aliasing index
 
 	\return 0.0f for no match, with a higher value for closest match
 
@@ -1324,9 +1365,9 @@ float BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::RankDevice(
 ***************************************/
 
 Burger::DisplayDirectX9::Enumerator::Enumerator():
-	m_pD3D(NULL),
-	m_pIsDeviceAcceptableFunc(NULL),
-	m_pIsDeviceAcceptableFuncData(NULL),
+	m_pD3D(nullptr),
+	m_pIsDeviceAcceptableFunc(nullptr),
+	m_pIsDeviceAcceptableFuncData(nullptr),
 	m_DepthStencilPossibleList(),
 	m_MultiSampleTypeList(),
 	m_PresentIntervalList(),
@@ -1365,17 +1406,18 @@ Burger::DisplayDirectX9::Enumerator::~Enumerator()
 
 /*! ************************************
 
-	\fn void
-Burger::DisplayDirectX9::Enumerator::SetRequirePostPixelShaderBlending(uint_t
-bRequire) \brief Set the flag making shaders a requirement
+	\fn void Burger::DisplayDirectX9::Enumerator:: \
+		SetRequirePostPixelShaderBlending(uint_t bRequire)
+
+	\brief Set the flag making shaders a requirement
 
 	If support for post pixel blending is required, call this function with \ref
-TRUE before calling Enumerate(). If no post pixel blending is required (Usually
-for applications that are pure software rendering), call this function with \ref
-FALSE
+	TRUE before calling Enumerate(). If no post pixel blending is required
+	(Usually for applications that are pure software rendering), call this
+	function with \ref FALSE
 
 	\param bRequire \ref FALSE for software rendering, \ref TRUE for shader
-rendering
+		rendering
 
 	\sa Enumerate(IDirect3D9 *,IsDeviceOkayProc,void *)
 
@@ -1383,12 +1425,13 @@ rendering
 
 /*! ************************************
 
-	\fn void Burger::DisplayDirectX9::Enumerator::SetResolutionMinMax(uint_t
-uMinWidth,uint_t uMinHeight,uint_t uMaxWidth,uint_t uMaxHeight) \brief Set the
-minimum and maximum acceptable resolutions
+	\fn void Burger::DisplayDirectX9::Enumerator::SetResolutionMinMax(
+		uint_t uMinWidth,uint_t uMinHeight,uint_t uMaxWidth,uint_t uMaxHeight)
+
+	\brief Set the minimum and maximum acceptable resolutions
 
 	If only certain display resolutions are acceptable, call this function with
-the minimum and maximum settings.
+	the minimum and maximum settings.
 
 	\param uMinWidth Minimum acceptable width
 	\param uMinHeight Minimum acceptable height
@@ -1401,11 +1444,13 @@ the minimum and maximum settings.
 
 /*! ************************************
 
-	\fn void Burger::DisplayDirectX9::Enumerator::SetRefreshMinMax(uint_t
-uMin,uint_t uMax) \brief Set the minimum and maximum acceptable refresh rates
+	\fn void Burger::DisplayDirectX9::Enumerator::SetRefreshMinMax(
+		uint_t uMin, uint_t uMax)
+
+	\brief Set the minimum and maximum acceptable refresh rates
 
 	If only certain display refresh rates are acceptable, call this function
-with the minimum and maximum settings.
+	with the minimum and maximum settings.
 
 	\param uMin Minimum acceptable refresh rate
 	\param uMax Minimum acceptable refresh rate
@@ -1416,12 +1461,12 @@ with the minimum and maximum settings.
 
 /*! ************************************
 
-	\fn void
-Burger::DisplayDirectX9::Enumerator::SetMultisampleQualityMax(uint_t uMax)
+	\fn void Burger::DisplayDirectX9::Enumerator::SetMultisampleQualityMax(
+		uint_t uMax)
 	\brief Set the maximum acceptable anti-aliasing quality
 
 	For performance, the maximum anti-aliasing quality can be clamped to a
-maximum, 0 disables the use of anti-aliasing.
+	maximum, 0 disables the use of anti-aliasing.
 
 	\param uMax Minimum acceptable anti-aliasing quality
 
@@ -1431,75 +1476,81 @@ maximum, 0 disables the use of anti-aliasing.
 
 /*! ************************************
 
-	\fn void
-Burger::DisplayDirectX9::Enumerator::SetSoftwareVertexProcessingFlag(uint_t
-bSoftwareVP) \brief Allow software vertex processed devices
+	\fn void Burger::DisplayDirectX9::Enumerator:: \
+		SetSoftwareVertexProcessingFlag(uint_t bSoftwareVP)
+
+	\brief Allow software vertex processed devices
 
 	If this function is called with \ref TRUE, enable the use of software vertex
-processed video device drivers. \ref FALSE to disable them.
+	processed video device drivers. \ref FALSE to disable them.
 
 	\param bSoftwareVP \ref TRUE to enable software vertex processing devices,
-\ref FALSE to disable.
+		\ref FALSE to disable.
 
 	\sa Enumerate(IDirect3D9 *,IsDeviceOkayProc,void *),
-SetHardwareVertexProcessingFlag(uint_t),
-SetPureHarewareVertexProcessingFlag(uint_t), or
-	SetMixedVertexProcessingFlag(uint_t)
+		SetHardwareVertexProcessingFlag(uint_t),
+		SetPureHarewareVertexProcessingFlag(uint_t), or
+		SetMixedVertexProcessingFlag(uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void
-Burger::DisplayDirectX9::Enumerator::SetHardwareVertexProcessingFlag(uint_t
-bHardwareVP) \brief Allow hardware vertex processed devices
+	\fn void Burger::DisplayDirectX9::Enumerator:: \
+		SetHardwareVertexProcessingFlag(uint_t bHardwareVP)
+
+	\brief Allow hardware vertex processed devices
 
 	If this function is called with \ref TRUE, enable the use of hardware vertex
-processed video device drivers. \ref FALSE to disable them.
+	processed video device drivers. \ref FALSE to disable them.
 
 	\param bHardwareVP \ref TRUE to enable hardware vertex processing devices,
-\ref FALSE to disable.
+		\ref FALSE to disable.
 
 	\sa Enumerate(IDirect3D9 *,IsDeviceOkayProc,void *),
-SetSoftwareVertexProcessingFlag(uint_t),
-SetPureHarewareVertexProcessingFlag(uint_t), or
-	SetMixedVertexProcessingFlag(uint_t)
+		SetSoftwareVertexProcessingFlag(uint_t),
+		SetPureHarewareVertexProcessingFlag(uint_t), or
+		SetMixedVertexProcessingFlag(uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void
-Burger::DisplayDirectX9::Enumerator::SetPureHarewareVertexProcessingFlag(uint_t
-bPureHarewareVP) \brief Allow GPU vertex processed devices
+	\fn void Burger::DisplayDirectX9::Enumerator:: \
+		SetPureHarewareVertexProcessingFlag(uint_t bPureHarewareVP)
+
+	\brief Allow GPU vertex processed devices
 
 	If this function is called with \ref TRUE, enable the use of GPU vertex
-processed video device drivers. \ref FALSE to disable them.
+	processed video device drivers. \ref FALSE to disable them.
 
 	\param bPureHarewareVP \ref TRUE to enable GPU vertex processing devices,
-\ref FALSE to disable.
+		\ref FALSE to disable.
 
 	\sa Enumerate(IDirect3D9 *,IsDeviceOkayProc,void *),
-SetSoftwareVertexProcessingFlag(uint_t),
-SetHardwareVertexProcessingFlag(uint_t), or SetMixedVertexProcessingFlag(uint_t)
+		SetSoftwareVertexProcessingFlag(uint_t),
+		SetHardwareVertexProcessingFlag(uint_t), or
+		SetMixedVertexProcessingFlag(uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void
-Burger::DisplayDirectX9::Enumerator::SetMixedVertexProcessingFlag(uint_t
-bMixedVP) \brief Allow mixed hardware / software vertex processed devices
+	\fn void Burger::DisplayDirectX9::Enumerator:: \
+		SetMixedVertexProcessingFlag(uint_t bMixedVP)
+
+	\brief Allow mixed hardware / software vertex processed devices
 
 	If this function is called with \ref TRUE, enable the use of mixed hardware
-/ software vertex processed video device drivers. \ref FALSE to disable them.
+	/ software vertex processed video device drivers. \ref FALSE to disable
+them.
 
 	\param bMixedVP \ref TRUE to enable mixed hardware / software vertex
-processing devices, \ref FALSE to disable.
+		processing devices, \ref FALSE to disable.
 
 	\sa Enumerate(IDirect3D9 *,IsDeviceOkayProc,void *),
-SetSoftwareVertexProcessingFlag(uint_t),
-SetHardwareVertexProcessingFlag(uint_t), or
+		SetSoftwareVertexProcessingFlag(uint_t),
+		SetHardwareVertexProcessingFlag(uint_t), or
 		SetPureHarewareVertexProcessingFlag(uint_t)
 
 ***************************************/
@@ -1507,7 +1558,9 @@ SetHardwareVertexProcessingFlag(uint_t), or
 /*! ************************************
 
 	\fn uint_t
-Burger::DisplayDirectX9::Enumerator::GetSoftwareVertexProcessingFlag(void) const
+Burger::DisplayDirectX9::Enumerator::GetSoftwareVertexProcessingFlag( void)
+const
+
 	\brief Was software vertex processed devices allowed?
 
 	\return \ref TRUE if software vertex rendering devices are allowed.
@@ -1551,77 +1604,79 @@ GetMixedVertexProcessingFlag(void) const
 
 /*! ************************************
 
-	\fn uint_t
-Burger::DisplayDirectX9::Enumerator::GetMixedVertexProcessingFlag(void) const
+	\fn uint_t Burger::DisplayDirectX9::Enumerator:: \
+		GetMixedVertexProcessingFlag(void) const
+
 	\brief Was mixed hardware / software vertex processed devices allowed?
 
 	\return \ref TRUE if mixed hardware / software vertex rendering devices are
-allowed.
+		allowed.
 
 	\sa Enumerate(IDirect3D9 *,IsDeviceOkayProc,void *),
-GetSoftwareVertexProcessingFlag(void) const,
+		GetSoftwareVertexProcessingFlag(void) const,
 		GetHardwareVertexProcessingFlag(void) const, or
-GetPureHarewareVertexProcessingFlag(void) const
+		GetPureHarewareVertexProcessingFlag(void) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn const SimpleArray<uint_t>*
-Burger::DisplayDirectX9::Enumerator::GetPossibleDepthStencilFormatList(void)
-const \brief Return the list of depth/stencil buffer formats supported
+	\fn const SimpleArray<uint_t>* Burger::DisplayDirectX9::Enumerator:: \
+		GetPossibleDepthStencilFormatList(void) const
+
+	\brief Return the list of depth/stencil buffer formats supported
 
 	After Enumerate(IDirect3D9 *,IsDeviceOkayProc,void *) is called, a list of
-supported depth / stencil buffer formats is generated. It is not guaranteed that
-a specific depth / stencil is available for specific back buffer formats. If the
-format is not in this list, the device cannot render in that format. The values
-contained are DirectX 9 D3DFORMAT entries.
+	supported depth / stencil buffer formats is generated. It is not guaranteed
+	that a specific depth / stencil is available for specific back buffer
+	formats. If the format is not in this list, the device cannot render in that
+	format. The values contained are DirectX 9 D3DFORMAT entries.
 
 	\return Pointer to the list for depth / stencil formats in D3DFORMAT values.
 
 	\sa Enumerate(IDirect3D9 *,IsDeviceOkayProc,void *),
-GetPossibleMultisampleTypeList(void) const, or
+		GetPossibleMultisampleTypeList(void) const, or
 		GetPossiblePresentIntervalList(void) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn const SimpleArray<uint_t>*
-Burger::DisplayDirectX9::Enumerator::GetPossibleMultisampleTypeList(void) const
+	\fn const SimpleArray<uint_t>* Burger::DisplayDirectX9::Enumerator:: \
+		GetPossibleMultisampleTypeList(void) const
 	\brief Return the list of multi-sample buffer types available
 
 	After Enumerate(IDirect3D9 *,IsDeviceOkayProc,void *) is called, a list of
-multi-sample buffer types is generated. It is not guaranteed that a specific
-multi-sample buffer type is available for specific back buffer formats. If the
-buffer type is not in this list, the device cannot be set to that type. The
-values contained are DirectX 9 D3DMULTISAMPLE_TYPE entries.
+	multi-sample buffer types is generated. It is not guaranteed that a specific
+	multi-sample buffer type is available for specific back buffer formats. If
+	the buffer type is not in this list, the device cannot be set to that type.
+	The values contained are DirectX 9 D3DMULTISAMPLE_TYPE entries.
 
 	\return Pointer to the list for multi-sample buffer types in
-D3DMULTISAMPLE_TYPE values.
+		D3DMULTISAMPLE_TYPE values.
 
 	\sa Enumerate(IDirect3D9 *,IsDeviceOkayProc,void *),
-GetPossibleDepthStencilFormatList(void) const, or
+		GetPossibleDepthStencilFormatList(void) const, or
 		GetPossiblePresentIntervalList(void) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn const SimpleArray<uint_t>*
-Burger::DisplayDirectX9::Enumerator::GetPossiblePresentIntervalList(void) const
+	\fn const SimpleArray<uint_t>* Burger::DisplayDirectX9::Enumerator:: \
+		GetPossiblePresentIntervalList(void) const
 	\brief Return the list of presentation flags available
 
 	After Enumerate(IDirect3D9 *,IsDeviceOkayProc,void *) is called, a list of
-presentation flags is generated. If the presentation flag is not in this list,
-the device cannot be set to that type. The values contained are DirectX 9
-D3DPRESENT_INTERVAL_* flags.
+	presentation flags is generated. If the presentation flag is not in this
+	list, the device cannot be set to that type. The values contained are
+	DirectX 9 D3DPRESENT_INTERVAL_* flags.
 
 	\return Pointer to the list for presentation flags in D3DPRESENT_INTERVAL_*
-values.
+		values.
 
 	\sa Enumerate(IDirect3D9 *,IsDeviceOkayProc,void *),
-GetPossibleDepthStencilFormatList(void) const, or
+		GetPossibleDepthStencilFormatList(void) const, or
 		GetPossibleMultisampleTypeList(void) const
 
 ***************************************/
@@ -1729,10 +1784,10 @@ Burger::DisplayDirectX9::Enumerator::ResetPossiblePresentIntervalList(void)
 	\brief \ref TRUE if video devices were scanned
 
 	After Enumerate(IDirect3D9 *,IsDeviceOkayProc,void *) is called, this flag
-is set.
+	is set.
 
 	\return \ref TRUE if Enumerate(IDirect3D9 *,IsDeviceOkayProc,void *) was
-called.
+		called.
 
 	\sa Enumerate(IDirect3D9 *,IsDeviceOkayProc,void *)
 
@@ -1740,9 +1795,10 @@ called.
 
 /*! ************************************
 
-	\fn const SimpleArray<AdapterInfo*> *
-Burger::DisplayDirectX9::Enumerator::GetAdapterInfoList(void) const \brief
-Return the pointer to the list of adapters
+	\fn const SimpleArray<AdapterInfo*> * Burger::DisplayDirectX9:: \
+		Enumerator::GetAdapterInfoList(void) const
+
+	\brief Return the pointer to the list of adapters
 
 	\return Pointer to a list of pointers to AdapterInfo
 
@@ -1754,8 +1810,8 @@ Return the pointer to the list of adapters
 
 	\param uAdapterOrdinal Ordinal value for a specific display device.
 
-	\return Pointer to a AdapterInfo for the found device or \ref NULL if not
-found
+	\return Pointer to a AdapterInfo for the found device or \ref nullptr if not
+		found
 
 ***************************************/
 
@@ -1786,8 +1842,8 @@ Burger::DisplayDirectX9::Enumerator::GetAdapterInfo(
 	\param uAdapterOrdinal Ordinal value for a specific display device.
 	\param uDeviceType D3DDEVTYPE value for the specific device type
 
-	\return Pointer to a DeviceInfo for the found device or \ref NULL if not
-found
+	\return Pointer to a DeviceInfo for the found device or \ref nullptr if not
+		found
 
 ***************************************/
 
@@ -1814,11 +1870,13 @@ Burger::DisplayDirectX9::Enumerator::GetDeviceInfo(
 	\param uAdapterOrdinal Ordinal value for a specific display device.
 	\param uDeviceType D3DDEVTYPE value for the specific device type
 	\param uAdapterFormat D3DFORMAT value for the pixel format of the main
-buffer \param uBackBufferFormat D3DFORMAT value for the pixel format of the back
-buffer \param bWindowed \ref TRUE if the format is available for a window.
+		buffer
+	\param uBackBufferFormat D3DFORMAT value for the pixel format of the back
+		buffer
+	\param bWindowed \ref TRUE if the format is available for a window.
 
 	\return Pointer to a BufferFormatGroup for the found pixel buffer or \ref
-NULL if not found
+		NULL if not found
 
 ***************************************/
 
@@ -1838,20 +1896,21 @@ Burger::DisplayDirectX9::Enumerator::GetBufferFormatGroup(
 
 /*! ************************************
 
-	\fn Burger::DisplayDirectX9::BufferFormatGroup
-*Burger::DisplayDirectX9::Enumerator::GetBufferFormatGroup(const
-DeviceSettings_t *pDeviceSettings); \brief Return the pointer to a specific
-video buffer format group
+	\fn Burger::DisplayDirectX9::BufferFormatGroup* Burger::DisplayDirectX9:: \
+		Enumerator::GetBufferFormatGroup(
+		const DeviceSettings_t* pDeviceSettings)
+
+	\brief Return the pointer to a specific video buffer format group
 
 	Given a requested buffer format and window/full screen flag, locate
-	if this buffer format is available, and return \ref NULL if not
+	if this buffer format is available, and return \ref nullptr if not
 	found or a valid pointer if located.
 
 	\param pDeviceSettings Pointer to a DeviceSettings_t buffer that describes a
-requested video mode.
+		requested video mode.
 
 	\return Pointer to a BufferFormatGroup for the found pixel buffer or \ref
-NULL if not found
+		nullptr if not found
 
 ***************************************/
 
@@ -1905,9 +1964,10 @@ static int QSORT_API QSortModesFunc(const void* pData1, const void* pData2)
 	Given a DirectX 9 device, scan every device mode and enumerate them
 
 	\param pD3D9 Pointer to a DirectX 9 device
-	\param pIsDeviceOkayFunc Pointer to a filter function, \ref NULL disables
-callback filtering \param pData Pointer to a data pointer for the filter
-function
+	\param pIsDeviceOkayFunc Pointer to a filter function, \ref nullptr disables
+		callback filtering
+
+	\param pData Pointer to a data pointer for the filter function
 
 	\return Positive value on success, negative on failure
 
@@ -2857,8 +2917,8 @@ IDirect3DPixelShader9* BURGER_API Burger::DisplayDirectX9::CreatePixelShader(
 
 /*! ************************************
 
-	\fn const D3DSURFACE_DESC
-*Burger::DisplayDirectX9::GetBackBufferSurfaceDesc9(void) const
+	\fn const D3DSURFACE_DESC *Burger::DisplayDirectX9:: \
+		GetBackBufferSurfaceDesc9(void) const
 
 	\brief Return the pointer to a D3DSURFACE_DESC for the current device
 

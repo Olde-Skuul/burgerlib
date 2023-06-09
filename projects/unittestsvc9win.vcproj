@@ -772,22 +772,6 @@
 				RelativePath="..\source\templateburgerbase.h"
 				>
 			</File>
-			<File
-				RelativePath="..\source\templatelinux.h"
-				>
-			</File>
-			<File
-				RelativePath="..\source\templatemac.h"
-				>
-			</File>
-			<File
-				RelativePath="..\source\templateunix.h"
-				>
-			</File>
-			<File
-				RelativePath="..\source\templatewindows.h"
-				>
-			</File>
 			<Filter
 				Name="ansi"
 				>
@@ -3364,6 +3348,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\source\lowlevel\brvectortypes.h"
+					>
+				</File>
+				<File
 					RelativePath="..\source\lowlevel\brvisualstudio.h"
 					>
 				</File>
@@ -3821,6 +3809,10 @@
 								TargetProfile="8"
 							/>
 						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\templatewindows.h"
+						>
 					</File>
 					<File
 						RelativePath="..\source\platforms\windows\win_d3d11.cpp"

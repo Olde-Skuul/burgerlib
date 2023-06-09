@@ -3360,6 +3360,13 @@
 				</FILE>
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brvectortypes.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS></FILEFLAGS>
+				</FILE>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brvertexbuffer.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 					<FILEKIND>Text</FILEKIND>
@@ -3543,27 +3550,6 @@
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>templateburgerbase.h</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-					<FILEKIND>Text</FILEKIND>
-					<FILEFLAGS></FILEFLAGS>
-				</FILE>
-				<FILE>
-					<PATHTYPE>Name</PATHTYPE>
-					<PATH>templatelinux.h</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-					<FILEKIND>Text</FILEKIND>
-					<FILEFLAGS></FILEFLAGS>
-				</FILE>
-				<FILE>
-					<PATHTYPE>Name</PATHTYPE>
-					<PATH>templatemac.h</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-					<FILEKIND>Text</FILEKIND>
-					<FILEFLAGS></FILEFLAGS>
-				</FILE>
-				<FILE>
-					<PATHTYPE>Name</PATHTYPE>
-					<PATH>templateunix.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 					<FILEKIND>Text</FILEKIND>
 					<FILEFLAGS></FILEFLAGS>
@@ -6036,6 +6022,11 @@
 				</FILEREF>
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brvectortypes.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brvertexbuffer.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
@@ -6167,21 +6158,6 @@
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>templateburgerbase.h</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-				</FILEREF>
-				<FILEREF>
-					<PATHTYPE>Name</PATHTYPE>
-					<PATH>templatelinux.h</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-				</FILEREF>
-				<FILEREF>
-					<PATHTYPE>Name</PATHTYPE>
-					<PATH>templatemac.h</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-				</FILEREF>
-				<FILEREF>
-					<PATHTYPE>Name</PATHTYPE>
-					<PATH>templateunix.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
 				<FILEREF>
@@ -9781,6 +9757,13 @@
 				</FILE>
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brvectortypes.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS></FILEFLAGS>
+				</FILE>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brvertexbuffer.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 					<FILEKIND>Text</FILEKIND>
@@ -9964,27 +9947,6 @@
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>templateburgerbase.h</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-					<FILEKIND>Text</FILEKIND>
-					<FILEFLAGS></FILEFLAGS>
-				</FILE>
-				<FILE>
-					<PATHTYPE>Name</PATHTYPE>
-					<PATH>templatelinux.h</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-					<FILEKIND>Text</FILEKIND>
-					<FILEFLAGS></FILEFLAGS>
-				</FILE>
-				<FILE>
-					<PATHTYPE>Name</PATHTYPE>
-					<PATH>templatemac.h</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-					<FILEKIND>Text</FILEKIND>
-					<FILEFLAGS></FILEFLAGS>
-				</FILE>
-				<FILE>
-					<PATHTYPE>Name</PATHTYPE>
-					<PATH>templateunix.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 					<FILEKIND>Text</FILEKIND>
 					<FILEFLAGS></FILEFLAGS>
@@ -12457,6 +12419,11 @@
 				</FILEREF>
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brvectortypes.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brvertexbuffer.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
@@ -12588,21 +12555,6 @@
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>templateburgerbase.h</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-				</FILEREF>
-				<FILEREF>
-					<PATHTYPE>Name</PATHTYPE>
-					<PATH>templatelinux.h</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-				</FILEREF>
-				<FILEREF>
-					<PATHTYPE>Name</PATHTYPE>
-					<PATH>templatemac.h</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-				</FILEREF>
-				<FILEREF>
-					<PATHTYPE>Name</PATHTYPE>
-					<PATH>templateunix.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
 				<FILEREF>
@@ -16202,6 +16154,13 @@
 				</FILE>
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brvectortypes.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS></FILEFLAGS>
+				</FILE>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brvertexbuffer.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 					<FILEKIND>Text</FILEKIND>
@@ -16385,27 +16344,6 @@
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>templateburgerbase.h</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-					<FILEKIND>Text</FILEKIND>
-					<FILEFLAGS></FILEFLAGS>
-				</FILE>
-				<FILE>
-					<PATHTYPE>Name</PATHTYPE>
-					<PATH>templatelinux.h</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-					<FILEKIND>Text</FILEKIND>
-					<FILEFLAGS></FILEFLAGS>
-				</FILE>
-				<FILE>
-					<PATHTYPE>Name</PATHTYPE>
-					<PATH>templatemac.h</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-					<FILEKIND>Text</FILEKIND>
-					<FILEFLAGS></FILEFLAGS>
-				</FILE>
-				<FILE>
-					<PATHTYPE>Name</PATHTYPE>
-					<PATH>templateunix.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 					<FILEKIND>Text</FILEKIND>
 					<FILEFLAGS></FILEFLAGS>
@@ -18878,6 +18816,11 @@
 				</FILEREF>
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brvectortypes.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brvertexbuffer.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
@@ -19009,21 +18952,6 @@
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>templateburgerbase.h</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-				</FILEREF>
-				<FILEREF>
-					<PATHTYPE>Name</PATHTYPE>
-					<PATH>templatelinux.h</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-				</FILEREF>
-				<FILEREF>
-					<PATHTYPE>Name</PATHTYPE>
-					<PATH>templatemac.h</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-				</FILEREF>
-				<FILEREF>
-					<PATHTYPE>Name</PATHTYPE>
-					<PATH>templateunix.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
 				<FILEREF>
@@ -21179,6 +21107,12 @@
 				<FILEREF>
 					<TARGETNAME>Debug</TARGETNAME>
 					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brvectortypes.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<TARGETNAME>Debug</TARGETNAME>
+					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brvisualstudio.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
@@ -21729,6 +21663,12 @@
 						<TARGETNAME>Debug</TARGETNAME>
 						<PATHTYPE>Name</PATHTYPE>
 						<PATH>brwindowstypes.h</PATH>
+						<PATHFORMAT>Windows</PATHFORMAT>
+					</FILEREF>
+					<FILEREF>
+						<TARGETNAME>Debug</TARGETNAME>
+						<PATHTYPE>Name</PATHTYPE>
+						<PATH>templatewindows.h</PATH>
 						<PATHFORMAT>Windows</PATHFORMAT>
 					</FILEREF>
 					<FILEREF>
@@ -22359,30 +22299,6 @@
 				<TARGETNAME>Debug</TARGETNAME>
 				<PATHTYPE>Name</PATHTYPE>
 				<PATH>templateburgerbase.h</PATH>
-				<PATHFORMAT>Windows</PATHFORMAT>
-			</FILEREF>
-			<FILEREF>
-				<TARGETNAME>Debug</TARGETNAME>
-				<PATHTYPE>Name</PATHTYPE>
-				<PATH>templatelinux.h</PATH>
-				<PATHFORMAT>Windows</PATHFORMAT>
-			</FILEREF>
-			<FILEREF>
-				<TARGETNAME>Debug</TARGETNAME>
-				<PATHTYPE>Name</PATHTYPE>
-				<PATH>templatemac.h</PATH>
-				<PATHFORMAT>Windows</PATHFORMAT>
-			</FILEREF>
-			<FILEREF>
-				<TARGETNAME>Debug</TARGETNAME>
-				<PATHTYPE>Name</PATHTYPE>
-				<PATH>templateunix.h</PATH>
-				<PATHFORMAT>Windows</PATHFORMAT>
-			</FILEREF>
-			<FILEREF>
-				<TARGETNAME>Debug</TARGETNAME>
-				<PATHTYPE>Name</PATHTYPE>
-				<PATH>templatewindows.h</PATH>
 				<PATHFORMAT>Windows</PATHFORMAT>
 			</FILEREF>
 		</GROUP>

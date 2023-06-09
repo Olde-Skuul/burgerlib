@@ -20,6 +20,10 @@
 #include "brtypes.h"
 #endif
 
+#ifndef __BRVECTORTYPES_H__
+#include "brvectortypes.h"
+#endif
+
 //
 // Note: _MSC_VER values for determining specific version.
 //

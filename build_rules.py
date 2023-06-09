@@ -65,13 +65,22 @@ GENERATED_FOLDERS = (
 # List of super header templates and output files
 SUPER_HEADERS = (
     ("templateburgerbase.h", "burger.h", "burger_stripped.h"),
-    ("templatemac.h", "burgermac.h", "burgermac_stripped.h"),
-    ("templateps4.h", "burgerps4.h", "burgerps4_stripped.h"),
-    ("templatewindows.h", "burgerwindows.h", "burgerwindows_stripped.h"),
-    ("templateswitch.h", "burgerswitch.h", "burgerswitch_stripped.h"),
-    ("templateunix.h", "burgerunix.h", "burgerunix_stripped.h"),
-    ("templatelinux.h", "burgerlinux.h", "burgerlinux_stripped.h"),
-    ("templatexbox360.h", "burgerxbox360.h", "burgerxbox360_stripped.h")
+    ("platforms" + os.sep + "mac" + os.sep + "templatemac.h",
+     "burgermac.h", "burgermac_stripped.h"),
+    ("platforms" + os.sep + "ps4" + os.sep + "templateps4.h",
+     "burgerps4.h", "burgerps4_stripped.h"),
+    ("platforms" + os.sep + "windows" + os.sep + "templatewindows.h",
+     "burgerwindows.h", "burgerwindows_stripped.h"),
+    ("platforms" + os.sep + "switch" + os.sep + "templateswitch.h",
+     "burgerswitch.h", "burgerswitch_stripped.h"),
+    ("platforms" + os.sep + "unix" + os.sep + "templateunix.h",
+     "burgerunix.h", "burgerunix_stripped.h"),
+    ("platforms" + os.sep + "linux" + os.sep + "templatelinux.h",
+     "burgerlinux.h", "burgerlinux_stripped.h"),
+    ("platforms" + os.sep + "xbox360" + os.sep + "templatexbox360.h",
+     "burgerxbox360.h", "burgerxbox360_stripped.h"),
+    ("platforms" + os.sep + "msdos" + os.sep + "templatemsdos.h",
+     "burgermsdos.h", "burgermsdos_stripped.h")
 )
 
 # Copy headers that are unique to specific platforms
@@ -80,6 +89,10 @@ UNIQUE_HEADERS = (
     # Windows
     ("bin" + os.sep + "burgerwindows_stripped.h",
         "windows" + os.sep + "burgerlib" + os.sep + "burgerwindows.h"),
+
+    # MSDos
+    ("bin" + os.sep + "burgermsdos_stripped.h",
+        "msdos" + os.sep + "burgerlib" + os.sep + "burgermsdos.h"),
 
     # Xbox 360
     ("bin" + os.sep + "burgerxbox360_stripped.h",

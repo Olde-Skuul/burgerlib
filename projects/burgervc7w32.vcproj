@@ -269,18 +269,6 @@
 			<File
 				RelativePath="..\source\templateburgerbase.h">
 			</File>
-			<File
-				RelativePath="..\source\templatelinux.h">
-			</File>
-			<File
-				RelativePath="..\source\templatemac.h">
-			</File>
-			<File
-				RelativePath="..\source\templateunix.h">
-			</File>
-			<File
-				RelativePath="..\source\templatewindows.h">
-			</File>
 			<Filter
 				Name="ansi">
 				<File
@@ -1900,6 +1888,9 @@
 					RelativePath="..\source\lowlevel\brtypes.h">
 				</File>
 				<File
+					RelativePath="..\source\lowlevel\brvectortypes.h">
+				</File>
+				<File
 					RelativePath="..\source\lowlevel\brvisualstudio.h">
 				</File>
 				<File
@@ -2214,6 +2205,9 @@
 								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/platforms/windows/ps20display8bitdx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/platforms/windows/Generated\ps20display8bitdx9.h&quot; /Vng_ps20display8bitdx9"
 								Outputs="../source/platforms/windows/Generated/ps20display8bitdx9.h"/>
 						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\templatewindows.h">
 					</File>
 					<File
 						RelativePath="..\source\platforms\windows\win_d3d11.cpp">

@@ -16,6 +16,7 @@
 
 #if defined(BURGER_LINUX) || defined(DOXYGEN)
 #include <unistd.h>
+#include <stdlib.h>
 
 /*! ************************************
 

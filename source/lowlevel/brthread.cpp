@@ -663,9 +663,7 @@ void BURGER_API Burger::tls_release(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-#if !( \
-	defined(BURGER_VITA) || defined(BURGER_PS3)) || \
-	defined(DOXYGEN)
+#if !(defined(BURGER_VITA) || defined(BURGER_PS3)) || defined(DOXYGEN)
 Burger::Thread::Thread() BURGER_NOEXCEPT: m_pFunction(nullptr),
 										  m_pData(nullptr),
 										  m_pName(nullptr),

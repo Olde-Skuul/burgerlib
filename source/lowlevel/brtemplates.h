@@ -19,6 +19,10 @@
 #include "brtypes.h"
 #endif
 
+#ifndef __BRVECTORTYPES_H__
+#include "brvectortypes.h"
+#endif
+
 // For __fsel
 #ifndef __BRXCODE_H__
 #include "brxcode.h"

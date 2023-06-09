@@ -472,6 +472,9 @@
     <ClInclude Include="..\source\lowlevel\brtypes.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brvectortypes.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\lowlevel\brvisualstudio.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
@@ -547,6 +550,9 @@
     <ClInclude Include="..\source\platforms\unix\brunixtypes.h">
       <Filter>source\platforms\unix</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\platforms\unix\templateunix.h">
+      <Filter>source\platforms\unix</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\platforms\unix\unix_dbus.h">
       <Filter>source\platforms\unix</Filter>
     </ClInclude>
@@ -572,18 +578,6 @@
       <Filter>source\random</Filter>
     </ClInclude>
     <ClInclude Include="..\source\templateburgerbase.h">
-      <Filter>source</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\templatelinux.h">
-      <Filter>source</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\templatemac.h">
-      <Filter>source</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\templateunix.h">
-      <Filter>source</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\templatewindows.h">
       <Filter>source</Filter>
     </ClInclude>
     <ClInclude Include="..\source\text\brasciito.h">

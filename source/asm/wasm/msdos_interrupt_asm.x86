@@ -1,0 +1,334 @@
+;
+; Assembly code for the Dos Extender.
+; This code is only meant for MSDOS
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+;
+; It is released under an MIT Open Source license. Please see LICENSE
+; for license details. Yes, you can use it in a
+; commercial title without paying anything, just give me a credit.
+; Please? It's not like I'm asking you for money!
+;
+
+;
+; Set to build 386 code for a flat memory model using the WATCOM WASM
+; assembler
+;
+
+	.386
+	.MODEL FLAT,SYSCALL
+
+	.DATA
+
+;
+; Expose the variable to the assembly code below
+; since this is the X32 dos extender version
+;
+
+	IFDEF	__X32__
+	EXTRN	__x32_zero_base_ptr:DWORD
+	EXTRN	__x32_zero_base_selector:WORD
+	ENDIF
+
+	.CODE
+
+;
+; Call the dos extender to get the current protected mode IRQ vector
+; void far* BURGER_API Burger::MSDos::get_interrupt_protected(
+;	uint32_t uInterrupt)
+;
+; far pointer is returned as EAX for the pointer and DX for the segment
+;
+
+	PUBLIC `W?get_interrupt_protected$:MSDos$:Burger$n(ui)pfv`
+
+`W?get_interrupt_protected$:MSDos$:Burger$n(ui)pfv` PROC
+
+	push	ebx			;Save registers
+	push	ecx
+
+	IFDEF	__X32__
+
+; http://www.ctyme.com/intr/rb-2604.htm
+
+	push	es
+	mov		ecx,eax		;Pass the irq number
+	mov		eax,02502H	;X32 Get Protected mode interrupt vector
+	int		021H
+	mov		eax,ebx		;Return in EAX/DX
+	xor		edx,edx
+	mov		dx,es		;Place segment in DX
+	pop		es			;Restore registers
+
+	ELSE
+
+; http://www.ctyme.com/intr/rb-5825.htm
+
+	mov		ebx,eax		;Interrupt number
+	mov		eax,0204H 	;DPMI Get interrupt vector
+	int		031H
+	mov		eax,edx		;Return the vector
+	xor		edx,edx
+	mov		dx,cx
+
+	ENDIF
+
+	pop		ecx			;Restore the registers
+	pop		ebx
+	ret
+
+`W?get_interrupt_protected$:MSDos$:Burger$n(ui)pfv` ENDP
+
+;
+; Call the dos extender to intercept the protected IRQ vector
+; void BURGER_API Burger::MSDos::set_interrupt_protected(
+;	uint32_t uInterrupt, void far* pCode)
+;
+
+	PUBLIC	`W?set_interrupt_protected$:MSDos$:Burger$n(uipfv)v`
+`W?set_interrupt_protected$:MSDos$:Burger$n(uipfv)v` PROC
+
+	push	ebx			;Save registers
+
+	IFDEF	__X32__
+
+; http://www.ctyme.com/intr/rb-2606.htm
+
+	push	ecx
+	push	edx
+	push	ds
+	mov		ds,cx		;Get the code segment
+	mov		edx,ebx		;Pass the code pointer
+	mov		ecx,eax		;Set the proper IRQ vector
+	mov		eax,02504H	;Intercept protected irq's
+	int		021H
+	pop		ds			;Restore registers
+	pop		edx
+	pop		ecx
+
+	ELSE
+
+; http://www.ctyme.com/intr/rb-5826.htm
+
+	mov		ebx,eax		;Get the interrupt number
+	mov		edx,ebx		;Offset (CX = Selector)
+	mov		eax,0205H	;DPMI Set Protected Interrupt vector
+	int		031H
+
+	ENDIF
+
+	pop		ebx
+	ret
+
+`W?set_interrupt_protected$:MSDos$:Burger$n(uipfv)v` ENDP
+
+;
+; Call the dos extender to get the current real mode IRQ vector
+; uint32_t BURGER_API Burger::MSDos::get_interrupt_real(
+;	uint32_t uInterrupt)
+;
+
+	PUBLIC `W?get_interrupt_real$:MSDos$:Burger$n(ui)ui`
+
+`W?get_interrupt_real$:MSDos$:Burger$n(ui)ui` PROC
+
+	push	ecx			;Save registers
+	push	ebx
+
+	IFDEF	__X32__
+
+; http://www.ctyme.com/intr/rb-2605.htm
+
+	mov		ecx,eax		;Get the Interrupt number
+	mov		eax,02503H	;X32 Get Real Mode Interrupt vector
+	int		021H
+	mov		eax,ebx		;Place value in EAX
+
+	ELSE
+
+; http://www.ctyme.com/intr/rb-5821.htm
+
+	push	edx
+	mov		ebx,eax		;Get the interrupt number
+	mov		eax,0200H	;DPMI Get Real Mode Interrupt vector
+	int		031H
+	shl		ecx,16		;Shift up the segment
+	mov		eax,edx		;Copy the offset
+	and		eax,0FFFFH	;Use only the low 16 bits
+	or		eax,ecx		;Make a longword
+	pop		edx			;Restore registers
+
+	ENDIF
+
+	pop		ebx			;Restore registers
+	pop		ecx
+	ret					;Exit
+
+`W?get_interrupt_real$:MSDos$:Burger$n(ui)ui` ENDP
+
+;
+; Call the dos extender to intercept the real mode IRQ vector
+; void BURGER_API set_interrupt_real(
+;	uint32_t uInterrupt, uint32_t pCode)
+;
+
+	PUBLIC `W?set_interrupt_real$:MSDos$:Burger$n(uiui)v`
+`W?set_interrupt_real$:MSDos$:Burger$n(uiui)v` PROC
+
+	push	ebx			;Save registers
+	push	ecx
+
+	IFDEF	__X32__
+
+; http://www.ctyme.com/intr/rb-2607.htm
+
+	mov		ecx,eax		;Set the proper IRQ vector
+	mov		ebx,edx		;Get the real mode code pointer
+	mov		eax,02505H	;X32 Set Real Mode Interrupt vector
+	int		021H
+
+	ELSE
+
+; http://www.ctyme.com/intr/rb-5822.htm
+
+	mov		ebx,eax		;Get the interrupt number
+	mov		ecx,edx		;Copy the segment:offset to ECX
+	and		edx,0FFFFH
+	shr		ecx,16		;Isolate the segment
+	mov		eax,0201H	;DPMI Set Real Mode Interrupt vector
+	int		031H
+
+	ENDIF
+
+	pop		ecx			;Restore registers
+	pop		ebx
+	ret
+
+`W?set_interrupt_real$:MSDos$:Burger$n(uiui)v` ENDP
+
+;
+; Call the dos extender to intercept both the real and protected IRQ vector
+; and route it through a protected mode IRQ
+;
+; void BURGER_API set_interrupt_both(uint32_t uInterrupt, void far* pCode)
+;
+
+	PUBLIC `W?set_interrupt_both$:MSDos$:Burger$n(uipfv)v`
+`W?set_interrupt_both$:MSDos$:Burger$n(uipfv)v` PROC
+
+	IFDEF	__X32__
+
+; http://www.ctyme.com/intr/rb-2608.htm
+
+	push	edx
+	push	ds
+	mov		ds,cx		;Get the code segment
+	mov		edx,ebx		;Pass the code pointer
+	mov		ecx,eax		;Set the proper IRQ vector
+	mov		eax,02506H	;Intercept both real and protected irq's
+	int		021H		;Call X32
+	pop		ds
+	pop		edx
+
+	ELSE
+
+; http://www.ctyme.com/intr/rb-5826.htm
+
+	push	ebx
+	mov		ebx,eax		;Get the interrupt number
+	mov		edx,ebx		;Offset (CX = Selector)
+	mov		eax,0205H	;DPMI Set Protected Interrupt vector
+	int		031H
+	pop		ebx
+
+	ENDIF
+
+	ret
+
+`W?set_interrupt_both$:MSDos$:Burger$n(uipfv)v` ENDP
+
+;
+; I am given a physical memory address from
+; a device, this will remap the address into protected
+; mode.
+;
+; void * BURGER_API MapPhysicalAddress(void *pInput,Word32 uLength);
+;
+
+		PUBLIC	`W?map_physical_address$:MSDos$:Burger$n(pnvui)pnv`
+`W?map_physical_address$:MSDos$:Burger$n(pnvui)pnv` PROC
+
+; Check if already in the 1 meg address range (DOS)
+	cmp		eax,0100000H
+	jb		SimpleRemap
+
+;
+; Do it the hard way, use memory mapping to move the pointer
+;
+
+	push	ebx
+	push	ecx
+
+; Dos4GW version
+	IFDEF	__DOS4G__	
+
+; http://www.ctyme.com/intr/rb-5861.htm
+
+	push	esi
+	push	edi
+	mov		esi,edx			;Break up the size in two 16 bit chunks
+	mov		edi,edx
+	shr		esi,16
+	and		edi,0FFFFH
+
+	mov		ebx,eax			;Break up the address in two 16 bit chunks
+	mov		ecx,eax
+	shr		ebx,16
+	and		ecx,0FFFFH
+	mov		eax,0800H		;Remap memory
+	int		031H			;Call DPMI
+	jnc		GotIt
+	xor		ebx,ebx			;Oh oh...
+	xor		ecx,ecx
+GotIt:
+	shl		ebx,16			;Shift up
+	and		ecx,0FFFFH		;Make sure it's ok
+	lea		eax,[ebx+ecx]	;Move result to EAX
+	pop		edi
+	pop		esi
+
+	ELSE
+
+; Phar Lap / X32 version
+; http://www.ctyme.com/intr/rb-2746.htm
+
+	mov		ebx,eax		;Address
+	mov		ecx,edx		;Memory size
+	mov		eax,0350AH	;Remap memory
+	int		021H		;Call X32
+	mov		eax,0
+	jc		OhOh
+	mov		eax,ebx
+	add		eax,[__x32_zero_base_ptr]
+OhOh:
+	ENDIF
+
+	pop		ecx
+	pop		ebx
+	ret
+
+;
+; Just adjust the base address and call it a day
+;
+SimpleRemap:
+
+; X32 needs offseting, DOS4GW does not
+
+	IFDEF __X32__
+	add	eax,[__x32_zero_base_ptr]
+	ENDIF
+	ret
+
+`W?map_physical_address$:MSDos$:Burger$n(pnvui)pnv` ENDP
+
+	END

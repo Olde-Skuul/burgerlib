@@ -2992,6 +2992,33 @@ line of processors.
 
 /*! ************************************
 
+	\def BURGER_MSVC_SUPPRESS
+	\brief Invoke \#pragma warning(suppress:) in Microsoft Compilers
+
+	Microsoft compilers are very thorough in finding issues with code, but
+	sometimes it flags warnings on perfectly acceptable code. This macro will
+	suppress the warning on the following line of code after this macro and then
+	allow the warning to be invoked on the rest of the code.
+
+	\note On non-Microsoft compilers, this macro does nothing.
+
+	\param __T Integer warning number to suppress
+
+	\code
+
+	// Suppress the warning on the variable below
+	// Global initializer calls a non-constexpr function 'symbol'
+	BURGER_MSVC_SUPPRESS(26426)
+
+	// Init value on startup
+	static DWORD gStorage = TlsAlloc();
+
+	\endcode
+
+***************************************/
+
+/*! ************************************
+
 	\def BURGER_STRINGIZE
 	\brief Convert a macro into a string literal.
 

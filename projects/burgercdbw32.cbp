@@ -425,6 +425,7 @@
 		<Unit filename="../source/lowlevel/brtimedate.h" />
 		<Unit filename="../source/lowlevel/brtypes.cpp" />
 		<Unit filename="../source/lowlevel/brtypes.h" />
+		<Unit filename="../source/lowlevel/brvectortypes.h" />
 		<Unit filename="../source/lowlevel/brvisualstudio.h" />
 		<Unit filename="../source/lowlevel/brwatcom.h" />
 		<Unit filename="../source/lowlevel/brxcode.h" />
@@ -516,6 +517,7 @@
 		<Unit filename="../source/platforms/windows/brwindowsapp.cpp" />
 		<Unit filename="../source/platforms/windows/brwindowstypes.h" />
 		<Unit filename="../source/platforms/windows/generated/ps20display8bitdx9.h" />
+		<Unit filename="../source/platforms/windows/templatewindows.h" />
 		<Unit filename="../source/platforms/windows/win_d3d11.cpp" />
 		<Unit filename="../source/platforms/windows/win_d3d11.h" />
 		<Unit filename="../source/platforms/windows/win_d3d9.cpp" />
@@ -575,10 +577,6 @@
 		<Unit filename="../source/random/brrandombase.cpp" />
 		<Unit filename="../source/random/brrandombase.h" />
 		<Unit filename="../source/templateburgerbase.h" />
-		<Unit filename="../source/templatelinux.h" />
-		<Unit filename="../source/templatemac.h" />
-		<Unit filename="../source/templateunix.h" />
-		<Unit filename="../source/templatewindows.h" />
 		<Unit filename="../source/text/brasciito.cpp" />
 		<Unit filename="../source/text/brasciito.h" />
 		<Unit filename="../source/text/brcodepage.cpp" />

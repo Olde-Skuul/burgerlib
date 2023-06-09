@@ -191,6 +191,7 @@ TEMP_DIR = temp\unittests$(BASE_SUFFIX)
 
 SOURCE_DIRS =../source
 SOURCE_DIRS +=;../source/ansi
+SOURCE_DIRS +=;../source/asm/wasm
 SOURCE_DIRS +=;../source/audio
 SOURCE_DIRS +=;../source/commandline
 SOURCE_DIRS +=;../source/compression
@@ -324,8 +325,6 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brdisplayopengl.obj &
 	$(A)/brdisplayopenglsoftware8.obj &
 	$(A)/brdjb2hash.obj &
-	$(A)/brdosextender.obj &
-	$(A)/brdosextenderasm.obj &
 	$(A)/brdoublylinkedlist.obj &
 	$(A)/brdxt1.obj &
 	$(A)/brdxt3.obj &
@@ -476,7 +475,12 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brvertexbufferopengl.obj &
 	$(A)/brwin1252.obj &
 	$(A)/brwin437.obj &
+	$(A)/call_int.obj &
 	$(A)/common.obj &
+	$(A)/msdos_interrupt_asm.obj &
+	$(A)/msdos_interrupts.obj &
+	$(A)/msdos_memory.obj &
+	$(A)/msdos_structs.obj &
 	$(A)/testbralgorithm.obj &
 	$(A)/testbrcodelibrary.obj &
 	$(A)/testbrcompression.obj &
@@ -496,7 +500,8 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/testbrtimedate.obj &
 	$(A)/testbrtypes.obj &
 	$(A)/testcharset.obj &
-	$(A)/testmacros.obj
+	$(A)/testmacros.obj &
+	$(A)/x32_zero_base.obj
 
 #
 # A = The object file temp folder

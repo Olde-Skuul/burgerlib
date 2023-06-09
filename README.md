@@ -42,7 +42,7 @@ SHA-1 236ac33ebd463006be4ecd83d7ebea1c026eb55a
 
 ### Codewarrior 9.4 for Windows 32 target
 
-To build with Metrowerks Codewarrior, download and install the compiler. To install, first run ``CW_Windows_9.2.exe`` and then install ``CW_Windows_9.4_Update.exe``. After installation, copy the file ``license.dat`` over the file **C:\Program Files (x86)\Metrowerks\CodeWarrior\license.dat** to update the license to a permanent one.
+To build with Metrowerks Codewarrior, download and install the compiler. To install, first run ``CW_Windows_9.2.exe`` and then install ``CW_Windows_9.4_Update.exe``. After installation, copy the file ``license.dat`` over the file **C:\\Program Files (x86)\\Metrowerks\\CodeWarrior\\license.dat** to update the license to a permanent one.
 
 [Download Codewarrior 9.4 for Windows here](https://archive.org/details/cwpro9)
 

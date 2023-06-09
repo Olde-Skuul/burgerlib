@@ -15,10 +15,12 @@
 #include "brfile.h"
 
 #if defined(BURGER_MSDOS)
-#include "brdosextender.h"
 #include "brfilemanager.h"
 #include "brmemoryfunctions.h"
 #include "brwin437.h"
+
+#include "msdos_structs.h"
+#include "msdos_memory.h"
 
 /***************************************
 
@@ -46,12 +48,12 @@ Burger::eError BURGER_API Burger::File::open(
 	static const uint16_t g_CreateAction[4] = {1, 2 + 16, 1 + 16, 1 + 16};
 
 	// Copy the filename to "Real" memory
-	Win437::translate_from_UTF8(static_cast<char*>(GetRealBufferProtectedPtr()),
+	Win437::translate_from_UTF8(static_cast<char*>(MSDos::get_temp_protected_buffer()),
 		512, pFileName->get_native());
 
 	uAccess = static_cast<eFileAccess>(uAccess & 3);
-	Regs16_t Regs;
-	uint32_t uTemp = GetRealBufferPtr(); // Local buffer
+	MSDos::Regs16_t Regs;
+	uint32_t uTemp = MSDos::get_temp_real_buffer(); // Local buffer
 	uint_t uResult = kErrorFileNotFound;
 	// Are long filenames supported?
 	if (!FileManager::MSDOS_has_long_filenames()) {
@@ -73,7 +75,7 @@ Burger::eError BURGER_API Burger::File::open(
 		Regs.dx = static_cast<uint16_t>(uTemp);
 		Regs.ds = static_cast<uint16_t>(uTemp >> 16);
 		// Int 0x21,0x3D Open
-		Int86x(0x21, &Regs, &Regs);
+		MSDos::real_mode_interrupt(0x21, &Regs, &Regs);
 		if (!(Regs.flags & 1)) {
 			// Preexisting file was opened
 			m_pFile = reinterpret_cast<void*>(Regs.ax);
@@ -90,7 +92,7 @@ Burger::eError BURGER_API Burger::File::open(
 				Regs.dx = static_cast<uint16_t>(uTemp);
 				Regs.ds = static_cast<uint16_t>(uTemp >> 16);
 
-				Int86x(0x21, &Regs, &Regs);
+				MSDos::real_mode_interrupt(0x21, &Regs, &Regs);
 				if (!(Regs.flags & 1)) {
 					// File was created
 					m_pFile = reinterpret_cast<void*>(Regs.ax);
@@ -109,7 +111,7 @@ Burger::eError BURGER_API Burger::File::open(
 		Regs.ds = static_cast<uint16_t>(uTemp >> 16); // Get the segment
 		Regs.di = 0;
 		// Int 0x21,0x716C Open
-		Int86x(0x21, &Regs, &Regs);
+		MSDos::real_mode_interrupt(0x21, &Regs, &Regs);
 		if (!(Regs.flags & 1)) {
 			// File was opened
 			m_pFile = reinterpret_cast<void*>(Regs.ax);
@@ -141,10 +143,10 @@ Burger::eError BURGER_API Burger::File::close(void) BURGER_NOEXCEPT
 	int fp = reinterpret_cast<int>(m_pFile);
 	if (fp) {
 		// Int 0x21,0x3E Close
-		Regs16_t Regs;
+		MSDos::Regs16_t Regs;
 		Regs.ax = 0x3E00;
 		Regs.bx = fp;
-		Int86x(0x21, &Regs, &Regs);
+		MSDos::real_mode_interrupt(0x21, &Regs, &Regs);
 		if (Regs.flags & 1) {
 			uResult = kErrorIO;
 		}
@@ -172,9 +174,9 @@ Burger::eError BURGER_API Burger::File::close(void) BURGER_NOEXCEPT
 
 uint64_t BURGER_API Burger::File::get_file_size(void) BURGER_NOEXCEPT
 {
-	Regs16_t MyRegs;
-	Regs16_t MyRegsStore;
-	Regs16_t MyRegsSeek;
+	MSDos::Regs16_t MyRegs;
+	MSDos::Regs16_t MyRegsStore;
+	MSDos::Regs16_t MyRegsSeek;
 	uint64_t uSize = 0;
 	int fp = reinterpret_cast<int>(m_pFile);
 	if (fp) {
@@ -183,17 +185,17 @@ uint64_t BURGER_API Burger::File::get_file_size(void) BURGER_NOEXCEPT
 		MyRegs.bx = fp;
 		MyRegs.cx = 0; // Offset
 		MyRegs.dx = 0;
-		Int86x(0x21, &MyRegs, &MyRegsStore);
+		MSDos::real_mode_interrupt(0x21, &MyRegs, &MyRegsStore);
 		if (!(MyRegsStore.flags & 1)) {
 			// Seek to the end to get the file size
 			MyRegs.ax = 0x4202;
-			Int86x(0x21, &MyRegs, &MyRegsSeek);
+			MSDos::real_mode_interrupt(0x21, &MyRegs, &MyRegsSeek);
 			if (!(MyRegsSeek.flags & 1)) {
 				// Seek/Set
 				MyRegs.ax = 0x4200;
 				MyRegs.cx = MyRegsStore.ax;
 				MyRegs.dx = MyRegsStore.dx;
-				Int86x(0x21, &MyRegs, &MyRegs);
+				MSDos::real_mode_interrupt(0x21, &MyRegs, &MyRegs);
 				if (!(MyRegs.flags & 1)) {
 					// Get the file size
 					uSize = (MyRegsSeek.dx << 16U) + MyRegsSeek.ax;
@@ -227,21 +229,21 @@ uintptr_t BURGER_API Burger::File::read(void* pOutput, uintptr_t uSize)
 	if (uSize && pOutput) {
 		int fp = reinterpret_cast<int>(m_pFile);
 		if (fp) {
-			uint32_t uTemp = GetRealBufferPtr(); // Local buffer
+			uint32_t uTemp = MSDos::get_temp_real_buffer(); // Local buffer
 			do {
 				uint_t uChunk = uSize < 8192 ? uSize : 8192;
-				Regs16_t Regs;
+				MSDos::Regs16_t Regs;
 				Regs.ax = 0x3F00;
 				Regs.bx = fp;
 				Regs.cx = static_cast<uint16_t>(uChunk);
 				Regs.dx =
 					static_cast<uint16_t>(uTemp); // Pass the filename buffer
 				Regs.ds = static_cast<uint16_t>(uTemp >> 16); // Get the segment
-				Int86x(0x21, &Regs, &Regs);
+				MSDos::real_mode_interrupt(0x21, &Regs, &Regs);
 				if (Regs.flags & 1) {
 					break;
 				}
-				MemoryCopy(pOutput, GetRealBufferProtectedPtr(), uChunk);
+				MemoryCopy(pOutput, MSDos::get_temp_protected_buffer(), uChunk);
 				uResult += Regs.ax;
 				uSize -= Regs.ax;
 				pOutput = static_cast<char*>(pOutput) + Regs.ax;
@@ -275,18 +277,18 @@ uintptr_t BURGER_API Burger::File::write(
 	if (uSize && pInput) {
 		int fp = reinterpret_cast<int>(m_pFile);
 		if (fp) {
-			uint32_t uTemp = GetRealBufferPtr(); // Local buffer
+			uint32_t uTemp = MSDos::get_temp_real_buffer(); // Local buffer
 			do {
 				uint_t uChunk = uSize < 8192 ? uSize : 8192;
-				Regs16_t Regs;
+				MSDos::Regs16_t Regs;
 				Regs.ax = 0x4000;
 				Regs.bx = fp;
 				Regs.cx = static_cast<uint16_t>(uChunk);
 				Regs.dx =
 					static_cast<uint16_t>(uTemp); // Pass the filename buffer
 				Regs.ds = static_cast<uint16_t>(uTemp >> 16); // Get the segment
-				MemoryCopy(GetRealBufferProtectedPtr(), pInput, uChunk);
-				Int86x(0x21, &Regs, &Regs);
+				MemoryCopy(MSDos::get_temp_protected_buffer(), pInput, uChunk);
+				MSDos::real_mode_interrupt(0x21, &Regs, &Regs);
 				if (Regs.flags & 1) {
 					break;
 				}
@@ -314,7 +316,7 @@ uintptr_t BURGER_API Burger::File::write(
 
 uint64_t BURGER_API Burger::File::get_mark(void) BURGER_NOEXCEPT
 {
-	Regs16_t MyRegs;
+	MSDos::Regs16_t MyRegs;
 	uint64_t uMark = 0;
 	int fp = reinterpret_cast<int>(m_pFile);
 	if (fp) {
@@ -323,7 +325,7 @@ uint64_t BURGER_API Burger::File::get_mark(void) BURGER_NOEXCEPT
 		MyRegs.bx = fp;
 		MyRegs.cx = 0; // Offset
 		MyRegs.dx = 0;
-		Int86x(0x21, &MyRegs, &MyRegs);
+		MSDos::real_mode_interrupt(0x21, &MyRegs, &MyRegs);
 		if (!(MyRegs.flags & 1)) {
 			// Get the file size
 			uMark = (MyRegs.dx << 16U) + MyRegs.ax;
@@ -349,7 +351,7 @@ uint64_t BURGER_API Burger::File::get_mark(void) BURGER_NOEXCEPT
 Burger::eError BURGER_API Burger::File::set_mark(uint64_t uMark) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorNotInitialized;
-	Regs16_t MyRegs;
+	MSDos::Regs16_t MyRegs;
 	int fp = reinterpret_cast<int>(m_pFile);
 	if (fp) {
 		// Int 0x21,0x4200 Seek/Set
@@ -357,7 +359,7 @@ Burger::eError BURGER_API Burger::File::set_mark(uint64_t uMark) BURGER_NOEXCEPT
 		MyRegs.bx = fp;
 		MyRegs.cx = static_cast<uint16_t>(uMark >> 16); // Offset
 		MyRegs.dx = static_cast<uint16_t>(uMark);
-		Int86x(0x21, &MyRegs, &MyRegs);
+		MSDos::real_mode_interrupt(0x21, &MyRegs, &MyRegs);
 		if (!(MyRegs.flags & 1)) {
 			// Get the file size
 			uResult = kErrorNone;
@@ -383,7 +385,7 @@ Burger::eError BURGER_API Burger::File::set_mark(uint64_t uMark) BURGER_NOEXCEPT
 Burger::eError BURGER_API Burger::File::set_mark_at_EOF(void) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorOutOfBounds;
-	Regs16_t MyRegs;
+	MSDos::Regs16_t MyRegs;
 	int fp = reinterpret_cast<int>(m_pFile);
 	if (fp) {
 		// Int 0x21,0x4202 Seek/End
@@ -391,7 +393,7 @@ Burger::eError BURGER_API Burger::File::set_mark_at_EOF(void) BURGER_NOEXCEPT
 		MyRegs.bx = fp;
 		MyRegs.cx = 0; // Offset
 		MyRegs.dx = 0;
-		Int86x(0x21, &MyRegs, &MyRegs);
+		MSDos::real_mode_interrupt(0x21, &MyRegs, &MyRegs);
 		if (!(MyRegs.flags & 1)) {
 			uResult = kErrorNone;
 		}
@@ -420,13 +422,13 @@ Burger::eError BURGER_API Burger::File::get_modification_time(
 	TimeDate_t* pOutput) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorFileNotFound;
-	Regs16_t Regs;
+	MSDos::Regs16_t Regs;
 	int fp = reinterpret_cast<int>(m_pFile);
 	if (fp) {
 		// Int 0x21,0x5700 Get File date time
 		Regs.ax = 0x5700;
 		Regs.bx = fp;
-		Int86x(0x21, &Regs, &Regs);
+		MSDos::real_mode_interrupt(0x21, &Regs, &Regs);
 		if (!(Regs.flags & 1)) {
 			pOutput->LoadMSDOS((Regs.dx << 16) + Regs.cx);
 			uResult = kErrorNone;
@@ -480,7 +482,7 @@ Burger::eError BURGER_API Burger::File::set_modification_time(
 	const TimeDate_t* pInput) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorFileNotFound;
-	Regs16_t Regs;
+	MSDos::Regs16_t Regs;
 	int fp = reinterpret_cast<int>(m_pFile);
 	if (fp) {
 		uint32_t uTime = pInput->StoreMSDOS();
@@ -489,7 +491,7 @@ Burger::eError BURGER_API Burger::File::set_modification_time(
 		Regs.bx = fp;
 		Regs.cx = static_cast<uint16_t>(uTime);
 		Regs.dx = static_cast<uint16_t>(uTime >> 16);
-		Int86x(0x21, &Regs, &Regs);
+		MSDos::real_mode_interrupt(0x21, &Regs, &Regs);
 		if (!(Regs.flags & 1)) {
 			uResult = kErrorNone;
 		}

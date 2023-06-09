@@ -15,10 +15,13 @@
 #include "brfilename.h"
 
 #if defined(BURGER_MSDOS)
-#include "brdosextender.h"
 #include "brfilemanager.h"
 #include "brnumberstring.h"
 #include "brnumberto.h"
+
+#include "msdos_structs.h"
+#include "msdos_memory.h"
+
 #include <direct.h>
 #include <dos.h>
 #include <stdlib.h>
@@ -271,13 +274,13 @@ Burger::eError BURGER_API Burger::Filename::set_application_directory(
 Burger::eError BURGER_API Burger::Filename::set_boot_volume(
 	void) BURGER_NOEXCEPT
 {
-	Regs16_t Regs; // Intel registers
+	MSDos::Regs16_t Regs; // Intel registers
 
 	// Get the boot volume DOS 4.0+
 	// http://www.ctyme.com/intr/rb-2729.htm
 	Regs.ax = 0x3305;
 	Regs.dx = 0;
-	Int86x(0x21, &Regs, &Regs);
+	MSDos::real_mode_interrupt(0x21, &Regs, &Regs);
 	uint_t uBootDrive = Regs.dx & 0xFFU;
 
 	// If the drive is zero, the call failed.
@@ -285,7 +288,7 @@ Burger::eError BURGER_API Burger::Filename::set_boot_volume(
 		// If DOS is pre-4.0, get the current drive instead.
 		// http://www.ctyme.com/intr/rb-2588.htm
 		Regs.ax = 0x1900;
-		Int86x(0x21, &Regs, &Regs);
+		MSDos::real_mode_interrupt(0x21, &Regs, &Regs);
 		// This will assumed to be the boot drive
 		uBootDrive = Regs.ax & 0xFFU;
 	} else {
@@ -381,7 +384,7 @@ Burger::eError BURGER_API Burger::Filename::set_native(
 	const char* pInput) BURGER_NOEXCEPT
 {
 	// Used for DOS calls
-	Regs16_t Regs;
+	MSDos::Regs16_t Regs;
 
 	if (!pInput || !pInput[0]) { // No directory at all?
 		// Just get the current directory
@@ -446,7 +449,7 @@ Burger::eError BURGER_API Burger::Filename::set_native(
 			Regs.dx = static_cast<uint16_t>(uDriveNum + 1);
 
 			// Get real memory buffer
-			uint32_t DosBuffer = GetRealBufferPtr();
+			uint32_t DosBuffer = MSDos::get_temp_real_buffer();
 			// Pass to Dos call
 			Regs.ds = static_cast<uint16_t>(DosBuffer >> 16U);
 			Regs.si = static_cast<uint16_t>(DosBuffer & 0xFFFFU);
@@ -454,13 +457,13 @@ Burger::eError BURGER_API Burger::Filename::set_native(
 			// First try long version
 			Regs.ax = 0x7147;
 			// Call DOS
-			Int86x(0x21, &Regs, &Regs);
+			MSDos::real_mode_interrupt(0x21, &Regs, &Regs);
 			// Carry set??
 			if (Regs.flags & 1) {
 				// Try DOS 2.0 version
 				Regs.ax = 0x4700;
 				// Get the working directory
-				Int86x(0x21, &Regs, &Regs);
+				MSDos::real_mode_interrupt(0x21, &Regs, &Regs);
 			}
 
 			// If carry is clear, then one of the preceding calls succeeded
@@ -470,7 +473,7 @@ Burger::eError BURGER_API Burger::Filename::set_native(
 
 				// Get the pointer to the current directory
 				const char* pWorkingDirectory =
-					static_cast<char*>(RealToProtectedPtr(DosBuffer));
+					static_cast<char*>(MSDos::real_to_protected(DosBuffer));
 				uintptr_t uWorkingDirectoryLength =
 					StringLength(pWorkingDirectory);
 

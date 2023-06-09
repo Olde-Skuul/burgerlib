@@ -16,11 +16,13 @@
 #include "brdirectorysearch.h"
 
 #if defined(BURGER_MSDOS)
-#include "brdosextender.h"
 #include "brfilemanager.h"
 #include "brmemoryfunctions.h"
 #include "brutf8.h"
 #include "brwin437.h"
+#include "msdos_structs.h"
+#include "msdos_memory.h"
+
 #include <dos.h>
 
 #if !defined(DOXYGEN)
@@ -69,22 +71,22 @@ static Burger::eError BURGER_API OldWay(
 	Burger::SimpleArray<Burger::DirectoryEntry_t>* pOutput)
 {
 	// x86 registers for use with INT 021H
-	Burger::Regs16_t Regs;
+	Burger::MSDos::Regs16_t Regs;
 
 	// Get the Disk Transfer address and make a copy
 	// http://www.ctyme.com/intr/rb-2710.htm
 	Regs.ax = 0x2F00U;
-	Int86x(0x21U, &Regs, &Regs);
+	Burger::MSDos::real_mode_interrupt(0x21U, &Regs, &Regs);
 	uint16_t uOldOffset = Regs.bx;
 	uint16_t uOldSegment = Regs.es;
 
 	// Set the disk transfer address to my buffer
 	// http://www.ctyme.com/intr/rb-2589.htm
-	uint32_t uRealBuffer = GetRealBufferPtr();
+	uint32_t uRealBuffer = Burger::MSDos::get_temp_real_buffer();
 	Regs.ax = 0x1A00U;
 	Regs.dx = static_cast<uint16_t>(uRealBuffer);
 	Regs.ds = static_cast<uint16_t>(uRealBuffer >> 16U);
-	Int86x(0x21U, &Regs, &Regs);
+	Burger::MSDos::real_mode_interrupt(0x21U, &Regs, &Regs);
 
 	// Open the file
 	// http://www.ctyme.com/intr/rb-2977.htm
@@ -94,7 +96,7 @@ static Burger::eError BURGER_API OldWay(
 	Regs.cx = 0x0010U;
 	Regs.dx = static_cast<uint16_t>(uRealBuffer + 512U);
 	Regs.ds = static_cast<uint16_t>(uRealBuffer >> 16U);
-	Int86x(0x21U, &Regs, &Regs);
+	Burger::MSDos::real_mode_interrupt(0x21U, &Regs, &Regs);
 
 	Burger::eError uResult = Burger::kErrorNone;
 	if (Regs.flags & 1U) {
@@ -106,7 +108,7 @@ static Burger::eError BURGER_API OldWay(
 
 		// Init the buffer
 		pOutput->reserve(Burger::DirectorySearch::kDefaultReserve);
-		char* pProtected = static_cast<char*>(GetRealBufferProtectedPtr());
+		char* pProtected = static_cast<char*>(Burger::MSDos::get_temp_protected_buffer());
 
 		do {
 			const DosData_t* pDOSData =
@@ -160,7 +162,7 @@ static Burger::eError BURGER_API OldWay(
 			Regs.ax = 0x4F00;
 			Regs.dx = static_cast<uint16_t>(uRealBuffer + 512);
 			Regs.ds = static_cast<uint16_t>(uRealBuffer >> 16);
-			Int86x(0x21, &Regs, &Regs);
+			Burger::MSDos::real_mode_interrupt(0x21, &Regs, &Regs);
 
 			// Reached the end of the directory?
 			if (Regs.flags & 1) {
@@ -175,7 +177,7 @@ static Burger::eError BURGER_API OldWay(
 	Regs.ax = 0x1A00U;
 	Regs.dx = uOldOffset;
 	Regs.ds = uOldSegment;
-	Int86x(0x21, &Regs, &Regs);
+	Burger::MSDos::real_mode_interrupt(0x21, &Regs, &Regs);
 
 	return uResult;
 }
@@ -195,9 +197,9 @@ static Burger::eError BURGER_API NewWay(
 	Burger::SimpleArray<Burger::DirectoryEntry_t>* pOutput)
 {
 	// x86 registers for use with INT 021H
-	Burger::Regs16_t Regs;
+	Burger::MSDos::Regs16_t Regs;
 
-	uint32_t uRealBuffer = GetRealBufferPtr();
+	uint32_t uRealBuffer = Burger::MSDos::get_temp_real_buffer();
 
 	// http://www.ctyme.com/intr/rb-3203.htm
 	Regs.ax = 0x714E;
@@ -210,7 +212,7 @@ static Burger::eError BURGER_API NewWay(
 
 	// Return DOS time
 	Regs.si = 1;
-	Int86x(0x21, &Regs, &Regs);
+	Burger::MSDos::real_mode_interrupt(0x21, &Regs, &Regs);
 
 	Burger::eError uResult = Burger::kErrorNone;
 	if (Regs.flags & 1U) {
@@ -223,7 +225,7 @@ static Burger::eError BURGER_API NewWay(
 
 		// Init the buffer
 		pOutput->reserve(Burger::DirectorySearch::kDefaultReserve);
-		char* pProtected = static_cast<char*>(GetRealBufferProtectedPtr());
+		char* pProtected = static_cast<char*>(Burger::MSDos::get_temp_protected_buffer());
 
 		do {
 			const WinDosData_t* pDOSData =
@@ -281,7 +283,7 @@ static Burger::eError BURGER_API NewWay(
 
 			// Return DOS time
 			Regs.si = 1;
-			Int86x(0x21, &Regs, &Regs);
+			Burger::MSDos::real_mode_interrupt(0x21, &Regs, &Regs);
 
 			// Reached the end of the directory?
 			if (Regs.flags & 1U) {
@@ -294,7 +296,7 @@ static Burger::eError BURGER_API NewWay(
 		// http://www.ctyme.com/intr/rb-3211.htm
 		Regs.ax = 0x71A1;
 		Regs.bx = sFileHandle;
-		Int86x(0x21, &Regs, &Regs);
+		Burger::MSDos::real_mode_interrupt(0x21, &Regs, &Regs);
 	}
 
 	return uResult;
@@ -319,8 +321,8 @@ Burger::eError Burger::DirectorySearch::open(Filename* pName) BURGER_NOEXCEPT
 	close();
 
 	// Get the DOS buffers
-	uint32_t uRealBuffer = GetRealBufferPtr();
-	char* pProtected = static_cast<char*>(GetRealBufferProtectedPtr());
+	uint32_t uRealBuffer = MSDos::get_temp_real_buffer();
+	char* pProtected = static_cast<char*>(MSDos::get_temp_protected_buffer());
 
 	// Get the real pathname and convert to DOS encoding
 	const char* pPath = pName->get_native();

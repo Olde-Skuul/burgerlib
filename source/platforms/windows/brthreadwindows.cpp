@@ -23,10 +23,11 @@
 
 #include <process.h>
 
-#if !defined(DOXYGEN)
+// Global initializer calls a non-constexpr function 'symbol'
+BURGER_MSVC_SUPPRESS(26426)
+
 // Global Thread Local Storage index
 static DWORD gStorage = TlsAlloc();
-#endif
 
 /***************************************
 
@@ -75,7 +76,7 @@ Burger::eThreadPriority BURGER_API Burger::get_thread_priority(
 
 	if (hThread) {
 		// Get the priority value
-		int iPriority = GetThreadPriority(hThread);
+		const int iPriority = GetThreadPriority(hThread);
 
 		if (iPriority != THREAD_PRIORITY_ERROR_RETURN) {
 
@@ -152,7 +153,7 @@ Burger::eError BURGER_API Burger::set_thread_priority(
 
 		if (hThread) {
 			// Apply the new priority
-			BOOL bResult = SetThreadPriority(hThread, iPriority);
+			const BOOL bResult = SetThreadPriority(hThread, iPriority);
 
 			// Was it successful?
 			if (!bResult) {
@@ -264,6 +265,11 @@ Burger::eError BURGER_API Burger::Thread::platform_start(void) BURGER_NOEXCEPT
 	HANDLE hHandle = reinterpret_cast<HANDLE>(
 		_beginthreadex(nullptr, static_cast<uint_t>(m_uStackSize), Dispatcher,
 			this, uThreadFlags, &uThreadID));
+
+	// In Windows, the default is 1 megabyte
+	if (!m_uStackSize) {
+		m_uStackSize = 0x100000U;
+	}
 
 	// Assume failure
 	eError uResult = kErrorThreadNotStarted;
