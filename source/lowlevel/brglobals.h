@@ -101,7 +101,7 @@ private:
 	static uint8_t g_bQuickTimeVersionValid;
 #endif
 
-#if defined(BURGER_MACOS) || defined(DOXYGEN)
+#if defined(BURGER_MACOSX) || defined(DOXYGEN)
 	/** Discovered version of MacOS (MacOS only) */
 	uint_t m_uMacOSVersion;
 	/** QuickTime's version in 0x0102 (1.2) format. (MacOS only) */
@@ -130,11 +130,6 @@ public:
 	static void BURGER_API UnregisterWindowClass(void);
 #endif
 
-#if defined(BURGER_MAC) || defined(DOXYGEN)
-	static int16_t BURGER_API GetSpecFromNthDesc(
-		AEDesc* pList, long iIndex, FSSpec* pFSSpec);
-#endif
-
 #if defined(BURGER_MACOSX) || defined(DOXYGEN)
 	static void BURGER_API AddToMenubar(NSMenu* pNSMenu);
 	static NSString* BURGER_API GetApplicationName(void);
@@ -150,20 +145,13 @@ public:
 	static void GetDisplayName(String* pOutput, uint_t uDisplayID);
 	static int NumberFromKey(
 		const __CFDictionary* pDictionary, const char* pKey);
-#if !defined(DOXYGEN)
-	BURGER_INLINE static uint_t IsRunningUnderMacOSX(void) BURGER_NOEXCEPT
-	{
-		return TRUE;
-	}
 #endif
 
-#endif
-
-#if defined(BURGER_MACOS) || defined(DOXYGEN)
+#if defined(BURGER_MACOSX) || defined(DOXYGEN)
 	static uint_t BURGER_API GetMacOSVersion(void);
 #endif
 
-#if defined(BURGER_MACOS) || defined(BURGER_WINDOWS) || defined(DOXYGEN)
+#if defined(BURGER_MACOSX) || defined(BURGER_WINDOWS) || defined(DOXYGEN)
 	static uint_t BURGER_API GetQuickTimeVersion(void) BURGER_NOEXCEPT;
 #endif
 

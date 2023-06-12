@@ -24,6 +24,7 @@
 #include "brstring16.h"
 #include "brtick.h"
 #include "brutf8.h"
+#include "mac_version.h"
 #include <Files.h>
 #include <Folders.h>
 #include <Processes.h>
@@ -104,7 +105,7 @@ void BURGER_API Burger::FileManager::platform_shutdown(void) BURGER_NOEXCEPT
 uint_t BURGER_API Burger::FileManager::is_UTF8_file_system(void)
 {
 	// MacOS 9 or higher supports the HFSStr calls.
-	return Globals::GetMacOSVersion() >= 0x1000;
+	return MacOS::get_os_version() >= 0x1000;
 }
 
 /***************************************

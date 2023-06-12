@@ -26,6 +26,10 @@
 
 #if defined(BURGER_MAC)
 #include "brnetmanager.h"
+#include "mac_kernel.h"
+#include "mac_quickdraw.h"
+#include "mac_sprockets.h"
+#include "mac_version.h"
 #endif
 
 #if defined(BURGER_WINDOWS)
@@ -708,7 +712,7 @@ static void BURGER_API ShowPlatformFeatures(uint_t uVerbose) BURGER_NOEXCEPT
 
 #endif
 
-#if defined(BURGER_MACOS) || defined(BURGER_WINDOWS)
+#if defined(BURGER_MACOSX) || defined(BURGER_WINDOWS)
 	if (uVerbose & VERBOSE_MSG) {
 		uTest = Burger::Globals::GetQuickTimeVersion();
 		Message("Burger::Globals::GetQuickTimeVersion() = 0x%04X", uTest);
@@ -748,7 +752,7 @@ static void BURGER_API ShowPlatformFeatures(uint_t uVerbose) BURGER_NOEXCEPT
 	// Handle MacOS Version
 	//
 
-#if defined(BURGER_MACOS)
+#if defined(BURGER_MACOSX)
 	if (uVerbose & VERBOSE_MSG) {
 		uTest = Burger::Globals::GetMacOSVersion();
 		Message("Burger::Globals::GetMacOSVersion() = %04X", uTest);
@@ -761,36 +765,43 @@ static void BURGER_API ShowPlatformFeatures(uint_t uVerbose) BURGER_NOEXCEPT
 #if defined(BURGER_MAC)
 	// _MemoryDispatch = 0xA05C
 	if (uVerbose & VERBOSE_MSG) {
-		uTest = Burger::Mac::IsTrapAvailable(0xA05C);
-		Message("Burger::Mac::IsTrapAvailable(0xA05C) = %u", uTest);
+		uTest = Burger::MacOS::get_os_version();
+		Message("Burger::MacOS::get_os_version() = %04X", uTest);
 
-		uTest = Burger::Mac::IsQuickTimePowerPlugAvailable();
-		Message("Burger::Mac::IsQuickTimePowerPlugAvailable() = %u", uTest);
+		uTest = Burger::MacOS::is_trap_available(0xA05C);
+		Message("Burger::MacOS::is_trap_available(0xA05C) = %u", uTest);
 
-		uTest = Burger::Mac::GetQuickdrawVersion();
-		Message("Burger::Mac::GetQuickdrawVersion() = %04X", uTest);
+		uTest = Burger::MacOS::get_quicktime_version();
+		Message("Burger::MacOS::get_quicktime_version() = 0x%04X", uTest);
 
-		uTest = Burger::Mac::GetAppleShareVersion();
-		Message("Burger::Mac::GetAppleShareVersion() = %04X", uTest);
+		uTest = Burger::MacOS::has_quicktime_power_plug();
+		Message("Burger::MacOS::has_quicktime_power_plug() = %u", uTest);
 
-		uTest = Burger::Mac::GetInputSprocketVersion();
-		Message("Burger::Mac::GetInputSprocketVersion() = %04X", uTest);
+		uTest = Burger::MacOS::get_quickdraw_version();
+		Message("Burger::MacOS::get_quickdraw_version() = %04X", uTest);
 
-		uTest = Burger::Mac::GetDrawSprocketVersion();
-		Message("Burger::Mac::GetDrawSprocketVersion() = %04X", uTest);
+		uTest = Burger::MacOS::get_appleshare_version();
+		Message("Burger::MacOS::get_appleshare_version() = %04X", uTest);
 
-		uTest = Burger::Mac::GetSoundManagerVersion();
-		Message("Burger::Mac::GetSoundManagerVersion() = %04X", uTest);
+		uTest = Burger::MacOS::get_input_sprocket_version();
+		Message("Burger::MacOS::get_input_sprocket_version() = %04X", uTest);
 
-		uTest = Burger::Mac::GetNavServicesVersion();
-		Message("Burger::Mac::GetNavServicesVersion() = %08X", uTest);
+		uTest = Burger::MacOS::get_draw_sprocket_version();
+		Message("Burger::MacOS::get_draw_sprocket_version() = %04X", uTest);
 
-		uTest = Burger::Mac::GetControlStripVersion();
-		Message("Burger::Mac::GetControlStripVersion() = %08X", uTest);
+		uTest = Burger::MacOS::get_sound_manager_version();
+		Message("Burger::MacOS::get_sound_manager_version() = %04X", uTest);
 
-		Burger::Mac::ePowerMacType uType = Burger::Mac::GetPowerMacType();
-		Message(
-			"Burger::Mac::GetPowerMacType() = %u", static_cast<uint_t>(uType));
+		uTest = Burger::MacOS::get_nav_services_version();
+		Message("Burger::MacOS::get_nav_services_version() = %08X", uTest);
+
+		uTest = Burger::MacOS::get_control_strip_version();
+		Message("Burger::MacOS::get_control_strip_version() = %08X", uTest);
+
+		Burger::MacOS::ePowerMacType uType =
+			Burger::MacOS::get_power_mac_type();
+		Message("Burger::MacOS::get_power_mac_type() = %u",
+			static_cast<uint_t>(uType));
 		Burger::MacAddress_t Address;
 		Burger::get_default_mac_address(&Address);
 		Message("Burger::get_default_mac_address() = %02X%02X%02X%02X%02X%02X",

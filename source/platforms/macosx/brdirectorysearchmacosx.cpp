@@ -18,6 +18,7 @@
 #include "brfile.h"
 #include "brglobals.h"
 #include "brmemoryfunctions.h"
+
 #include <dlfcn.h>
 #include <errno.h>
 #include <fcntl.h>

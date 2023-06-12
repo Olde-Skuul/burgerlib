@@ -18,6 +18,23 @@
 
 /*! ************************************
 
+	\namespace Burger::MacOS
+	\brief Functions specific to MacOS
+
+	For MacOS 7.5 to 9.2.2, these functions exists to support the operating
+	system.
+
+	While modern MacOS shares the same name with classic MacOS, they are not
+	compatible. Use the MacOSX class of functions.
+
+	\maconly
+
+	\sa Burger::MacOSX, or Burger::iOS
+
+***************************************/
+
+/*! ************************************
+
 	\fn Burger::MacOS::PollRTC601(void)
 	\brief Poll the PowerPC 601 Real Time Clock register
 

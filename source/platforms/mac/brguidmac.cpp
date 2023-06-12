@@ -21,6 +21,7 @@
 #include "brmd5.h"
 #include "brmemoryfunctions.h"
 #include "brnetmanager.h"
+#include "mac_version.h"
 
 #include <DateTimeUtils.h>
 #include <Events.h>
@@ -206,7 +207,7 @@ void BURGER_API Burger::GUID_init(GUID* pOutput) BURGER_NOEXCEPT
 
 #if defined(BURGER_CARBON)
 	// Mac OS Carbon has a function in MacOSX that will do the job
-	if (Globals::GetMacOSVersion() >= 0x1000U) {
+	if (MacOS::get_os_version() >= 0x1000U) {
 		CFUUIDRef rUUID = CFUUIDCreate(kCFAllocatorDefault);
 		reinterpret_cast<CFUUIDBytes*>(pOutput)[0] = CFUUIDGetUUIDBytes(rUUID);
 		CFRelease(rUUID);

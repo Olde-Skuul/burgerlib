@@ -1,16 +1,16 @@
 /***************************************
 
-    Display base class
+	Display base class
 
-    Mac version
+	Mac version
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -22,8 +22,8 @@
 #include "brglobalmemorymanager.h"
 #include "brglobals.h"
 #include "brmemoryfunctions.h"
+#include "mac_sprockets.h"
 #include <DrawSprocket.h>
-
 
 /***************************************
 
@@ -63,7 +63,8 @@ static void BURGER_API GetModes(
 					MyEntry.m_uDepth = uDepth;
 
 					uint_t uFlags = 0;
-					uint_t uHertz = static_cast<uint_t>(MyAttr.frequency) >> 16U;
+					uint_t uHertz =
+						static_cast<uint_t>(MyAttr.frequency) >> 16U;
 					if (uHertz) {
 						uFlags |= Burger::Display::VideoMode_t::
 							VIDEOMODE_REFRESHVALID;
@@ -106,11 +107,11 @@ uint_t BURGER_API Burger::Display::GetVideoModes(
 
 	uint_t uResult = 0; // Assume success
 
-	// Only available with DrawSprocket
+						// Only available with DrawSprocket
 #if defined(BURGER_CFM)
 
 	// Draw sprocket linked in?
-	if (Mac::StartDrawSprocket()) {
+	if (MacOS::start_draw_sprocket()) {
 
 		// Get the first active device
 		GDHandle ppDevice = GetDeviceList();

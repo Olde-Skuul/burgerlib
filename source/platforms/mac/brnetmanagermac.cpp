@@ -18,6 +18,8 @@
 #include "brendian.h"
 #include "brglobals.h"
 #include "brmemoryfunctions.h"
+#include "mac_kernel.h"
+#include "mac_version.h"
 
 #include <Devices.h>
 #include <ENET.h>
@@ -641,7 +643,7 @@ static Burger::eError BURGER_API get_PDM_built_in_enet_address(
 	// Check what version of MacOS is running
 	// If it's 8.5 or higher, memory protection kicks in.
 
-	const uint_t uOSVersion = Burger::Globals::GetMacOSVersion();
+	const uint_t uOSVersion = Burger::MacOS::get_os_version();
 	if (uOSVersion >= 0x0850) {
 		// In case of error, clear out the output
 		MemoryClear(pOutput, sizeof(*pOutput));
@@ -853,17 +855,17 @@ Burger::eError BURGER_API Burger::get_default_mac_address(
 #if defined(BURGER_POWERPC)
 
 	// See what kind of motherboard is found
-	Burger::Mac::ePowerMacType uMacType = Burger::Mac::GetPowerMacType();
+	Burger::MacOS::ePowerMacType uMacType = Burger::MacOS::get_power_mac_type();
 	switch (uMacType) {
 
-	case Mac::kPiltdownMan:
+	case MacOS::kPiltdownMan:
 		uResult = get_PDM_built_in_enet_address(pOutput);
 		if (!uResult) {
 			return uResult;
 		}
 		break;
 
-	case Mac::kPCIMachine:
+	case MacOS::kPCIMachine:
 		uResult = get_PCI_built_in_enet_address(pOutput);
 		if (!uResult) {
 			return uResult;

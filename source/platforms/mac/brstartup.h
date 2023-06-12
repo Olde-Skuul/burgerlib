@@ -1,16 +1,16 @@
 /***************************************
 
-    Start up code for games based applications
+	Start up code for games based applications
 
-    MacOS Classic / Carbon
+	MacOS Classic / Carbon
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -43,7 +43,7 @@
 
 /***************************************
 
-    This is the main entry point for a Mac OS Carbon version of the game
+	This is the main entry point for a Mac OS Carbon version of the game
 
 ***************************************/
 
@@ -59,93 +59,95 @@
 
 /***************************************
 
-    Validate the System Software
-    Macintosh specific
-    This must be user modified since it may force you to include
-    libraries you really don't care about
+	Validate the System Software
+	Macintosh specific
+	This must be user modified since it may force you to include
+	libraries you really don't care about
 
 ***************************************/
 
 static int ValidateMacSystem(void)
 {
-    const char* pErrorText = NULL;
-    long gestaltAnswer;
-    int iResult = 0;
+	const char* pErrorText = NULL;
+	long gestaltAnswer;
+	int iResult = 0;
 
-    // Is Gestalt available?
+	// Is Gestalt available?
 
-    if (Gestalt(gestaltVersion, &gestaltAnswer) != noErr) {
-        pErrorText = "Gestalt not present, requires system 7.5.3 or later.";
-    } else
+	if (Gestalt(gestaltVersion, &gestaltAnswer) != noErr) {
+		pErrorText = "Gestalt not present, requires system 7.5.3 or later.";
+	} else
 
-        // Check system version
+		// Check system version
 
-        if (Burger::Globals::GetMacOSVersion() < 0x0753) {
-        pErrorText = "Requires system 7.5.3 or later to run";
-    } else
+		if (Burger::MacOS::get_os_version() < 0x0753) {
+			pErrorText = "Requires system 7.5.3 or later to run";
+		} else
 
-        // Check for QuickTime
+			// Check for QuickTime
 
-        if (Burger::Globals::GetQuickTimeVersion() < 0x0201) {
-        pErrorText = "Requires Quicktime 2.0 later to run";
-    } else
+			if (Burger::MacOS::get_quicktime_version() < 0x0201) {
+				pErrorText = "Requires Quicktime 2.0 later to run";
+			} else
 
-    // Check for Sound Manager 3.0 or later
+			// Check for Sound Manager 3.0 or later
 
 #if defined(BURGER_POWERPC)
-        if (Burger::Mac::GetDrawSprocketVersion() < 0x175) {
-        pErrorText = "Requires DrawSprocket 1.7.5 or later to run";
-    } else
+				if (Burger::MacOS::get_draw_sprocket_version() < 0x175) {
+				pErrorText = "Requires DrawSprocket 1.7.5 or later to run";
+			} else
 
-        // Check for Sound Manager 3.0 or later
+				// Check for Sound Manager 3.0 or later
 
-        if ((Burger::Globals::GetMacOSVersion() < 0x9FF) &&
-            (Burger::Globals::GetInputSprocketVersion() < 0x173)) {
-        pErrorText = "Requires Input Sprocket 1.7.3 or later to run";
-    } else
+				if ((Burger::MacOS::get_os_version() < 0x9FF) &&
+					(Burger::MacOS::get_input_sprocket_version() < 0x173)) {
+					pErrorText =
+						"Requires Input Sprocket 1.7.3 or later to run";
+				} else
 #endif
 
-        // Check for Sound Manager 3.0 or later
+					// Check for Sound Manager 3.0 or later
 
-        if (Burger::Globals::GetSoundManagerVersion() < 0x300) {
-        pErrorText = "Requires Sound manager 3.2.1 or later to run";
-    } else
+					if (Burger::MacOS::get_sound_manager_version() < 0x300) {
+						pErrorText =
+							"Requires Sound manager 3.2.1 or later to run";
+					} else
 
-    // Check the screen size
+					// Check the screen size
 
 #if !TARGET_API_MAC_CARBON
-        if ((qd.screenBits.bounds.bottom < 480) ||
-            (qd.screenBits.bounds.right < 640)) {
-        pErrorText =
-            "Requires a video display of 640 by 480 pixels or larger to run";
-    } else
+						if ((qd.screenBits.bounds.bottom < 480) ||
+							(qd.screenBits.bounds.right < 640)) {
+						pErrorText =
+							"Requires a video display of 640 by 480 pixels or larger to run";
+					} else
 #endif
 
-        // Check the free memory amount
+						// Check the free memory amount
 
-        if (TempFreeMem() < 500 * 1024) {
-        if (!OkCancelAlertMessage(
-                "You are very low on memory, do you wish to continue?",
-                GAMENAME)) {
-            iResult = 10;
-        }
-    }
+						if (TempFreeMem() < 500 * 1024) {
+							if (!OkCancelAlertMessage(
+									"You are very low on memory, do you wish to continue?",
+									GAMENAME)) {
+								iResult = 10;
+							}
+						}
 
-    // Was an error message generated?
-    if (pErrorText) {
-        // Display the error and quit
-        Burger::OkAlertMessage(pErrorText, GAMENAME);
-        iResult = 10;
-    }
-    return iResult;
+	// Was an error message generated?
+	if (pErrorText) {
+		// Display the error and quit
+		Burger::OkAlertMessage(pErrorText, GAMENAME);
+		iResult = 10;
+	}
+	return iResult;
 }
 
 /***************************************
 
-    Validate the System Software
-    Macintosh specific
-    This must be user modified since it may force you to include
-    libraries you really don't care about
+	Validate the System Software
+	Macintosh specific
+	This must be user modified since it may force you to include
+	libraries you really don't care about
 
 ***************************************/
 
@@ -153,21 +155,21 @@ extern "C" int main(void);
 
 int main(void)
 {
-    // Create an application instance
+	// Create an application instance
 
-    Burger::MacApp MyApp(MEMORYSIZE, HANDLECOUNT, MINIMUMRESERVE);
+	Burger::MacApp MyApp(MEMORYSIZE, HANDLECOUNT, MINIMUMRESERVE);
 
-    // Error on startup?
-    int iResult = MyApp.GetReturnCode();
+	// Error on startup?
+	int iResult = MyApp.GetReturnCode();
 
-    if (!iResult) {
-        // Verify the tools are the minimum version
-        iResult = ValidateMacSystem();
-        if (!iResult) {
-            iResult = CodeEntry(&MyApp);
-        }
-    }
-    return iResult;
+	if (!iResult) {
+		// Verify the tools are the minimum version
+		iResult = ValidateMacSystem();
+		if (!iResult) {
+			iResult = CodeEntry(&MyApp);
+		}
+	}
+	return iResult;
 }
 
 #endif

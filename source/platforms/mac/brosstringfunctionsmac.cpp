@@ -18,6 +18,7 @@
 #if defined(BURGER_MAC)
 #include "brcodelibrary.h"
 #include "brglobals.h"
+#include "mac_version.h"
 
 #include <Folders.h>
 #include <Gestalt.h>
@@ -187,7 +188,7 @@ Burger::eError BURGER_API Burger::GetUserLoginName(
 #if defined(BURGER_MACCARBON)
 	eError uResult = kErrorNotSupportedOnThisPlatform;
 	// Carbon
-	if (Globals::GetMacOSVersion() >= 0x1000U) {
+	if (MacOS::get_os_version() >= 0x1000U) {
 		uResult = kErrorItemNotFound;
 		CodeFramework LibRef;
 		if (!LibRef.Init("SystemConfiguration.framework")) {
@@ -252,7 +253,7 @@ Burger::eError BURGER_API Burger::GetUserRealName(
 
 	// Carbon
 #if defined(BURGER_MACCARBON)
-	if (Globals::GetMacOSVersion() < 0x1000U)
+	if (MacOS::get_os_version() < 0x1000U)
 #endif
 
 	{
@@ -323,7 +324,7 @@ Burger::eError BURGER_API Burger::GetMachineName(
 
 	// Carbon
 #if defined(BURGER_MACCARBON)
-	if (Globals::GetMacOSVersion() < 0x1000U)
+	if (MacOS::get_os_version() < 0x1000U)
 #endif
 	{
 		// Get the machine name string from the system resource
@@ -497,7 +498,7 @@ Burger::eError BURGER_API Burger::GetMacModelIdentifier(
 	}
 #else
 	// Carbon, which is a pain in the rear since the library is not present.
-	if (Globals::GetMacOSVersion() < 0x1000U) {
+	if (MacOS::get_os_version() < 0x1000U) {
 		// Manually handle the Classic code
 		 uResult = GetMacModelIdentifierNameRegistry(pOutput);
 	} else {

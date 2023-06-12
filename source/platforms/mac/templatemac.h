@@ -38,7 +38,15 @@
 #endif
 
 // clang-format off
+#include "mac_types.h"
+#include "mac_carbon_accessors.h"
+#include "mac_volparms.h"
 #include "mac_timer.h"
+#include "mac_appleevents.h"
+#include "mac_kernel.h"
+#include "mac_quickdraw.h"
+#include "mac_version.h"
+#include "mac_sprockets.h"
 // clang-format on
 
 #endif
