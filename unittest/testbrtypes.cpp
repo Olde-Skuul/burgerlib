@@ -26,6 +26,7 @@
 
 #if defined(BURGER_MAC)
 #include "brnetmanager.h"
+#include "mac_gamma.h"
 #include "mac_kernel.h"
 #include "mac_quickdraw.h"
 #include "mac_sprockets.h"
@@ -807,6 +808,11 @@ static void BURGER_API ShowPlatformFeatures(uint_t uVerbose) BURGER_NOEXCEPT
 		Message("Burger::get_default_mac_address() = %02X%02X%02X%02X%02X%02X",
 			Address.m_Node[0], Address.m_Node[1], Address.m_Node[2],
 			Address.m_Node[3], Address.m_Node[4], Address.m_Node[5]);
+
+		uTest = Burger::MacOS::has_GetDeviceList();
+		Message("Burger::MacOS::has_GetDeviceList() = %08X", uTest);
+		uTest = Burger::MacOS::is_gamma_available();
+		Message("Burger::MacOS::is_gamma_available() = %08X", uTest);
 	}
 #endif
 }

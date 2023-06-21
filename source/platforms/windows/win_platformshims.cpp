@@ -73,7 +73,8 @@ static const char* s_LibraryNames[Burger::Win32::kDLLIndexCount] = {"ddraw.dll",
 	"dinput.dll", "dinput8.dll", "xinput1_4.dll", "xinput1_3.dll", "d3d9.dll",
 	"d3dx9_43.dll", "d3d11.dll", "dxgi.dll", "dsound.dll", "dplayx.dll",
 	"dplay.dll", "rpcrt4.dll", "winmm.dll", "shlwapi.dll", "version.dll",
-	"hid.dll", "setupapi.dll", "user32.dll", "kernel32.dll", "shell32.dll"};
+	"hid.dll", "setupapi.dll", "user32.dll", "kernel32.dll", "shell32.dll",
+	"api-ms-win-core-synch-l1-2-0.dll"};
 
 // Instances of dynamically loaded system DLLs
 static HINSTANCE s_hInstances[Burger::Win32::kDLLIndexCount];
@@ -193,8 +194,19 @@ static const CallNames_t s_CallNames[Burger::Win32::kCallIndexCount] = {
 	{Burger::Win32::kDLLIndex_KERNEL32, "GetSystemWow64DirectoryW"},
 	{Burger::Win32::kDLLIndex_KERNEL32, "IsDebuggerPresent"},
 	{Burger::Win32::kDLLIndex_KERNEL32, "SetThreadDescription"},
+	{Burger::Win32::kDLLIndex_KERNEL32, "InitializeSRWLock"},
+	{Burger::Win32::kDLLIndex_KERNEL32, "AcquireSRWLockExclusive"},
+	{Burger::Win32::kDLLIndex_KERNEL32, "TryAcquireSRWLockExclusive"},
+	{Burger::Win32::kDLLIndex_KERNEL32, "ReleaseSRWLockExclusive"},
 
-	{Burger::Win32::kDLLIndex_SHELL32, "SHGetKnownFolderPath"}};
+	{Burger::Win32::kDLLIndex_SHELL32, "SHGetKnownFolderPath"},
+
+	{Burger::Win32::kDLLIndex_SYNCAPI, "WaitOnAddress"},
+	{Burger::Win32::kDLLIndex_SYNCAPI, "WakeByAddressSingle"},
+	{Burger::Win32::kDLLIndex_KERNEL32, "WakeConditionVariable"},
+	{Burger::Win32::kDLLIndex_KERNEL32, "WakeAllConditionVariable"},
+	{Burger::Win32::kDLLIndex_KERNEL32, "SleepConditionVariableSRW"},
+	{Burger::Win32::kDLLIndex_KERNEL32, "SleepConditionVariableCS"}};
 
 // Pointers to resolved windows function calls
 static void* s_pWindowsCalls[Burger::Win32::kCallIndexCount];

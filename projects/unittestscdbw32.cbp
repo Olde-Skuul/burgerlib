@@ -476,8 +476,8 @@
 		<Unit filename="../source/memory/brmemorymanager.cpp" />
 		<Unit filename="../source/memory/brmemorymanager.h" />
 		<Unit filename="../source/platforms/windows/brcodelibrarywindows.cpp" />
+		<Unit filename="../source/platforms/windows/brconditionvariablewindows.cpp" />
 		<Unit filename="../source/platforms/windows/brconsolemanagerwindows.cpp" />
-		<Unit filename="../source/platforms/windows/brcriticalsectionwindows.cpp" />
 		<Unit filename="../source/platforms/windows/brdebugwindows.cpp" />
 		<Unit filename="../source/platforms/windows/brdetectmultilaunchwindows.cpp" />
 		<Unit filename="../source/platforms/windows/brdirectorysearchwindows.cpp" />
@@ -503,11 +503,14 @@
 		<Unit filename="../source/platforms/windows/brkeyboardwindows.cpp" />
 		<Unit filename="../source/platforms/windows/brmemorymanagerwindows.cpp" />
 		<Unit filename="../source/platforms/windows/brmousewindows.cpp" />
+		<Unit filename="../source/platforms/windows/brmutexwindows.cpp" />
+		<Unit filename="../source/platforms/windows/brnetmanagerwindows.cpp" />
 		<Unit filename="../source/platforms/windows/broscursorwindows.cpp" />
 		<Unit filename="../source/platforms/windows/brosstringfunctionswindows.cpp" />
 		<Unit filename="../source/platforms/windows/brperforcewindows.cpp" />
 		<Unit filename="../source/platforms/windows/brpoint2dwindows.cpp" />
 		<Unit filename="../source/platforms/windows/brrectwindows.cpp" />
+		<Unit filename="../source/platforms/windows/brsemaphorewindows.cpp" />
 		<Unit filename="../source/platforms/windows/brsequencerwindows.cpp" />
 		<Unit filename="../source/platforms/windows/brsoundwindows.cpp" />
 		<Unit filename="../source/platforms/windows/brstartup.h" />
@@ -563,6 +566,8 @@
 		<Unit filename="../source/platforms/windows/win_shell32.h" />
 		<Unit filename="../source/platforms/windows/win_shlwapi.cpp" />
 		<Unit filename="../source/platforms/windows/win_shlwapi.h" />
+		<Unit filename="../source/platforms/windows/win_synchapi.cpp" />
+		<Unit filename="../source/platforms/windows/win_synchapi.h" />
 		<Unit filename="../source/platforms/windows/win_types.h" />
 		<Unit filename="../source/platforms/windows/win_user32.cpp" />
 		<Unit filename="../source/platforms/windows/win_user32.h" />

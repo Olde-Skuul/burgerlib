@@ -1,0 +1,55 @@
+;
+; X86 assembly for implementing the intrinsic __cpuidex for
+; Open Watcom
+;
+; Build with wasm.exe
+;
+; void __cdecl __watcall __cpuidex(int a[4], int b, int c)
+;
+
+	.686
+
+_TEXT segment para 'CODE'
+
+	align 16
+public __cpuidex_
+__cpuidex_ proc
+
+; Save the registers
+	push	esi
+	push	eax
+	push	ebx
+	push	ecx
+	push	edx
+
+; Keep the pointer
+	mov		esi, eax
+
+; Main command
+	mov		eax, edx
+
+; Get the sub command
+	mov 	ecx, ebx
+
+; Do it (Trashes eax, ebx, ecx, edx)
+	cpuid
+
+; Store the result in the same order as Visual C's intrinsic
+    mov		[esi],eax
+    mov		[esi+4],ebx
+    mov		[esi+8],ecx
+    mov		[esi+12],edx
+
+; Restore registers and exit
+	pop		edx
+	pop		ecx
+    pop		ebx
+	pop		eax
+    pop		esi
+	ret
+
+__cpuidex_ endp
+
+_TEXT ends
+
+    end

@@ -643,6 +643,7 @@
     <ClInclude Include="..\source\platforms\windows\win_setupapi.h" />
     <ClInclude Include="..\source\platforms\windows\win_shell32.h" />
     <ClInclude Include="..\source\platforms\windows\win_shlwapi.h" />
+    <ClInclude Include="..\source\platforms\windows\win_synchapi.h" />
     <ClInclude Include="..\source\platforms\windows\win_types.h" />
     <ClInclude Include="..\source\platforms\windows\win_user32.h" />
     <ClInclude Include="..\source\platforms\windows\win_version.h" />
@@ -835,8 +836,8 @@
     <ClCompile Include="..\source\memory\brmemoryhandle.cpp" />
     <ClCompile Include="..\source\memory\brmemorymanager.cpp" />
     <ClCompile Include="..\source\platforms\windows\brcodelibrarywindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brconditionvariablewindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brconsolemanagerwindows.cpp" />
-    <ClCompile Include="..\source\platforms\windows\brcriticalsectionwindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brdebugwindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brdetectmultilaunchwindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brdirectorysearchwindows.cpp" />
@@ -857,11 +858,14 @@
     <ClCompile Include="..\source\platforms\windows\brkeyboardwindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brmemorymanagerwindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brmousewindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brmutexwindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brnetmanagerwindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\broscursorwindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brosstringfunctionswindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brperforcewindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brpoint2dwindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brrectwindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brsemaphorewindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brsequencerwindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brsoundwindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brstdouthelperswindows.cpp" />
@@ -891,6 +895,7 @@
     <ClCompile Include="..\source\platforms\windows\win_setupapi.cpp" />
     <ClCompile Include="..\source\platforms\windows\win_shell32.cpp" />
     <ClCompile Include="..\source\platforms\windows\win_shlwapi.cpp" />
+    <ClCompile Include="..\source\platforms\windows\win_synchapi.cpp" />
     <ClCompile Include="..\source\platforms\windows\win_user32.cpp" />
     <ClCompile Include="..\source\platforms\windows\win_version.cpp" />
     <ClCompile Include="..\source\platforms\windows\win_winmm.cpp" />

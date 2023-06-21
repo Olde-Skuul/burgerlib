@@ -32,6 +32,14 @@ extern uint_t BURGER_API GetSystemWow64DirectoryW(
 extern int BURGER_API IsDebuggerPresent(void) BURGER_NOEXCEPT;
 extern long BURGER_API SetThreadDescription(
 	void* hThread, const uint16_t* lpThreadDescription) BURGER_NOEXCEPT;
+extern void BURGER_API InitializeSRWLock(
+	_RTL_SRWLOCK* pSRWLock) BURGER_NOEXCEPT;
+extern void BURGER_API AcquireSRWLockExclusive(
+	_RTL_SRWLOCK* pSRWLock) BURGER_NOEXCEPT;
+extern uint_t BURGER_API TryAcquireSRWLockExclusive(
+	_RTL_SRWLOCK* pSRWLock) BURGER_NOEXCEPT;
+extern void BURGER_API ReleaseSRWLockExclusive(
+	_RTL_SRWLOCK* pSRWLock) BURGER_NOEXCEPT;
 extern void BURGER_API throw_thread_naming_exception(
 	uint32_t uThreadID, const char* pThreadName) BURGER_NOEXCEPT;
 extern void BURGER_API set_thread_name(const char* pName,

@@ -1602,7 +1602,7 @@ void ** BURGER_API Burger::RezFile::LoadHandle(uint_t uRezNum,uint_t *pLoadedFla
  	pEntry->m_uFlags=uFileNameOffset+ENTRYFLAGSREFADD;	// Increase the reference count
 	uint_t uHandleFlags = 0;								// ID the handle as the resource manager
 	if (uFileNameOffset&ENTRYFLAGSHIGHMEMORY) {			// Where to load?
-		uHandleFlags = MemoryManagerHandle::FIXED;		// Place in fixed memory
+		uHandleFlags = MemoryManagerHandle::kFlagFixed;		// Place in fixed memory
 	}
 
 	// See if I can load in the file from disk

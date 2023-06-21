@@ -307,7 +307,7 @@ protected:
 
 #if (defined(BURGER_WINDOWS) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
 	/** Lock for multi-threading (MacOSX and Windows only) */
-	CriticalSection m_KeyboardLock;
+	Mutex m_KeyboardLock;
 	BURGER_INLINE void Lock(void) BURGER_NOEXCEPT
 	{
 		m_KeyboardLock.lock();

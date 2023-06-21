@@ -510,6 +510,12 @@ def watcom_rules(project):
     ide = project.solution.ide
     if ide is IDETypes.watcom:
         platform = project.platform
+
+        # Asm functions for all platforms
+        project.source_files_list.extend(
+            ("../source/asm/wasm/cpuid.x86",
+             "../source/asm/wasm/cpuidex.x86"))
+
         if platform.is_windows():
 
             # Open Watcom defaults to Windows 95
@@ -551,6 +557,29 @@ def watcom_rules(project):
                 ("../source/asm/wasm/x32_zero_base.x86",
                  "../source/asm/wasm/call_int.x86",
                  "../source/asm/wasm/msdos_interrupt_asm.x86"))
+
+########################################
+
+
+def codewarrior_rules_project(project):
+    """
+    Handle special cases for Metrowerks Codewarrior
+
+    Args:
+        project: Project
+    """
+
+    ide = project.solution.ide
+
+    # Codewarrior for x86 has some intrisics missing
+    if ide.is_codewarrior():
+
+        # Only add on
+        platform = project.platform
+        if platform.is_windows():
+
+            # Add all the files
+            project.source_folders_list.append("../source/asm/mwx86asm")
 
 
 ########################################
@@ -976,6 +1005,9 @@ def project_settings(project):
 
     # Add rules needed to build for Watcom
     watcom_rules(project)
+
+    # Add rules needed to build for CodeWarrior
+    codewarrior_rules_project(project)
 
     # Add rules needed to build for Visual Studio 2003
     vs2003_rules(project)

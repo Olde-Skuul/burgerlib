@@ -95,7 +95,7 @@ public:
 
 protected:
 	GameApp *m_pGameApp;			///< Application instance
-	CriticalSection m_MouseLock;	///< Lock for multi-threading
+	Mutex m_MouseLock;	///< Lock for multi-threading
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 	static uintptr_t BURGER_API WindowsMouseThread(void *pData);

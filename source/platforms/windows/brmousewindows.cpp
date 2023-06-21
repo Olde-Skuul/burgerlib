@@ -19,7 +19,7 @@
 #if !defined(DOXYGEN)
 #include "brgameapp.h"
 #include "brglobals.h"
-#include "brcriticalsection.h"
+#include "brmutex.h"
 #include "bratomic.h"
 #include "brtick.h"
 #include "win_dinput.h"

@@ -26,15 +26,15 @@
 //
 
 #if !defined(MEMORYSIZE)
-#define MEMORYSIZE Burger::MemoryManagerHandle::DEFAULTMEMORYCHUNK
+#define MEMORYSIZE Burger::MemoryManagerHandle::kSystemMemoryChuckSize
 #endif
 
 #if !defined(HANDLECOUNT)
-#define HANDLECOUNT Burger::MemoryManagerHandle::DEFAULTHANDLECOUNT
+#define HANDLECOUNT Burger::MemoryManagerHandle::kDefaultHandleCount
 #endif
 
 #if !defined(MINIMUMRESERVE)
-#define MINIMUMRESERVE Burger::MemoryManagerHandle::DEFAULTMINIMUMRESERVE
+#define MINIMUMRESERVE Burger::MemoryManagerHandle::kSystemMemoryReservedSize
 #endif
 
 /***************************************

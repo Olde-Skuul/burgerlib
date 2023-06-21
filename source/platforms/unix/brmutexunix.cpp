@@ -1,6 +1,8 @@
 /***************************************
 
-	Class to handle critical sections, Unix version
+	Class to handle mutex objects
+
+	Unix version
 
 	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
@@ -12,7 +14,7 @@
 
 ***************************************/
 
-#include "brcriticalsection.h"
+#include "brmutex.h"
 
 #if defined(BURGER_UNIX)
 #include <errno.h>
@@ -26,11 +28,17 @@
 
 ***************************************/
 
-Burger::CriticalSection::CriticalSection() BURGER_NOEXCEPT
+Burger::Mutex::Mutex() BURGER_NOEXCEPT
 {
 	// Verify the the Burgerlib opaque version is the same size as the real one
-	BURGER_STATIC_ASSERT(sizeof(pthread_mutex_t) == sizeof(m_Lock));
-	pthread_mutex_init(reinterpret_cast<pthread_mutex_t*>(m_Lock), nullptr);
+	BURGER_STATIC_ASSERT(sizeof(pthread_mutex_t) == sizeof(m_PlatformMutex));
+
+	// Set the flavor to recursive for Unix
+	pthread_mutexattr_t attr;
+	pthread_mutexattr_init(&attr);
+	pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+	pthread_mutex_init(
+		reinterpret_cast<pthread_mutex_t*>(m_PlatformMutex), &attr);
 }
 
 /***************************************
@@ -42,9 +50,9 @@ Burger::CriticalSection::CriticalSection() BURGER_NOEXCEPT
 
 ***************************************/
 
-Burger::CriticalSection::~CriticalSection()
+Burger::Mutex::~Mutex()
 {
-	pthread_mutex_destroy(reinterpret_cast<pthread_mutex_t*>(m_Lock));
+	pthread_mutex_destroy(reinterpret_cast<pthread_mutex_t*>(m_PlatformMutex));
 }
 
 /***************************************
@@ -55,13 +63,13 @@ Burger::CriticalSection::~CriticalSection()
 	mutex was already locked, the thread halts until the alternate thread that
 	has this mutex locked releases the lock. There is no timeout.
 
-	\sa Burger::CriticalSection::unlock()
+	\sa try_lock(), or unlock()
 
 ***************************************/
 
-void Burger::CriticalSection::lock(void) BURGER_NOEXCEPT
+void Burger::Mutex::lock(void) BURGER_NOEXCEPT
 {
-	pthread_mutex_lock(reinterpret_cast<pthread_mutex_t*>(m_Lock));
+	pthread_mutex_lock(reinterpret_cast<pthread_mutex_t*>(m_PlatformMutex));
 }
 
 /***************************************
@@ -71,14 +79,14 @@ void Burger::CriticalSection::lock(void) BURGER_NOEXCEPT
 	If the mutex is locked, the function fails and returns \ref FALSE.
 	Otherwise, the mutex is locked and the function returns \ref TRUE.
 
-	\sa lock() and unlock()
+	\sa lock(), or unlock()
 
 ***************************************/
 
-uint_t Burger::CriticalSection::try_lock(void) BURGER_NOEXCEPT
+uint_t Burger::Mutex::try_lock(void) BURGER_NOEXCEPT
 {
-	return pthread_mutex_trylock(reinterpret_cast<pthread_mutex_t*>(m_Lock)) !=
-		EBUSY;
+	return pthread_mutex_trylock(
+			   reinterpret_cast<pthread_mutex_t*>(m_PlatformMutex)) != EBUSY;
 }
 
 /***************************************
@@ -93,13 +101,13 @@ uint_t Burger::CriticalSection::try_lock(void) BURGER_NOEXCEPT
 	without a preceding lock() call will result in undefined behavior and in
 	some cases can result in thread lock or a crash.
 
-	\sa lock()
+	\sa lock(), or try_lock()
 
 ***************************************/
 
-void Burger::CriticalSection::unlock(void) BURGER_NOEXCEPT
+void Burger::Mutex::unlock(void) BURGER_NOEXCEPT
 {
-	pthread_mutex_unlock(reinterpret_cast<pthread_mutex_t*>(m_Lock));
+	pthread_mutex_unlock(reinterpret_cast<pthread_mutex_t*>(m_PlatformMutex));
 }
 
 #endif

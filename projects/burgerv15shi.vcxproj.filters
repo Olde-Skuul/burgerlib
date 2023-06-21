@@ -1123,9 +1123,6 @@
     <ClCompile Include="..\source\memory\brmemorymanager.cpp">
       <Filter>source\memory</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\platforms\android\brcriticalsectionandroid.cpp">
-      <Filter>source\platforms\android</Filter>
-    </ClCompile>
     <ClCompile Include="..\source\platforms\android\brdebugandroid.cpp">
       <Filter>source\platforms\android</Filter>
     </ClCompile>
@@ -1138,7 +1135,7 @@
     <ClCompile Include="..\source\platforms\unix\brcodelibraryunix.cpp">
       <Filter>source\platforms\unix</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\platforms\unix\brcriticalsectionunix.cpp">
+    <ClCompile Include="..\source\platforms\unix\brconditionvariableunix.cpp">
       <Filter>source\platforms\unix</Filter>
     </ClCompile>
     <ClCompile Include="..\source\platforms\unix\brdebugunix.cpp">
@@ -1156,7 +1153,13 @@
     <ClCompile Include="..\source\platforms\unix\brfileunix.cpp">
       <Filter>source\platforms\unix</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\brmutexunix.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\platforms\unix\brosstringfunctionsunix.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\brsemaphoreunix.cpp">
       <Filter>source\platforms\unix</Filter>
     </ClCompile>
     <ClCompile Include="..\source\platforms\unix\brthreadunix.cpp">

@@ -503,10 +503,10 @@ void Burger::Flash::Manager::SetGlobalEnvironmentVariables(const char *pInput)
 /*! ************************************
 
 	\fn void Burger::Flash::Manager::Lock(void)
-	\brief Lock the global CriticalSection
+	\brief Lock the global Mutex
 
 	The Flash player may spawn multiple threads, this
-	CriticalSection is used to keep the threads
+	Mutex is used to keep the threads
 	in sync by locking.
 
 	\sa Unlock(void)
@@ -516,10 +516,10 @@ void Burger::Flash::Manager::SetGlobalEnvironmentVariables(const char *pInput)
 /*! ************************************
 
 	\fn void Burger::Flash::Manager::Unlock(void)
-	\brief Lock the global CriticalSection
+	\brief Lock the global Mutex
 
 	The Flash player may spawn multiple threads, this
-	CriticalSection is used to keep the threads
+	Mutex is used to keep the threads
 	in sync by unlocking.
 
 	\sa Lock(void)

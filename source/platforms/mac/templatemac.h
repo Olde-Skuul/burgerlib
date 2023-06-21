@@ -10,6 +10,7 @@
 
 /* DIR: "platforms:mac" */
 /* IGNORE: "brtypes.h" */
+/* IGNORE: "brerror.h" */
 
 /* BEGIN */
 /***************************************
@@ -47,6 +48,8 @@
 #include "mac_quickdraw.h"
 #include "mac_version.h"
 #include "mac_sprockets.h"
+#include "mac_folders.h"
+#include "mac_gamma.h"
 // clang-format on
 
 #endif

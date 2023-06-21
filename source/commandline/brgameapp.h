@@ -243,11 +243,11 @@ protected:
 
 public:
 	GameApp(uintptr_t uDefaultMemorySize =
-				Burger::MemoryManagerHandle::DEFAULTMEMORYCHUNK,
+				Burger::MemoryManagerHandle::kSystemMemoryChuckSize,
 		uint_t uDefaultHandleCount =
-			Burger::MemoryManagerHandle::DEFAULTHANDLECOUNT,
+			Burger::MemoryManagerHandle::kDefaultHandleCount,
 		uintptr_t uMinReserveSize =
-			Burger::MemoryManagerHandle::DEFAULTMINIMUMRESERVE) BURGER_NOEXCEPT;
+			Burger::MemoryManagerHandle::kSystemMemoryReservedSize) BURGER_NOEXCEPT;
 	virtual ~GameApp();
 
 	BURGER_INLINE void Poll(void) BURGER_NOEXCEPT

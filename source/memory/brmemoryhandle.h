@@ -23,8 +23,8 @@
 #include "brmemorymanager.h"
 #endif
 
-#ifndef __BRCRITICALSECTION_H__
-#include "brcriticalsection.h"
+#ifndef __BRMUTEX_H__
+#include "brmutex.h"
 #endif
 
 /* BEGIN */
@@ -33,55 +33,104 @@ class MemoryManagerHandle: public MemoryManager {
 	BURGER_DISABLE_COPY(MemoryManagerHandle);
 
 public:
-	enum {
-		LOCKED = 0x80,            ///< Lock flag
-		FIXED = 0x40,             ///< Set if memory is fixed (High memory)
-		MALLOC = 0x20,            ///< Memory was Malloc'd
-		INUSE = 0x10,             ///< Set if handle is used
-		PURGABLE = 0x01,          ///< Set if handle is purgeable
-		DEFAULTHANDLECOUNT = 500, ///< Starting number of handles
-		DEFAULTMEMORYCHUNK = 0x1000000,  ///< Default memory to allocate
-		DEFAULTMINIMUMRESERVE = 0x40000, ///< Default minimum free system memory
-		MEMORYIDUNUSED = 0xFFFDU,        ///< Free handle ID
-		MEMORYIDFREE = 0xFFFEU,          ///< Internal free memory ID
-		MEMORYIDRESERVED = 0xFFFFU,      ///< Immutable handle ID
-	// ALIGNMENT cannot be smaller than sizeof(void *)
+	/** Set if the memory handle is temporarily locked */
+	static const uint32_t kFlagLocked = 0x80;
+	/** Set if the memory cannot be moved (High memory) */
+	static const uint32_t kFlagFixed = 0x40;
+	/** Set if the memory was allocated with malloc() */
+	static const uint32_t kFlagMalloc = 0x20;
+	/** Set if the handle is purgable */
+	static const uint32_t kFlagPurgable = 0x01;
+	/** Memory alignment, power of 2, larger or equal to sizeof(void*) */
 #if defined(BURGER_MSDOS) || defined(BURGER_DS) || defined(BURGER_68K)
-		ALIGNMENT = 4 ///< Default memory alignment
+	static const uintptr_t kAlignment = 4;
 #else
-		ALIGNMENT = 16 ///< Default memory alignment
+	static const uintptr_t kAlignment = 16;
 #endif
-	};
+	/** Default starting number of memory handles */
+	static const uint32_t kDefaultHandleCount = 512;
+	/** Default memory chunk allocation size from system */
+	static const uintptr_t kSystemMemoryChuckSize = 0x1000000;
+	/** Default reserved system memory size */
+	static const uintptr_t kSystemMemoryReservedSize = 0x40000;
+	/** Unused handle memory ID */
+	static const uint32_t kMemoryIDUnused = UINT32_MAX - 2;
+	/** Free handle memory ID */
+	static const uint32_t kMemoryIDFree = UINT32_MAX - 1;
+	/** Reserved handle memory ID */
+	static const uint32_t kMemoryIDReserved = UINT32_MAX;
 
 	enum eMemoryStage {
 		/** Garbage collection stage to compact memory */
-		StageCompact,
+		kStageCompact,
 		/** Garbage collection stage to purge purgeable memory */
-		StagePurge,
+		kStagePurge,
 		/** Garbage collection stage to purge and then compact memory */
-		StageHailMary,
+		kStageHailMary,
 		/** Critical memory stage, release all possibly releasable memory */
-		StageGiveup
-
+		kStageGiveup
 	};
 
 	/** Function prototype for user supplied garbage collection subroutine */
-	typedef void(BURGER_API* MemPurgeProc)(void* pThis, eMemoryStage eStage);
+	typedef void(BURGER_API* MemPurgeProc)(void* pThis, eMemoryStage uStage);
 
-private:
+protected:
+#if (UINTPTR_MAX == 0xFFFFFFFFU) || defined(DOXYGEN)
+	/** Memory signature for allocated blocks */
+	static const uintptr_t kSignatureUsed = 0xDEADBEEF;
+	/** Memory signature for free blocks */
+	static const uintptr_t kSignatureFree = 0xBADBADBA;
+#else
+	static const uintptr_t kSignatureUsed = 0xABCDDEADBEEFDCBAULL;
+	static const uintptr_t kSignatureFree = 0xBADBADBADBADBADBULL;
+#endif
+
 	struct Handle_t {
-		void* m_pData; ///< Pointer to true memory (Must be the first entry!)
-		uintptr_t m_uLength;     ///< Length of allocated memory
-		Handle_t* m_pNextHandle; ///< Next handle in the chain
-		Handle_t* m_pPrevHandle; ///< Previous handle in the chain
-		Handle_t* m_pNextPurge;  ///< Next handle in purge list
-		Handle_t* m_pPrevPurge;  ///< Previous handle in the purge list
-		uint_t m_uFlags;         ///< Memory flags or parent used handle
-		uint_t m_uID;            ///< Memory ID
+		/** Pointer to true memory (Must be the first entry!) */
+		void* m_pData;
+
+		/** Length of allocated memory */
+		uintptr_t m_uLength;
+
+		/** Pointer to the next handle in the chain */
+		Handle_t* m_pNextHandle;
+
+		/** Pointer to the previous handle in the chain */
+		Handle_t* m_pPrevHandle;
+
+		/** Pointer to the next handle in purge list*/
+		Handle_t* m_pNextPurge;
+
+		/** Pointer to the previous handle in the purge list */
+		Handle_t* m_pPrevPurge;
+
+		/** Memory flags or parent used handle */
+		uint32_t m_uFlags;
+
+		/** Memory ID */
+		uint32_t m_uID;
 	};
 
 	struct SystemBlock_t {
-		SystemBlock_t* m_pNext; ///< Next block in the chain
+		/** Next block in the chain */
+		SystemBlock_t* m_pNext;
+	};
+
+	struct PointerPrefix_t {
+
+		/** Handle to the parent memory object */
+		void** m_ppParentHandle;
+
+		/** Signature for debugging */
+		uintptr_t m_uSignature;
+
+#if (UINTPTR_MAX == 0xFFFFFFFFU) && \
+	!(defined(BURGER_MSDOS) || defined(BURGER_DS) || defined(BURGER_68K))
+
+		/** Pad to alignment */
+		uint32_t m_uPadding1;
+		uint32_t m_uPadding2;
+#endif
 	};
 
 	/** Linked list of memory blocks taken from the system */
@@ -121,7 +170,7 @@ private:
 	Handle_t m_PurgeHandleFiFo;
 
 	/** Lock for multi-threading support */
-	CriticalSection m_Lock;
+	Mutex m_Mutex;
 
 	static void* BURGER_API AllocProc(
 		MemoryManager* pThis, uintptr_t uSize) BURGER_NOEXCEPT;
@@ -130,6 +179,7 @@ private:
 	static void* BURGER_API ReallocProc(MemoryManager* pThis,
 		const void* pInput, uintptr_t uSize) BURGER_NOEXCEPT;
 	static void BURGER_API ShutdownProc(MemoryManager* pThis) BURGER_NOEXCEPT;
+
 	Handle_t* BURGER_API AllocNewHandle(void) BURGER_NOEXCEPT;
 	void BURGER_API GrabMemoryRange(void* pData, uintptr_t uLength,
 		Handle_t* pParent, Handle_t* pHandle) BURGER_NOEXCEPT;
@@ -139,9 +189,9 @@ private:
 		uint_t bNoCheck) BURGER_NOEXCEPT;
 
 public:
-	MemoryManagerHandle(uintptr_t uDefaultMemorySize = DEFAULTMEMORYCHUNK,
-		uint_t uDefaultHandleCount = DEFAULTHANDLECOUNT,
-		uintptr_t uMinReserveSize = DEFAULTMINIMUMRESERVE) BURGER_NOEXCEPT;
+	MemoryManagerHandle(uintptr_t uDefaultMemorySize = kSystemMemoryChuckSize,
+		uint_t uDefaultHandleCount = kDefaultHandleCount,
+		uintptr_t uMinReserveSize = kSystemMemoryReservedSize) BURGER_NOEXCEPT;
 	~MemoryManagerHandle();
 
 	BURGER_INLINE uintptr_t GetTotalAllocatedMemory(void) const BURGER_NOEXCEPT
@@ -231,9 +281,10 @@ class MemoryManagerGlobalHandle: public MemoryManagerHandle {
 	MemoryManager* m_pPrevious;
 
 public:
-	MemoryManagerGlobalHandle(uintptr_t uDefaultMemorySize = DEFAULTMEMORYCHUNK,
-		uint_t uDefaultHandleCount = DEFAULTHANDLECOUNT,
-		uintptr_t uMinReserveSize = DEFAULTMINIMUMRESERVE) BURGER_NOEXCEPT;
+	MemoryManagerGlobalHandle(
+		uintptr_t uDefaultMemorySize = kSystemMemoryChuckSize,
+		uint_t uDefaultHandleCount = kDefaultHandleCount,
+		uintptr_t uMinReserveSize = kSystemMemoryReservedSize) BURGER_NOEXCEPT;
 	~MemoryManagerGlobalHandle();
 };
 }

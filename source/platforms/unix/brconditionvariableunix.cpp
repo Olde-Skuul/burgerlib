@@ -1,8 +1,10 @@
 /***************************************
 
-	Class to handle critical sections, iOS version
+	Class to handle conditional variables
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Unix version
+
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -12,35 +14,21 @@
 
 ***************************************/
 
-#include "brcriticalsection.h"
+#include "brconditionvariable.h"
 
-#if defined(BURGER_IOS)
+#if defined(BURGER_UNIX)
 #include "brassert.h"
-#include "bratomic.h"
-#include "brstringfunctions.h"
-#include "brthread.h"
 
 #include <errno.h>
-#include <mach/mach_init.h>
-#include <mach/mach_traps.h>
-#include <mach/semaphore.h>
 #include <pthread.h>
 #include <signal.h>
 #include <sys/time.h>
 
-// Workaround. The header for task.h for 64 bit Intel CPUs is MISSING! Manually
-// inserted the prototypes
-#if defined(__x86_64__)
-extern kern_return_t semaphore_create(
-	task_t task, semaphore_t* semaphore, int policy, int value);
-extern kern_return_t semaphore_destroy(task_t task, semaphore_t semaphore);
-#else
-#include <mach/task.h>
-#endif
-
 /***************************************
 
-	Initialize the condition variable
+	\brief Initialize a condition signaler
+
+	\sa ~ConditionVariable()
 
 ***************************************/
 
@@ -49,18 +37,19 @@ Burger::ConditionVariable::ConditionVariable() BURGER_NOEXCEPT
 {
 	// Safety switch to verify the declaration in brshieldtypes.h matches the
 	// real thing
-	BURGER_STATIC_ASSERT(
-		sizeof(Burgerpthread_cond_t) == sizeof(pthread_cond_t));
+	BURGER_STATIC_ASSERT(sizeof(m_ConditionVariable) == sizeof(pthread_cond_t));
 
 	if (!pthread_cond_init(
-			reinterpret_cast<pthread_cond_t*>(&m_ConditionVariable), nullptr)) {
+			reinterpret_cast<pthread_cond_t*>(m_ConditionVariable), nullptr)) {
 		m_bInitialized = TRUE;
 	}
 }
 
 /***************************************
 
-	Release the resources
+	\brief Release the condition signaler's resources
+
+	\sa ConditionVariable()
 
 ***************************************/
 
@@ -68,24 +57,31 @@ Burger::ConditionVariable::~ConditionVariable()
 {
 	if (m_bInitialized) {
 		pthread_cond_destroy(
-			reinterpret_cast<pthread_cond_t*>(&m_ConditionVariable));
+			reinterpret_cast<pthread_cond_t*>(m_ConditionVariable));
 		m_bInitialized = FALSE;
 	}
 }
 
 /***************************************
 
-	Signal a waiting thread
+	\brief Signal a waiting thread
+
+	If a thread is waiting for a signal, send a signal to the thread so it may
+	continue execution. If no thread is waiting, do nothing.
+
+	\return Zero on success, non-zero on error.
+	\sa broadcast() or wait(Mutex *,uint_t)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::ConditionVariable::Signal(
+Burger::eError BURGER_API Burger::ConditionVariable::signal(
 	void) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorNotInitialized;
 	if (m_bInitialized) {
+		uResult = kErrorCantLock;
 		if (!pthread_cond_signal(
-				reinterpret_cast<pthread_cond_t*>(&m_ConditionVariable))) {
+				reinterpret_cast<pthread_cond_t*>(m_ConditionVariable))) {
 			uResult = kErrorNone;
 		}
 	}
@@ -94,17 +90,24 @@ Burger::eError BURGER_API Burger::ConditionVariable::Signal(
 
 /***************************************
 
-	Signal all waiting threads
+	\brief Signal all waiting threads
+
+	If any threads are waiting for a signal, send a signal to all of them so
+	they all may continue execution. If no thread is waiting, do nothing.
+
+	\return Zero on success, non-zero on error.
+	\sa signal() or wait(Mutex *,uint32_t)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::ConditionVariable::Broadcast(
+Burger::eError BURGER_API Burger::ConditionVariable::broadcast(
 	void) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorNotInitialized;
 	if (m_bInitialized) {
+		uResult = kErrorCantLock;
 		if (!pthread_cond_broadcast(
-				reinterpret_cast<pthread_cond_t*>(&m_ConditionVariable))) {
+				reinterpret_cast<pthread_cond_t*>(m_ConditionVariable))) {
 			uResult = kErrorNone;
 		}
 	}
@@ -113,20 +116,32 @@ Burger::eError BURGER_API Burger::ConditionVariable::Broadcast(
 
 /***************************************
 
-	Wait for a signal (With timeout)
+	\brief Wait for a signal (With timeout)
+
+	Halt the thread until a signal is received or if a timeout has elapsed. If
+	any threads are waiting for a signal, send a signal to all of them so they
+	all may continue execution. If no thread is waiting, do nothing.
+
+	\param pMutex Pointer to a Mutex to use with this object
+	\param uMilliseconds UINT32_MAX to wait forever, 0 for non-blocking
+
+	\return Zero on success, non-zero on error.
+	\sa signal() or broadcast()
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::ConditionVariable::Wait(
-	CriticalSection* pCriticalSection, uint_t uMilliseconds) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::ConditionVariable::wait(
+	Mutex* pMutex, uint32_t uMilliseconds) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorNotInitialized;
 	if (m_bInitialized) {
-		if (uMilliseconds == BURGER_MAXUINT) {
+
+		if (uMilliseconds == UINT32_MAX) {
+			uResult = kErrorCantLock;
 			if (!pthread_cond_wait(
-					reinterpret_cast<pthread_cond_t*>(&m_ConditionVariable),
-					reinterpret_cast<pthread_mutex_t*>(
-						&pCriticalSection->m_Lock))) {
+					reinterpret_cast<pthread_cond_t*>(m_ConditionVariable),
+					static_cast<pthread_mutex_t*>(
+						pMutex->get_platform_mutex()))) {
 				uResult = kErrorNone;
 			}
 		} else {
@@ -145,7 +160,7 @@ Burger::eError BURGER_API Burger::ConditionVariable::Wait(
 
 			// Add to the current time
 			uMilliseconds += CurrentTime.tv_usec;
-			uSeconds += CurrentTime.tv_sec;
+			uSeconds += static_cast<uint_t>(CurrentTime.tv_sec);
 			// Handle wrap around
 			if (uMilliseconds >= 1000000000) {
 				uMilliseconds -= 1000000000;
@@ -157,9 +172,8 @@ Burger::eError BURGER_API Burger::ConditionVariable::Wait(
 			do {
 				// Send the signal and possibly time out
 				iResult = pthread_cond_timedwait(
-					reinterpret_cast<pthread_cond_t*>(&m_ConditionVariable),
-					reinterpret_cast<pthread_mutex_t*>(
-						&pCriticalSection->m_Lock),
+					reinterpret_cast<pthread_cond_t*>(m_ConditionVariable),
+					static_cast<pthread_mutex_t*>(pMutex->get_platform_mutex()),
 					&StopTimeHere);
 				// Interrupted?
 			} while (iResult == EINTR);

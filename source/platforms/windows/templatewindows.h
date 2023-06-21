@@ -62,6 +62,7 @@
 #include "win_kernel32.h"
 #include "win_user32.h"
 #include "win_shell32.h"
+#include "win_synchapi.h"
 #include "win_loadlibrary.h"
 #include "win_launcher.h"
 #include "win_winutils.h"

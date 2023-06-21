@@ -31,12 +31,16 @@
 #include "brtimedate.h"
 #endif
 
-#ifndef __BRCRITICALSECTION_H__
-#include "brcriticalsection.h"
+#ifndef __BRMUTEX_H__
+#include "brmutex.h"
 #endif
 
 #ifndef __BRTHREAD_H__
 #include "brthread.h"
+#endif
+
+#ifndef __BRSEMAPHORE_H__
+#include "brsemaphore.h"
 #endif
 
 #ifndef __BRARRAY_H__

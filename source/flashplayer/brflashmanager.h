@@ -68,7 +68,7 @@ class Manager {
 	HashMapString<CodeLibrary*> m_CodeLibraryHash;		///< Hash of code libraries and pointers to their data
 	String m_GlobalEnvironmentVariables;	///< A list of environment variables to pass to all Flash movies
 	const String m_ConstructorName;		///< "__constructor__" global for internal use
-	CriticalSection m_CriticalSection;	///< Critical section for the flash player
+	Mutex m_CriticalSection;	///< Critical section for the flash player
 public:
 	Manager(GameApp *pApp);
 	~Manager();

@@ -2064,7 +2064,7 @@ void BURGER_API Burger::FileManager::add_queue(File* pFile,
 	m_uQueueEnd = (uEnd + 1) & (kMaxQueue - 1);
 #if defined(BURGER_WINDOWS)
 	// Send a message to the thread to execute
-	m_PingIOThread.release();
+	m_PingIOThread.signal();
 #endif
 }
 

@@ -17,7 +17,7 @@
 #include "brdebug.h"
 
 #if defined(BURGER_MAC) || defined(DOXYGEN)
-#include "brcriticalsection.h"
+#include "brmutex.h"
 #include "brfile.h"
 #include "brmemoryfunctions.h"
 #include "broscursor.h"

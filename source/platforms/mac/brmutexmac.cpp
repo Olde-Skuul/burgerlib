@@ -1,6 +1,8 @@
 /***************************************
 
-	Class to handle critical sections, MacOS version
+	Class to handle mutex objects
+
+	MacOS version
 
 	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
@@ -12,7 +14,7 @@
 
 ***************************************/
 
-#include "brcriticalsection.h"
+#include "brmutex.h"
 
 #if defined(BURGER_MAC)
 #include <OpenTransport.h>
@@ -25,9 +27,9 @@
 
 ***************************************/
 
-Burger::CriticalSection::CriticalSection() BURGER_NOEXCEPT
+Burger::Mutex::Mutex() BURGER_NOEXCEPT
 {
-	OTClearLock(&m_Lock);
+	OTClearLock(m_PlatformMutex);
 }
 
 /***************************************
@@ -39,7 +41,7 @@ Burger::CriticalSection::CriticalSection() BURGER_NOEXCEPT
 
 ***************************************/
 
-Burger::CriticalSection::~CriticalSection() {}
+Burger::Mutex::~Mutex() {}
 
 /***************************************
 
@@ -49,13 +51,14 @@ Burger::CriticalSection::~CriticalSection() {}
 	mutex was already locked, the thread halts until the alternate thread that
 	has this mutex locked releases the lock. There is no timeout.
 
-	\sa Burger::CriticalSection::unlock()
+	\sa try_lock(), or unlock()
 
 ***************************************/
 
-void Burger::CriticalSection::lock() BURGER_NOEXCEPT
+void Burger::Mutex::lock() BURGER_NOEXCEPT
 {
-	while (OTAcquireLock(&m_Lock)) {
+	// Should this call SystemTask() ?
+	while (OTAcquireLock(m_PlatformMutex)) {
 	}
 }
 
@@ -66,13 +69,13 @@ void Burger::CriticalSection::lock() BURGER_NOEXCEPT
 	If the mutex is locked, the function fails and returns \ref FALSE.
 	Otherwise, the mutex is locked and the function returns \ref TRUE.
 
-	\sa lock() and unlock()
+	\sa lock(), or unlock()
 
 ***************************************/
 
-uint_t Burger::CriticalSection::try_lock() BURGER_NOEXCEPT
+uint_t Burger::Mutex::try_lock() BURGER_NOEXCEPT
 {
-	return OTAcquireLock(&m_Lock);
+	return OTAcquireLock(m_PlatformMutex);
 }
 
 /***************************************
@@ -87,13 +90,13 @@ uint_t Burger::CriticalSection::try_lock() BURGER_NOEXCEPT
 	without a preceding lock() call will result in undefined behavior and in
 	some cases can result in thread lock or a crash.
 
-	\sa lock()
+	\sa lock(), or try_lock()
 
 ***************************************/
 
-void Burger::CriticalSection::unlock() BURGER_NOEXCEPT
+void Burger::Mutex::unlock() BURGER_NOEXCEPT
 {
-	OTClearLock(&m_Lock);
+	OTClearLock(m_PlatformMutex);
 }
 
 #endif

@@ -42,42 +42,50 @@
 
 /*! ************************************
 
-	\struct Burger::MemoryManagerHandle::Handle_t
-	\brief Structure describing an allocated chunk of memory
+	\enum Burger::MemoryManagerHandle::eMemoryStage
+	\brief Memory compaction stage
 
-	This opaque structure contains all of the information that
-	describes an allocated chunk of memory. The contents of this
-	class is NEVER to be read or written to without the use
-	of a MemoryManagerHandle call. The only exception is
-	the first entry of m_pData which allows the structure
-	to be used as a void ** to the data for instant access
-	to the data.
-
-	\note The data pointer can be \ref NULL of the memory was
-	zero bytes in length or if the data was purged in an attempt
-	to free memory for an allocation in a low memory situation
+	When memory is being compacted or purged, it will go through several stages.
+	This enumeration tracks those stages.
 
 ***************************************/
 
-#if !defined(DOXYGEN)
-#if (UINTPTR_MAX == 0xFFFFFFFFU)
-#define SANITYCHECK 0xDEADBEEF
-#define KILLSANITYCHECK 0xBADBADBA
-#else
-#define SANITYCHECK 0xABCDDEADBEEFDCBAULL
-#define KILLSANITYCHECK 0xBADBADBADBADBADBULL
-#endif
+/*! ************************************
 
-struct PointerPrefix_t {
-	void** m_ppParentHandle; ///< Handle to the parent memory object
-	uintptr_t m_uSignature;  ///< Signature for debugging
-#if (UINTPTR_MAX == 0xFFFFFFFFU) && \
-	!(defined(BURGER_MSDOS) || defined(BURGER_DS) || defined(BURGER_68K))
-	uint_t m_uPadding1; ///< Pad to alignment
-	uint_t m_uPadding2;
-#endif
-};
-#endif
+	\struct Burger::MemoryManagerHandle::Handle_t
+	\brief Structure describing an allocated chunk of memory
+
+	This opaque structure contains all of the information that describes an
+	allocated chunk of memory. The contents of this class is NEVER to be read or
+	written to without the use of a MemoryManagerHandle call. The only exception
+	is the first entry of m_pData which allows the structure to be used as a
+	void ** to the data for instant access to the data.
+
+	\note The data pointer can be \ref nullptr of the memory was zero bytes in
+		length or if the data was purged in an attempt to free memory for an
+		allocation in a low memory situation
+
+***************************************/
+
+/*! ************************************
+
+	\struct Burger::MemoryManagerHandle::SystemBlock_t
+	\brief Forward linked list to track system memory
+
+	When memory is allocated from the platform, it's tracked with this singly
+	linked list.
+
+***************************************/
+
+/*! ************************************
+
+	\struct Burger::MemoryManagerHandle::PointerPrefix_t
+	\brief Memory block prefix for fixed allocated memory
+
+	For fixed memory blocks, there's a prefix that contains a reference to the
+	parent handle and a debugging mark for testing for buffer underruns.
+
+***************************************/
 
 /*! ************************************
 
@@ -99,14 +107,14 @@ void* BURGER_API Burger::MemoryManagerHandle::AllocProc(
 	MemoryManager* pThis, uintptr_t uSize) BURGER_NOEXCEPT
 {
 	BURGER_STATIC_ASSERT((static_cast<uint_t>(sizeof(PointerPrefix_t)) &
-							 (MemoryManagerHandle::ALIGNMENT - 1)) == 0);
+							 (MemoryManagerHandle::kAlignment - 1)) == 0);
 
 	void* pResult = nullptr;
 	if (uSize) {
 		MemoryManagerHandle* pSelf = static_cast<MemoryManagerHandle*>(pThis);
 		// Allocate the memory with memory for a back pointer
 		void** ppData =
-			pSelf->AllocHandle(uSize + sizeof(PointerPrefix_t), FIXED);
+			pSelf->AllocHandle(uSize + sizeof(PointerPrefix_t), kFlagFixed);
 		// Got the memory?
 		if (ppData) {
 			// Dereference the memory!
@@ -114,7 +122,7 @@ void* BURGER_API Burger::MemoryManagerHandle::AllocProc(
 				reinterpret_cast<Handle_t*>(ppData)->m_pData);
 			// Save the handle in memory
 			pData->m_ppParentHandle = ppData;
-			pData->m_uSignature = SANITYCHECK;
+			pData->m_uSignature = kSignatureUsed;
 			// Return the memory pointer at the next alignment value
 			pResult = pData + 1;
 		}
@@ -146,8 +154,8 @@ void BURGER_API Burger::MemoryManagerHandle::FreeProc(
 		MemoryManagerHandle* pSelf = static_cast<MemoryManagerHandle*>(pThis);
 		PointerPrefix_t* pData =
 			static_cast<PointerPrefix_t*>(const_cast<void*>(pInput)) - 1;
-		BURGER_ASSERT(pData->m_uSignature == SANITYCHECK);
-		pData->m_uSignature = KILLSANITYCHECK;
+		BURGER_ASSERT(pData->m_uSignature == kSignatureUsed);
+		pData->m_uSignature = kSignatureFree;
 		pSelf->FreeHandle(pData->m_ppParentHandle);
 	}
 }
@@ -200,8 +208,8 @@ void* BURGER_API Burger::MemoryManagerHandle::ReallocProc(
 
 		PointerPrefix_t* pData =
 			static_cast<PointerPrefix_t*>(const_cast<void*>(pInput)) - 1;
-		BURGER_ASSERT(pData->m_uSignature == SANITYCHECK);
-		pData->m_uSignature = KILLSANITYCHECK;
+		BURGER_ASSERT(pData->m_uSignature == kSignatureUsed);
+		pData->m_uSignature = kSignatureFree;
 		void** ppData = pSelf->ReallocHandle(
 			pData->m_ppParentHandle, uSize + sizeof(PointerPrefix_t));
 		// Successful?
@@ -213,7 +221,7 @@ void* BURGER_API Burger::MemoryManagerHandle::ReallocProc(
 				reinterpret_cast<Handle_t*>(ppData)->m_pData);
 			// Save the handle in memory
 			pData->m_ppParentHandle = ppData;
-			pData->m_uSignature = SANITYCHECK;
+			pData->m_uSignature = kSignatureUsed;
 			// Return the memory pointer at the next alignment value
 			pInput = pData + 1;
 		}
@@ -234,7 +242,7 @@ void BURGER_API Burger::MemoryManagerHandle::ShutdownProc(
 	MemoryManager* pThis) BURGER_NOEXCEPT
 {
 	MemoryManagerHandle* pSelf = static_cast<MemoryManagerHandle*>(pThis);
-	pSelf->m_Lock.lock();
+	pSelf->m_Mutex.lock();
 	// For debugging, test if all the memory is already released.
 	// If not, report it
 
@@ -255,7 +263,7 @@ void BURGER_API Burger::MemoryManagerHandle::ShutdownProc(
 	}
 	pSelf->m_pFreeHandle = nullptr;
 	pSelf->m_MemPurgeCallBack = nullptr;
-	pSelf->m_Lock.unlock();
+	pSelf->m_Mutex.unlock();
 }
 
 /*! ************************************
@@ -263,7 +271,7 @@ void BURGER_API Burger::MemoryManagerHandle::ShutdownProc(
 	\brief Allocate a new handle record.
 
 	If out of handles in the pool, allocate memory from the operating system in
-	\ref DEFAULTHANDLECOUNT * sizeof(\ref Handle_t) chunks
+	\ref kDefaultHandleCount * sizeof(\ref Handle_t) chunks
 
 	\return Pointer to a new uninitialized Handle_t structure
 
@@ -279,13 +287,13 @@ Burger::MemoryManagerHandle::AllocNewHandle(void) BURGER_NOEXCEPT
 	if (!pHandle) {
 		// Get memory from system to prevent fragmentation
 		uintptr_t uChunkSize =
-			((DEFAULTHANDLECOUNT * sizeof(Handle_t)) + sizeof(SystemBlock_t));
+			((kDefaultHandleCount * sizeof(Handle_t)) + sizeof(SystemBlock_t));
 		SystemBlock_t* pBlock =
 			static_cast<SystemBlock_t*>(alloc_platform_memory(uChunkSize));
 		if (pBlock) {
 			// Log the memory allocation
 			m_uTotalSystemMemory += uChunkSize;
-			m_uTotalHandleCount += DEFAULTHANDLECOUNT;
+			m_uTotalHandleCount += kDefaultHandleCount;
 
 			// Mark this block for release on shutdown
 			pBlock->m_pNext = m_pSystemMemoryBlocks;
@@ -297,14 +305,14 @@ Burger::MemoryManagerHandle::AllocNewHandle(void) BURGER_NOEXCEPT
 			pHandle = reinterpret_cast<Handle_t*>(pBlock + 1);
 
 			// Add the new handles to the free handle list
-			uint_t i = DEFAULTHANDLECOUNT - 1;
+			uint_t i = kDefaultHandleCount - 1;
 			Handle_t* pNext = nullptr;
 			// Index to the last one
-			pHandle = pHandle + (DEFAULTHANDLECOUNT - 1);
+			pHandle = pHandle + (kDefaultHandleCount - 1);
 			do {
 				// Bad ID
 				pHandle->m_uFlags = 0;
-				pHandle->m_uID = MEMORYIDUNUSED;
+				pHandle->m_uID = kMemoryIDUnused;
 				pHandle->m_pNextHandle = pNext; // Link in the list
 				pNext = pHandle;                // New parent
 				--pHandle;                      // Next handle
@@ -350,7 +358,7 @@ void BURGER_API Burger::MemoryManagerHandle::GrabMemoryRange(void* pData,
 {
 	// Pad the request to alignment size to ensure all blocks are aligned
 
-	uLength = (uLength + (ALIGNMENT - 1)) & (~(ALIGNMENT - 1));
+	uLength = (uLength + (kAlignment - 1)) & (~(kAlignment - 1));
 
 	// Has the allocation block already been found?
 	if (!pHandle) {
@@ -399,7 +407,7 @@ void BURGER_API Burger::MemoryManagerHandle::GrabMemoryRange(void* pData,
 			// Add to the free list
 			// Mark the ID
 			pHandle->m_uFlags = 0;
-			pHandle->m_uID = MEMORYIDUNUSED;
+			pHandle->m_uID = kMemoryIDUnused;
 			// Link in the list
 			pHandle->m_pNextHandle = m_pFreeHandle;
 			m_pFreeHandle = pHandle;
@@ -438,7 +446,7 @@ void BURGER_API Burger::MemoryManagerHandle::ReleaseMemoryRange(
 	void* pData, uintptr_t uLength, Handle_t* pParent) BURGER_NOEXCEPT
 {
 	// Pad to nearest alignment
-	uLength = (uLength + (ALIGNMENT - 1)) & (~(ALIGNMENT - 1));
+	uLength = (uLength + (kAlignment - 1)) & (~(kAlignment - 1));
 	Handle_t* pFreeChunk = &m_FreeMemoryChunks;
 	Handle_t* pPrev = pFreeChunk->m_pPrevHandle;
 	// No handles in the list?
@@ -485,7 +493,7 @@ void BURGER_API Burger::MemoryManagerHandle::ReleaseMemoryRange(
 
 					// Release this handle to the free pool
 					pFreeChunk->m_uFlags = 0; // Bad ID
-					pFreeChunk->m_uID = MEMORYIDUNUSED;
+					pFreeChunk->m_uID = kMemoryIDUnused;
 					pFreeChunk->m_pNextHandle =
 						m_pFreeHandle;          // Link in the list
 					m_pFreeHandle = pFreeChunk; // New parent
@@ -499,7 +507,7 @@ void BURGER_API Burger::MemoryManagerHandle::ReleaseMemoryRange(
 			pEnd = static_cast<uint8_t*>(pData) + uLength;
 			// Does it touch next handle?
 			if (pEnd == static_cast<uint8_t*>(pFreeChunk->m_pData)) {
-				pFreeChunk->m_pNextPurge = pParent; // New parent
+				pFreeChunk->m_pNextPurge = pParent;  // New parent
 				pFreeChunk->m_uLength =
 					pFreeChunk->m_uLength + uLength; // New length
 				pFreeChunk->m_pData = pData;         // New start pointer
@@ -510,7 +518,7 @@ void BURGER_API Burger::MemoryManagerHandle::ReleaseMemoryRange(
 				Handle_t* pNew = AllocNewHandle(); // Get a new handle
 				pNew->m_pData = pData;             // New pointer
 				pNew->m_uFlags = 0;
-				pNew->m_uID = MEMORYIDFREE;
+				pNew->m_uID = kMemoryIDFree;
 				pNew->m_uLength = uLength;        // Free memory length
 				pNew->m_pNextHandle = pFreeChunk; // Forward handle
 				pNew->m_pPrevHandle = pPrev;      // Previous handle
@@ -531,7 +539,7 @@ void BURGER_API Burger::MemoryManagerHandle::ReleaseMemoryRange(
 		pPrev->m_uLength = uLength;
 		// Mark the parent handle
 		pPrev->m_uFlags = 0;
-		pPrev->m_uID = MEMORYIDFREE;
+		pPrev->m_uID = kMemoryIDFree;
 		pPrev->m_pNextHandle = pFreeChunk;
 		pPrev->m_pPrevHandle = pFreeChunk;
 		pPrev->m_pNextPurge = pParent;
@@ -687,7 +695,7 @@ Burger::MemoryManagerHandle::MemoryManagerHandle(uintptr_t uDefaultMemorySize,
 	  m_uTotalSystemMemory(0),
 	  m_pFreeHandle(nullptr),
 	  m_uTotalHandleCount(0),
-	  m_Lock()
+	  m_Mutex()
 {
 	// Init my global pointers
 	m_pAlloc = AllocProc;
@@ -721,10 +729,10 @@ Burger::MemoryManagerHandle::MemoryManagerHandle(uintptr_t uDefaultMemorySize,
 		for (;;) {
 			uintptr_t uSize = uMinsize + uSwing; // Attempt this size
 			pBlock = static_cast<SystemBlock_t*>(
-				alloc_platform_memory(uSize)); // Try to allocate it
+				alloc_platform_memory(uSize));   // Try to allocate it
 			if (pBlock) {
 				free_platform_memory(pBlock);
-				uMinsize = uSize; // This is acceptable!
+				uMinsize = uSize;           // This is acceptable!
 			} else {
 				uDefaultMemorySize = uSize; // Can't get bigger than this!
 			}
@@ -787,11 +795,11 @@ Burger::MemoryManagerHandle::MemoryManagerHandle(uintptr_t uDefaultMemorySize,
 	do {
 		// Iterate backwards
 		pHandle->m_uFlags = 0;
-		pHandle->m_uID = MEMORYIDUNUSED;      // Bad ID
+		pHandle->m_uID = kMemoryIDUnused;     // Bad ID
 		pHandle->m_pNextHandle = pNextHandle; // Link in the list
 		pNextHandle = pHandle;                // New parent
 		--pHandle;
-	} while (--uDefaultHandleCount); // All done?
+	} while (--uDefaultHandleCount);          // All done?
 	// New free handle linked list head pointer
 	m_pFreeHandle = pNextHandle;
 
@@ -801,8 +809,8 @@ Burger::MemoryManagerHandle::MemoryManagerHandle(uintptr_t uDefaultMemorySize,
 
 	// Align the pointer
 	uintptr_t uSuperChunkStart =
-		(reinterpret_cast<uintptr_t>(pHandle) + (ALIGNMENT - 1)) &
-		(~(ALIGNMENT - 1));
+		(reinterpret_cast<uintptr_t>(pHandle) + (kAlignment - 1)) &
+		(~(kAlignment - 1));
 	uSwing -= uSuperChunkStart - reinterpret_cast<uintptr_t>(pHandle);
 
 	// Initialize the Used handle list for free memory strips
@@ -810,8 +818,8 @@ Burger::MemoryManagerHandle::MemoryManagerHandle(uintptr_t uDefaultMemorySize,
 	// Used memory starts at zero and ends at the free pointer
 	m_LowestUsedMemory.m_pData = nullptr;
 	m_LowestUsedMemory.m_uLength = uSuperChunkStart;
-	m_LowestUsedMemory.m_uFlags = LOCKED | FIXED;
-	m_LowestUsedMemory.m_uID = MEMORYIDRESERVED;
+	m_LowestUsedMemory.m_uFlags = kFlagLocked | kFlagFixed;
+	m_LowestUsedMemory.m_uID = kMemoryIDReserved;
 	m_LowestUsedMemory.m_pNextHandle = &m_HighestUsedMemory;
 	m_LowestUsedMemory.m_pPrevHandle = &m_HighestUsedMemory;
 	m_LowestUsedMemory.m_pNextPurge = nullptr;
@@ -823,8 +831,8 @@ Burger::MemoryManagerHandle::MemoryManagerHandle(uintptr_t uDefaultMemorySize,
 	m_HighestUsedMemory.m_pData = pEnd;
 	m_HighestUsedMemory.m_uLength =
 		static_cast<uintptr_t>(-1) - reinterpret_cast<uintptr_t>(pEnd);
-	m_HighestUsedMemory.m_uFlags = LOCKED | FIXED;
-	m_HighestUsedMemory.m_uID = MEMORYIDRESERVED;
+	m_HighestUsedMemory.m_uFlags = kFlagLocked | kFlagFixed;
+	m_HighestUsedMemory.m_uID = kMemoryIDReserved;
 	m_HighestUsedMemory.m_pNextHandle = &m_LowestUsedMemory;
 	m_HighestUsedMemory.m_pPrevHandle = &m_LowestUsedMemory;
 	m_HighestUsedMemory.m_pNextPurge = nullptr;
@@ -834,7 +842,7 @@ Burger::MemoryManagerHandle::MemoryManagerHandle(uintptr_t uDefaultMemorySize,
 	m_FreeMemoryChunks.m_pData = nullptr;
 	m_FreeMemoryChunks.m_uLength = 0;
 	m_FreeMemoryChunks.m_uFlags = 0;
-	m_FreeMemoryChunks.m_uID = MEMORYIDRESERVED;
+	m_FreeMemoryChunks.m_uID = kMemoryIDReserved;
 	m_FreeMemoryChunks.m_pNextHandle = &m_FreeMemoryChunks;
 	m_FreeMemoryChunks.m_pPrevHandle = &m_FreeMemoryChunks;
 	m_FreeMemoryChunks.m_pNextPurge = nullptr;
@@ -843,7 +851,7 @@ Burger::MemoryManagerHandle::MemoryManagerHandle(uintptr_t uDefaultMemorySize,
 	m_PurgeHands.m_pData = nullptr;
 	m_PurgeHands.m_uLength = 0;
 	m_PurgeHands.m_uFlags = 0;
-	m_PurgeHands.m_uID = MEMORYIDRESERVED;
+	m_PurgeHands.m_uID = kMemoryIDReserved;
 	m_PurgeHands.m_pNextHandle = &m_PurgeHands;
 	m_PurgeHands.m_pPrevHandle = &m_PurgeHands;
 	m_PurgeHands.m_pNextPurge = nullptr;
@@ -852,7 +860,7 @@ Burger::MemoryManagerHandle::MemoryManagerHandle(uintptr_t uDefaultMemorySize,
 	m_PurgeHandleFiFo.m_pData = nullptr;
 	m_PurgeHandleFiFo.m_uLength = 0;
 	m_PurgeHandleFiFo.m_uFlags = 0;
-	m_PurgeHandleFiFo.m_uID = MEMORYIDRESERVED;
+	m_PurgeHandleFiFo.m_uID = kMemoryIDReserved;
 	m_PurgeHandleFiFo.m_pNextHandle = &m_PurgeHandleFiFo;
 	m_PurgeHandleFiFo.m_pPrevHandle = &m_PurgeHandleFiFo;
 	m_PurgeHandleFiFo.m_pNextPurge = &m_PurgeHandleFiFo;
@@ -960,8 +968,8 @@ Burger::MemoryManagerHandle::~MemoryManagerHandle()
 	allocation.
 
 	\param uSize Number of bytes requested
-	\param uFlags Flags to modify how the memory is allocated, \ref FIXED for
-		fixed memory, 0 for movable memory
+	\param uFlags Flags to modify how the memory is allocated, \ref kFlagFixed
+for fixed memory, 0 for movable memory
 
 	\return \ref NULL on allocation failure, valid handle to memory if
 		successful
@@ -975,7 +983,7 @@ void** BURGER_API Burger::MemoryManagerHandle::AllocHandle(
 	Handle_t* ppResult = nullptr;
 	// Don't allocate an empty handle!
 	if (uSize) {
-		m_Lock.lock();
+		m_Mutex.lock();
 		// Initialized?
 		if (m_pSystemMemoryBlocks) {
 			// Get a new handle
@@ -987,13 +995,13 @@ void** BURGER_API Burger::MemoryManagerHandle::AllocHandle(
 				// Save the handle size WITHOUT padding
 				pNew->m_uLength = uSize;
 				// Save the default attributes
-				pNew->m_uFlags = uFlags & (~MALLOC);
+				pNew->m_uFlags = uFlags & (~kFlagMalloc);
 				// Init data memory search stage
-				eMemoryStage eStage = StageCompact;
+				eMemoryStage eStage = kStageCompact;
 				// Round up
-				uSize = (uSize + (ALIGNMENT - 1)) & (~(ALIGNMENT - 1));
+				uSize = (uSize + (kAlignment - 1)) & (~(kAlignment - 1));
 
-				if (uFlags & FIXED) {
+				if (uFlags & kFlagFixed) {
 
 					// Scan from the top down for fixed handles
 					// Increases odds for compaction success
@@ -1030,7 +1038,7 @@ void** BURGER_API Burger::MemoryManagerHandle::AllocHandle(
 									// Update the global allocated memory count.
 									m_uTotalAllocatedMemory += pNew->m_uLength;
 									// Good allocation!
-									m_Lock.unlock();
+									m_Mutex.unlock();
 									return reinterpret_cast<void**>(pNew);
 								}
 								// Look at next handle
@@ -1038,20 +1046,20 @@ void** BURGER_API Burger::MemoryManagerHandle::AllocHandle(
 								// End of the list?
 							} while (pEntry != &m_FreeMemoryChunks);
 						}
-						if (eStage == StageCompact) {
+						if (eStage == kStageCompact) {
 							// Pack memory together
 							CompactHandles();
-							eStage = StagePurge;
-						} else if (eStage == StagePurge) {
+							eStage = kStagePurge;
+						} else if (eStage == kStagePurge) {
 							// Purge the handles
 							if (PurgeHandles(uSize)) {
 								// Try again with compaction
-								eStage = StageCompact;
+								eStage = kStageCompact;
 							} else {
 								// This is where giving up is the right thing
-								eStage = StageHailMary;
+								eStage = kStageHailMary;
 							}
-						} else if (eStage == StageHailMary) {
+						} else if (eStage == kStageHailMary) {
 							break;
 						}
 					}
@@ -1088,7 +1096,7 @@ void** BURGER_API Burger::MemoryManagerHandle::AllocHandle(
 									// Update the global allocated memory count.
 									m_uTotalAllocatedMemory += pNew->m_uLength;
 									// Good allocation!
-									m_Lock.unlock();
+									m_Mutex.unlock();
 									return reinterpret_cast<void**>(pNew);
 								}
 								// Look at next handle
@@ -1096,20 +1104,20 @@ void** BURGER_API Burger::MemoryManagerHandle::AllocHandle(
 								// End of the list?
 							} while (pEntry != &m_FreeMemoryChunks);
 						}
-						if (eStage == StageCompact) {
+						if (eStage == kStageCompact) {
 							// Pack memory together
 							CompactHandles();
-							eStage = StagePurge;
-						} else if (eStage == StagePurge) {
+							eStage = kStagePurge;
+						} else if (eStage == kStagePurge) {
 							// Purge the handles
 							if (PurgeHandles(uSize)) {
 								// Try again with compaction
-								eStage = StageCompact;
+								eStage = kStageCompact;
 							} else {
 								// This is where giving up is the right thing
-								eStage = StageHailMary;
+								eStage = kStageHailMary;
 							}
-						} else if (eStage == StageHailMary) {
+						} else if (eStage == kStageHailMary) {
 							break;
 						}
 					}
@@ -1120,7 +1128,7 @@ void** BURGER_API Burger::MemoryManagerHandle::AllocHandle(
 				uSize = pNew->m_uLength;
 				// Bad ID
 				pNew->m_uFlags = 0;
-				pNew->m_uID = MEMORYIDUNUSED;
+				pNew->m_uID = kMemoryIDUnused;
 				// Link in the list
 				pNew->m_pNextHandle = m_pFreeHandle;
 				// New parent
@@ -1130,26 +1138,26 @@ void** BURGER_API Burger::MemoryManagerHandle::AllocHandle(
 			// This is a last resort!
 
 			ppResult = static_cast<Handle_t*>(
-				alloc_platform_memory(uSize + sizeof(Handle_t) + ALIGNMENT));
+				alloc_platform_memory(uSize + sizeof(Handle_t) + kAlignment));
 			if (ppResult) {
 				// Update the global allocated memory count.
 				m_uTotalAllocatedMemory += uSize;
 
 				ppResult->m_uLength = uSize;
-				ppResult->m_uFlags = uFlags | MALLOC; // It was Malloc'd
-				ppResult->m_pPrevHandle = nullptr;    // Force crash
+				ppResult->m_uFlags = uFlags | kFlagMalloc; // It was Malloc'd
+				ppResult->m_pPrevHandle = nullptr;         // Force crash
 				ppResult->m_pNextHandle = nullptr;
 				ppResult->m_pNextPurge = nullptr;
 				ppResult->m_pPrevPurge = nullptr;
 				// Ensure data alignment
 				ppResult->m_pData = reinterpret_cast<void*>(
 					(reinterpret_cast<uintptr_t>(ppResult) + sizeof(Handle_t) +
-						(ALIGNMENT - 1)) &
-					(~(ALIGNMENT - 1)));
+						(kAlignment - 1)) &
+					(~(kAlignment - 1)));
 				// Return the fake handle
 			}
 		}
-		m_Lock.unlock();
+		m_Mutex.unlock();
 	}
 	return reinterpret_cast<void**>(ppResult);
 }
@@ -1169,12 +1177,12 @@ void BURGER_API Burger::MemoryManagerHandle::FreeHandle(
 {
 	// Valid handle?
 	if (ppInput) {
-		m_Lock.lock();
+		m_Mutex.lock();
 		// Subtract from global size.
 		Handle_t* pHandle = reinterpret_cast<Handle_t*>(ppInput);
 		m_uTotalAllocatedMemory -= pHandle->m_uLength;
 
-		if (!(pHandle->m_uFlags & MALLOC)) {
+		if (!(pHandle->m_uFlags & kFlagMalloc)) {
 			// Only perform an action if the class
 			// is initialized. Otherwise assume an out of order
 			// class shutdown and do nothing
@@ -1207,7 +1215,7 @@ void BURGER_API Burger::MemoryManagerHandle::FreeHandle(
 				// Add in this handle to the free list
 				// Mark with INVALID entry ID
 				pHandle->m_uFlags = 0;
-				pHandle->m_uID = MEMORYIDUNUSED;
+				pHandle->m_uID = kMemoryIDUnused;
 				pHandle->m_pNextHandle = m_pFreeHandle;
 				m_pFreeHandle = pHandle;
 			}
@@ -1215,7 +1223,7 @@ void BURGER_API Burger::MemoryManagerHandle::FreeHandle(
 			// Just release the memory
 			free_platform_memory(pHandle);
 		}
-		m_Lock.unlock();
+		m_Mutex.unlock();
 	}
 }
 
@@ -1268,19 +1276,19 @@ void** BURGER_API Burger::MemoryManagerHandle::ReallocHandle(
 	// Handle will shrink??
 	if (uSize < uOldSize &&
 		// Not manually allocated?
-		(!(pHandle->m_uFlags & MALLOC))) {
-		m_Lock.lock();
+		(!(pHandle->m_uFlags & kFlagMalloc))) {
+		m_Mutex.lock();
 		pHandle->m_uLength = uSize; // Set the new size
 		uSize =
-			(uSize + (ALIGNMENT - 1)) & (~(ALIGNMENT - 1)); // Long word align
-		uOldSize = (uOldSize + (ALIGNMENT - 1)) & (~(ALIGNMENT - 1));
+			(uSize + (kAlignment - 1)) & (~(kAlignment - 1)); // Long word align
+		uOldSize = (uOldSize + (kAlignment - 1)) & (~(kAlignment - 1));
 		uOldSize = uOldSize - uSize; // How many bytes to release?
 		if (uOldSize) {              // Will I release any memory?
 			uint8_t* pStart = static_cast<uint8_t*>(pHandle->m_pData) +
-				uSize; // Get start pointer
+				uSize;               // Get start pointer
 			ReleaseMemoryRange(pStart, uOldSize, pHandle);
 		}
-		m_Lock.unlock();
+		m_Mutex.unlock();
 	} else {
 
 		// Handle is growing...
@@ -1289,7 +1297,7 @@ void** BURGER_API Burger::MemoryManagerHandle::ReallocHandle(
 		// Allocate the new memory
 		Handle_t* pNew =
 			reinterpret_cast<Handle_t*>(AllocHandle(uSize, pHandle->m_uFlags));
-		if (pNew) { // Success!
+		if (pNew) {         // Success!
 			if (uSize <
 				uOldSize) { // Make sure I only copy the SMALLER of the two
 				uOldSize = uSize; // New size
@@ -1335,7 +1343,7 @@ void** BURGER_API Burger::MemoryManagerHandle::RefreshHandle(
 				reinterpret_cast<const Handle_t*>(ppInput)->m_uFlags;
 			FreeHandle(ppInput); // Dispose of the old handle
 			ppInput = AllocHandle(
-				uSize, uFlags); // Create a new one with the old size
+				uSize, uFlags);  // Create a new one with the old size
 		}
 	}
 	return ppInput;
@@ -1358,7 +1366,7 @@ void** BURGER_API Burger::MemoryManagerHandle::FindHandle(
 	const void* pInput) BURGER_NOEXCEPT
 {
 	// Get the first handle
-	m_Lock.lock();
+	m_Mutex.lock();
 	Handle_t* pHandle = m_LowestUsedMemory.m_pNextHandle;
 	void** ppResult = nullptr;
 	// Are there handles?
@@ -1383,7 +1391,7 @@ void** BURGER_API Burger::MemoryManagerHandle::FindHandle(
 			// List still valid?
 		} while (pHandle != &m_HighestUsedMemory);
 	}
-	m_Lock.unlock();
+	m_Mutex.unlock();
 	// Didn't find it...
 	return ppResult;
 }
@@ -1421,7 +1429,7 @@ uintptr_t BURGER_API Burger::MemoryManagerHandle::GetSize(
 	if (pInput) { // Null pointer?!?
 		PointerPrefix_t* pData =
 			static_cast<PointerPrefix_t*>(const_cast<void*>(pInput)) - 1;
-		BURGER_ASSERT(pData->m_uSignature == SANITYCHECK);
+		BURGER_ASSERT(pData->m_uSignature == kSignatureUsed);
 		const Handle_t* pHandle =
 			reinterpret_cast<Handle_t*>(pData->m_ppParentHandle);
 		return pHandle->m_uLength;
@@ -1449,10 +1457,10 @@ uintptr_t BURGER_API Burger::MemoryManagerHandle::GetTotalFreeMemory(
 
 	// Add all the free memory handles
 
-	m_Lock.lock();
+	m_Mutex.lock();
 	Handle_t* pHandle =
-		m_FreeMemoryChunks.m_pNextHandle; // Follow the entire list
-	if (pHandle != &m_FreeMemoryChunks) { // List valid?
+		m_FreeMemoryChunks.m_pNextHandle;         // Follow the entire list
+	if (pHandle != &m_FreeMemoryChunks) {         // List valid?
 		do {
 			uFree += pHandle->m_uLength;          // Just add it in
 			pHandle = pHandle->m_pNextHandle;     // Next one in chain
@@ -1464,11 +1472,12 @@ uintptr_t BURGER_API Burger::MemoryManagerHandle::GetTotalFreeMemory(
 	pHandle = m_LowestUsedMemory.m_pNextHandle; // Find all purgeable memory
 	if (pHandle != &m_HighestUsedMemory) {      // Valid chain?
 		do {
-			if (!(pHandle->m_uFlags & LOCKED) && // Unlocked and purgeable
+			if (!(pHandle->m_uFlags & kFlagLocked) && // Unlocked and purgeable
 				(pHandle->m_pNextPurge)) {
 				// Round up the length
 				const uintptr_t uTemp =
-					(pHandle->m_uLength + (ALIGNMENT - 1)) & (~(ALIGNMENT - 1));
+					(pHandle->m_uLength + (kAlignment - 1)) &
+					(~(kAlignment - 1));
 				uFree += uTemp; /* Add into the total */
 			}
 			// Next link
@@ -1476,7 +1485,7 @@ uintptr_t BURGER_API Burger::MemoryManagerHandle::GetTotalFreeMemory(
 			// All done?
 		} while (pHandle != &m_HighestUsedMemory);
 	}
-	m_Lock.unlock();
+	m_Mutex.unlock();
 	// Return the free size
 	return uFree;
 }
@@ -1501,7 +1510,7 @@ void* BURGER_API Burger::MemoryManagerHandle::Lock(
 {
 	if (ppInput) {
 		// Lock the handle down
-		reinterpret_cast<Handle_t*>(ppInput)->m_uFlags |= LOCKED;
+		reinterpret_cast<Handle_t*>(ppInput)->m_uFlags |= kFlagLocked;
 		return reinterpret_cast<Handle_t*>(ppInput)->m_pData;
 	}
 	return NULL;
@@ -1524,7 +1533,7 @@ void BURGER_API Burger::MemoryManagerHandle::Unlock(
 	if (ppInput) {
 		// Clear the lock flag
 		reinterpret_cast<Handle_t*>(ppInput)->m_uFlags &=
-			static_cast<uint_t>(~LOCKED);
+			static_cast<uint_t>(~kFlagLocked);
 	}
 }
 
@@ -1559,7 +1568,7 @@ void BURGER_API Burger::MemoryManagerHandle::SetPurgeFlag(
 {
 	if (ppInput) {
 		Handle_t* pHandle = reinterpret_cast<Handle_t*>(ppInput);
-		if (!(pHandle->m_uFlags & MALLOC)) {
+		if (!(pHandle->m_uFlags & kFlagMalloc)) {
 
 			// Was it purgeable?
 			if (pHandle->m_pNextPurge) {
@@ -1586,7 +1595,7 @@ void BURGER_API Burger::MemoryManagerHandle::SetPurgeFlag(
 
 	\brief Get the current purge and lock flags of the handle
 	\param ppInput Pointer to valid handle. \ref NULL is invalid
-	\return All the flags from the memory handle. Mask with \ref LOCKED to
+	\return All the flags from the memory handle. Mask with \ref kFlagLocked to
 	check only for memory being locked
 
 	\sa Burger::MemoryManagerHandle::SetLockedState(void **,uint_t)
@@ -1603,19 +1612,20 @@ uint_t BURGER_API Burger::MemoryManagerHandle::GetLockedState(
 
 	\brief Set the current purge and lock flags of the handle
 	\param ppInput Handle to valid memory.
-	\param uFlag \ref PURGABLE and \ref LOCKED are the only valid input flags
-	\sa Burger::MemoryManagerHandle::GetLockedState(void **)
+	\param uFlag \ref kFlagPurgable and \ref kFlagLocked are the only valid
+input flags \sa Burger::MemoryManagerHandle::GetLockedState(void **)
 
 ***************************************/
 
 void BURGER_API Burger::MemoryManagerHandle::SetLockedState(
 	void** ppInput, uint_t uFlag) BURGER_NOEXCEPT
 {
-	uFlag &= static_cast<uint_t>(~(PURGABLE | LOCKED));
+	uFlag &= static_cast<uint_t>(~(kFlagPurgable | kFlagLocked));
 	Handle_t* pHandle = reinterpret_cast<Handle_t*>(ppInput);
-	pHandle->m_uFlags = (pHandle->m_uFlags & (~(PURGABLE | LOCKED))) | uFlag;
+	pHandle->m_uFlags =
+		(pHandle->m_uFlags & (~(kFlagPurgable | kFlagLocked))) | uFlag;
 
-	if (!(pHandle->m_uFlags & MALLOC)) {
+	if (!(pHandle->m_uFlags & kFlagMalloc)) {
 		if (pHandle->m_pNextPurge) { // Was it purgeable?
 
 			// Unlink from the purge fifo
@@ -1625,7 +1635,7 @@ void BURGER_API Burger::MemoryManagerHandle::SetLockedState(
 		}
 		// Now is it purgeable?
 
-		if (uFlag & PURGABLE) {
+		if (uFlag & kFlagPurgable) {
 			pHandle->m_pPrevPurge = &m_PurgeHandleFiFo;
 			pHandle->m_pNextPurge = m_PurgeHandleFiFo.m_pNextPurge;
 			m_PurgeHandleFiFo.m_pNextPurge->m_pPrevPurge = pHandle;
@@ -1657,23 +1667,23 @@ void BURGER_API Burger::MemoryManagerHandle::Purge(
 	void** ppInput) BURGER_NOEXCEPT
 {
 	Handle_t* pHandle = reinterpret_cast<Handle_t*>(ppInput);
-	if (pHandle &&                                           // Valid pointer?
-		pHandle->m_pData && !(pHandle->m_uFlags & MALLOC)) { // Not purged?
+	if (pHandle && // Valid pointer?
+		pHandle->m_pData && !(pHandle->m_uFlags & kFlagMalloc)) { // Not purged?
 
 		if (m_MemPurgeCallBack) {
-			m_MemPurgeCallBack(m_pMemPurge, StagePurge); // I will purge now!
+			m_MemPurgeCallBack(m_pMemPurge, kStagePurge); // I will purge now!
 		}
-		m_Lock.lock();
+		m_Mutex.lock();
 		// Force unlocked
-		pHandle->m_uFlags &= static_cast<uint_t>(~LOCKED);
+		pHandle->m_uFlags &= static_cast<uint_t>(~kFlagLocked);
 
 		// Unlink from the purge list
 
 		Handle_t* pPrev;                         // Previous link
 		Handle_t* pNext = pHandle->m_pNextPurge; // Forward link
 		if (pNext) {
-			pPrev = pHandle->m_pPrevPurge; // Backward link
-			pNext->m_pPrevPurge = pPrev;   // Unlink me from the list
+			pPrev = pHandle->m_pPrevPurge;       // Backward link
+			pNext->m_pPrevPurge = pPrev;         // Unlink me from the list
 			pPrev->m_pNextPurge = pNext;
 			pHandle->m_pNextPurge = nullptr;
 			pHandle->m_pPrevPurge = nullptr;
@@ -1692,13 +1702,13 @@ void BURGER_API Burger::MemoryManagerHandle::Purge(
 		ReleaseMemoryRange(
 			pHandle->m_pData, pHandle->m_uLength, pPrev); // Release the memory
 
-		pPrev = m_PurgeHands.m_pNextHandle;     // Get the first link
+		pPrev = m_PurgeHands.m_pNextHandle;               // Get the first link
 		pHandle->m_pData = nullptr;             // Zap the pointer (Purge list)
 		pHandle->m_pPrevHandle = &m_PurgeHands; // I am the parent
 		pHandle->m_pNextHandle = pPrev;         // Link it to the purge list
 		pPrev->m_pPrevHandle = pHandle;
-		m_PurgeHands.m_pNextHandle = pHandle; // Make as the new head
-		m_Lock.unlock();
+		m_PurgeHands.m_pNextHandle = pHandle;   // Make as the new head
+		m_Mutex.unlock();
 	}
 }
 
@@ -1723,7 +1733,7 @@ uint_t BURGER_API Burger::MemoryManagerHandle::PurgeHandles(
 	uintptr_t uSize) BURGER_NOEXCEPT
 {
 	uint_t uResult = FALSE;
-	m_Lock.lock();
+	m_Mutex.lock();
 	// Index to the purgeable handle list
 	Handle_t* pHandle = m_PurgeHandleFiFo.m_pPrevPurge;
 	// No purgeable memory?
@@ -1734,7 +1744,7 @@ uint_t BURGER_API Burger::MemoryManagerHandle::PurgeHandles(
 			Handle_t* pNext = pHandle->m_pPrevPurge;
 			// Round up
 			uintptr_t uTempLen =
-				(pHandle->m_uLength + (ALIGNMENT - 1)) & (~(ALIGNMENT - 1));
+				(pHandle->m_uLength + (kAlignment - 1)) & (~(kAlignment - 1));
 			// Force a purge
 			Purge(reinterpret_cast<void**>(pHandle));
 			uResult = TRUE;
@@ -1745,7 +1755,7 @@ uint_t BURGER_API Burger::MemoryManagerHandle::PurgeHandles(
 			pHandle = pNext;                     // Get the next link
 		} while (pHandle != &m_PurgeHandleFiFo); // At the end?
 	}
-	m_Lock.unlock();
+	m_Mutex.unlock();
 	return uResult;
 }
 
@@ -1765,7 +1775,7 @@ uint_t BURGER_API Burger::MemoryManagerHandle::PurgeHandles(
 void BURGER_API Burger::MemoryManagerHandle::CompactHandles(
 	void) BURGER_NOEXCEPT
 {
-	m_Lock.lock();
+	m_Mutex.lock();
 	// Index to the active handle list
 	Handle_t* pHandle = m_LowestUsedMemory.m_pNextHandle;
 	// Failsafe
@@ -1778,12 +1788,12 @@ void BURGER_API Burger::MemoryManagerHandle::CompactHandles(
 		}
 		// Skip all locked or fixed handles
 		do {
-			if (!(pHandle->m_uFlags & (LOCKED | FIXED))) {
+			if (!(pHandle->m_uFlags & (kFlagLocked | kFlagFixed))) {
 				// Get the previous handle
 				Handle_t* pPrev = pHandle->m_pPrevHandle;
 				// Pad to long word
 				uintptr_t uSize =
-					(pPrev->m_uLength + (ALIGNMENT - 1)) & (~(ALIGNMENT - 1));
+					(pPrev->m_uLength + (kAlignment - 1)) & (~(kAlignment - 1));
 				uint8_t* pStartMem =
 					static_cast<uint8_t*>(pPrev->m_pData) + uSize;
 				// Any space here?
@@ -1795,7 +1805,7 @@ void BURGER_API Burger::MemoryManagerHandle::CompactHandles(
 					if (!bCalledCallBack) {
 						bCalledCallBack = TRUE;
 						// Alert the app
-						m_MemPurgeCallBack(m_pMemPurge, StageCompact);
+						m_MemPurgeCallBack(m_pMemPurge, kStageCompact);
 					}
 					// Save old address
 					void* pTemp = pHandle->m_pData;
@@ -1814,7 +1824,7 @@ void BURGER_API Burger::MemoryManagerHandle::CompactHandles(
 			pHandle = pHandle->m_pNextHandle;
 		} while (pHandle != &m_HighestUsedMemory);
 	}
-	m_Lock.unlock();
+	m_Mutex.unlock();
 }
 
 /*! ************************************
@@ -1827,7 +1837,7 @@ void BURGER_API Burger::MemoryManagerHandle::CompactHandles(
 
 void BURGER_API Burger::MemoryManagerHandle::DumpHandles(void) BURGER_NOEXCEPT
 {
-	m_Lock.lock();
+	m_Mutex.lock();
 	const uintptr_t uSize = GetTotalFreeMemory();
 	Debug::PrintString("Total free memory with purging ");
 	Debug::PrintString(uSize);
@@ -1844,7 +1854,7 @@ void BURGER_API Burger::MemoryManagerHandle::DumpHandles(void) BURGER_NOEXCEPT
 	PrintHandles(m_PurgeHands.m_pNextHandle, &m_PurgeHands, FALSE);
 	Debug::PrintString("Free memory list\n");
 	PrintHandles(m_FreeMemoryChunks.m_pNextHandle, &m_FreeMemoryChunks, FALSE);
-	m_Lock.unlock();
+	m_Mutex.unlock();
 }
 
 /*! ************************************

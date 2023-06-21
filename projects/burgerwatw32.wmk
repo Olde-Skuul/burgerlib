@@ -214,6 +214,7 @@ TEMP_DIR = temp\burger$(BASE_SUFFIX)
 
 SOURCE_DIRS =../source
 SOURCE_DIRS +=;../source/ansi
+SOURCE_DIRS +=;../source/asm/wasm
 SOURCE_DIRS +=;../source/audio
 SOURCE_DIRS +=;../source/commandline
 SOURCE_DIRS +=;../source/compression
@@ -340,12 +341,12 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brcompressdeflate.obj &
 	$(A)/brcompresslbmrle.obj &
 	$(A)/brcompresslzss.obj &
+	$(A)/brconditionvariablewindows.obj &
 	$(A)/brconsolemanager.obj &
 	$(A)/brconsolemanagerwindows.obj &
 	$(A)/brcrc16.obj &
 	$(A)/brcrc32.obj &
 	$(A)/brcriticalsection.obj &
-	$(A)/brcriticalsectionwindows.obj &
 	$(A)/brdebug.obj &
 	$(A)/brdebugwindows.obj &
 	$(A)/brdecompress.obj &
@@ -462,6 +463,8 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brmicrosoftadpcm.obj &
 	$(A)/brmouse.obj &
 	$(A)/brmousewindows.obj &
+	$(A)/brmutexwindows.obj &
+	$(A)/brnetmanagerwindows.obj &
 	$(A)/brnumberstring.obj &
 	$(A)/brnumberstringhex.obj &
 	$(A)/brnumberto.obj &
@@ -489,6 +492,7 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brrezfile.obj &
 	$(A)/brrunqueue.obj &
 	$(A)/brsdbmhash.obj &
+	$(A)/brsemaphorewindows.obj &
 	$(A)/brsequencer.obj &
 	$(A)/brsequencerwindows.obj &
 	$(A)/brsha1.obj &
@@ -537,6 +541,8 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brwin1252.obj &
 	$(A)/brwin437.obj &
 	$(A)/brwindowsapp.obj &
+	$(A)/cpuid.obj &
+	$(A)/cpuidex.obj &
 	$(A)/win_d3d11.obj &
 	$(A)/win_d3d9.obj &
 	$(A)/win_ddraw.obj &
@@ -557,6 +563,7 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/win_setupapi.obj &
 	$(A)/win_shell32.obj &
 	$(A)/win_shlwapi.obj &
+	$(A)/win_synchapi.obj &
 	$(A)/win_user32.obj &
 	$(A)/win_version.obj &
 	$(A)/win_winmm.obj &

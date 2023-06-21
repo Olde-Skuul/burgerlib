@@ -661,6 +661,9 @@
     <ClInclude Include="..\source\platforms\windows\win_shlwapi.h">
       <Filter>source\platforms\windows</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\platforms\windows\win_synchapi.h">
+      <Filter>source\platforms\windows</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\platforms\windows\win_types.h">
       <Filter>source\platforms\windows</Filter>
     </ClInclude>
@@ -1303,10 +1306,10 @@
     <ClCompile Include="..\source\platforms\windows\brcodelibrarywindows.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\platforms\windows\brconsolemanagerwindows.cpp">
+    <ClCompile Include="..\source\platforms\windows\brconditionvariablewindows.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\platforms\windows\brcriticalsectionwindows.cpp">
+    <ClCompile Include="..\source\platforms\windows\brconsolemanagerwindows.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
     <ClCompile Include="..\source\platforms\windows\brdebugwindows.cpp">
@@ -1369,6 +1372,12 @@
     <ClCompile Include="..\source\platforms\windows\brmousewindows.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\platforms\windows\brmutexwindows.cpp">
+      <Filter>source\platforms\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\windows\brnetmanagerwindows.cpp">
+      <Filter>source\platforms\windows</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\platforms\windows\broscursorwindows.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
@@ -1382,6 +1391,9 @@
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
     <ClCompile Include="..\source\platforms\windows\brrectwindows.cpp">
+      <Filter>source\platforms\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\windows\brsemaphorewindows.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
     <ClCompile Include="..\source\platforms\windows\brsequencerwindows.cpp">
@@ -1469,6 +1481,9 @@
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
     <ClCompile Include="..\source\platforms\windows\win_shlwapi.cpp">
+      <Filter>source\platforms\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\windows\win_synchapi.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
     <ClCompile Include="..\source\platforms\windows\win_user32.cpp">

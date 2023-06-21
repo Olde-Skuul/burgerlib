@@ -532,7 +532,7 @@ uintptr_t BURGER_API Burger::FileManager::queue_handler(
 	FileManager* pThis = static_cast<FileManager*>(pData);
 	for (;;) {
 		// Wait until there's a command in the queue
-		pThis->m_PingIOThread.acquire();
+		pThis->m_PingIOThread.signal();
 		// Get the command
 		Queue_t* pQueue = &pThis->m_IOQueue[pThis->m_uQueueStart];
 		File* pFile;
@@ -655,7 +655,7 @@ uintptr_t BURGER_API Burger::FileManager::queue_handler(
 			// this command token was reached
 
 		case kIOCommandSync:
-			pThis->m_IOThreadSync.release();
+			pThis->m_IOThreadSync.signal();
 			break;
 
 		default:;

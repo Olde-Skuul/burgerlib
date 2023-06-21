@@ -3602,11 +3602,11 @@
 						>
 					</File>
 					<File
-						RelativePath="..\source\platforms\windows\brconsolemanagerwindows.cpp"
+						RelativePath="..\source\platforms\windows\brconditionvariablewindows.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\source\platforms\windows\brcriticalsectionwindows.cpp"
+						RelativePath="..\source\platforms\windows\brconsolemanagerwindows.cpp"
 						>
 					</File>
 					<File
@@ -3710,6 +3710,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\source\platforms\windows\brmutexwindows.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\brnetmanagerwindows.cpp"
+						>
+					</File>
+					<File
 						RelativePath="..\source\platforms\windows\broscursorwindows.cpp"
 						>
 					</File>
@@ -3727,6 +3735,10 @@
 					</File>
 					<File
 						RelativePath="..\source\platforms\windows\brrectwindows.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\brsemaphorewindows.cpp"
 						>
 					</File>
 					<File
@@ -4027,6 +4039,14 @@
 					</File>
 					<File
 						RelativePath="..\source\platforms\windows\win_shlwapi.h"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_synchapi.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_synchapi.h"
 						>
 					</File>
 					<File

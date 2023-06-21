@@ -70,6 +70,8 @@ enum eDLLIndex {
 	kDLLIndex_KERNEL32,
 	/** Index for shell32.dll */
 	kDLLIndex_SHELL32,
+	/** Index for API-MS-Win-Core-Synch-l1-2-0.dll */
+	kDLLIndex_SYNCAPI,
 	/** Total number of DLLs to be managed */
 	kDLLIndexCount
 };
@@ -221,8 +223,28 @@ enum eCallIndex {
 	kCall_IsDebuggerPresent,
 	/** Index for SetThreadDescription() */
 	kCall_SetThreadDescription,
+	/** Index for InitializeSRWLock() */
+	kCall_InitializeSRWLock,
+	/** Index for AcquireSRWLockExclusive() */
+	kCall_AcquireSRWLockExclusive,
+	/** Index for TryAcquireSRWLockExclusive() */
+	kCall_TryAcquireSRWLockExclusive,
+	/** Index for ReleaseSRWLockExclusive() */
+	kCall_ReleaseSRWLockExclusive,
 	/** Index for SHGetKnownFolderPath() */
 	kCall_SHGetKnownFolderPath,
+	/** Index for WaitOnAddress() */
+	kCall_WaitOnAddress,
+	/** Index for WakeByAddressSingle() */
+	kCall_WakeByAddressSingle,
+	/** Index for WakeConditionVariable() */
+	kCall_WakeConditionVariable,
+	/** Index for WakeAllConditionVariable() */
+	kCall_WakeAllConditionVariable,
+	/** Index for SleepConditionVariableSRW() */
+	kCall_SleepConditionVariableSRW,
+	/** Index for SleepConditionVariableCS() */
+	kCall_SleepConditionVariableCS,
 	/** Total number of function calls to be managed */
 	kCallIndexCount
 };

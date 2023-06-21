@@ -477,6 +477,8 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brwin437.obj &
 	$(A)/call_int.obj &
 	$(A)/common.obj &
+	$(A)/cpuid.obj &
+	$(A)/cpuidex.obj &
 	$(A)/msdos_interrupt_asm.obj &
 	$(A)/msdos_interrupts.obj &
 	$(A)/msdos_memory.obj &

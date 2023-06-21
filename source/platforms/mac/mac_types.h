@@ -47,6 +47,8 @@ struct OpaqueListClickLoopProcPtr;
 struct FSSpec;
 struct RoutineDescriptor;
 struct ProcessSerialNumber;
+struct GDevice;
+struct GammaTbl;
 
 #if TARGET_API_MAC_CARBON
 struct __CFBundle;

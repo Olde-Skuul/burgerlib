@@ -33,6 +33,10 @@ typedef UINT(WINAPI* GetSystemWow64DirectoryAPtr)(LPSTR lpBuffer, UINT uSize);
 typedef UINT(WINAPI* GetSystemWow64DirectoryWPtr)(LPWSTR lpBuffer, UINT uSize);
 typedef BOOL(WINAPI* IsDebuggerPresentPtr)(VOID);
 typedef HRESULT(WINAPI* SetThreadDescriptionPtr)(HANDLE, PCWSTR);
+typedef VOID(WINAPI* InitializeSRWLockPtr)(_RTL_SRWLOCK*);
+typedef VOID(WINAPI* ReleaseSRWLockExclusivePtr)(_RTL_SRWLOCK*);
+typedef VOID(WINAPI* AcquireSRWLockExclusivePtr)(_RTL_SRWLOCK*);
+typedef BOOLEAN(WINAPI* TryAcquireSRWLockExclusivePtr)(_RTL_SRWLOCK*);
 
 // Unit tests for pointers
 
@@ -42,7 +46,12 @@ typedef HRESULT(WINAPI* SetThreadDescriptionPtr)(HANDLE, PCWSTR);
 //	::GetSystemWow64DirectoryW;
 // IsDebuggerPresentPtr gIsDebuggerPresent = ::IsDebuggerPresent;
 // SetThreadDescriptionPtr gSetThreadDescription = ::SetThreadDescription;
-
+// InitializeSRWLockPtr gInitializeSRWLock = InitializeSRWLock;
+// ReleaseSRWLockExclusivePtr gReleaseSRWLockExclusive =
+// ReleaseSRWLockExclusive; AcquireSRWLockExclusivePtr gAcquireSRWLockExclusive
+// = ::AcquireSRWLockExclusive; TryAcquireSRWLockExclusivePtr
+// gTryAcquireSRWLockExclusive =
+//	::TryAcquireSRWLockExclusive;
 #endif
 
 //
@@ -179,6 +188,114 @@ HRESULT BURGER_API Burger::Win32::SetThreadDescription(
 			hThread, reinterpret_cast<PCWSTR>(lpThreadDescription));
 	}
 	return lResult;
+}
+
+/*! ************************************
+
+	\brief Load in kernel32.dll and call InitializeSRWLock
+
+	Manually load kernel32.dll if needed and call the Windows function
+	InitializeSRWLock()
+
+	https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-initializesrwlock
+
+	\note This function is present only in Windows Vista or later
+
+	\param pSRWLock A pointer to the SRW lock
+
+***************************************/
+
+void BURGER_API Burger::Win32::InitializeSRWLock(
+	_RTL_SRWLOCK* pSRWLock) BURGER_NOEXCEPT
+{
+	void* pInitializeSRWLock = load_function(kCall_InitializeSRWLock);
+	if (pInitializeSRWLock) {
+		static_cast<InitializeSRWLockPtr>(pInitializeSRWLock)(pSRWLock);
+	}
+}
+
+/*! ************************************
+
+	\brief Load in kernel32.dll and call AcquireSRWLockExclusive
+
+	Manually load kernel32.dll if needed and call the Windows function
+	AcquireSRWLockExclusive()
+
+	https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-acquiresrwlockexclusive
+
+	\note This function is present only in Windows Vista or later
+
+	\param pSRWLock A pointer to the SRW lock
+
+***************************************/
+
+void BURGER_API Burger::Win32::AcquireSRWLockExclusive(
+	_RTL_SRWLOCK* pSRWLock) BURGER_NOEXCEPT
+{
+	void* pAcquireSRWLockExclusive =
+		load_function(kCall_AcquireSRWLockExclusive);
+	if (pAcquireSRWLockExclusive) {
+		static_cast<AcquireSRWLockExclusivePtr>(pAcquireSRWLockExclusive)(
+			pSRWLock);
+	}
+}
+
+/*! ************************************
+
+	\brief Load in kernel32.dll and call TryAcquireSRWLockExclusive
+
+	Manually load kernel32.dll if needed and call the Windows function
+	TryAcquireSRWLockExclusive()
+
+	https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-tryacquiresrwlockexclusive
+
+	\note This function is present only in Windows 7 or later
+
+	\param pSRWLock A pointer to the SRW lock
+
+	\return 0 on failure, non-zero on acquiring the lock
+
+***************************************/
+
+uint_t BURGER_API Burger::Win32::TryAcquireSRWLockExclusive(
+	_RTL_SRWLOCK* pSRWLock) BURGER_NOEXCEPT
+{
+	void* pTryAcquireSRWLockExclusive =
+		load_function(kCall_TryAcquireSRWLockExclusive);
+
+	// Assume failure
+	BOOL uResult = FALSE;
+	if (pTryAcquireSRWLockExclusive) {
+		uResult = static_cast<TryAcquireSRWLockExclusivePtr>(
+			pTryAcquireSRWLockExclusive)(pSRWLock);
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Load in kernel32.dll and call ReleaseSRWLockExclusive
+
+	Manually load kernel32.dll if needed and call the Windows function
+	ReleaseSRWLockExclusive()
+
+	https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-releasesrwlockexclusive
+
+	\note This function is present only in Windows Vista or later
+
+	\param pSRWLock A pointer to the SRW lock
+
+***************************************/
+
+void BURGER_API Burger::Win32::ReleaseSRWLockExclusive(
+	_RTL_SRWLOCK* pSRWLock) BURGER_NOEXCEPT
+{
+	void* pReleaseSRWLockExclusive =
+		load_function(kCall_ReleaseSRWLockExclusive);
+	if (pReleaseSRWLockExclusive) {
+		static_cast<ReleaseSRWLockExclusivePtr>(pReleaseSRWLockExclusive)(
+			pSRWLock);
+	}
 }
 
 /*! ************************************

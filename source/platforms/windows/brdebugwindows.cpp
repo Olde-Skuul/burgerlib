@@ -17,7 +17,7 @@
 #include "brdebug.h"
 
 #if defined(BURGER_WINDOWS)
-#include "brcriticalsection.h"
+#include "brmutex.h"
 #include "brfile.h"
 #include "brnumberstringhex.h"
 #include "broscursor.h"
@@ -42,7 +42,7 @@
 
 // Make it thread safe
 
-static Burger::CriticalSectionStatic g_LockString;
+static Burger::MutexStatic g_LockString;
 
 void BURGER_API Burger::Debug::PrintString(const char* pString) BURGER_NOEXCEPT
 {

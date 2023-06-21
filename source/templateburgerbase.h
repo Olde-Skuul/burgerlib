@@ -44,6 +44,7 @@
 /* DIR: "platforms:wiiu" */
 /* DIR: "platforms:switch" */
 /* IGNORE: "burgermac.h" */
+/* IGNORE: "burgermsdos.h" */
 /* IGNORE: "burgerps4.h" */
 /* IGNORE: "burgerwindows.h" */
 /* IGNORE: "burgerunix.h" */
@@ -96,7 +97,6 @@
 
 // clang-format off
 #include "brstructs.h"
-
 #include "brwatcom.h"
 #include "brvisualstudio.h"
 #include "brintelcompiler.h"
@@ -109,7 +109,6 @@
 #include "brerror.h"
 #include "brassert.h"
 #include "brguid.h"
-
 #include "brstaticrtti.h"
 #include "brbase.h"
 #include "brmemorymanager.h"
@@ -124,6 +123,11 @@
 #include "brfpinfo.h"
 #include "brfplargeint.h"
 #include "brfpprintinfo.h"
+#include "brthread.h"
+#include "brmutex.h"
+#include "brsemaphore.h"
+#include "brconditionvariable.h"
+#include "brmemoryhandle.h"
 
 #include "brlocalization.h"
 #include "brdebug.h"
@@ -149,9 +153,6 @@
 #include "brmersennetwist.h"
 #include "brstdouthelpers.h"
 #include "bratomic.h"
-#include "brcriticalsection.h"
-#include "brthread.h"
-#include "brmemoryhandle.h"
 #include "brasciito.h"
 #include "brnumberto.h"
 #include "brmemoryfunctions.h"
