@@ -170,7 +170,7 @@ void BURGER_API Burger::RunQueue::Call(void) BURGER_NOEXCEPT
 	if (!m_bRecurse) {
 
 		// Get the master handle
-		RunQueueEntry* pWork = static_cast<RunQueueEntry*>(m_Entries.GetNext());
+		RunQueueEntry* pWork = static_cast<RunQueueEntry*>(m_Entries.get_next());
 
 		// Any in the list?
 		if (pWork != &m_Entries) {
@@ -185,7 +185,7 @@ void BURGER_API Burger::RunQueue::Call(void) BURGER_NOEXCEPT
 
 				// Next in the chain
 				RunQueueEntry* pNext =
-					static_cast<RunQueueEntry*>(pWork->GetNext());
+					static_cast<RunQueueEntry*>(pWork->get_next());
 
 				// Dispose of this entry
 				if (uCode == DISPOSE) {
@@ -237,20 +237,20 @@ Burger::RunQueue::RunQueueEntry* BURGER_API Burger::RunQueue::Add(
 			RunQueueEntry(pProc, pShutdown, pData, uPriority);
 		if (pResult) {
 			RunQueueEntry* pNext =
-				static_cast<RunQueueEntry*>(m_Entries.GetNext());
+				static_cast<RunQueueEntry*>(m_Entries.get_next());
 			// No entries? No need to test priorities
 			if (pNext == &m_Entries) {
-				m_Entries.InsertAfter(pResult); // Link it in
+				m_Entries.insert_after(pResult); // Link it in
 			} else {
 				// Traverse the linked list until the end is
 				// reached, or an entry with lower priority shows up
 				RunQueueEntry* pWork;
 				do {
 					pWork = pNext;
-					pNext = static_cast<RunQueueEntry*>(pNext->GetNext());
+					pNext = static_cast<RunQueueEntry*>(pNext->get_next());
 				} while (
 					(pNext != &m_Entries) && (pWork->m_uPriority > uPriority));
-				pNext->InsertBefore(pResult);
+				pNext->insert_before(pResult);
 			}
 		}
 	}
@@ -277,7 +277,7 @@ Burger::RunQueue::RunQueueEntry* BURGER_API Burger::RunQueue::Find(
 {
 	RunQueueEntry* pResult = nullptr;
 	// Get the master handle
-	RunQueueEntry* pWork = static_cast<RunQueueEntry*>(m_Entries.GetNext());
+	RunQueueEntry* pWork = static_cast<RunQueueEntry*>(m_Entries.get_next());
 	if (pWork != &m_Entries) { // Is it valid?
 		do {
 			if (pWork->m_pCallBack == pProc) { // Match?
@@ -285,7 +285,7 @@ Burger::RunQueue::RunQueueEntry* BURGER_API Burger::RunQueue::Find(
 				break;
 			}
 			pWork = static_cast<RunQueueEntry*>(
-				pWork->GetNext());     // Follow the list
+				pWork->get_next());     // Follow the list
 		} while (pWork != &m_Entries); // Still more?
 	}
 	return pResult;
@@ -314,7 +314,7 @@ Burger::RunQueue::RunQueueEntry* BURGER_API Burger::RunQueue::Find(
 {
 	RunQueueEntry* pResult = nullptr;
 	// Get the master handle
-	RunQueueEntry* pWork = static_cast<RunQueueEntry*>(m_Entries.GetNext());
+	RunQueueEntry* pWork = static_cast<RunQueueEntry*>(m_Entries.get_next());
 	if (pWork != &m_Entries) { // Is it valid?
 		do {
 			// Match?
@@ -323,7 +323,7 @@ Burger::RunQueue::RunQueueEntry* BURGER_API Burger::RunQueue::Find(
 				break;
 			}
 			pWork = static_cast<RunQueueEntry*>(
-				pWork->GetNext());     // Follow the list
+				pWork->get_next());     // Follow the list
 		} while (pWork != &m_Entries); // Still more?
 	}
 	return pResult;
@@ -353,12 +353,12 @@ uint_t BURGER_API Burger::RunQueue::RemoveAll(
 {
 	uint_t uResult = FALSE;
 	RunQueueEntry* pWork = static_cast<RunQueueEntry*>(
-		m_Entries.GetNext());  // Get the master handle
+		m_Entries.get_next());  // Get the master handle
 	if (pWork != &m_Entries) { // Is it valid?
 		do {
 			// Get the forward link (For unlinking)
 			RunQueueEntry* pNext =
-				static_cast<RunQueueEntry*>(pWork->GetNext());
+				static_cast<RunQueueEntry*>(pWork->get_next());
 
 			// Match?
 			if (pWork->m_pCallBack == pProc) {
@@ -398,7 +398,7 @@ uint_t BURGER_API Burger::RunQueue::Remove(
 {
 	uint_t uResult = FALSE;
 	// Get the master handle
-	RunQueueEntry* pWork = static_cast<RunQueueEntry*>(m_Entries.GetNext());
+	RunQueueEntry* pWork = static_cast<RunQueueEntry*>(m_Entries.get_next());
 
 	// Is it valid?
 	if (pWork != &m_Entries) {
@@ -410,7 +410,7 @@ uint_t BURGER_API Burger::RunQueue::Remove(
 				break;
 			}
 			// Follow the list
-			pWork = static_cast<RunQueueEntry*>(pWork->GetNext());
+			pWork = static_cast<RunQueueEntry*>(pWork->get_next());
 			// Still more?
 		} while (pWork != &m_Entries);
 	}
@@ -434,14 +434,14 @@ uint_t BURGER_API Burger::RunQueue::Remove(
 void BURGER_API Burger::RunQueue::Clear(void) BURGER_NOEXCEPT
 {
 	// Get the master handle
-	RunQueueEntry* pWork = static_cast<RunQueueEntry*>(m_Entries.GetNext());
+	RunQueueEntry* pWork = static_cast<RunQueueEntry*>(m_Entries.get_next());
 
 	// Is it valid?
 	if (pWork != &m_Entries) {
 		do {
 			// Get the forward link (For unlinking)
 			RunQueueEntry* pNext =
-				static_cast<RunQueueEntry*>(pWork->GetNext());
+				static_cast<RunQueueEntry*>(pWork->get_next());
 
 			// Dispose of the current record
 			Delete(pWork);

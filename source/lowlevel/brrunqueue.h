@@ -19,8 +19,8 @@
 #include "brtypes.h"
 #endif
 
-#ifndef __BRDOUBLYLINKEDLIST_H__
-#include "brdoublylinkedlist.h"
+#ifndef __BRDOUBLELINKEDLIST_H__
+#include "brdoublelinkedlist.h"
 #endif
 
 /* BEGIN */
@@ -71,7 +71,7 @@ public:
 
 	typedef eReturnCode(BURGER_API* CallbackProc)(void* pContext);
 
-	class RunQueueEntry: protected DoublyLinkedList {
+	class RunQueueEntry: protected DoubleLinkedList {
 		BURGER_DISABLE_COPY(RunQueueEntry);
 
 		friend class RunQueue;
@@ -104,7 +104,7 @@ public:
 
 protected:
 	/** Head entry of the linked list */
-	DoublyLinkedList m_Entries;
+	DoubleLinkedList m_Entries;
 	/** \ref TRUE if this class is the process of executing. */
 	uint_t m_bRecurse;
 

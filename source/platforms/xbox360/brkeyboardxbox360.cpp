@@ -300,7 +300,7 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Keyboard::Poll(
 			pNewEvent->m_uWhich = KeyStroke.UserIndex;
 			pNewEvent->m_uScanCode = static_cast<uint32_t>(uScanCode);
 			pNewEvent->m_uFlags = 0;
-			pNewEvent->m_uMSTimeStamp = Tick::ReadMilliseconds();
+			pNewEvent->m_uMSTimeStamp = Tick::read_ms();
 
 			if (uPressed) {
 				// Mark as pressed

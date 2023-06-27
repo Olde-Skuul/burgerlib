@@ -1317,7 +1317,7 @@ abort:
 
 	\param pInput Pointer to a 32 bit aligned memory location to lock
 
-	\sa CriticalSection, or atomic_unlock()
+	\sa Mutex, or atomic_unlock()
 
 ***************************************/
 
@@ -1352,7 +1352,7 @@ void BURGER_API Burger::atomic_lock(volatile uint32_t* pInput) BURGER_NOEXCEPT
 
 	\param pInput Pointer to a 32 bit aligned memory location to unlock
 
-	\sa atomic_lock(), CriticalSection
+	\sa atomic_lock(), Mutex
 
 ***************************************/
 

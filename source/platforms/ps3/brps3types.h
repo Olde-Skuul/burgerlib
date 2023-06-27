@@ -22,27 +22,6 @@
 /* BEGIN */
 #if defined(BURGER_PS3) && !defined(DOXYGEN)
 
-// Clones of PS3 structures
-typedef uint32_t Burger_sys_sleep_queue_t;
-
-struct Burgersys_lwmutex_lock_info_t {
-	volatile uint32_t owner;
-	volatile uint32_t waiter;
-};
-
-union Burgersys_lwmutex_variable_t {
-	Burgersys_lwmutex_lock_info_t info;
-	volatile uint64_t all_info;
-};
-
-struct Burgersys_lwmutex_t {
-	Burgersys_lwmutex_variable_t lock_var;
-	uint32_t attribute;
-	uint32_t recursive_count;
-	Burger_sys_sleep_queue_t sleep_queue;
-	uint32_t pad;
-};
-
 extern "C" {
 extern float sqrtf(float);
 extern double sqrt(double);

@@ -112,6 +112,112 @@ struct Vector_128 {
 };
 #endif
 
+namespace Burger {
+struct Vector_128Float32 {
+	union {
+		/** Value as 4 32 bit floats */
+		BURGER_ALIGN(float, f[4], 16);
+
+		/** Value as a 128 bit vector */
+		Vector_128 v;
+	};
+
+	BURGER_INLINE operator Vector_128() const BURGER_NOEXCEPT
+	{
+		return v;
+	}
+};
+
+struct Vector_128Float64 {
+	union {
+		/** Value as 2 64 bit floats */
+		BURGER_ALIGN(double, d[2], 16);
+
+		/** Value as a 128 bit vector */
+		Vector_128 v;
+	};
+
+	BURGER_INLINE operator Vector_128() const BURGER_NOEXCEPT
+	{
+		return v;
+	}
+};
+
+struct Vector_128Int32 {
+	union {
+		/** Value as 4 signed 32 bit integers */
+		BURGER_ALIGN(int32_t, i[4], 16);
+
+		/** Value as a 128 bit vector */
+		Vector_128 v;
+	};
+
+	BURGER_INLINE operator Vector_128() const BURGER_NOEXCEPT
+	{
+		return v;
+	}
+};
+
+struct Vector_128Word64 {
+	union {
+		/** Value as 2 unsigned 64 bit integers */
+		BURGER_ALIGN(uint64_t, u[2], 16);
+
+		/** Value as a 128 bit vector */
+		Vector_128 v;
+	};
+
+	BURGER_INLINE operator Vector_128() const BURGER_NOEXCEPT
+	{
+		return v;
+	}
+};
+
+struct Vector_128Word32 {
+	union {
+		/** Value as 4 unsigned 32 bit integers */
+		BURGER_ALIGN(uint32_t, u[4], 16);
+		/** Value as a 128 bit vector */
+		Vector_128 v;
+	};
+
+	BURGER_INLINE operator Vector_128() const BURGER_NOEXCEPT
+	{
+		return v;
+	}
+};
+
+struct Vector_128Word8 {
+	union {
+		/** Value as 16 unsigned 8 bit integers */
+		BURGER_ALIGN(uint8_t, u[16], 16);
+
+		/** Value as a 128 bit vector */
+		Vector_128 v;
+	};
+
+	BURGER_INLINE operator Vector_128() const BURGER_NOEXCEPT
+	{
+		return v;
+	}
+};
+
+struct Vector_128Word16 {
+	union {
+		/** Value as 8 unsigned 16 bit integers */
+		BURGER_ALIGN(uint16_t, u[8], 16);
+
+		/** Value as a 128 bit vector */
+		Vector_128 v;
+	};
+
+	BURGER_INLINE operator Vector_128() const BURGER_NOEXCEPT
+	{
+		return v;
+	}
+};
+}
+
 /* END */
 
 #endif

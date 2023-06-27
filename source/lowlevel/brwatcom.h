@@ -206,21 +206,9 @@ extern void BurgerFixedMathFromFloatNearest2(Fixed32* pOutput, float fInput);
 	"fmul dword ptr [g_fBurgerMath65536]" \
 	"fistp dword ptr [eax]" parm[eax][8087] modify exact[];
 
-extern void __cpuid(int a[4], int b);
-#pragma aux __cpuid = \
-	"cpuid" \
-	"mov [esi+0],eax" \
-	"mov [esi+4],ebx" \
-	"mov [esi+8],ecx" \
-	"mov [esi+12],edx" parm[esi][eax] modify[ebx ecx edx];
-
-extern void __cpuidex(int a[4], int b, int c);
-#pragma aux __cpuidex = \
-	"cpuid" \
-	"mov [esi+0],eax" \
-	"mov [esi+4],ebx" \
-	"mov [esi+8],ecx" \
-	"mov [esi+12],edx" parm[esi][eax][ecx] modify[ebx ecx edx];
+// Intrinsics from Visual Studio
+extern void __watcall __cpuid(int a[4], int b);
+extern void __watcall __cpuidex(int a[4], int b, int c);
 
 // Copy of _BitScanForward() from MSVC
 // https://learn.microsoft.com/en-us/cpp/intrinsics/bitscanforward-bitscanforward64?view=msvc-170

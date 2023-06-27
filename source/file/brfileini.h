@@ -62,11 +62,20 @@ public:
 	public:
 		Generic(eType uType);
 		virtual ~Generic();
-		BURGER_INLINE Generic *GetNext(void) const { return static_cast<Generic *>(m_Link.GetNext()->GetData()); }
-		BURGER_INLINE Generic *GetPrevious(void) const { return static_cast<Generic *>(m_Link.GetPrevious()->GetData()); }
+		BURGER_INLINE Generic *GetNext(void) const { return static_cast<Generic *>(m_Link.get_next()->get_data()); }
+		BURGER_INLINE Generic* GetPrevious(void) const
+		{
+			return static_cast<Generic*>(m_Link.get_previous()->get_data());
+		}
 		BURGER_INLINE eType GetType(void) const { return m_eType; }
-		BURGER_INLINE void InsertBefore(Generic *pGeneric) { m_Link.InsertBefore(&pGeneric->m_Link); }
-		BURGER_INLINE void InsertAfter(Generic *pGeneric) { m_Link.InsertAfter(&pGeneric->m_Link); }
+		BURGER_INLINE void InsertBefore(Generic* pGeneric)
+		{
+			m_Link.insert_before(&pGeneric->m_Link);
+		}
+		BURGER_INLINE void InsertAfter(Generic* pGeneric)
+		{
+			m_Link.insert_after(&pGeneric->m_Link);
+		}
 	};
 
 	class Comment : public Generic {

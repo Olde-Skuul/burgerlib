@@ -14,7 +14,7 @@
 
 #include "brthread.h"
 #include "bratomic.h"
-#include "brcriticalsection.h"
+#include "brmutex.h"
 #include "brglobalmemorymanager.h"
 #include "brstringfunctions.h"
 
@@ -24,7 +24,7 @@
 // Used by tls_data_get_fallback() and tls_data_set_fallback()
 // Root point to linked list of thread local storage records
 static Burger::ThreadLocalStorageRecord_t* g_pThreadLocalStorageRecords;
-static Burger::CriticalSection g_TLSRecordsCriticalSection;
+static Burger::Mutex g_TLSRecordsCriticalSection;
 #endif
 
 /*! ************************************
@@ -636,7 +636,7 @@ void BURGER_API Burger::tls_release(void) BURGER_NOEXCEPT
 		Nintendo 64, Wii and WiiU use cooperative multithreading, so great care
 		is required when using threads.
 
-	\sa \ref CriticalSection, \ref Semaphore and \ref ConditionVariable
+	\sa \ref Mutex, \ref Semaphore and \ref ConditionVariable
 
 ***************************************/
 

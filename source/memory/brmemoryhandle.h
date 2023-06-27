@@ -74,63 +74,20 @@ public:
 	/** Function prototype for user supplied garbage collection subroutine */
 	typedef void(BURGER_API* MemPurgeProc)(void* pThis, eMemoryStage uStage);
 
-protected:
-#if (UINTPTR_MAX == 0xFFFFFFFFU) || defined(DOXYGEN)
-	/** Memory signature for allocated blocks */
-	static const uintptr_t kSignatureUsed = 0xDEADBEEF;
-	/** Memory signature for free blocks */
-	static const uintptr_t kSignatureFree = 0xBADBADBA;
-#else
-	static const uintptr_t kSignatureUsed = 0xABCDDEADBEEFDCBAULL;
-	static const uintptr_t kSignatureFree = 0xBADBADBADBADBADBULL;
-#endif
-
+private:
 	struct Handle_t {
-		/** Pointer to true memory (Must be the first entry!) */
-		void* m_pData;
-
-		/** Length of allocated memory */
-		uintptr_t m_uLength;
-
-		/** Pointer to the next handle in the chain */
-		Handle_t* m_pNextHandle;
-
-		/** Pointer to the previous handle in the chain */
-		Handle_t* m_pPrevHandle;
-
-		/** Pointer to the next handle in purge list*/
-		Handle_t* m_pNextPurge;
-
-		/** Pointer to the previous handle in the purge list */
-		Handle_t* m_pPrevPurge;
-
-		/** Memory flags or parent used handle */
-		uint32_t m_uFlags;
-
-		/** Memory ID */
-		uint32_t m_uID;
+		void* m_pData; ///< Pointer to true memory (Must be the first entry!)
+		uintptr_t m_uLength;     ///< Length of allocated memory
+		Handle_t* m_pNextHandle; ///< Next handle in the chain
+		Handle_t* m_pPrevHandle; ///< Previous handle in the chain
+		Handle_t* m_pNextPurge;  ///< Next handle in purge list
+		Handle_t* m_pPrevPurge;  ///< Previous handle in the purge list
+		uint_t m_uFlags;         ///< Memory flags or parent used handle
+		uint_t m_uID;            ///< Memory ID
 	};
 
 	struct SystemBlock_t {
-		/** Next block in the chain */
-		SystemBlock_t* m_pNext;
-	};
-
-	struct PointerPrefix_t {
-
-		/** Handle to the parent memory object */
-		void** m_ppParentHandle;
-
-		/** Signature for debugging */
-		uintptr_t m_uSignature;
-
-#if (UINTPTR_MAX == 0xFFFFFFFFU) && \
-	!(defined(BURGER_MSDOS) || defined(BURGER_DS) || defined(BURGER_68K))
-
-		/** Pad to alignment */
-		uint32_t m_uPadding1;
-		uint32_t m_uPadding2;
-#endif
+		SystemBlock_t* m_pNext; ///< Next block in the chain
 	};
 
 	/** Linked list of memory blocks taken from the system */
@@ -170,16 +127,15 @@ protected:
 	Handle_t m_PurgeHandleFiFo;
 
 	/** Lock for multi-threading support */
-	Mutex m_Mutex;
+	Mutex m_Lock;
 
-	static void* BURGER_API AllocProc(
+	static void* BURGER_API alloc_proc(
 		MemoryManager* pThis, uintptr_t uSize) BURGER_NOEXCEPT;
-	static void BURGER_API FreeProc(
+	static void BURGER_API free_proc(
 		MemoryManager* pThis, const void* pInput) BURGER_NOEXCEPT;
-	static void* BURGER_API ReallocProc(MemoryManager* pThis,
+	static void* BURGER_API realloc_proc(MemoryManager* pThis,
 		const void* pInput, uintptr_t uSize) BURGER_NOEXCEPT;
-	static void BURGER_API ShutdownProc(MemoryManager* pThis) BURGER_NOEXCEPT;
-
+	static void BURGER_API shutdown_proc(MemoryManager* pThis) BURGER_NOEXCEPT;
 	Handle_t* BURGER_API AllocNewHandle(void) BURGER_NOEXCEPT;
 	void BURGER_API GrabMemoryRange(void* pData, uintptr_t uLength,
 		Handle_t* pParent, Handle_t* pHandle) BURGER_NOEXCEPT;
@@ -201,28 +157,28 @@ public:
 
 	BURGER_INLINE void* alloc(uintptr_t uSize) BURGER_NOEXCEPT
 	{
-		return AllocProc(this, uSize);
+		return alloc_proc(this, uSize);
 	}
 
 	BURGER_INLINE void free(const void* pInput) BURGER_NOEXCEPT
 	{
-		return FreeProc(this, pInput);
+		return free_proc(this, pInput);
 	}
 
 	BURGER_INLINE void* realloc(
 		const void* pInput, uintptr_t uSize) BURGER_NOEXCEPT
 	{
-		return ReallocProc(this, pInput, uSize);
+		return realloc_proc(this, pInput, uSize);
 	}
 
 	BURGER_INLINE void shutdown(void) BURGER_NOEXCEPT
 	{
-		ShutdownProc(this);
+		shutdown_proc(this);
 	}
 
-	void** BURGER_API AllocHandle(
+	void** BURGER_API alloc_handle(
 		uintptr_t uSize, uint_t uFlags = 0) BURGER_NOEXCEPT;
-	void BURGER_API FreeHandle(void** ppInput) BURGER_NOEXCEPT;
+	void BURGER_API free_handle(void** ppInput) BURGER_NOEXCEPT;
 	void** BURGER_API ReallocHandle(
 		void** ppInput, uintptr_t uSize) BURGER_NOEXCEPT;
 	void** BURGER_API RefreshHandle(void** ppInput) BURGER_NOEXCEPT;
@@ -230,17 +186,18 @@ public:
 	static uintptr_t BURGER_API GetSize(void** ppInput) BURGER_NOEXCEPT;
 	static uintptr_t BURGER_API GetSize(const void* pInput) BURGER_NOEXCEPT;
 	uintptr_t BURGER_API GetTotalFreeMemory(void) BURGER_NOEXCEPT;
-	static void* BURGER_API Lock(void** ppInput) BURGER_NOEXCEPT;
-	static void BURGER_API Unlock(void** ppInput) BURGER_NOEXCEPT;
-	static void BURGER_API SetID(void** ppInput, uint_t uID) BURGER_NOEXCEPT;
-	void BURGER_API SetPurgeFlag(void** ppInput, uint_t uFlag) BURGER_NOEXCEPT;
+	static void* BURGER_API lock(void** ppInput) BURGER_NOEXCEPT;
+	static void BURGER_API unlock(void** ppInput) BURGER_NOEXCEPT;
+	static void BURGER_API set_ID(void** ppInput, uint_t uID) BURGER_NOEXCEPT;
+	void BURGER_API clear_purge_flag(void** ppInput) BURGER_NOEXCEPT;
+	void BURGER_API set_purge_flag(void** ppInput) BURGER_NOEXCEPT;
 	static uint_t BURGER_API GetLockedState(void** ppInput) BURGER_NOEXCEPT;
 	void BURGER_API SetLockedState(
 		void** ppInput, uint_t uFlag) BURGER_NOEXCEPT;
 	void BURGER_API Purge(void** ppInput) BURGER_NOEXCEPT;
 	uint_t BURGER_API PurgeHandles(uintptr_t uSize) BURGER_NOEXCEPT;
 	void BURGER_API CompactHandles(void) BURGER_NOEXCEPT;
-	void BURGER_API DumpHandles(void) BURGER_NOEXCEPT;
+	void BURGER_API dump_handles(void) BURGER_NOEXCEPT;
 };
 
 class AllocatorHandle: public AllocatorBase {

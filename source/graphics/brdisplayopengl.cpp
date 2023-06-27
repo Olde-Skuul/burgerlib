@@ -699,7 +699,7 @@ void BURGER_API Burger::DisplayOpenGL::SetupOpenGL(void)
 	\endcode
 
 	If the shader fails compilation, the error returned by OpenGL will be output
-	to Debug::String()
+	to Debug::PrintString()
 
 	\param GLEnum OpenGL shader enum GL_VERTEX_SHADER or GL_FRAGMENT_SHADER
 	\param pShaderCode "C" string of the source code of the shader to compile
@@ -812,7 +812,7 @@ uint_t BURGER_API Burger::DisplayOpenGL::CompileShader(uint_t GLEnum,const char 
 
 						// Note: The log could be so long that it could overflow the
 						// Debug::Message buffer (Which would assert)
-						// So use Debug::String() to avoid this
+						// So use Debug::PrintString() to avoid this
 						Debug::PrintString("Shader compile log:\n");
 						Debug::PrintString(pLog);
 						Debug::PrintString("\n");
@@ -842,7 +842,7 @@ uint_t BURGER_API Burger::DisplayOpenGL::CompileShader(uint_t GLEnum,const char 
 	and link them all together.
 
 	If the shader fails compilation or linking, the error returned
-	by OpenGL will be output to Debug::String()
+	by OpenGL will be output to Debug::PrintString()
 
 	\param pUnifiedShader "C" string of the source code of the shader to compile
 	\param uLength Length of the source code string. If zero, pProgram is assumed to be zero terminated

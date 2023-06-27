@@ -1361,10 +1361,10 @@ void BURGER_API Burger::Display::SetPalette(const RGBAWord8_t* pPalette)
 void BURGER_API Burger::Display::SetPalette(void** pHandle)
 {
 	const uint8_t* pPalette =
-		static_cast<const uint8_t*>(MemoryManagerHandle::Lock(pHandle));
+		static_cast<const uint8_t*>(MemoryManagerHandle::lock(pHandle));
 	if (pPalette) {
 		SetPalette(0, 256, pPalette);
-		MemoryManagerHandle::Unlock(pHandle);
+		MemoryManagerHandle::unlock(pHandle);
 	}
 }
 
@@ -1650,12 +1650,12 @@ void BURGER_API Burger::Display::FadeTo(
 {
 	// Lock it down
 	const uint8_t* pPalette =
-		static_cast<const uint8_t*>(MemoryManagerHandle::Lock(pHandle));
+		static_cast<const uint8_t*>(MemoryManagerHandle::lock(pHandle));
 	if (pPalette) {
 		// Perform the fade
 		FadeTo(pPalette, pProc, pData);
 		// Release the memory
-		MemoryManagerHandle::Unlock(pHandle);
+		MemoryManagerHandle::unlock(pHandle);
 	}
 }
 

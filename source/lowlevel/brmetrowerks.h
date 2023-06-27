@@ -86,46 +86,14 @@ BURGER_INLINE long _InterlockedCompareExchange(register long volatile* pOutput,
 {
 	__asm {
 		mov eax,lBefore
-		lock xadd [pOutput],lAfter
+		lock cmpxchg [pOutput],lAfter
 		mov lBefore,eax
 	}
 	return lBefore;
 }
 
-BURGER_INLINE void __cpuid(int a[4], int b)
-{
-	// clang-format off
-    BURGER_ASM {
-    // Get the pointer to the destination buffer
-    mov esi,a
-    mov eax,b   // Command byte
-    cpuid       // Invoke CPUID
-    // Store the result in the same order as Visual C
-    mov[esi],eax
-    mov[esi + 4],ebx
-    mov[esi + 8],ecx
-    mov[esi + 12],edx
-    }
-	// clang-format on
-}
-
-BURGER_INLINE void __cpuidex(int a[4], int b, int c)
-{
-	// clang-format off
-    BURGER_ASM {
-    // Get the pointer to the destination buffer
-    mov esi,a
-    mov eax,b   // Command byte
-    mov ecx,c   // Get the sub command
-    cpuid       // Invoke CPUID
-    // Store the result in the same order as Visual C
-    mov[esi],eax
-    mov[esi + 4],ebx
-    mov[esi + 8],ecx
-    mov[esi + 12],edx
-    }
-	// clang-format on
-}
+extern void __cdecl __cpuid(int a[4], int b);
+extern void __cdecl __cpuidex(int a[4], int b, int c);
 
 BURGER_INLINE uint32_t _BitScanForward(
 	register unsigned long* Index, register unsigned long Mask)
@@ -138,13 +106,13 @@ BURGER_INLINE uint32_t _BitScanForward(
     mov dword ptr[ebx],eax
     setne al
     }
-    // clang-format on
+	// clang-format on
 }
 
 BURGER_INLINE uint32_t _BitScanReverse(
-    register unsigned long* Index, register unsigned long Mask)
+	register unsigned long* Index, register unsigned long Mask)
 {
-    // clang-format off
+	// clang-format off
     BURGER_ASM {
     mov eax, Mask
     mov ebx, Index
@@ -152,17 +120,17 @@ BURGER_INLINE uint32_t _BitScanReverse(
     mov dword ptr[ebx],eax
     setne al
     }
-    // clang-format on
+	// clang-format on
 }
 
 BURGER_INLINE uint64_t _xgetbv(register uint_t xcr) BURGER_NOEXCEPT
 {
-    // clang-format off
+	// clang-format off
     BURGER_ASM {
     mov ecx, xcr
     db 0x0F, 0x01, 0xD0
     }
-    // clang-format on
+	// clang-format on
 }
 
 #elif defined(BURGER_68K)
@@ -170,13 +138,13 @@ BURGER_INLINE uint64_t _xgetbv(register uint_t xcr) BURGER_NOEXCEPT
 // muls.l d1,d1:d0
 #pragma parameter __D1 BurgerIntMathMul32GetUpper32(__D0, __D1)
 int32_t BurgerIntMathMul32GetUpper32(int32_t iInputMulA, int32_t iInputMulB) = {
-    0x4c01, 0xc01};
+	0x4c01, 0xc01};
 
 // muls.l d1,d1:d0
 // divs.l d2,d1:d0
 #pragma parameter __D0 BurgerIntMathMul32x32To64Div32(__D0, __D1, __D2)
 int32_t BurgerIntMathMul32x32To64Div32(int32_t iInputMulA, int32_t iInputMulB,
-    int32_t iInputDiv) = {0x4c01, 0xc01, 0x4c42, 0xc01};
+	int32_t iInputDiv) = {0x4c01, 0xc01, 0x4c42, 0xc01};
 
 extern double __fabs(double x);
 extern void* __alloca(unsigned x);
@@ -190,17 +158,17 @@ extern double sqrt(double);
 
 BURGER_INLINE float sqrtf(float fInput)
 {
-    return static_cast<float>(sqrt(fInput));
+	return static_cast<float>(sqrt(fInput));
 }
 
 #if __has_intrinsic(__builtin___rotate_left32)
 extern unsigned int __builtin___rotate_left32(unsigned int, int)
-    __attribute__((nothrow)) __attribute__((const));
+	__attribute__((nothrow)) __attribute__((const));
 #endif
 
 #if __has_intrinsic(__builtin___rotate_right32)
 extern unsigned int __builtin___rotate_right32(unsigned int, int)
-    __attribute__((nothrow)) __attribute__((const));
+	__attribute__((nothrow)) __attribute__((const));
 #endif
 
 #endif

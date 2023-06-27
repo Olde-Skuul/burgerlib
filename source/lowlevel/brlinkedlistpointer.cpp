@@ -2,7 +2,7 @@
 
 	Linked list of data objects manager
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -20,13 +20,13 @@
 	\class Burger::LinkedListPointer
 	\brief Double linked list with pointer class
 
-	This derived class from DoublyLinkedList adds an application supplied
+	This derived class from DoubleLinkedList adds an application supplied
 	pointer so the linked list objects point to parent data. It's intended to be
 	a simple extension to a linked list class.
 
 	If more robustness is needed, consider using \ref LinkedListObjects instead
 
-	\sa LinkedListObjects or DoublyLinkedList
+	\sa LinkedListObjects or DoubleLinkedList
 
 ***************************************/
 
@@ -36,9 +36,9 @@
 	\brief Initializer for a LinkedListPointer
 
 	Set the links to point to itself. The object is not attached to another
-	list. The data is set to nullptr.
+	list. The data is set to \ref nullptr.
 
-	\sa ~DoublyLinkedList() or LinkedListPointer(void *)
+	\sa ~DoubleLinkedList() or LinkedListPointer(void *)
 
 ***************************************/
 
@@ -52,13 +52,15 @@
 
 	\param pData Pointer to initialize the pointer with.
 
-	\sa ~DoublyLinkedList() or LinkedListPointer()
+	\sa ~DoubleLinkedList() or LinkedListPointer()
 
 ***************************************/
 
 /*! ************************************
 
-	\fn const LinkedListPointer * Burger::LinkedListPointer::GetNext(void) const
+	\fn const LinkedListPointer * Burger::LinkedListPointer::get_next(
+		void) const
+
 	\brief Get the next pointer in the list
 
 	Return the pointer to the next object in the list. Since the list is
@@ -66,13 +68,14 @@
 	are detected properly
 
 	\return Pointer to the next LinkedListPointer object in the chain
-	\sa GetPrevious(void) const
+
+	\sa get_previous(void) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn const LinkedListPointer * Burger::LinkedListPointer::GetPrevious(
+	\fn const LinkedListPointer * Burger::LinkedListPointer::get_previous(
 		void) const
 
 	\brief Get the previous pointer in the list
@@ -82,32 +85,35 @@
 	start and end are detected properly
 
 	\return Pointer to the previous LinkedListPointer object in the chain
-	\sa GetNext(void) const
+
+	\sa get_next(void) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void * Burger::LinkedListPointer::GetData(void) const
+	\fn void * Burger::LinkedListPointer::get_data(void) const
 	\brief Get the pointer stored in this node.
 
 	Return the pointer stored in this node.
 
 	\return Pointer stored in this node.
-	\sa SetData(void *)
+
+	\sa set_data(void *)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::LinkedListPointer::SetData(void *)
+	\fn void Burger::LinkedListPointer::set_data(void *)
 	\brief Set the pointer to store in this node.
 
 	Change the pointer stored in this node with the new pointer. The previous
 	pointer is discarded.
 
 	\param pInput Pointer to store in this node.
-	\sa GetData(void) const
+
+	\sa get_data(void) const
 
 ***************************************/
 

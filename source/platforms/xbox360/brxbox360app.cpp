@@ -15,6 +15,7 @@
 #include "brgameapp.h"
 #if defined(BURGER_XBOX360) || defined(DOXYGEN)
 #include "brfilemanager.h"
+#include "brtick.h"
 #define NOD3D
 #define NONET
 #include <xtl.h>
@@ -36,6 +37,7 @@ Burger::GameApp::GameApp(uintptr_t uDefaultMemorySize,
 	: m_MemoryManagerHandle(
 		  uDefaultMemorySize, uDefaultHandleCount, uMinReserveSize)
 {
+	Tick::init();
 	InitDefaults();
 	// Init the file system
 	FileManager::initialize();
@@ -55,6 +57,7 @@ Burger::GameApp::~GameApp()
 	// Release the file system
 	FileManager::shut_down();
 	ShutdownDefaults();
+	Tick::shutdown();
 }
 
 #endif

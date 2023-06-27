@@ -20,10 +20,6 @@
 #include "brtypes.h"
 #endif
 
-#ifndef __BRVECTORTYPES_H__
-#include "brvectortypes.h"
-#endif
-
 //
 // Note: _MSC_VER values for determining specific version.
 //
@@ -140,6 +136,7 @@ extern "C" uint64_t __cdecl _xgetbv(unsigned int uInput);
 
 // Visual studio 2005 and earlier don't have these SSE type conversions
 #if defined(BURGER_AMD64) && (BURGER_MSVC < 150000000)
+#include <emmintrin.h>
 BURGER_INLINE float _mm_cvtss_f32(__m128 vInput)
 {
 	return vInput.m128_f32[0];

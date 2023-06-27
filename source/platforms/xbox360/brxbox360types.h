@@ -57,15 +57,6 @@ struct _GUID;
 struct tagPOINT;
 struct tagRECT;
 
-struct Burger_CRITICAL_SECTION {
-	union {
-		uint32_t RawEvent[4];
-	} Synchronization;
-	uint32_t LockCount;
-	uint32_t RecursionCount;
-	void* OwningThread;
-};
-
 #endif
 /* END */
 

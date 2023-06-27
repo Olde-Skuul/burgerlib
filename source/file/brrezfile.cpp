@@ -841,7 +841,7 @@ void BURGER_API Burger::RezFile::Shutdown(void)
 			uint_t uCount = pGroups->m_uCount;
 			do {
 				// Dispose of the memory
-				m_pMemoryManager->FreeHandle(pEntry->m_ppData);
+				m_pMemoryManager->free_handle(pEntry->m_ppData);
 #if defined(_DEBUG)
 				// Was every single resource released properly?
 				if ((pEntry->m_uFlags&ENTRYFLAGSREFCOUNT) && Globals::AreWarningsEnabled()) {
@@ -900,7 +900,7 @@ void BURGER_API Burger::RezFile::PurgeCache(void)
 						// Not referenced right now
 						if (!(pEntry->m_uFlags&ENTRYFLAGSREFCOUNT)) {
 							// Dispose of it.
-							m_pMemoryManager->FreeHandle(ppData);
+							m_pMemoryManager->free_handle(ppData);
 							pEntry->m_ppData = NULL;
 						}
 					}
@@ -1243,7 +1243,7 @@ void BURGER_API Burger::RezFile::Remove(uint_t uRezNum)
 			Debug::Message("RezFile::Remove() : Removing resource %u that is referenced %lu times\n",uRezNum,uOffset>>ENTRYFLAGSREFSHIFT);
 		}
 #endif
-		m_pMemoryManager->FreeHandle(ppData);
+		m_pMemoryManager->free_handle(ppData);
 	}
 
 	RezGroup_t *pGroupToDelete = m_pGroups;
@@ -1590,11 +1590,11 @@ void ** BURGER_API Burger::RezFile::LoadHandle(uint_t uRezNum,uint_t *pLoadedFla
 		if (ppData[0]) {				// Handle not purged? */
 			// Increment the reference count
 			pEntry->m_uFlags=pEntry->m_uFlags+ENTRYFLAGSREFADD;
-			m_pMemoryManager->SetPurgeFlag(ppData,FALSE);	// Can't purge
+			m_pMemoryManager->clear_purge_flag(ppData);	// Can't purge
 			return ppData;				// Return the handle
 		}
 		pEntry->m_ppData = NULL;	// Mark as gone!
-		m_pMemoryManager->FreeHandle(ppData);		// Release the memory
+		m_pMemoryManager->free_handle(ppData);		// Release the memory
 		ppData = NULL;				// Set to zero for future error checking
 	}
 
@@ -1619,11 +1619,11 @@ void ** BURGER_API Burger::RezFile::LoadHandle(uint_t uRezNum,uint_t *pLoadedFla
 				pEntry->m_uFlags |= ENTRYFLAGSFILEFOUND;
 				const uint32_t uNewLength = static_cast<uint32_t>(TheFile.get_file_size());				// Get the NEW length
 				if (uNewLength) {
-					ppData = m_pMemoryManager->AllocHandle(uNewLength,uHandleFlags);	// Get memory
+					ppData = m_pMemoryManager->alloc_handle(uNewLength,uHandleFlags);	// Get memory
 					if (ppData) {										// Got the memory?
-						m_pMemoryManager->SetID(ppData,uRezNum);		// Set the ID to the handle
-						if (TheFile.read(m_pMemoryManager->Lock(ppData),uNewLength)!=uNewLength) {
-							m_pMemoryManager->FreeHandle(ppData);		// Discard the memory
+						m_pMemoryManager->set_ID(ppData,uRezNum);		// Set the ID to the handle
+						if (TheFile.read(m_pMemoryManager->lock(ppData),uNewLength)!=uNewLength) {
+							m_pMemoryManager->free_handle(ppData);		// Discard the memory
 							ppData = nullptr;				// Can't load it in!
 						} else {
 							pEntry->m_uLength = uNewLength;	// Save the size
@@ -1633,8 +1633,8 @@ void ** BURGER_API Burger::RezFile::LoadHandle(uint_t uRezNum,uint_t *pLoadedFla
 				TheFile.close();		// Close the file
 			}
 			if (ppData) {
-				m_pMemoryManager->SetPurgeFlag(ppData,FALSE);
-				m_pMemoryManager->Unlock(ppData);
+				m_pMemoryManager->clear_purge_flag(ppData);
+				m_pMemoryManager->unlock(ppData);
 				if (pLoadedFlag) {
 					pLoadedFlag[0] = TRUE;		// Data is new
 				}
@@ -1675,32 +1675,32 @@ void ** BURGER_API Burger::RezFile::LoadHandle(uint_t uRezNum,uint_t *pLoadedFla
 			pEntry->m_uCompressedLength -= 4;
 		}
 
-		ppData = m_pMemoryManager->AllocHandle(DataLength,uHandleFlags);	// Get dest buffer
+		ppData = m_pMemoryManager->alloc_handle(DataLength,uHandleFlags);	// Get dest buffer
 		if (!ppData) {										// No memory for uncompressed data?
 			pEntry->m_uFlags &= (~ENTRYFLAGSREFCOUNT);		// Kill the ref count
 			return NULL;
 		}
-		m_pMemoryManager->SetID(ppData,uRezNum);		// Set the ID to the handle
+		m_pMemoryManager->set_ID(ppData,uRezNum);		// Set the ID to the handle
 		uint32_t BufferSize = (PackedLength<MAXBUFFER) ? PackedLength : MAXBUFFER;
 		uint8_t *PackedPtr = static_cast<uint8_t *>(Alloc(BufferSize));	// Get Buffer
 		if (!PackedPtr) {				// No compressed data buffer?
-			m_pMemoryManager->FreeHandle(ppData);
+			m_pMemoryManager->free_handle(ppData);
 			pEntry->m_uFlags &= (~ENTRYFLAGSREFCOUNT);		// Kill the ref count
 			return NULL;
 		}
 		pDecompressor->Reset();
 		uintptr_t PackedHeader = DataLength;
 		uintptr_t PackedSize = PackedLength;
-		uint8_t *pOutput = (uint8_t *)m_pMemoryManager->Lock(ppData);
+		uint8_t *pOutput = (uint8_t *)m_pMemoryManager->lock(ppData);
 		do {		/* Loop for decompression */
 			uintptr_t ChunkSize = (BufferSize<PackedSize) ? BufferSize : PackedSize;
 			if (m_File.read(PackedPtr,ChunkSize)!=ChunkSize) {
-				m_pMemoryManager->FreeHandle(ppData);
+				m_pMemoryManager->free_handle(ppData);
 				pEntry->m_uFlags &= (~ENTRYFLAGSREFCOUNT);		// Kill the ref count
 				return NULL;
 			}
 			if (pDecompressor->Process(pOutput,PackedHeader,PackedPtr,ChunkSize)==kErrorDataCorruption) {
-				m_pMemoryManager->FreeHandle(ppData);
+				m_pMemoryManager->free_handle(ppData);
 				pEntry->m_uFlags &= (~ENTRYFLAGSREFCOUNT);		// Kill the ref count
 				return NULL;
 			}
@@ -1710,7 +1710,7 @@ void ** BURGER_API Burger::RezFile::LoadHandle(uint_t uRezNum,uint_t *pLoadedFla
 		} while (PackedSize);
 		pDecompressor->Reset();		// Force a shutdown
 		Free(PackedPtr);	/* Release the temp buffer */
-		m_pMemoryManager->Unlock(ppData);
+		m_pMemoryManager->unlock(ppData);
 		if (pLoadedFlag) {
 			pLoadedFlag[0] = TRUE;		/* Data is new */
 		}
@@ -1729,11 +1729,11 @@ void ** BURGER_API Burger::RezFile::LoadHandle(uint_t uRezNum,uint_t *pLoadedFla
 
 	// Uncompressed data
 
-	ppData = m_pMemoryManager->AllocHandle(DataLength,uHandleFlags);	// Get the memory
+	ppData = m_pMemoryManager->alloc_handle(DataLength,uHandleFlags);	// Get the memory
 	if (ppData) {		/* Memory ok? */
-		m_pMemoryManager->SetID(ppData,uRezNum);		// Set the ID to the handle
-		if (m_File.read(m_pMemoryManager->Lock(ppData),DataLength)==DataLength) {	/* Read it in */
-			m_pMemoryManager->Unlock(ppData);
+		m_pMemoryManager->set_ID(ppData,uRezNum);		// Set the ID to the handle
+		if (m_File.read(m_pMemoryManager->lock(ppData),DataLength)==DataLength) {	/* Read it in */
+			m_pMemoryManager->unlock(ppData);
 			if (pLoadedFlag) {
 				pLoadedFlag[0] = TRUE;		/* Data is new */
 			}
@@ -1751,7 +1751,7 @@ void ** BURGER_API Burger::RezFile::LoadHandle(uint_t uRezNum,uint_t *pLoadedFla
 			return ppData;
 		}
 		// Delete on file load error
-		m_pMemoryManager->FreeHandle(ppData);	
+		m_pMemoryManager->free_handle(ppData);	
 	}
 	// Kill the reference count
 	pEntry->m_uFlags &= (~ENTRYFLAGSREFCOUNT);
@@ -1801,7 +1801,7 @@ void ** BURGER_API Burger::RezFile::LoadHandle(const char *pRezName,uint_t *pLoa
 void * BURGER_API Burger::RezFile::Load(uint_t uRezNum,uint_t *pLoadedFlag)
 {
 	// Load the handle and dereference it
-	return m_pMemoryManager->Lock(LoadHandle(uRezNum,pLoadedFlag));
+	return m_pMemoryManager->lock(LoadHandle(uRezNum,pLoadedFlag));
 }
 
 /*! ************************************
@@ -1818,7 +1818,7 @@ void * BURGER_API Burger::RezFile::Load(uint_t uRezNum,uint_t *pLoadedFlag)
 void * BURGER_API Burger::RezFile::Load(const char *pRezName,uint_t *pLoadedFlag)
 {
 	// Load the handle and dereference it
-	return m_pMemoryManager->Lock(LoadHandle(pRezName,pLoadedFlag));
+	return m_pMemoryManager->lock(LoadHandle(pRezName,pLoadedFlag));
 }
 
 /*! ************************************
@@ -1903,8 +1903,8 @@ void BURGER_API Burger::RezFile::Release(uint_t uRezNum)
 			if (!(uOffset&ENTRYFLAGSREFCOUNT)) {		// No longer referenced?
 				void **ppData = pEntry->m_ppData;
 				if (ppData) {							// Is there a handle?
-					m_pMemoryManager->Unlock(ppData);				// Unlock it
-					m_pMemoryManager->SetPurgeFlag(ppData,TRUE);	// Mark as purgable
+					m_pMemoryManager->unlock(ppData);				// Unlock it
+					m_pMemoryManager->set_purge_flag(ppData);	// Mark as purgable
 				}
 			}
 		}
@@ -1940,8 +1940,8 @@ void BURGER_API Burger::RezFile::Release(const char *pRezName)
 				if (!(uOffset&ENTRYFLAGSREFCOUNT)) {		/* No longer referenced? */
 					void **ppData = pEntry->m_ppData;
 					if (ppData) {			/* Is there a handle? */
-						m_pMemoryManager->Unlock(ppData);		/* Unlock it */
-						m_pMemoryManager->SetPurgeFlag(ppData,TRUE);	/* Mark as purgable */
+						m_pMemoryManager->unlock(ppData);		/* Unlock it */
+						m_pMemoryManager->set_purge_flag(ppData);	/* Mark as purgable */
 					}
 				}
 			}
@@ -1973,7 +1973,7 @@ void BURGER_API Burger::RezFile::Kill(uint_t uRezNum)
 				Debug::Message("RezFile::Kill() : Killing resource %u that is referenced %lu times\n",uRezNum,uOffset>>ENTRYFLAGSREFSHIFT);
 			}
 #endif
-			m_pMemoryManager->FreeHandle(ppData);
+			m_pMemoryManager->free_handle(ppData);
 		}
 	}
 }
@@ -2004,7 +2004,7 @@ void BURGER_API Burger::RezFile::Kill(const char *pRezName)
 					Debug::Message("RezFile::Kill() : Killing resource %s that is referenced %lu times\n",pRezName,uOffset>>ENTRYFLAGSREFSHIFT);
 				}
 #endif
-				m_pMemoryManager->FreeHandle(ppData);
+				m_pMemoryManager->free_handle(ppData);
 			}
 		}
 	}

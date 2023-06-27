@@ -213,7 +213,7 @@ static const Instruction_t g_Instructions[0xA0] = {
 
 	This debugging function will parse the data at
 	the pointer as a single instruction of ActionScript
-	and output it using the Debug::String(const char *)
+	and output it using the Debug::PrintString(const char *)
 	function.
 
 	Documentation is found at http://www.adobe.com/content/dam/Adobe/en/devnet/swf/pdf/swf-file-format-spec.pdf

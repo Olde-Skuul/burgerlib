@@ -3824,23 +3824,6 @@ default constructors.
 
 /*! ************************************
 
-	\struct Vector_128
-	\brief 128 bit vector intrinsic.
-
-	This integer is used for register remapping to the vector units on several
-	CPUs. It is not to be used for 128 bit integer math.	Currently, only
-	processors with vector units like the Playstation 2, 3, 4, Xbox 360, XBox
-	ONE, Pentium with SSE, ARM with NEON and PowerPC with Alti-Vec can use this
-	intrinsic data type.
-
-	\sa Burger::Vector_128Float32, Burger::Vector_128Word32,
-		Burger::Vector_128Int32, Burger::Vector_128Word16,
-		Burger::Vector_128Word8, BURGER_ARM32, BURGER_POWERPC or BURGER_X86
-
-***************************************/
-
-/*! ************************************
-
 	\typedef WordPtr
 	\brief Unsigned integer that matches in size to a void *.
 
