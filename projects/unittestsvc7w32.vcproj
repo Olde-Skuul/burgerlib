@@ -1739,10 +1739,10 @@
 					RelativePath="..\source\lowlevel\brcodelibrary.h">
 				</File>
 				<File
-					RelativePath="..\source\lowlevel\brcriticalsection.cpp">
+					RelativePath="..\source\lowlevel\brconditionvariable.cpp">
 				</File>
 				<File
-					RelativePath="..\source\lowlevel\brcriticalsection.h">
+					RelativePath="..\source\lowlevel\brconditionvariable.h">
 				</File>
 				<File
 					RelativePath="..\source\lowlevel\brdebug.cpp">
@@ -1757,10 +1757,10 @@
 					RelativePath="..\source\lowlevel\brdetectmultilaunch.h">
 				</File>
 				<File
-					RelativePath="..\source\lowlevel\brdoublylinkedlist.cpp">
+					RelativePath="..\source\lowlevel\brdoublelinkedlist.cpp">
 				</File>
 				<File
-					RelativePath="..\source\lowlevel\brdoublylinkedlist.h">
+					RelativePath="..\source\lowlevel\brdoublelinkedlist.h">
 				</File>
 				<File
 					RelativePath="..\source\lowlevel\brendian.cpp">
@@ -1826,6 +1826,12 @@
 					RelativePath="..\source\lowlevel\brmetrowerks.h">
 				</File>
 				<File
+					RelativePath="..\source\lowlevel\brmutex.cpp">
+				</File>
+				<File
+					RelativePath="..\source\lowlevel\brmutex.h">
+				</File>
+				<File
 					RelativePath="..\source\lowlevel\broscursor.cpp">
 				</File>
 				<File
@@ -1854,6 +1860,12 @@
 				</File>
 				<File
 					RelativePath="..\source\lowlevel\brrunqueue.h">
+				</File>
+				<File
+					RelativePath="..\source\lowlevel\brsemaphore.cpp">
+				</File>
+				<File
+					RelativePath="..\source\lowlevel\brsemaphore.h">
 				</File>
 				<File
 					RelativePath="..\source\lowlevel\brsimplearray.cpp">
@@ -1911,6 +1923,9 @@
 				</File>
 				<File
 					RelativePath="..\source\lowlevel\brtypes.h">
+				</File>
+				<File
+					RelativePath="..\source\lowlevel\brvectortypes.cpp">
 				</File>
 				<File
 					RelativePath="..\source\lowlevel\brvectortypes.h">

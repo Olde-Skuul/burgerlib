@@ -181,7 +181,6 @@
       <CompileAs>Default</CompileAs>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BURGER_SDKS)\xbox360\burgerlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>xbdm.lib;xboxkrnl.lib;d3d9ltcg.lib;d3dx9.lib;xgraphics.lib;xapilib.lib;xaudio2.lib;x3daudioltcg.lib;xmcoreltcg.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>false</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -215,7 +214,6 @@
       <CompileAs>Default</CompileAs>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BURGER_SDKS)\xbox360\burgerlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>xbdm.lib;xboxkrnl.lib;d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>false</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -249,7 +247,6 @@
       <CompileAs>Default</CompileAs>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BURGER_SDKS)\xbox360\burgerlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>xbdm.lib;xboxkrnl.lib;d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -287,7 +284,6 @@
       <CompileAs>Default</CompileAs>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BURGER_SDKS)\xbox360\burgerlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>xbdm.lib;xboxkrnl.lib;d3d9i.lib;d3dx9i.lib;xgraphics.lib;xapilibi.lib;xaudio2.lib;x3daudioi.lib;xmcorei.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -326,7 +322,6 @@
       <CompileAs>Default</CompileAs>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BURGER_SDKS)\xbox360\burgerlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>xbdm.lib;xboxkrnl.lib;d3d9i.lib;d3dx9i.lib;xgraphics.lib;xapilibi.lib;xaudio2.lib;x3daudioi.lib;xmcorei.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -364,7 +359,6 @@
       <CompileAs>Default</CompileAs>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BURGER_SDKS)\xbox360\burgerlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>xbdm.lib;xboxkrnl.lib;d3d9ltcg.lib;d3dx9.lib;xgraphics.lib;xapilib.lib;xaudio2.lib;x3daudioltcg.lib;xmcoreltcg.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -401,7 +395,6 @@
       <CompileAs>Default</CompileAs>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BURGER_SDKS)\xbox360\burgerlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>xbdm.lib;xboxkrnl.lib;d3d9ltcg.lib;d3dx9.lib;xgraphics.lib;xapilib.lib;xaudio2.lib;x3daudioltcg.lib;xmcoreltcg.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -539,10 +532,10 @@
     <ClInclude Include="..\source\lowlevel\brautorepeat.h" />
     <ClInclude Include="..\source\lowlevel\brbase.h" />
     <ClInclude Include="..\source\lowlevel\brcodelibrary.h" />
-    <ClInclude Include="..\source\lowlevel\brcriticalsection.h" />
+    <ClInclude Include="..\source\lowlevel\brconditionvariable.h" />
     <ClInclude Include="..\source\lowlevel\brdebug.h" />
     <ClInclude Include="..\source\lowlevel\brdetectmultilaunch.h" />
-    <ClInclude Include="..\source\lowlevel\brdoublylinkedlist.h" />
+    <ClInclude Include="..\source\lowlevel\brdoublelinkedlist.h" />
     <ClInclude Include="..\source\lowlevel\brendian.h" />
     <ClInclude Include="..\source\lowlevel\brerror.h" />
     <ClInclude Include="..\source\lowlevel\brglobals.h" />
@@ -553,21 +546,26 @@
     <ClInclude Include="..\source\lowlevel\brlastinfirstout.h" />
     <ClInclude Include="..\source\lowlevel\brlinkedlistobject.h" />
     <ClInclude Include="..\source\lowlevel\brlinkedlistpointer.h" />
+    <ClInclude Include="..\source\lowlevel\brmacros.h" />
     <ClInclude Include="..\source\lowlevel\brmetrowerks.h" />
+    <ClInclude Include="..\source\lowlevel\brmutex.h" />
     <ClInclude Include="..\source\lowlevel\broscursor.h" />
     <ClInclude Include="..\source\lowlevel\brpair.h" />
     <ClInclude Include="..\source\lowlevel\brperforce.h" />
     <ClInclude Include="..\source\lowlevel\brqueue.h" />
     <ClInclude Include="..\source\lowlevel\brrunqueue.h" />
+    <ClInclude Include="..\source\lowlevel\brsemaphore.h" />
     <ClInclude Include="..\source\lowlevel\brsimplearray.h" />
     <ClInclude Include="..\source\lowlevel\brsmartpointer.h" />
     <ClInclude Include="..\source\lowlevel\brsnsystems.h" />
     <ClInclude Include="..\source\lowlevel\brstaticrtti.h" />
     <ClInclude Include="..\source\lowlevel\brstructs.h" />
     <ClInclude Include="..\source\lowlevel\brtemplates.h" />
+    <ClInclude Include="..\source\lowlevel\brthread.h" />
     <ClInclude Include="..\source\lowlevel\brtick.h" />
     <ClInclude Include="..\source\lowlevel\brtimedate.h" />
     <ClInclude Include="..\source\lowlevel\brtypes.h" />
+    <ClInclude Include="..\source\lowlevel\brvectortypes.h" />
     <ClInclude Include="..\source\lowlevel\brvisualstudio.h" />
     <ClInclude Include="..\source\lowlevel\brwatcom.h" />
     <ClInclude Include="..\source\lowlevel\brxcode.h" />
@@ -579,12 +577,12 @@
     <ClInclude Include="..\source\math\brfixedvector3d.h" />
     <ClInclude Include="..\source\math\brfixedvector4d.h" />
     <ClInclude Include="..\source\math\brfloatingpoint.h" />
+    <ClInclude Include="..\source\math\brfphalf.h" />
     <ClInclude Include="..\source\math\brfpinfo.h" />
     <ClInclude Include="..\source\math\brfplargeint.h" />
     <ClInclude Include="..\source\math\brfpprintinfo.h" />
     <ClInclude Include="..\source\math\brmatrix3d.h" />
     <ClInclude Include="..\source\math\brmatrix4d.h" />
-    <ClInclude Include="..\source\math\brmp3math.h" />
     <ClInclude Include="..\source\math\brvector2d.h" />
     <ClInclude Include="..\source\math\brvector3d.h" />
     <ClInclude Include="..\source\math\brvector4d.h" />
@@ -593,6 +591,8 @@
     <ClInclude Include="..\source\memory\brmemorymanager.h" />
     <ClInclude Include="..\source\platforms\xbox360\brstartup.h" />
     <ClInclude Include="..\source\platforms\xbox360\brxbox360types.h" />
+    <ClInclude Include="..\source\platforms\xbox360\templatexbox360.h" />
+    <ClInclude Include="..\source\platforms\xbox360\x360_thread.h" />
     <ClInclude Include="..\source\random\brmersennetwist.h" />
     <ClInclude Include="..\source\random\brrandom.h" />
     <ClInclude Include="..\source\random\brrandombase.h" />
@@ -631,7 +631,6 @@
     <ClInclude Include="..\unittest\testbrhashes.h" />
     <ClInclude Include="..\unittest\testbrmatrix3d.h" />
     <ClInclude Include="..\unittest\testbrmatrix4d.h" />
-    <ClInclude Include="..\unittest\testbrnetwork.h" />
     <ClInclude Include="..\unittest\testbrnumberto.h" />
     <ClInclude Include="..\unittest\testbrprintf.h" />
     <ClInclude Include="..\unittest\testbrstaticrtti.h" />
@@ -751,10 +750,10 @@
     <ClCompile Include="..\source\lowlevel\brautorepeat.cpp" />
     <ClCompile Include="..\source\lowlevel\brbase.cpp" />
     <ClCompile Include="..\source\lowlevel\brcodelibrary.cpp" />
-    <ClCompile Include="..\source\lowlevel\brcriticalsection.cpp" />
+    <ClCompile Include="..\source\lowlevel\brconditionvariable.cpp" />
     <ClCompile Include="..\source\lowlevel\brdebug.cpp" />
     <ClCompile Include="..\source\lowlevel\brdetectmultilaunch.cpp" />
-    <ClCompile Include="..\source\lowlevel\brdoublylinkedlist.cpp" />
+    <ClCompile Include="..\source\lowlevel\brdoublelinkedlist.cpp" />
     <ClCompile Include="..\source\lowlevel\brendian.cpp" />
     <ClCompile Include="..\source\lowlevel\brerror.cpp" />
     <ClCompile Include="..\source\lowlevel\brglobals.cpp" />
@@ -764,19 +763,23 @@
     <ClCompile Include="..\source\lowlevel\brlastinfirstout.cpp" />
     <ClCompile Include="..\source\lowlevel\brlinkedlistobject.cpp" />
     <ClCompile Include="..\source\lowlevel\brlinkedlistpointer.cpp" />
+    <ClCompile Include="..\source\lowlevel\brmutex.cpp" />
     <ClCompile Include="..\source\lowlevel\broscursor.cpp" />
     <ClCompile Include="..\source\lowlevel\brpair.cpp" />
     <ClCompile Include="..\source\lowlevel\brperforce.cpp" />
     <ClCompile Include="..\source\lowlevel\brqueue.cpp" />
     <ClCompile Include="..\source\lowlevel\brrunqueue.cpp" />
+    <ClCompile Include="..\source\lowlevel\brsemaphore.cpp" />
     <ClCompile Include="..\source\lowlevel\brsimplearray.cpp" />
     <ClCompile Include="..\source\lowlevel\brsmartpointer.cpp" />
     <ClCompile Include="..\source\lowlevel\brstaticrtti.cpp" />
     <ClCompile Include="..\source\lowlevel\brstructs.cpp" />
     <ClCompile Include="..\source\lowlevel\brtemplates.cpp" />
+    <ClCompile Include="..\source\lowlevel\brthread.cpp" />
     <ClCompile Include="..\source\lowlevel\brtick.cpp" />
     <ClCompile Include="..\source\lowlevel\brtimedate.cpp" />
     <ClCompile Include="..\source\lowlevel\brtypes.cpp" />
+    <ClCompile Include="..\source\lowlevel\brvectortypes.cpp" />
     <ClCompile Include="..\source\math\brearcliptriangulate.cpp" />
     <ClCompile Include="..\source\math\brfixedmatrix3d.cpp" />
     <ClCompile Include="..\source\math\brfixedmatrix4d.cpp" />
@@ -785,12 +788,12 @@
     <ClCompile Include="..\source\math\brfixedvector3d.cpp" />
     <ClCompile Include="..\source\math\brfixedvector4d.cpp" />
     <ClCompile Include="..\source\math\brfloatingpoint.cpp" />
+    <ClCompile Include="..\source\math\brfphalf.cpp" />
     <ClCompile Include="..\source\math\brfpinfo.cpp" />
     <ClCompile Include="..\source\math\brfplargeint.cpp" />
     <ClCompile Include="..\source\math\brfpprintinfo.cpp" />
     <ClCompile Include="..\source\math\brmatrix3d.cpp" />
     <ClCompile Include="..\source\math\brmatrix4d.cpp" />
-    <ClCompile Include="..\source\math\brmp3math.cpp" />
     <ClCompile Include="..\source\math\brsinecosine.cpp" />
     <ClCompile Include="..\source\math\brvector2d.cpp" />
     <ClCompile Include="..\source\math\brvector3d.cpp" />
@@ -798,7 +801,6 @@
     <ClCompile Include="..\source\memory\brglobalmemorymanager.cpp" />
     <ClCompile Include="..\source\memory\brmemoryhandle.cpp" />
     <ClCompile Include="..\source\memory\brmemorymanager.cpp" />
-    <ClCompile Include="..\source\platforms\xbox360\brcriticalsectionxbox360.cpp" />
     <ClCompile Include="..\source\platforms\xbox360\brdirectorysearchxbox360.cpp" />
     <ClCompile Include="..\source\platforms\xbox360\brdisplaybasexbox360.cpp" />
     <ClCompile Include="..\source\platforms\xbox360\brdisplayxbox360.cpp" />
@@ -807,14 +809,19 @@
     <ClCompile Include="..\source\platforms\xbox360\brfilexbox360.cpp" />
     <ClCompile Include="..\source\platforms\xbox360\brjoypadxbox360.cpp" />
     <ClCompile Include="..\source\platforms\xbox360\brkeyboardxbox360.cpp" />
+    <ClCompile Include="..\source\platforms\xbox360\brmemorymanagerxbox360.cpp" />
+    <ClCompile Include="..\source\platforms\xbox360\brmutexxbox360.cpp" />
     <ClCompile Include="..\source\platforms\xbox360\brpoint2dxbox360.cpp" />
     <ClCompile Include="..\source\platforms\xbox360\brrectxbox360.cpp" />
+    <ClCompile Include="..\source\platforms\xbox360\brsemaphorexbox360.cpp" />
     <ClCompile Include="..\source\platforms\xbox360\brsoundxbox360.cpp" />
     <ClCompile Include="..\source\platforms\xbox360\brtexturexbox360.cpp" />
+    <ClCompile Include="..\source\platforms\xbox360\brthreadxbox360.cpp" />
     <ClCompile Include="..\source\platforms\xbox360\brtickxbox360.cpp" />
     <ClCompile Include="..\source\platforms\xbox360\brtimedatexbox360.cpp" />
     <ClCompile Include="..\source\platforms\xbox360\brvertexbufferxbox360.cpp" />
     <ClCompile Include="..\source\platforms\xbox360\brxbox360app.cpp" />
+    <ClCompile Include="..\source\platforms\xbox360\x360_thread.cpp" />
     <ClCompile Include="..\source\random\brmersennetwist.cpp" />
     <ClCompile Include="..\source\random\brrandom.cpp" />
     <ClCompile Include="..\source\random\brrandombase.cpp" />
@@ -839,7 +846,6 @@
     <ClCompile Include="..\source\text\brwin1252.cpp" />
     <ClCompile Include="..\source\text\brwin437.cpp" />
     <ClCompile Include="..\unittest\common.cpp" />
-    <ClCompile Include="..\unittest\createtables.cpp" />
     <ClCompile Include="..\unittest\testbralgorithm.cpp" />
     <ClCompile Include="..\unittest\testbrcodelibrary.cpp" />
     <ClCompile Include="..\unittest\testbrcompression.cpp" />
@@ -852,7 +858,6 @@
     <ClCompile Include="..\unittest\testbrhashes.cpp" />
     <ClCompile Include="..\unittest\testbrmatrix3d.cpp" />
     <ClCompile Include="..\unittest\testbrmatrix4d.cpp" />
-    <ClCompile Include="..\unittest\testbrnetwork.cpp" />
     <ClCompile Include="..\unittest\testbrnumberto.cpp" />
     <ClCompile Include="..\unittest\testbrprintf.cpp" />
     <ClCompile Include="..\unittest\testbrstaticrtti.cpp" />

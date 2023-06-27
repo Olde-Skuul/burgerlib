@@ -379,7 +379,7 @@
     <ClInclude Include="..\source\lowlevel\brcodelibrary.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\lowlevel\brcriticalsection.h">
+    <ClInclude Include="..\source\lowlevel\brconditionvariable.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brdebug.h">
@@ -388,7 +388,7 @@
     <ClInclude Include="..\source\lowlevel\brdetectmultilaunch.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\lowlevel\brdoublylinkedlist.h">
+    <ClInclude Include="..\source\lowlevel\brdoublelinkedlist.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brendian.h">
@@ -427,6 +427,9 @@
     <ClInclude Include="..\source\lowlevel\brmetrowerks.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brmutex.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\lowlevel\broscursor.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
@@ -440,6 +443,9 @@
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brrunqueue.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brsemaphore.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brsimplearray.h">
@@ -976,7 +982,7 @@
     <ClCompile Include="..\source\lowlevel\brcodelibrary.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\lowlevel\brcriticalsection.cpp">
+    <ClCompile Include="..\source\lowlevel\brconditionvariable.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
     <ClCompile Include="..\source\lowlevel\brdebug.cpp">
@@ -985,7 +991,7 @@
     <ClCompile Include="..\source\lowlevel\brdetectmultilaunch.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\lowlevel\brdoublylinkedlist.cpp">
+    <ClCompile Include="..\source\lowlevel\brdoublelinkedlist.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
     <ClCompile Include="..\source\lowlevel\brendian.cpp">
@@ -1015,6 +1021,9 @@
     <ClCompile Include="..\source\lowlevel\brlinkedlistpointer.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\lowlevel\brmutex.cpp">
+      <Filter>source\lowlevel</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\lowlevel\broscursor.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
@@ -1028,6 +1037,9 @@
       <Filter>source\lowlevel</Filter>
     </ClCompile>
     <ClCompile Include="..\source\lowlevel\brrunqueue.cpp">
+      <Filter>source\lowlevel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\lowlevel\brsemaphore.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
     <ClCompile Include="..\source\lowlevel\brsimplearray.cpp">
@@ -1055,6 +1067,9 @@
       <Filter>source\lowlevel</Filter>
     </ClCompile>
     <ClCompile Include="..\source\lowlevel\brtypes.cpp">
+      <Filter>source\lowlevel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\lowlevel\brvectortypes.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
     <ClCompile Include="..\source\math\brearcliptriangulate.cpp">

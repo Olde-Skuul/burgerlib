@@ -377,14 +377,14 @@
 		<Unit filename="../source/lowlevel/brbase.h" />
 		<Unit filename="../source/lowlevel/brcodelibrary.cpp" />
 		<Unit filename="../source/lowlevel/brcodelibrary.h" />
-		<Unit filename="../source/lowlevel/brcriticalsection.cpp" />
-		<Unit filename="../source/lowlevel/brcriticalsection.h" />
+		<Unit filename="../source/lowlevel/brconditionvariable.cpp" />
+		<Unit filename="../source/lowlevel/brconditionvariable.h" />
 		<Unit filename="../source/lowlevel/brdebug.cpp" />
 		<Unit filename="../source/lowlevel/brdebug.h" />
 		<Unit filename="../source/lowlevel/brdetectmultilaunch.cpp" />
 		<Unit filename="../source/lowlevel/brdetectmultilaunch.h" />
-		<Unit filename="../source/lowlevel/brdoublylinkedlist.cpp" />
-		<Unit filename="../source/lowlevel/brdoublylinkedlist.h" />
+		<Unit filename="../source/lowlevel/brdoublelinkedlist.cpp" />
+		<Unit filename="../source/lowlevel/brdoublelinkedlist.h" />
 		<Unit filename="../source/lowlevel/brendian.cpp" />
 		<Unit filename="../source/lowlevel/brendian.h" />
 		<Unit filename="../source/lowlevel/brerror.cpp" />
@@ -406,6 +406,8 @@
 		<Unit filename="../source/lowlevel/brlinkedlistpointer.h" />
 		<Unit filename="../source/lowlevel/brmacros.h" />
 		<Unit filename="../source/lowlevel/brmetrowerks.h" />
+		<Unit filename="../source/lowlevel/brmutex.cpp" />
+		<Unit filename="../source/lowlevel/brmutex.h" />
 		<Unit filename="../source/lowlevel/broscursor.cpp" />
 		<Unit filename="../source/lowlevel/broscursor.h" />
 		<Unit filename="../source/lowlevel/brpair.cpp" />
@@ -416,6 +418,8 @@
 		<Unit filename="../source/lowlevel/brqueue.h" />
 		<Unit filename="../source/lowlevel/brrunqueue.cpp" />
 		<Unit filename="../source/lowlevel/brrunqueue.h" />
+		<Unit filename="../source/lowlevel/brsemaphore.cpp" />
+		<Unit filename="../source/lowlevel/brsemaphore.h" />
 		<Unit filename="../source/lowlevel/brsimplearray.cpp" />
 		<Unit filename="../source/lowlevel/brsimplearray.h" />
 		<Unit filename="../source/lowlevel/brsmartpointer.cpp" />
@@ -435,6 +439,7 @@
 		<Unit filename="../source/lowlevel/brtimedate.h" />
 		<Unit filename="../source/lowlevel/brtypes.cpp" />
 		<Unit filename="../source/lowlevel/brtypes.h" />
+		<Unit filename="../source/lowlevel/brvectortypes.cpp" />
 		<Unit filename="../source/lowlevel/brvectortypes.h" />
 		<Unit filename="../source/lowlevel/brvisualstudio.h" />
 		<Unit filename="../source/lowlevel/brwatcom.h" />

@@ -3171,11 +3171,11 @@
 					>
 				</File>
 				<File
-					RelativePath="..\source\lowlevel\brcriticalsection.cpp"
+					RelativePath="..\source\lowlevel\brconditionvariable.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\source\lowlevel\brcriticalsection.h"
+					RelativePath="..\source\lowlevel\brconditionvariable.h"
 					>
 				</File>
 				<File
@@ -3195,11 +3195,11 @@
 					>
 				</File>
 				<File
-					RelativePath="..\source\lowlevel\brdoublylinkedlist.cpp"
+					RelativePath="..\source\lowlevel\brdoublelinkedlist.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\source\lowlevel\brdoublylinkedlist.h"
+					RelativePath="..\source\lowlevel\brdoublelinkedlist.h"
 					>
 				</File>
 				<File
@@ -3287,6 +3287,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\source\lowlevel\brmutex.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\source\lowlevel\brmutex.h"
+					>
+				</File>
+				<File
 					RelativePath="..\source\lowlevel\broscursor.cpp"
 					>
 				</File>
@@ -3324,6 +3332,14 @@
 				</File>
 				<File
 					RelativePath="..\source\lowlevel\brrunqueue.h"
+					>
+				</File>
+				<File
+					RelativePath="..\source\lowlevel\brsemaphore.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\source\lowlevel\brsemaphore.h"
 					>
 				</File>
 				<File
@@ -3400,6 +3416,10 @@
 				</File>
 				<File
 					RelativePath="..\source\lowlevel\brtypes.h"
+					>
+				</File>
+				<File
+					RelativePath="..\source\lowlevel\brvectortypes.cpp"
 					>
 				</File>
 				<File

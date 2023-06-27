@@ -364,7 +364,7 @@
     <ClInclude Include="..\source\lowlevel\brcodelibrary.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\lowlevel\brcriticalsection.h">
+    <ClInclude Include="..\source\lowlevel\brconditionvariable.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brdebug.h">
@@ -373,7 +373,7 @@
     <ClInclude Include="..\source\lowlevel\brdetectmultilaunch.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\lowlevel\brdoublylinkedlist.h">
+    <ClInclude Include="..\source\lowlevel\brdoublelinkedlist.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brendian.h">
@@ -406,7 +406,13 @@
     <ClInclude Include="..\source\lowlevel\brlinkedlistpointer.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brmacros.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\lowlevel\brmetrowerks.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brmutex.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\broscursor.h">
@@ -422,6 +428,9 @@
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brrunqueue.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brsemaphore.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brsimplearray.h">
@@ -442,6 +451,9 @@
     <ClInclude Include="..\source\lowlevel\brtemplates.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brthread.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\lowlevel\brtick.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
@@ -449,6 +461,9 @@
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brtypes.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brvectortypes.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brvisualstudio.h">
@@ -484,6 +499,9 @@
     <ClInclude Include="..\source\math\brfloatingpoint.h">
       <Filter>source\math</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\math\brfphalf.h">
+      <Filter>source\math</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\math\brfpinfo.h">
       <Filter>source\math</Filter>
     </ClInclude>
@@ -497,9 +515,6 @@
       <Filter>source\math</Filter>
     </ClInclude>
     <ClInclude Include="..\source\math\brmatrix4d.h">
-      <Filter>source\math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\math\brmp3math.h">
       <Filter>source\math</Filter>
     </ClInclude>
     <ClInclude Include="..\source\math\brvector2d.h">
@@ -638,9 +653,6 @@
       <Filter>unittest</Filter>
     </ClInclude>
     <ClInclude Include="..\unittest\testbrmatrix4d.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrnetwork.h">
       <Filter>unittest</Filter>
     </ClInclude>
     <ClInclude Include="..\unittest\testbrnumberto.h">
@@ -1000,7 +1012,7 @@
     <ClCompile Include="..\source\lowlevel\brcodelibrary.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\lowlevel\brcriticalsection.cpp">
+    <ClCompile Include="..\source\lowlevel\brconditionvariable.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
     <ClCompile Include="..\source\lowlevel\brdebug.cpp">
@@ -1009,7 +1021,7 @@
     <ClCompile Include="..\source\lowlevel\brdetectmultilaunch.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\lowlevel\brdoublylinkedlist.cpp">
+    <ClCompile Include="..\source\lowlevel\brdoublelinkedlist.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
     <ClCompile Include="..\source\lowlevel\brendian.cpp">
@@ -1039,6 +1051,9 @@
     <ClCompile Include="..\source\lowlevel\brlinkedlistpointer.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\lowlevel\brmutex.cpp">
+      <Filter>source\lowlevel</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\lowlevel\broscursor.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
@@ -1052,6 +1067,9 @@
       <Filter>source\lowlevel</Filter>
     </ClCompile>
     <ClCompile Include="..\source\lowlevel\brrunqueue.cpp">
+      <Filter>source\lowlevel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\lowlevel\brsemaphore.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
     <ClCompile Include="..\source\lowlevel\brsimplearray.cpp">
@@ -1069,6 +1087,9 @@
     <ClCompile Include="..\source\lowlevel\brtemplates.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\lowlevel\brthread.cpp">
+      <Filter>source\lowlevel</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\lowlevel\brtick.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
@@ -1076,6 +1097,9 @@
       <Filter>source\lowlevel</Filter>
     </ClCompile>
     <ClCompile Include="..\source\lowlevel\brtypes.cpp">
+      <Filter>source\lowlevel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\lowlevel\brvectortypes.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
     <ClCompile Include="..\source\math\brearcliptriangulate.cpp">
@@ -1102,6 +1126,9 @@
     <ClCompile Include="..\source\math\brfloatingpoint.cpp">
       <Filter>source\math</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\math\brfphalf.cpp">
+      <Filter>source\math</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\math\brfpinfo.cpp">
       <Filter>source\math</Filter>
     </ClCompile>
@@ -1115,9 +1142,6 @@
       <Filter>source\math</Filter>
     </ClCompile>
     <ClCompile Include="..\source\math\brmatrix4d.cpp">
-      <Filter>source\math</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\math\brmp3math.cpp">
       <Filter>source\math</Filter>
     </ClCompile>
     <ClCompile Include="..\source\math\brsinecosine.cpp">
@@ -1141,9 +1165,6 @@
     <ClCompile Include="..\source\memory\brmemorymanager.cpp">
       <Filter>source\memory</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\platforms\psvita\brcriticalsectionvita.cpp">
-      <Filter>source\platforms\psvita</Filter>
-    </ClCompile>
     <ClCompile Include="..\source\platforms\psvita\brdirectorysearchvita.cpp">
       <Filter>source\platforms\psvita</Filter>
     </ClCompile>
@@ -1154,6 +1175,15 @@
       <Filter>source\platforms\psvita</Filter>
     </ClCompile>
     <ClCompile Include="..\source\platforms\psvita\brfilevita.cpp">
+      <Filter>source\platforms\psvita</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\psvita\brmutexvita.cpp">
+      <Filter>source\platforms\psvita</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\psvita\brsemaphorevita.cpp">
+      <Filter>source\platforms\psvita</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\psvita\brthreadvita.cpp">
       <Filter>source\platforms\psvita</Filter>
     </ClCompile>
     <ClCompile Include="..\source\platforms\psvita\brticksvita.cpp">
@@ -1237,9 +1267,6 @@
     <ClCompile Include="..\unittest\common.cpp">
       <Filter>unittest</Filter>
     </ClCompile>
-    <ClCompile Include="..\unittest\createtables.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
     <ClCompile Include="..\unittest\testbralgorithm.cpp">
       <Filter>unittest</Filter>
     </ClCompile>
@@ -1274,9 +1301,6 @@
       <Filter>unittest</Filter>
     </ClCompile>
     <ClCompile Include="..\unittest\testbrmatrix4d.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrnetwork.cpp">
       <Filter>unittest</Filter>
     </ClCompile>
     <ClCompile Include="..\unittest\testbrnumberto.cpp">
@@ -1365,6 +1389,9 @@
     </Filter>
     <Filter Include="source\memory">
       <UniqueIdentifier>3FFEF1FA-AA39-305D-9BB1-E467E7A2D9BD</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\platforms">
+      <UniqueIdentifier>9327DA66-4830-3CF2-ABC9-332EAE05E610</UniqueIdentifier>
     </Filter>
     <Filter Include="source\platforms\psvita">
       <UniqueIdentifier>DBF8D465-5F6E-3DC3-B77D-B5C977852C37</UniqueIdentifier>

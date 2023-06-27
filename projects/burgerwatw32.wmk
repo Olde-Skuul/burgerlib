@@ -341,12 +341,12 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brcompressdeflate.obj &
 	$(A)/brcompresslbmrle.obj &
 	$(A)/brcompresslzss.obj &
+	$(A)/brconditionvariable.obj &
 	$(A)/brconditionvariablewindows.obj &
 	$(A)/brconsolemanager.obj &
 	$(A)/brconsolemanagerwindows.obj &
 	$(A)/brcrc16.obj &
 	$(A)/brcrc32.obj &
-	$(A)/brcriticalsection.obj &
 	$(A)/brdebug.obj &
 	$(A)/brdebugwindows.obj &
 	$(A)/brdecompress.obj &
@@ -369,7 +369,7 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brdisplayopenglsoftware8.obj &
 	$(A)/brdisplayopenglwindows.obj &
 	$(A)/brdjb2hash.obj &
-	$(A)/brdoublylinkedlist.obj &
+	$(A)/brdoublelinkedlist.obj &
 	$(A)/brdxt1.obj &
 	$(A)/brdxt3.obj &
 	$(A)/brdxt5.obj &
@@ -463,6 +463,7 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brmicrosoftadpcm.obj &
 	$(A)/brmouse.obj &
 	$(A)/brmousewindows.obj &
+	$(A)/brmutex.obj &
 	$(A)/brmutexwindows.obj &
 	$(A)/brnetmanagerwindows.obj &
 	$(A)/brnumberstring.obj &
@@ -492,6 +493,7 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brrezfile.obj &
 	$(A)/brrunqueue.obj &
 	$(A)/brsdbmhash.obj &
+	$(A)/brsemaphore.obj &
 	$(A)/brsemaphorewindows.obj &
 	$(A)/brsequencer.obj &
 	$(A)/brsequencerwindows.obj &
@@ -534,6 +536,7 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brvector2d.obj &
 	$(A)/brvector3d.obj &
 	$(A)/brvector4d.obj &
+	$(A)/brvectortypes.obj &
 	$(A)/brvertexbuffer.obj &
 	$(A)/brvertexbufferdirextx9.obj &
 	$(A)/brvertexbufferopengl.obj &

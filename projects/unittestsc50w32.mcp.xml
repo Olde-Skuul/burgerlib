@@ -854,6 +854,20 @@
 				</FILE>
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brconditionvariable.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS>Debug</FILEFLAGS>
+				</FILE>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brconditionvariable.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS></FILEFLAGS>
+				</FILE>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brconditionvariablewindows.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 					<FILEKIND>Text</FILEKIND>
@@ -904,20 +918,6 @@
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brcrc32.h</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-					<FILEKIND>Text</FILEKIND>
-					<FILEFLAGS></FILEFLAGS>
-				</FILE>
-				<FILE>
-					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brcriticalsection.cpp</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-					<FILEKIND>Text</FILEKIND>
-					<FILEFLAGS>Debug</FILEFLAGS>
-				</FILE>
-				<FILE>
-					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brcriticalsection.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 					<FILEKIND>Text</FILEKIND>
 					<FILEFLAGS></FILEFLAGS>
@@ -1197,14 +1197,14 @@
 				</FILE>
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brdoublylinkedlist.cpp</PATH>
+					<PATH>brdoublelinkedlist.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 					<FILEKIND>Text</FILEKIND>
 					<FILEFLAGS>Debug</FILEFLAGS>
 				</FILE>
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brdoublylinkedlist.h</PATH>
+					<PATH>brdoublelinkedlist.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 					<FILEKIND>Text</FILEKIND>
 					<FILEFLAGS></FILEFLAGS>
@@ -2492,6 +2492,20 @@
 				</FILE>
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brmutex.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS>Debug</FILEFLAGS>
+				</FILE>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brmutex.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS></FILEFLAGS>
+				</FILE>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brmutexwindows.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 					<FILEKIND>Text</FILEKIND>
@@ -2843,6 +2857,20 @@
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brsdbmhash.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS></FILEFLAGS>
+				</FILE>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brsemaphore.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS>Debug</FILEFLAGS>
+				</FILE>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brsemaphore.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 					<FILEKIND>Text</FILEKIND>
 					<FILEFLAGS></FILEFLAGS>
@@ -3399,6 +3427,13 @@
 					<PATHFORMAT>Windows</PATHFORMAT>
 					<FILEKIND>Text</FILEKIND>
 					<FILEFLAGS></FILEFLAGS>
+				</FILE>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brvectortypes.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS>Debug</FILEFLAGS>
 				</FILE>
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
@@ -4665,6 +4700,16 @@
 				</FILEREF>
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brconditionvariable.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brconditionvariable.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brconditionvariablewindows.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
@@ -4701,16 +4746,6 @@
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brcrc32.h</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-				</FILEREF>
-				<FILEREF>
-					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brcriticalsection.cpp</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-				</FILEREF>
-				<FILEREF>
-					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brcriticalsection.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
 				<FILEREF>
@@ -4910,12 +4945,12 @@
 				</FILEREF>
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brdoublylinkedlist.cpp</PATH>
+					<PATH>brdoublelinkedlist.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brdoublylinkedlist.h</PATH>
+					<PATH>brdoublelinkedlist.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
 				<FILEREF>
@@ -5835,6 +5870,16 @@
 				</FILEREF>
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brmutex.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brmutex.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brmutexwindows.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
@@ -6086,6 +6131,16 @@
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brsdbmhash.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brsemaphore.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brsemaphore.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
 				<FILEREF>
@@ -6481,6 +6536,11 @@
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brvector4d.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brvectortypes.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
 				<FILEREF>
@@ -8004,6 +8064,20 @@
 				</FILE>
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brconditionvariable.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS>Debug</FILEFLAGS>
+				</FILE>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brconditionvariable.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS></FILEFLAGS>
+				</FILE>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brconditionvariablewindows.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 					<FILEKIND>Text</FILEKIND>
@@ -8054,20 +8128,6 @@
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brcrc32.h</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-					<FILEKIND>Text</FILEKIND>
-					<FILEFLAGS></FILEFLAGS>
-				</FILE>
-				<FILE>
-					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brcriticalsection.cpp</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-					<FILEKIND>Text</FILEKIND>
-					<FILEFLAGS>Debug</FILEFLAGS>
-				</FILE>
-				<FILE>
-					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brcriticalsection.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 					<FILEKIND>Text</FILEKIND>
 					<FILEFLAGS></FILEFLAGS>
@@ -8347,14 +8407,14 @@
 				</FILE>
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brdoublylinkedlist.cpp</PATH>
+					<PATH>brdoublelinkedlist.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 					<FILEKIND>Text</FILEKIND>
 					<FILEFLAGS>Debug</FILEFLAGS>
 				</FILE>
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brdoublylinkedlist.h</PATH>
+					<PATH>brdoublelinkedlist.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 					<FILEKIND>Text</FILEKIND>
 					<FILEFLAGS></FILEFLAGS>
@@ -9642,6 +9702,20 @@
 				</FILE>
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brmutex.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS>Debug</FILEFLAGS>
+				</FILE>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brmutex.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS></FILEFLAGS>
+				</FILE>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brmutexwindows.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 					<FILEKIND>Text</FILEKIND>
@@ -9993,6 +10067,20 @@
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brsdbmhash.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS></FILEFLAGS>
+				</FILE>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brsemaphore.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS>Debug</FILEFLAGS>
+				</FILE>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brsemaphore.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 					<FILEKIND>Text</FILEKIND>
 					<FILEFLAGS></FILEFLAGS>
@@ -10549,6 +10637,13 @@
 					<PATHFORMAT>Windows</PATHFORMAT>
 					<FILEKIND>Text</FILEKIND>
 					<FILEFLAGS></FILEFLAGS>
+				</FILE>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brvectortypes.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS>Debug</FILEFLAGS>
 				</FILE>
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
@@ -11815,6 +11910,16 @@
 				</FILEREF>
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brconditionvariable.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brconditionvariable.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brconditionvariablewindows.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
@@ -11851,16 +11956,6 @@
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brcrc32.h</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-				</FILEREF>
-				<FILEREF>
-					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brcriticalsection.cpp</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-				</FILEREF>
-				<FILEREF>
-					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brcriticalsection.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
 				<FILEREF>
@@ -12060,12 +12155,12 @@
 				</FILEREF>
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brdoublylinkedlist.cpp</PATH>
+					<PATH>brdoublelinkedlist.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brdoublylinkedlist.h</PATH>
+					<PATH>brdoublelinkedlist.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
 				<FILEREF>
@@ -12985,6 +13080,16 @@
 				</FILEREF>
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brmutex.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brmutex.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brmutexwindows.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
@@ -13236,6 +13341,16 @@
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brsdbmhash.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brsemaphore.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brsemaphore.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
 				<FILEREF>
@@ -13631,6 +13746,11 @@
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brvector4d.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brvectortypes.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
 				<FILEREF>
@@ -15154,6 +15274,20 @@
 				</FILE>
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brconditionvariable.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS></FILEFLAGS>
+				</FILE>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brconditionvariable.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS></FILEFLAGS>
+				</FILE>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brconditionvariablewindows.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 					<FILEKIND>Text</FILEKIND>
@@ -15204,20 +15338,6 @@
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brcrc32.h</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-					<FILEKIND>Text</FILEKIND>
-					<FILEFLAGS></FILEFLAGS>
-				</FILE>
-				<FILE>
-					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brcriticalsection.cpp</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-					<FILEKIND>Text</FILEKIND>
-					<FILEFLAGS></FILEFLAGS>
-				</FILE>
-				<FILE>
-					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brcriticalsection.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 					<FILEKIND>Text</FILEKIND>
 					<FILEFLAGS></FILEFLAGS>
@@ -15497,14 +15617,14 @@
 				</FILE>
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brdoublylinkedlist.cpp</PATH>
+					<PATH>brdoublelinkedlist.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 					<FILEKIND>Text</FILEKIND>
 					<FILEFLAGS></FILEFLAGS>
 				</FILE>
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brdoublylinkedlist.h</PATH>
+					<PATH>brdoublelinkedlist.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 					<FILEKIND>Text</FILEKIND>
 					<FILEFLAGS></FILEFLAGS>
@@ -16792,6 +16912,20 @@
 				</FILE>
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brmutex.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS></FILEFLAGS>
+				</FILE>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brmutex.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS></FILEFLAGS>
+				</FILE>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brmutexwindows.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 					<FILEKIND>Text</FILEKIND>
@@ -17143,6 +17277,20 @@
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brsdbmhash.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS></FILEFLAGS>
+				</FILE>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brsemaphore.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS></FILEFLAGS>
+				</FILE>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brsemaphore.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 					<FILEKIND>Text</FILEKIND>
 					<FILEFLAGS></FILEFLAGS>
@@ -17696,6 +17844,13 @@
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brvector4d.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS></FILEFLAGS>
+				</FILE>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brvectortypes.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 					<FILEKIND>Text</FILEKIND>
 					<FILEFLAGS></FILEFLAGS>
@@ -18965,6 +19120,16 @@
 				</FILEREF>
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brconditionvariable.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brconditionvariable.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brconditionvariablewindows.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
@@ -19001,16 +19166,6 @@
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brcrc32.h</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-				</FILEREF>
-				<FILEREF>
-					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brcriticalsection.cpp</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-				</FILEREF>
-				<FILEREF>
-					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brcriticalsection.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
 				<FILEREF>
@@ -19210,12 +19365,12 @@
 				</FILEREF>
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brdoublylinkedlist.cpp</PATH>
+					<PATH>brdoublelinkedlist.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brdoublylinkedlist.h</PATH>
+					<PATH>brdoublelinkedlist.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
 				<FILEREF>
@@ -20135,6 +20290,16 @@
 				</FILEREF>
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brmutex.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brmutex.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brmutexwindows.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
@@ -20386,6 +20551,16 @@
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brsdbmhash.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brsemaphore.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brsemaphore.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
 				<FILEREF>
@@ -20781,6 +20956,11 @@
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brvector4d.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brvectortypes.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
 				<FILEREF>
@@ -23108,13 +23288,13 @@
 				<FILEREF>
 					<TARGETNAME>Debug</TARGETNAME>
 					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brcriticalsection.cpp</PATH>
+					<PATH>brconditionvariable.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
 				<FILEREF>
 					<TARGETNAME>Debug</TARGETNAME>
 					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brcriticalsection.h</PATH>
+					<PATH>brconditionvariable.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
 				<FILEREF>
@@ -23144,13 +23324,13 @@
 				<FILEREF>
 					<TARGETNAME>Debug</TARGETNAME>
 					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brdoublylinkedlist.cpp</PATH>
+					<PATH>brdoublelinkedlist.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
 				<FILEREF>
 					<TARGETNAME>Debug</TARGETNAME>
 					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brdoublylinkedlist.h</PATH>
+					<PATH>brdoublelinkedlist.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
 				<FILEREF>
@@ -23282,6 +23462,18 @@
 				<FILEREF>
 					<TARGETNAME>Debug</TARGETNAME>
 					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brmutex.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<TARGETNAME>Debug</TARGETNAME>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brmutex.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<TARGETNAME>Debug</TARGETNAME>
+					<PATHTYPE>Name</PATHTYPE>
 					<PATH>broscursor.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
@@ -23337,6 +23529,18 @@
 					<TARGETNAME>Debug</TARGETNAME>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brrunqueue.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<TARGETNAME>Debug</TARGETNAME>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brsemaphore.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<TARGETNAME>Debug</TARGETNAME>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brsemaphore.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
 				<FILEREF>
@@ -23451,6 +23655,12 @@
 					<TARGETNAME>Debug</TARGETNAME>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brtypes.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<TARGETNAME>Debug</TARGETNAME>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brvectortypes.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
 				<FILEREF>
