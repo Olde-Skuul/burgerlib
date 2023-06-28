@@ -300,7 +300,7 @@ int Burger::DecompressDeflate::Flush(int iErrorCode)
 	m_uOutputChunkLength -= uCount;
 
 	// Update check information
-	m_uAlder32Checksum = CalcAdler32(pWindowRead,uCount,m_uAlder32Checksum);
+	m_uAlder32Checksum = calc_adler32(pWindowRead,uCount,m_uAlder32Checksum);
 
 	// Copy as far as end of window
 	MemoryCopy(pOutput,pWindowRead,uCount);
@@ -327,7 +327,7 @@ int Burger::DecompressDeflate::Flush(int iErrorCode)
 		m_uOutputChunkLength -= uCount;
 
 		// Update check information
-		m_uAlder32Checksum = CalcAdler32(pWindowRead,uCount,m_uAlder32Checksum);
+		m_uAlder32Checksum = calc_adler32(pWindowRead,uCount,m_uAlder32Checksum);
 
 		// Copy into the output
 		MemoryCopy(pOutput,pWindowRead,uCount);

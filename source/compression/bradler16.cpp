@@ -3,13 +3,12 @@
 	Adler 16 hash manager
 
 	Implemented following the documentation found in
-	http://en.wikipedia.org/wiki/Adler-32
-	and return a 16 bit version
+	http://en.wikipedia.org/wiki/Adler-32 and return a 16 bit version
 
-	This is based on the algorithm provided from Mark Adler
-	in the zlib source archive.
+	This is based on the algorithm provided from Mark Adler in the zlib source
+	archive.
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -56,12 +55,12 @@
 
 	\return 16 bit Alder-16 checksum of the data
 
-	\sa CalcCRC32B(const void *, uintptr_t, uint32_t) or CalcAdler32(
+	\sa calc_crc32b(const void *, uintptr_t, uint32_t) or calc_adler32(
 		const void *, uintptr_t, uint32_t)
 
 ***************************************/
 
-uint_t BURGER_API Burger::CalcAdler16(
+uint_t BURGER_API Burger::calc_adler16(
 	const void* pInput, uintptr_t uInputLength, uint_t uAdler16) BURGER_NOEXCEPT
 {
 	// Anything to process?
@@ -76,12 +75,15 @@ uint_t BURGER_API Burger::CalcAdler16(
 			// Get the chunk size to process
 			uint_t uCount = LARGESTBLOCK;
 			if (uInputLength < LARGESTBLOCK) {
+
 				// Truncate to the remainder
 				uCount = static_cast<uint_t>(uInputLength);
 			}
+
 			// Remove the count from the processed list
 			uInputLength -= uCount;
 			do {
+
 				// Add to the additive checksum
 				uAdditive += static_cast<const uint8_t*>(pInput)[0];
 				pInput = static_cast<const uint8_t*>(pInput) + 1;

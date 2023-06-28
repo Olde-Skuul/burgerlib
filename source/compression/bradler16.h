@@ -5,7 +5,7 @@
 	Implemented following the documentation found in
 	http://en.wikipedia.org/wiki/Adler-32 and return a 16 bit version
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -24,8 +24,8 @@
 
 /* BEGIN */
 namespace Burger {
-extern uint_t BURGER_API CalcAdler16(const void* pInput, uintptr_t uInputLength,
-	uint_t uAdler16 = 1) BURGER_NOEXCEPT;
+extern uint_t BURGER_API calc_adler16(const void* pInput,
+	uintptr_t uInputLength, uint_t uAdler16 = 1) BURGER_NOEXCEPT;
 }
 /* END */
 

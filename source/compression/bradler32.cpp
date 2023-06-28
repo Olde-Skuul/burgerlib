@@ -6,10 +6,10 @@
 	http://en.wikipedia.org/wiki/Adler-32
 	and http://tools.ietf.org/html/rfc1950
 
-	This is based on the algorithm provided from Mark Adler
-	in the zlib source archive.
+	This is based on the algorithm provided from Mark Adler in the zlib source
+	archive.
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -54,12 +54,12 @@
 
 	\return 32 bit Alder-32 checksum of the data
 
-	\sa CalcCRC32B(const void *, uintptr_t, uint32_t) or CalcAdler16(
-		const void *, uintptr_t, uint32_t)
+	\sa calc_crc32b(const void *, uintptr_t, uint32_t) or calc_adler16(
+		const void *, uintptr_t, uint_t)
 
 ***************************************/
 
-uint32_t BURGER_API Burger::CalcAdler32(const void* pInput,
+uint32_t BURGER_API Burger::calc_adler32(const void* pInput,
 	uintptr_t uInputLength, uint32_t uAdler32) BURGER_NOEXCEPT
 {
 	// Any data to process?
@@ -67,6 +67,7 @@ uint32_t BURGER_API Burger::CalcAdler32(const void* pInput,
 
 		// Get the additive checksum
 		uint32_t uAdditive = static_cast<uint16_t>(uAdler32);
+
 		// Get the factorial checksum
 		uAdler32 = static_cast<uint16_t>(uAdler32 >> 16U);
 
@@ -86,6 +87,7 @@ uint32_t BURGER_API Burger::CalcAdler32(const void* pInput,
 				// Add to the additive checksum
 				uAdditive += static_cast<const uint8_t*>(pInput)[0];
 				pInput = static_cast<const uint8_t*>(pInput) + 1;
+
 				// Add the checksum to the factorial
 				uAdler32 += uAdditive;
 			} while (--uCount);

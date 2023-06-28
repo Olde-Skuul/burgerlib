@@ -6,7 +6,7 @@
 	http://en.wikipedia.org/wiki/Cyclic_redundancy_check
 	and http://wiki.osdev.org/CRC32
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -25,11 +25,11 @@
 
 /* BEGIN */
 namespace Burger {
-extern uint32_t BURGER_API CalcCRC32B(const void* pInput,
+extern uint32_t BURGER_API calc_crc32b(const void* pInput,
 	uintptr_t uInputLength, uint32_t uCRC = 0) BURGER_NOEXCEPT;
-extern uint32_t BURGER_API CalcCRC32(const void* pInput, uintptr_t uInputLength,
-	uint32_t uCRC = 0) BURGER_NOEXCEPT;
-extern void BURGER_API GenerateCRCTable(uint32_t* pOutput,
+extern uint32_t BURGER_API calc_crc32(const void* pInput,
+	uintptr_t uInputLength, uint32_t uCRC = 0) BURGER_NOEXCEPT;
+extern void BURGER_API generate_crc_table(uint32_t* pOutput,
 	uint32_t uPolynomial = 0x04C11DB7U,
 	uint_t bBitReverse = TRUE) BURGER_NOEXCEPT;
 }

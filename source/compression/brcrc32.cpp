@@ -7,7 +7,7 @@
 	Copyright (C) 1986 Gary S. Brown. You may use this program,or
 	code or tables extracted from it, as desired without restriction.
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -176,22 +176,25 @@ static const uint32_t g_CRC32Table[256] = {0x00000000, 0x04C11DB7, 0x09823B6E,
 
 	\return 32 bit CRC32B checksum of the data
 
-	\sa CalcCRC32(const void *,uintptr_t,uint32_t), CalcAdler16(
-		const void *,uintptr_t,uint32_t) or
-		CalcAdler32(const void *,uintptr_t,uint32_t)
+	\sa calc_crc32(const void *,uintptr_t,uint32_t),
+		calc_adler16(const void *,uintptr_t,uint_t) or
+		calc_adler32(const void *,uintptr_t,uint32_t)
 
 ***************************************/
 
-uint32_t BURGER_API Burger::CalcCRC32B(
+uint32_t BURGER_API Burger::calc_crc32b(
 	const void* pInput, uintptr_t uInputLength, uint32_t uCRC) BURGER_NOEXCEPT
 {
 	// Ok to do the deed?
 	if (pInput && uInputLength) {
-		uCRC = ~uCRC; // Initialize the CRC
+
+		// Initialize the CRC
+		uCRC = ~uCRC;
 		do {
 			uCRC = g_CRC32BTable[static_cast<uint8_t>(
 					   static_cast<const uint8_t*>(pInput)[0] ^ uCRC)] ^
 				(uCRC >> 8U);
+
 			pInput = static_cast<const uint8_t*>(pInput) + 1;
 		} while (--uInputLength);
 		// Complement the CRC
@@ -222,25 +225,28 @@ uint32_t BURGER_API Burger::CalcCRC32B(
 
 	\return 32 bit CRC32 checksum of the data
 
-	\sa CalcCRC32B(const void *,uintptr_t,uint32_t),
-		CalcAdler16(const void *,uintptr_t,uint32_t) or
-		CalcAdler32(const void *,uintptr_t,uint32_t)
+	\sa calc_crc32b(const void *,uintptr_t,uint32_t),
+		calc_adler16(const void *,uintptr_t,uint_t) or
+		calc_adler32(const void *,uintptr_t,uint32_t)
 
 ***************************************/
 
-uint32_t BURGER_API Burger::CalcCRC32(
+uint32_t BURGER_API Burger::calc_crc32(
 	const void* pInput, uintptr_t uInputLength, uint32_t uCRC) BURGER_NOEXCEPT
 {
 	// Ok to do the deed?
 	if (pInput && uInputLength) {
+
 		// Initialize the CRC
 		uCRC = ~SwapEndian::Load(uCRC);
 		do {
 			uCRC = g_CRC32Table[static_cast<const uint8_t*>(pInput)[0] ^
 					   (uCRC >> 24U)] ^
 				(uCRC << 8U);
+
 			pInput = static_cast<const uint8_t*>(pInput) + 1;
 		} while (--uInputLength);
+
 		// Complement the CRC
 		uCRC = ~SwapEndian::Load(uCRC);
 	}
@@ -261,19 +267,18 @@ uint32_t BURGER_API Burger::CalcCRC32(
 	http://en.wikipedia.org/wiki/Cyclic_redundancy_check
 	and http://wiki.osdev.org/CRC32
 
-	\note This function was used to generate an internal
-	table.
+	\note This function was used to generate an internal table.
 
 	\param pOutput Pointer to a buffer to be checksummed
 	\param uPolynomial Polynomial to use (Default 0x04C11DB7U)
 	\param bBitReverse \ref TRUE if the bits are to be reversed (For CRC32B)
 
-	\sa CalcCRC32B(const void *,uintptr_t,uint32_t) or
-		CalcCRC32(const void *,uintptr_t,uint32_t)
+	\sa calc_crc32b(const void *,uintptr_t,uint32_t) or
+		calc_crc32(const void *,uintptr_t,uint32_t)
 
 ***************************************/
 
-void BURGER_API Burger::GenerateCRCTable(
+void BURGER_API Burger::generate_crc_table(
 	uint32_t* pOutput, uint32_t uPolynomial, uint_t bBitReverse) BURGER_NOEXCEPT
 {
 	// Begin iteration
@@ -286,6 +291,7 @@ void BURGER_API Burger::GenerateCRCTable(
 		} else {
 			uValue = uCount << 24U;
 		}
+
 		// Blend with 8 passes
 		uint_t uPasses = 8;
 		do {

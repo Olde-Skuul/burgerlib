@@ -6,7 +6,7 @@
 	http://en.wikipedia.org/wiki/Adler-32
 	and http://tools.ietf.org/html/rfc1950
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -25,7 +25,7 @@
 
 /* BEGIN */
 namespace Burger {
-extern uint32_t BURGER_API CalcAdler32(const void* pInput,
+extern uint32_t BURGER_API calc_adler32(const void* pInput,
 	uintptr_t uInputLength, uint32_t uAdler32 = 1) BURGER_NOEXCEPT;
 }
 /* END */

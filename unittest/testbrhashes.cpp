@@ -197,7 +197,7 @@ static const HashTest_t g_HashTestTable[] = {
 		0xFCDF}};
 
 //
-// Test CalcAdler16()
+// Test calc_adler16()
 //
 
 static uint_t TestAdler16(void) BURGER_NOEXCEPT
@@ -206,13 +206,13 @@ static uint_t TestAdler16(void) BURGER_NOEXCEPT
 	const HashTest_t* pWork = g_HashTestTable;
 	uintptr_t uCount = BURGER_ARRAYSIZE(g_HashTestTable);
 	do {
-		const uint32_t uTester = Burger::CalcAdler16(
+		const uint32_t uTester = Burger::calc_adler16(
 			pWork->m_pString, Burger::StringLength(pWork->m_pString));
 		const uint_t uTest = (uTester != pWork->m_Adler16);
 		uFailure |= uTest;
 		if (uTest) {
 			ReportFailure(
-				"Burger::CalcAdler16(\"%s\") = 0x%08X, expected 0x%08X", uTest,
+				"Burger::calc_adler16(\"%s\") = 0x%08X, expected 0x%08X", uTest,
 				pWork->m_pString, uTester, pWork->m_Adler16);
 		}
 		++pWork;
@@ -221,7 +221,7 @@ static uint_t TestAdler16(void) BURGER_NOEXCEPT
 }
 
 //
-// Test CalcAdler32()
+// Test calc_adler32()
 //
 
 static uint_t TestAdler32(void) BURGER_NOEXCEPT
@@ -230,13 +230,13 @@ static uint_t TestAdler32(void) BURGER_NOEXCEPT
 	const HashTest_t* pWork = g_HashTestTable;
 	uintptr_t uCount = BURGER_ARRAYSIZE(g_HashTestTable);
 	do {
-		const uint32_t uTester = Burger::CalcAdler32(
+		const uint32_t uTester = Burger::calc_adler32(
 			pWork->m_pString, Burger::StringLength(pWork->m_pString));
 		const uint_t uTest = (uTester != pWork->m_Adler32);
 		uFailure |= uTest;
 		if (uTest) {
 			ReportFailure(
-				"Burger::CalcAdler32(\"%s\") = 0x%08X, expected 0x%08X", uTest,
+				"Burger::calc_adler32(\"%s\") = 0x%08X, expected 0x%08X", uTest,
 				pWork->m_pString, uTester, pWork->m_Adler32);
 		}
 		++pWork;
@@ -245,7 +245,7 @@ static uint_t TestAdler32(void) BURGER_NOEXCEPT
 }
 
 //
-// Test CalcCRC32B()
+// Test calc_crc32b()
 //
 
 static uint_t TestCRC32B(void) BURGER_NOEXCEPT
@@ -254,13 +254,13 @@ static uint_t TestCRC32B(void) BURGER_NOEXCEPT
 	const HashTest_t* pWork = g_HashTestTable;
 	uintptr_t uCount = BURGER_ARRAYSIZE(g_HashTestTable);
 	do {
-		const uint32_t uTester = Burger::CalcCRC32B(
+		const uint32_t uTester = Burger::calc_crc32b(
 			pWork->m_pString, Burger::StringLength(pWork->m_pString));
 		const uint_t uTest = (uTester != pWork->m_CRC32B);
 		uFailure |= uTest;
 		if (uTest) {
 			ReportFailure(
-				"Burger::CalcCRC32B(\"%s\") = 0x%08X, expected 0x%08X", uTest,
+				"Burger::calc_crc32b(\"%s\") = 0x%08X, expected 0x%08X", uTest,
 				pWork->m_pString, uTester, pWork->m_CRC32B);
 		}
 		++pWork;
@@ -269,7 +269,7 @@ static uint_t TestCRC32B(void) BURGER_NOEXCEPT
 }
 
 //
-// Test CalcCRC32()
+// Test calc_crc32()
 //
 
 static uint_t TestCRC32(void) BURGER_NOEXCEPT
@@ -278,12 +278,12 @@ static uint_t TestCRC32(void) BURGER_NOEXCEPT
 	const HashTest_t* pWork = g_HashTestTable;
 	uintptr_t uCount = BURGER_ARRAYSIZE(g_HashTestTable);
 	do {
-		const uint32_t uTester = Burger::CalcCRC32(
+		const uint32_t uTester = Burger::calc_crc32(
 			pWork->m_pString, Burger::StringLength(pWork->m_pString));
 		const uint_t uTest = (uTester != pWork->m_CRC32);
 		uFailure |= uTest;
 		if (uTest) {
-			ReportFailure("Burger::CalcCRC32(\"%s\") = 0x%08X, expected 0x%08X",
+			ReportFailure("Burger::calc_crc32(\"%s\") = 0x%08X, expected 0x%08X",
 				uTest, pWork->m_pString, uTester, pWork->m_CRC32);
 		}
 		++pWork;
@@ -292,7 +292,7 @@ static uint_t TestCRC32(void) BURGER_NOEXCEPT
 }
 
 //
-// Test CalcCRC16IBM()
+// Test calc_crc16IBM()
 //
 
 static uint_t TestCRC16IBM(void) BURGER_NOEXCEPT
@@ -301,13 +301,13 @@ static uint_t TestCRC16IBM(void) BURGER_NOEXCEPT
 	const HashTest_t* pWork = g_HashTestTable;
 	uintptr_t uCount = BURGER_ARRAYSIZE(g_HashTestTable);
 	do {
-		const uint16_t uTester = Burger::CalcCRC16IBM(
+		const uint16_t uTester = Burger::calc_crc16IBM(
 			pWork->m_pString, Burger::StringLength(pWork->m_pString));
 		const uint_t uTest = (uTester != pWork->m_CRC16IBM);
 		uFailure |= uTest;
 		if (uTest) {
 			ReportFailure(
-				"Burger::CalcCRC16IBM(\"%s\") = 0x%04X, expected 0x%04X", uTest,
+				"Burger::calc_crc16IBM(\"%s\") = 0x%04X, expected 0x%04X", uTest,
 				pWork->m_pString, uTester, pWork->m_CRC16IBM);
 		}
 		++pWork;

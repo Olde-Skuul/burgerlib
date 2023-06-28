@@ -608,7 +608,7 @@ uintptr_t Burger::CompressDeflate::ReadBuffer(uint8_t *pOutput,uintptr_t uOutput
 	if (uInputLength) {
 		m_uInputLength -= uInputLength;
 		if (!m_bNoHeader) {
-			m_uAdler = CalcAdler32(m_pInput,uInputLength,m_uAdler);
+			m_uAdler = calc_adler32(m_pInput,uInputLength,m_uAdler);
 		}
 		MemoryCopy(pOutput,m_pInput,uInputLength);
 		m_pInput += uInputLength;

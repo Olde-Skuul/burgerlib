@@ -2,7 +2,7 @@
 
 	Calculates a 16-bit CRC
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -83,13 +83,13 @@ static const uint16_t g_CRC16IBMTable[256] = {0x0000, 0xC0C1, 0xC181, 0x0140,
 
 	\return 16 bit CRC16-IBM checksum of the data
 
-	\sa CalcCRC32(const void *,uintptr_t,uint32_t),
-		CalcAdler16(const void *,uintptr_t,uint32_t) or
-		CalcAdler32(const void *,uintptr_t,uint32_t)
+	\sa calc_crc32(const void *,uintptr_t,uint32_t),
+		calc_adler16(const void *,uintptr_t,uint_t) or
+		calc_adler32(const void *,uintptr_t,uint32_t)
 
 ***************************************/
 
-uint16_t BURGER_API Burger::CalcCRC16IBM(
+uint16_t BURGER_API Burger::calc_crc16IBM(
 	const void* pInput, uintptr_t uInputLength, uint16_t uCRC) BURGER_NOEXCEPT
 {
 	// Ok to do the deed?
@@ -99,6 +99,7 @@ uint16_t BURGER_API Burger::CalcCRC16IBM(
 				g_CRC16IBMTable[static_cast<uint8_t>(
 					static_cast<const uint8_t*>(pInput)[0] ^ uCRC)] ^
 				(uCRC >> 8U));
+
 			pInput = static_cast<const uint8_t*>(pInput) + 1;
 		} while (--uInputLength);
 	}
@@ -123,11 +124,11 @@ uint16_t BURGER_API Burger::CalcCRC16IBM(
 	\param uPolynomial Polynomial to use (Default 0x8005)
 	\param bBitReverse \ref TRUE if the bits are to be reversed (For CRC16-IBM)
 
-	\sa CalcCRC16(const void *,uintptr_t,uint16_t)
+	\sa calc_crc16IBM(const void *,uintptr_t,uint16_t)
 
 ***************************************/
 
-void BURGER_API Burger::GenerateCRCTable(
+void BURGER_API Burger::generate_crc_table(
 	uint16_t* pOutput, uint16_t uPolynomial, uint_t bBitReverse) BURGER_NOEXCEPT
 {
 	// Begin iteration
@@ -140,6 +141,7 @@ void BURGER_API Burger::GenerateCRCTable(
 		} else {
 			uValue = uCount << 8U;
 		}
+
 		// Blend with 8 passes
 		uint_t uPasses = 8;
 		do {
