@@ -2,7 +2,7 @@
 
 	Random number generator
 
-	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -42,6 +42,7 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::Random, Burger::RandomBase);
 /*! ************************************
 
 	\var const Burger::StaticRTTI Burger::Random::g_StaticRTTI
+
 	\brief The global description of the class
 
 	This record contains the name of this class and a reference to the parent
@@ -65,16 +66,17 @@ static const uint32_t g_DefaultArray[17] = {1571187604U, 2130556662U,
 
 	\brief Static constructor.
 
-	Initialize the random number generator with a call to SetSeed(uint32_t).
+	Initialize the random number generator with a call to set_seed(uint32_t).
 
 	\param uNewSeed New seed value
-	\sa SetSeed(uint32_t).
+
+	\sa set_seed(uint32_t).
 
 ***************************************/
 
 Burger::Random::Random(uint32_t uNewSeed) BURGER_NOEXCEPT
 {
-	SetSeed(uNewSeed);
+	set_seed(uNewSeed);
 }
 
 /*! ************************************
@@ -85,8 +87,10 @@ Burger::Random::Random(uint32_t uNewSeed) BURGER_NOEXCEPT
 	manager.
 
 	\param uNewSeed Seed value for the random number generator
-	\return Pointer to instance, or \ref NULL if out of memory.
-	\sa SetSeed(uint32_t).
+
+	\return Pointer to instance, or \ref nullptr if out of memory.
+
+	\sa set_seed(uint32_t).
 
 ***************************************/
 
@@ -104,14 +108,13 @@ Burger::Random* BURGER_API Burger::Random::New(
 
 	\brief Return a 32 bit random number.
 
-	Get a random number. Return a number between 0
-	through (Range-1) inclusive.
+	Get a random number. Return a number between 0 through (Range-1) inclusive.
 
 	\return A random number in the specified range.
 
 ***************************************/
 
-uint32_t Burger::Random::Get(void) BURGER_NOEXCEPT
+uint32_t Burger::Random::get(void) BURGER_NOEXCEPT
 {
 	// Cache indexes
 	uint32_t i = m_uIndex;
@@ -153,11 +156,12 @@ uint32_t Burger::Random::Get(void) BURGER_NOEXCEPT
 	random number flow in a controlled manner.
 
 	\param uNewSeed 32 bit seed value.
-	\sa Get(void).
+
+	\sa get(void).
 
 ***************************************/
 
-void Burger::Random::SetSeed(uint32_t uNewSeed) BURGER_NOEXCEPT
+void Burger::Random::set_seed(uint32_t uNewSeed) BURGER_NOEXCEPT
 {
 	m_uSeed = uNewSeed;
 	uintptr_t i = 0;
@@ -168,12 +172,12 @@ void Burger::Random::SetSeed(uint32_t uNewSeed) BURGER_NOEXCEPT
 	m_uState = 0 - uNewSeed;
 
 	// Blend starting from 0-15
-	uint32_t uCount = uNewSeed & 0xF;
+	uint32_t uCount = uNewSeed & 0xFU;
 	m_uIndex = uCount;
 
 	// 1-32 blends
-	uCount = ((uNewSeed >> 8) & 0x1f) + 1;
+	uCount = ((uNewSeed >> 8U) & 0x1FU) + 1U;
 	do {
-		Get();
+		get();
 	} while (--uCount);
 }

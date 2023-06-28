@@ -2,7 +2,7 @@
 
 	Random number generator using Mersenne Twist (MT19937)
 
-	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -46,17 +46,18 @@ static const uint32_t g_MagTable[2] = {0, 0x9908B0DFU};
 
 	\brief Static constructor.
 
-	Initialize the random number generator with a call to SetSeed(uint32_t).
+	Initialize the random number generator with a call to set_seed(uint32_t).
 
 	\param uNewSeed New seed value
-	\sa SetSeed(uint32_t).
+
+	\sa set_seed(uint32_t).
 
 ***************************************/
 
 Burger::RandomMersenneTwist::RandomMersenneTwist(
 	uint32_t uNewSeed) BURGER_NOEXCEPT
 {
-	SetSeed(uNewSeed);
+	set_seed(uNewSeed);
 }
 
 /*! ************************************
@@ -67,8 +68,10 @@ Burger::RandomMersenneTwist::RandomMersenneTwist(
 	manager.
 
 	\param uNewSeed Seed value for the random number generator
-	\return Pointer to instance, or \ref NULL if out of memory.
-	\sa SetSeed(uint32_t).
+
+	\return Pointer to instance, or \ref nullptr if out of memory.
+
+	\sa set_seed(uint32_t).
 
 ***************************************/
 
@@ -86,6 +89,7 @@ Burger::RandomMersenneTwist* BURGER_API Burger::RandomMersenneTwist::New(
 /*! ************************************
 
 	\var const Burger::StaticRTTI Burger::RandomMersenneTwist::g_StaticRTTI
+
 	\brief The global description of the class
 
 	This record contains the name of this class and a reference to the parent
@@ -102,7 +106,7 @@ Burger::RandomMersenneTwist* BURGER_API Burger::RandomMersenneTwist::New(
 
 ***************************************/
 
-uint32_t Burger::RandomMersenneTwist::Get(void) BURGER_NOEXCEPT
+uint32_t Burger::RandomMersenneTwist::get(void) BURGER_NOEXCEPT
 {
 	uint32_t uResult;
 
@@ -114,8 +118,10 @@ uint32_t Burger::RandomMersenneTwist::Get(void) BURGER_NOEXCEPT
 		do {
 			uResult = (m_Array[uArrayIndex] & 0x80000000U) |
 				(m_Array[uArrayIndex + 1] & 0x7FFFFFFFU);
+
 			m_Array[uArrayIndex] = m_Array[uArrayIndex + kTapIndex] ^
 				(uResult >> 1U) ^ g_MagTable[uResult & 1];
+
 			++uArrayIndex;
 		} while (uArrayIndex < (kElements - kTapIndex));
 
@@ -123,10 +129,12 @@ uint32_t Burger::RandomMersenneTwist::Get(void) BURGER_NOEXCEPT
 		do {
 			uResult = (m_Array[uArrayIndex] & 0x80000000U) |
 				(m_Array[uArrayIndex + 1] & 0x7FFFFFFFU);
+
 			m_Array[uArrayIndex] = m_Array[static_cast<int32_t>(uArrayIndex) +
 									   (static_cast<int_t>(kTapIndex) -
 										   static_cast<int_t>(kElements))] ^
 				(uResult >> 1U) ^ g_MagTable[uResult & 1];
+
 			++uArrayIndex;
 		} while (uArrayIndex < (kElements - 1));
 
@@ -155,14 +163,16 @@ uint32_t Burger::RandomMersenneTwist::Get(void) BURGER_NOEXCEPT
 	\brief Seed the random number generator.
 
 	Set the random number generator to a specific seed.
+
 	This allows altering the random number flow in a controlled manner.
 
 	\param uNewSeed 32 bit seed value.
-	\sa Get(void).
+
+	\sa get(void).
 
 ***************************************/
 
-void Burger::RandomMersenneTwist::SetSeed(uint32_t uNewSeed) BURGER_NOEXCEPT
+void Burger::RandomMersenneTwist::set_seed(uint32_t uNewSeed) BURGER_NOEXCEPT
 {
 	// Save the seed
 	m_uSeed = uNewSeed;
@@ -170,11 +180,11 @@ void Burger::RandomMersenneTwist::SetSeed(uint32_t uNewSeed) BURGER_NOEXCEPT
 
 	// The seed can't be zero
 	if (!uNewSeed) {
-		uNewSeed = 1;
+		uNewSeed = 1U;
 	}
 
 	m_Array[0] = uNewSeed;
-	uint32_t i = 1;
+	uint32_t i = 1U;
 	do {
 		uNewSeed = (1812433253U * (uNewSeed ^ (uNewSeed >> 30U)) + i);
 		m_Array[i] = uNewSeed;

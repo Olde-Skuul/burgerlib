@@ -2,7 +2,7 @@
 
 	Random number generator base class
 
-	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -34,22 +34,24 @@ protected:
 	uint32_t m_uSeed;
 
 public:
-	virtual void SetSeed(uint32_t uNewSeed) BURGER_NOEXCEPT = 0;
-	virtual uint32_t Get(void) BURGER_NOEXCEPT = 0;
-	BURGER_INLINE uint32_t GetSeed(void) const BURGER_NOEXCEPT
+	virtual void set_seed(uint32_t uNewSeed) BURGER_NOEXCEPT = 0;
+	virtual uint32_t get(void) BURGER_NOEXCEPT = 0;
+
+	BURGER_INLINE uint32_t get_seed(void) const BURGER_NOEXCEPT
 	{
 		return m_uSeed;
 	}
-	void BURGER_API RandomSeed(void) BURGER_NOEXCEPT;
-	uint32_t BURGER_API GetWord(uint32_t uRange) BURGER_NOEXCEPT;
-	uint32_t BURGER_API GetDice(
+
+	void BURGER_API random_seed(void) BURGER_NOEXCEPT;
+	uint32_t BURGER_API get_uint32(uint32_t uRange) BURGER_NOEXCEPT;
+	uint32_t BURGER_API get_dice(
 		uint32_t uDiceCount, uint32_t uDiceSize) BURGER_NOEXCEPT;
-	int32_t BURGER_API GetSigned(uint32_t uRange) BURGER_NOEXCEPT;
-	float BURGER_API GetFloat(void) BURGER_NOEXCEPT;
-	float BURGER_API GetFloat(float fRange) BURGER_NOEXCEPT;
-	float BURGER_API GetSymmetricFloat(void) BURGER_NOEXCEPT;
-	float BURGER_API GetSymmetricFloat(float fRange) BURGER_NOEXCEPT;
-	double BURGER_API GetDouble(void) BURGER_NOEXCEPT;
+	int32_t BURGER_API get_int32(uint32_t uRange) BURGER_NOEXCEPT;
+	float BURGER_API get_float(void) BURGER_NOEXCEPT;
+	float BURGER_API get_float(float fRange) BURGER_NOEXCEPT;
+	float BURGER_API get_symmetric_float(void) BURGER_NOEXCEPT;
+	float BURGER_API get_symmetric_float(float fRange) BURGER_NOEXCEPT;
+	double BURGER_API get_double(void) BURGER_NOEXCEPT;
 };
 
 }
