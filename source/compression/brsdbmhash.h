@@ -5,7 +5,7 @@
 	Implemented following the documentation found in
 	http::/www.cs.yorku.ca/~oz/hash.html
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -24,9 +24,9 @@
 
 /* BEGIN */
 namespace Burger {
-extern uintptr_t BURGER_API SDBMHash(const void* pInput, uintptr_t uInputCount,
+extern uintptr_t BURGER_API SDBM_hash(const void* pInput, uintptr_t uInputCount,
 	uint32_t uHashSeed = 0U) BURGER_NOEXCEPT;
-extern uintptr_t BURGER_API SDBMHashCase(const void* pInput,
+extern uintptr_t BURGER_API SDBM_hash_case(const void* pInput,
 	uintptr_t uInputCount, uint32_t uHashSeed = 0U) BURGER_NOEXCEPT;
 }
 /* END */

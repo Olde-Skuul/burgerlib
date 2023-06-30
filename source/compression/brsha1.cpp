@@ -6,7 +6,7 @@
 	http://en.wikipedia.org/wiki/SHA-1
 	and http://tools.ietf.org/html/rfc3174
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -29,7 +29,7 @@
 	Full documentation on this hash format can be found here
 	http://en.wikipedia.org/wiki/SHA-1
 
-	\sa Hash(SHA1_t *,const void *,uintptr_t) and Burger::SHA1Hasher_t
+	\sa hash(SHA1_t *,const void *,uintptr_t) and \ref SHA1Hasher_t
 
 ***************************************/
 
@@ -38,23 +38,24 @@
 	\struct Burger::SHA1Hasher_t
 	\brief Multi-pass SHA1 hash generator
 
-	This structure is needed to perform a multi-pass SHA-1 hash
-	and contains cached data and a running checksum.
+	This structure is needed to perform a multi-pass SHA-1 hash and contains
+	cached data and a running checksum.
+
 	\code
 		Burger::SHA1Hasher_t Context;
 		// Initialize
-		Context.Init();
+		Context.init();
 		// Process data in passes
-		Context.Process(Buffer1,sizeof(Buffer1));
-		Context.Process(Buffer2,sizeof(Buffer2));
-		Context.Process(Buffer3,sizeof(Buffer3));
+		Context.process(Buffer1,sizeof(Buffer1));
+		Context.process(Buffer2,sizeof(Buffer2));
+		Context.process(Buffer3,sizeof(Buffer3));
 		// Wrap up the processing
-		Context.Finalize();
+		Context.finalize();
 		// Return the resulting hash
 		MemoryCopy(pOutput,&Context.m_Hash,20);
 	\endcode
 
-	\sa Burger::SHA1_t or Hash(SHA1_t *,const void *,uintptr_t)
+	\sa \ref SHA1_t or hash(SHA1_t *,const void *,uintptr_t)
 
 ***************************************/
 
@@ -64,11 +65,11 @@
 
 	Call this function before any hashing is performed
 
-	\sa Process(const void *,uintptr_t) or Finalize(void)
+	\sa process(const void *,uintptr_t) or finalize(void)
 
 ***************************************/
 
-void BURGER_API Burger::SHA1Hasher_t::Init(void) BURGER_NOEXCEPT
+void BURGER_API Burger::SHA1Hasher_t::init(void) BURGER_NOEXCEPT
 {
 	// Load magic initialization constants.
 
@@ -95,16 +96,17 @@ void BURGER_API Burger::SHA1Hasher_t::Init(void) BURGER_NOEXCEPT
 
 	\brief Process a single 64 byte block of data
 
-	MD5 data is processed in 64 byte chunks. This function will process 64 bytes
-	on input and update the hash and checksum
+	SHA1 data is processed in 64 byte chunks. This function will process 64
+	bytes on input and update the hash and checksum
 
 	\param pBlock Pointer to a buffer of 64 bytes of data to hash
-	\sa Process(const void *,uintptr_t), Finalize(void) or Init(void)
+
+	\sa process(const void *,uintptr_t), finalize(void) or init(void)
 
 ***************************************/
 
-void BURGER_API Burger::SHA1Hasher_t::Process(
-	const uint8_t* pBlock) BURGER_NOEXCEPT
+void BURGER_API Burger::SHA1Hasher_t::process(
+	const uint8_t pBlock[64]) BURGER_NOEXCEPT
 {
 	uint32_t DataBlock[16];
 	uintptr_t i = 0;
@@ -112,7 +114,7 @@ void BURGER_API Burger::SHA1Hasher_t::Process(
 		static_cast<const uint32_t*>(static_cast<const void*>(pBlock));
 	do {
 		DataBlock[i] = BigEndian::LoadAny(pBlock32 + i);
-	} while (++i < 16);
+	} while (++i < 16U);
 
 	// Make a copy of the hash integers
 	uint32_t a = BigEndian::Load(
@@ -293,43 +295,44 @@ void BURGER_API Burger::SHA1Hasher_t::Process(
 
 	\param pInput Pointer to a buffer of data to hash
 	\param uLength Number of bytes to hash
-	\sa Process(const uint8_t *), Finalize(void)
+
+	\sa process(const uint8_t[64]), finalize(void)
 
 ***************************************/
 
-void BURGER_API Burger::SHA1Hasher_t::Process(
+void BURGER_API Burger::SHA1Hasher_t::process(
 	const void* pInput, uintptr_t uLength) BURGER_NOEXCEPT
 {
 	// Compute number of bytes mod 64
-	uintptr_t index = static_cast<uintptr_t>(m_uByteCount) & 0x3FU;
+	uintptr_t uIndex = static_cast<uintptr_t>(m_uByteCount) & 0x3FU;
 
 	// Update number of bits (Perform a 64 bit add)
 	m_uByteCount += uLength;
 
-	uintptr_t i = 64 - index;
+	uintptr_t i = 64U - uIndex;
 
 	// Transform as many times as possible.
 
 	if (uLength >= i) { // Should I copy or pack?
 
-		MemoryCopy(&m_CacheBuffer[index], pInput, i);
-		Process(m_CacheBuffer);
+		MemoryCopy(&m_CacheBuffer[uIndex], pInput, i);
+		process(m_CacheBuffer);
 
 		// Perform the checksum directly on the memory buffers
 
-		if ((i + 63) < uLength) {
+		if ((i + 63U) < uLength) {
 			do {
-				Process(static_cast<const uint8_t*>(pInput) + i);
-				i += 64;
-			} while ((i + 63) < uLength);
+				process(static_cast<const uint8_t*>(pInput) + i);
+				i += 64U;
+			} while ((i + 63U) < uLength);
 		}
-		index = 0;
+		uIndex = 0;
 	} else {
 		i = 0;
 	}
 
 	// Buffer remaining input
-	MemoryCopy(&m_CacheBuffer[index], static_cast<const uint8_t*>(pInput) + i,
+	MemoryCopy(&m_CacheBuffer[uIndex], static_cast<const uint8_t*>(pInput) + i,
 		uLength - i);
 }
 
@@ -340,11 +343,11 @@ void BURGER_API Burger::SHA1Hasher_t::Process(
 	When multi-pass hashing is performed, this call is necessary to finalize the
 	hash so that the generated checksum can be applied into the hash
 
-	\sa Init(void), Process(const void *,uintptr_t)
+	\sa init(void), process(const void *,uintptr_t)
 
 ***************************************/
 
-void BURGER_API Burger::SHA1Hasher_t::Finalize(void) BURGER_NOEXCEPT
+void BURGER_API Burger::SHA1Hasher_t::finalize(void) BURGER_NOEXCEPT
 {
 	// Pad array, first byte is 0x80, rest 0
 	uint8_t Padding[64];
@@ -353,16 +356,16 @@ void BURGER_API Burger::SHA1Hasher_t::Finalize(void) BURGER_NOEXCEPT
 
 	// Save number of bits
 
-	const uint64_t uBitCountBE = BigEndian::Load(m_uByteCount << 3);
+	const uint64_t uBitCountBE = BigEndian::Load(m_uByteCount << 3U);
 
 	// Pad out to 56 mod 64.
 	// Convert to 1-64
 	const uintptr_t uPadLen =
-		((55 - static_cast<uintptr_t>(m_uByteCount)) & 0x3f) + 1;
-	Process(Padding, uPadLen);
+		((55U - static_cast<uintptr_t>(m_uByteCount)) & 0x3FU) + 1U;
+	process(Padding, uPadLen);
 
 	// Append length (before padding)
-	Process(&uBitCountBE, 8);
+	process(&uBitCountBE, 8);
 }
 
 /*! ************************************
@@ -375,20 +378,24 @@ void BURGER_API Burger::SHA1Hasher_t::Finalize(void) BURGER_NOEXCEPT
 	\param pInput Pointer to a buffer of data to hash
 	\param uLength Number of bytes to hash
 
-	\sa Burger::SHA1Hasher_t
+	\sa \ref SHA1Hasher_t
 
 ***************************************/
 
-void BURGER_API Burger::Hash(
+void BURGER_API Burger::hash(
 	SHA1_t* pOutput, const void* pInput, uintptr_t uLength) BURGER_NOEXCEPT
 {
 	SHA1Hasher_t Context;
+
 	// Initialize
-	Context.Init();
+	Context.init();
+
 	// Process all of the data
-	Context.Process(pInput, uLength);
+	Context.process(pInput, uLength);
+
 	// Wrap up the processing
-	Context.Finalize();
+	Context.finalize();
+
 	// Return the resulting hash
 	MemoryCopy(pOutput, &Context.m_Hash, 20);
 }

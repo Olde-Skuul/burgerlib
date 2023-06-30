@@ -6,7 +6,7 @@
 	http://en.wikipedia.org/wiki/MD2_(cryptography)
 	and http://www.ietf.org/rfc/rfc1319.txt
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -32,22 +32,27 @@ struct MD2_t {
 };
 
 struct MD2Hasher_t {
+
 	/** Calculated hash */
 	MD2_t m_Hash;
+
 	/** Running checksum */
 	uint8_t m_Checksum[16];
+
 	/** Cached input data for multi-pass hashing */
 	uint8_t m_CacheBuffer[16];
+
 	/** Number of bytes in the cache (0-15) */
 	uintptr_t m_uCount;
 
-	void BURGER_API Init(void) BURGER_NOEXCEPT;
-	void BURGER_API Process(const uint8_t* pBlock) BURGER_NOEXCEPT;
-	void BURGER_API Process(
+	void BURGER_API init(void) BURGER_NOEXCEPT;
+	void BURGER_API process(const uint8_t pBlock[16]) BURGER_NOEXCEPT;
+	void BURGER_API process(
 		const void* pInput, uintptr_t uLength) BURGER_NOEXCEPT;
-	void BURGER_API Finalize(void) BURGER_NOEXCEPT;
+	void BURGER_API finalize(void) BURGER_NOEXCEPT;
 };
-extern void BURGER_API Hash(
+
+extern void BURGER_API hash(
 	MD2_t* pOutput, const void* pInput, uintptr_t uLength) BURGER_NOEXCEPT;
 }
 /* END */

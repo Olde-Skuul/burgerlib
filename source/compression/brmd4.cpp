@@ -6,7 +6,7 @@
 	http://en.wikipedia.org/wiki/MD4
 	and http://tools.ietf.org/html/rfc1320
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -29,7 +29,7 @@
 	Full documentation on this hash format can be found here
 	http://en.wikipedia.org/wiki/MD4
 
-	\sa Hash(MD4_t *,const void *,uintptr_t) and Burger::MD4Hasher_t
+	\sa hash(MD4_t *,const void *,uintptr_t) and \ref MD4Hasher_t
 
 ***************************************/
 
@@ -43,18 +43,18 @@
 	\code
 		Burger::MD4Hasher_t Context;
 		// Initialize
-		Context.Init();
+		Context.init();
 		// Process data in passes
-		Context.Process(Buffer1,sizeof(Buffer1));
-		Context.Process(Buffer2,sizeof(Buffer2));
-		Context.Process(Buffer3,sizeof(Buffer3));
+		Context.process(Buffer1,sizeof(Buffer1));
+		Context.process(Buffer2,sizeof(Buffer2));
+		Context.process(Buffer3,sizeof(Buffer3));
 		// Wrap up the processing
-		Context.Finalize();
+		Context.finalize();
 		// Return the resulting hash
 		MemoryCopy(pOutput,&Context.m_Hash,16);
 	\endcode
 
-	\sa Burger::MD4_t or Hash(MD4_t *,const void *,uintptr_t)
+	\sa \ref MD4_t or hash(MD4_t *,const void *,uintptr_t)
 
 ***************************************/
 
@@ -64,11 +64,11 @@
 
 	Call this function before any hashing is performed
 
-	\sa Process(const void *,uintptr_t) or Finalize(void)
+	\sa process(const void *,uintptr_t) or finalize(void)
 
 ***************************************/
 
-void BURGER_API Burger::MD4Hasher_t::Init(void) BURGER_NOEXCEPT
+void BURGER_API Burger::MD4Hasher_t::init(void) BURGER_NOEXCEPT
 {
 	// Load magic initialization constants.
 
@@ -109,9 +109,9 @@ void BURGER_API Burger::MD4Hasher_t::Init(void) BURGER_NOEXCEPT
 
 #define FF4(a, b, c, d, x, s) a = RotateLeft(((b & c) | ((~b) & d)) + x + a, s)
 #define GG4(a, b, c, d, x, s) \
-	a = RotateLeft(((b & c) | (b & d) | (c & d)) + x + a + 0x5a827999, s)
+	a = RotateLeft(((b & c) | (b & d) | (c & d)) + x + a + 0x5a827999U, s)
 #define HH4(a, b, c, d, x, s) \
-	a = RotateLeft((b ^ c ^ d) + x + a + 0x6ed9eba1, s)
+	a = RotateLeft((b ^ c ^ d) + x + a + 0x6ed9eba1U, s)
 
 #endif
 
@@ -123,12 +123,13 @@ void BURGER_API Burger::MD4Hasher_t::Init(void) BURGER_NOEXCEPT
 	on input and update the hash and checksum
 
 	\param pBlock Pointer to a buffer of 64 bytes of data to hash
-	\sa Process(const void *,uintptr_t), Finalize(void) or Init(void)
+
+	\sa process(const void *,uintptr_t), finalize(void) or init(void)
 
 ***************************************/
 
-void BURGER_API Burger::MD4Hasher_t::Process(
-	const uint8_t* pBlock) BURGER_NOEXCEPT
+void BURGER_API Burger::MD4Hasher_t::process(
+	const uint8_t pBlock[64]) BURGER_NOEXCEPT
 {
 	// Prefetch the 64 bytes into registers (Taking into account data
 	// misalignment)
@@ -234,31 +235,32 @@ void BURGER_API Burger::MD4Hasher_t::Process(
 
 	\param pInput Pointer to a buffer of data to hash
 	\param uLength Number of bytes to hash
-	\sa Process(const uint8_t *), Finalize(void)
+
+	\sa process(const uint8_t[64]), finalize(void)
 
 ***************************************/
 
-void BURGER_API Burger::MD4Hasher_t::Process(
+void BURGER_API Burger::MD4Hasher_t::process(
 	const void* pInput, uintptr_t uLength) BURGER_NOEXCEPT
 {
 	// Compute number of bytes mod 64
-	uintptr_t uIndex = static_cast<uintptr_t>(m_uByteCount & 0x3F);
+	uintptr_t uIndex = static_cast<uintptr_t>(m_uByteCount & 0x3FU);
 
 	// Update number of bits
 	m_uByteCount += uLength;
 
-	uintptr_t i = 64 - uIndex;
+	uintptr_t i = 64U - uIndex;
 
 	// Transform as many times as possible.
 	if (uLength >= i) {
 		MemoryCopy(&m_CacheBuffer[uIndex], pInput, i);
-		Process(m_CacheBuffer);
+		process(m_CacheBuffer);
 
-		if ((i + 63) < uLength) {
+		if ((i + 63U) < uLength) {
 			do {
-				Process(static_cast<const uint8_t*>(pInput) + i);
-				i += 64;
-			} while ((i + 63) < uLength);
+				process(static_cast<const uint8_t*>(pInput) + i);
+				i += 64U;
+			} while ((i + 63U) < uLength);
 		}
 		uIndex = 0;
 	} else {
@@ -278,30 +280,30 @@ void BURGER_API Burger::MD4Hasher_t::Process(
 	When multi-pass hashing is performed, this call is necessary to finalize the
 	hash so that the generated checksum can be applied into the hash
 
-	\sa Init(void), Process(const void *,uintptr_t)
+	\sa init(void), process(const void *,uintptr_t)
 
 ***************************************/
 
-void BURGER_API Burger::MD4Hasher_t::Finalize(void) BURGER_NOEXCEPT
+void BURGER_API Burger::MD4Hasher_t::finalize(void) BURGER_NOEXCEPT
 {
 	uint8_t Padding[64];
-	Padding[0] = 0x80;
-	MemoryClear(&Padding[1], 63);
+	Padding[0] = 0x80U;
+	MemoryClear(&Padding[1], 63U);
 
 	// Save number of bits
 
-	const uint64_t uBitCountLE = LittleEndian::Load(m_uByteCount << 3);
+	const uint64_t uBitCountLE = LittleEndian::Load(m_uByteCount << 3U);
 
 	// Pad out to 56 mod 64.
 	// Convert to 1-64
 
 	const uintptr_t uPadLen =
-		(((56 - 1) - static_cast<uintptr_t>(m_uByteCount)) & 0x3F) + 1;
-	Process(Padding, uPadLen);
+		(((56U - 1U) - static_cast<uintptr_t>(m_uByteCount)) & 0x3FU) + 1U;
+	process(Padding, uPadLen);
 
 	// Append length (before padding)
 
-	Process(&uBitCountLE, 8);
+	process(&uBitCountLE, 8);
 }
 
 /*! ************************************
@@ -314,20 +316,24 @@ void BURGER_API Burger::MD4Hasher_t::Finalize(void) BURGER_NOEXCEPT
 	\param pInput Pointer to a buffer of data to hash
 	\param uLength Number of bytes to hash
 
-	\sa Burger::MD4Hasher_t
+	\sa \ref MD4Hasher_t
 
 ***************************************/
 
-void BURGER_API Burger::Hash(
+void BURGER_API Burger::hash(
 	MD4_t* pOutput, const void* pInput, uintptr_t uLength) BURGER_NOEXCEPT
 {
 	MD4Hasher_t Context;
+
 	// Initialize
-	Context.Init();
+	Context.init();
+
 	// Process all of the data
-	Context.Process(pInput, uLength);
+	Context.process(pInput, uLength);
+
 	// Wrap up the processing
-	Context.Finalize();
+	Context.finalize();
+
 	// Return the resulting hash
 	MemoryCopy(pOutput, &Context.m_Hash, 16);
 }

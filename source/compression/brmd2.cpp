@@ -6,7 +6,7 @@
 	http://en.wikipedia.org/wiki/MD2_(cryptography)
 	and http://www.ietf.org/rfc/rfc1319.txt
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -27,7 +27,7 @@
 	Full documentation on this hash format can be found here
 	http://en.wikipedia.org/wiki/MD2_(cryptography)
 
-	\sa Hash(MD2_t *,const void *,uintptr_t) and Burger::MD2Hasher_t
+	\sa hash(MD2_t *,const void *,uintptr_t) and \ref MD2Hasher_t
 
 ***************************************/
 
@@ -41,24 +41,25 @@
 	\code
 		Burger::MD2Hasher_t Context;
 		// Initialize
-		Context.Init();
+		Context.init();
 		// Process data in passes
-		Context.Process(Buffer1,sizeof(Buffer1));
-		Context.Process(Buffer2,sizeof(Buffer2));
-		Context.Process(Buffer3,sizeof(Buffer3));
+		Context.process(Buffer1,sizeof(Buffer1));
+		Context.process(Buffer2,sizeof(Buffer2));
+		Context.process(Buffer3,sizeof(Buffer3));
 		// Wrap up the processing
-		Context.Finalize();
+		Context.finalize();
 		// Return the resulting hash
 		MemoryCopy(pOutput,&Context.m_Hash,16);
 	\endcode
 
-	\sa Burger::MD2_t or Hash(MD2_t *,const void *,uintptr_t)
+	\sa \ref MD2_t or hash(MD2_t *,const void *,uintptr_t)
 
 ***************************************/
 
 // Permutation of 0..255 constructed from the digits of pi. It gives a
 // "random" nonlinear byte substitution operation.
 
+#if !defined(DOXYGEN)
 BURGER_ALIGN(static const uint8_t, g_MD2PiTable[256], 16) = {41, 46, 67, 201,
 	162, 216, 124, 1, 61, 54, 84, 161, 236, 240, 6, 19, 98, 167, 5, 243, 192,
 	199, 115, 140, 152, 147, 43, 217, 188, 76, 130, 202, 30, 155, 87, 60, 253,
@@ -76,15 +77,17 @@ BURGER_ALIGN(static const uint8_t, g_MD2PiTable[256], 16) = {41, 46, 67, 201,
 	213, 254, 59, 0, 29, 57, 242, 239, 183, 14, 102, 88, 208, 228, 166, 119,
 	114, 248, 235, 117, 75, 10, 49, 68, 80, 180, 143, 237, 31, 26, 219, 153,
 	141, 51, 159, 17, 131, 20};
+#endif
 
 /*! ************************************
 
 	\brief Initialize the MD2 hasher
-	\sa Process(const void *,uintptr_t) or Finalize(void)
+
+	\sa process(const void *,uintptr_t) or finalize(void)
 
 ***************************************/
 
-void BURGER_API Burger::MD2Hasher_t::Init(void) BURGER_NOEXCEPT
+void BURGER_API Burger::MD2Hasher_t::init(void) BURGER_NOEXCEPT
 {
 	// Just erase the structure
 	MemoryClear(this, sizeof(*this));
@@ -98,15 +101,17 @@ void BURGER_API Burger::MD2Hasher_t::Init(void) BURGER_NOEXCEPT
 	on input and update the hash and checksum
 
 	\param pBlock Pointer to a buffer of 16 bytes of data to hash
-	\sa Process(const void *,uintptr_t), Finalize(void) or Init(void)
+
+	\sa process(const void*, uintptr_t), finalize(void) or init(void)
 
 ***************************************/
 
-void BURGER_API Burger::MD2Hasher_t::Process(
-	const uint8_t* pBlock) BURGER_NOEXCEPT
+void BURGER_API Burger::MD2Hasher_t::process(
+	const uint8_t pBlock[16]) BURGER_NOEXCEPT
 {
 	// This buffer is initialized with the input block xor'd with the hash
 	uint8_t XorBuffer[16];
+
 	// This buffer is initialized with the raw input data
 	uint8_t TempBuffer[16];
 
@@ -115,29 +120,31 @@ void BURGER_API Burger::MD2Hasher_t::Process(
 	// The first pass doubles as an initialization pass
 
 	// Must be a byte to prevent buffer overruns (256 byte buffers)
-	uint8_t t = 0; // Must be initialized to ZERO!!!
+	// Must be initialized to ZERO!!!
+	uint8_t t = 0;
 	uint_t j = 0;
 	do {
 		// Init the xor buffer with the hash (Unmodified) and the input
 		XorBuffer[j] = static_cast<uint8_t>(m_Hash.m_Hash[j] ^ pBlock[j]);
+
 		// Process the hash
 		t = static_cast<uint8_t>(m_Hash.m_Hash[j] ^ g_MD2PiTable[t]);
 		m_Hash.m_Hash[j] = t;
-	} while (++j < 16);
+	} while (++j < 16U);
 
 	// Process the input data and initialize the temp buffer
 	j = 0;
 	do {
 		t = static_cast<uint8_t>(pBlock[j] ^ g_MD2PiTable[t]);
 		TempBuffer[j] = t;
-	} while (++j < 16);
+	} while (++j < 16U);
 
 	// Process the xor data
 	j = 0;
 	do {
 		t = static_cast<uint8_t>(XorBuffer[j] ^ g_MD2PiTable[t]);
 		XorBuffer[j] = t;
-	} while (++j < 16);
+	} while (++j < 16U);
 	// t = static_cast<uint8_t>(t + 0);
 
 	// Perform the remaining 17 passes on the internal buffers
@@ -147,22 +154,23 @@ void BURGER_API Burger::MD2Hasher_t::Process(
 		do {
 			t = static_cast<uint8_t>(m_Hash.m_Hash[j] ^ g_MD2PiTable[t]);
 			m_Hash.m_Hash[j] = t;
-		} while (++j < 16);
+		} while (++j < 16U);
 
 		j = 0;
 		do {
 			t = static_cast<uint8_t>(TempBuffer[j] ^ g_MD2PiTable[t]);
 			TempBuffer[j] = t;
-		} while (++j < 16);
+		} while (++j < 16U);
 
 		j = 0;
 		do {
 			t = static_cast<uint8_t>(XorBuffer[j] ^ g_MD2PiTable[t]);
 			XorBuffer[j] = t;
-		} while (++j < 16);
+		} while (++j < 16U);
+
 		// Add in the pass number
 		t = static_cast<uint8_t>(t + i);
-	} while (++i < 18);
+	} while (++i < 18U);
 
 	// Update checksum for this block
 
@@ -171,7 +179,7 @@ void BURGER_API Burger::MD2Hasher_t::Process(
 	do {
 		t = static_cast<uint8_t>(m_Checksum[i] ^ g_MD2PiTable[pBlock[i] ^ t]);
 		m_Checksum[i] = t;
-	} while (++i < 16);
+	} while (++i < 16U);
 }
 
 /*! ************************************
@@ -184,22 +192,24 @@ void BURGER_API Burger::MD2Hasher_t::Process(
 
 	\param pInput Pointer to a buffer of data to hash
 	\param uLength Number of bytes to hash
-	\sa Process(const uint8_t *), Finalize(void)
+
+	\sa process(const uint8_t[16]), finalize(void)
 
 ***************************************/
 
-void BURGER_API Burger::MD2Hasher_t::Process(
+void BURGER_API Burger::MD2Hasher_t::process(
 	const void* pInput, uintptr_t uLength) BURGER_NOEXCEPT
 {
 	// Process data in chunks of 16
 
 	// Are there any bytes left over from a previous pass?
 	uintptr_t uIndex = m_uCount;
+
 	// Store the new remainder
 	m_uCount = (uIndex + uLength) & 0xFU;
 
 	// Number of bytes of input needed for a pass (1-16)
-	uintptr_t i = 16 - uIndex;
+	uintptr_t i = 16U - uIndex;
 
 	// Are there 16 bytes or more in the queue?
 
@@ -207,17 +217,19 @@ void BURGER_API Burger::MD2Hasher_t::Process(
 		// Update the internal cache (To clear out previously pending bytes)
 
 		MemoryCopy(&m_CacheBuffer[uIndex], pInput, i);
+
 		// Process this chunk
-		Process(m_CacheBuffer);
+		process(m_CacheBuffer);
 
 		// Are there any more chunks of 16 bytes or more remaining?
-		if ((i + 15) < uLength) {
+		if ((i + 15U) < uLength) {
 			do {
 				// Process the 16 byte chunk
-				Process(static_cast<const uint8_t*>(pInput) + i);
-				i += 16;
+				process(static_cast<const uint8_t*>(pInput) + i);
+
+				i += 16U;
 				// Continue until there's less than 16 bytes remaining
-			} while ((i + 15) < uLength);
+			} while ((i + 15U) < uLength);
 		}
 		// Clear out the cache
 		uIndex = 0;
@@ -239,21 +251,21 @@ void BURGER_API Burger::MD2Hasher_t::Process(
 	When multi-pass hashing is performed, this call is necessary to finalize the
 	hash so that the generated checksum can be applied into the hash
 
-	\sa Init(void), Process(const void *,uintptr_t)
+	\sa init(void), process(const void *,uintptr_t)
 
 ***************************************/
 
-void BURGER_API Burger::MD2Hasher_t::Finalize(void) BURGER_NOEXCEPT
+void BURGER_API Burger::MD2Hasher_t::finalize(void) BURGER_NOEXCEPT
 {
 	uint8_t Padding[16];
 
 	// Pad out to multiple of 16.
-	const uintptr_t uLength = 16 - m_uCount;
+	const uintptr_t uLength = 16U - m_uCount;
 	MemoryFill(Padding, static_cast<uint8_t>(uLength), uLength);
-	Process(Padding, uLength);
+	process(Padding, uLength);
 
 	// Extend with checksum
-	Process(m_Checksum, sizeof(m_Checksum));
+	process(m_Checksum, sizeof(m_Checksum));
 }
 
 /*! ************************************
@@ -262,24 +274,28 @@ void BURGER_API Burger::MD2Hasher_t::Finalize(void) BURGER_NOEXCEPT
 
 	Given a buffer of data, generate the MD2 hash key
 
-	\param pOutput Pointer to an unitialized MD2_t structure
+	\param pOutput Pointer to an unitialized \ref MD2_t structure
 	\param pInput Pointer to a buffer of data to hash
 	\param uLength Number of bytes to hash
 
-	\sa Burger::MD2Hasher_t
+	\sa \ref MD2Hasher_t
 
 ***************************************/
 
-void BURGER_API Burger::Hash(
+void BURGER_API Burger::hash(
 	MD2_t* pOutput, const void* pInput, uintptr_t uLength) BURGER_NOEXCEPT
 {
 	MD2Hasher_t Context;
+
 	// Initialize
-	Context.Init();
+	Context.init();
+
 	// Process all of the data
-	Context.Process(pInput, uLength);
+	Context.process(pInput, uLength);
+
 	// Wrap up the processing
-	Context.Finalize();
+	Context.finalize();
+
 	// Return the resulting hash
 	MemoryCopy(pOutput, &Context.m_Hash, 16);
 }

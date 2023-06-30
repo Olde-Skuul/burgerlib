@@ -6,7 +6,7 @@
 	https://en.wikipedia.org/wiki/GOST_(hash_function)
 	and http://tools.ietf.org/html/rfc5831
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -26,6 +26,7 @@
 	\brief Test parameters S-Box, as copied from Wikipedia
 
 	GOST test parameters for an S-Box.
+
 	Full documentation on this hash format can be found here
 	https://en.wikipedia.org/wiki/GOST_(hash_function)
 
@@ -236,7 +237,7 @@ const uint32_t Burger::GOSTHasher_t::g_SBoxTable[4][256] = {
 	Full documentation on this hash format can be found here
 	https://en.wikipedia.org/wiki/GOST_(hash_function)
 
-	\sa Hash(GOST_t *,const void *,uintptr_t) and Burger::GOSTHasher_t
+	\sa hash(GOST_t *,const void *,uintptr_t) and \ref GOSTHasher_t
 
 ***************************************/
 
@@ -253,18 +254,18 @@ const uint32_t Burger::GOSTHasher_t::g_SBoxTable[4][256] = {
 	\code
 		Burger::GOSTHasher_t Context;
 		// Initialize
-		Context.Init();
+		Context.init();
 		// Process data in passes
-		Context.Process(Buffer1,sizeof(Buffer1));
-		Context.Process(Buffer2,sizeof(Buffer2));
-		Context.Process(Buffer3,sizeof(Buffer3));
+		Context.process(Buffer1,sizeof(Buffer1));
+		Context.process(Buffer2,sizeof(Buffer2));
+		Context.process(Buffer3,sizeof(Buffer3));
 		// Wrap up the processing
-		Context.Finalize();
+		Context.finalize();
 		// Return the resulting hash
 		MemoryCopy(pOutput,&Context.m_Hash,32);
 	\endcode
 
-	\sa Burger::GOST_t or Hash(GOST_t *,const void *,uintptr_t)
+	\sa \ref GOST_t or hash(GOST_t *,const void *,uintptr_t)
 
 ***************************************/
 
@@ -274,11 +275,11 @@ const uint32_t Burger::GOSTHasher_t::g_SBoxTable[4][256] = {
 
 	Call this function before any hashing is performed
 
-	\sa Process(const void *,uintptr_t) or Finalize(void)
+	\sa process(const void *,uintptr_t) or finalize(void)
 
 ***************************************/
 
-void BURGER_API Burger::GOSTHasher_t::Init(void) BURGER_NOEXCEPT
+void BURGER_API Burger::GOSTHasher_t::init(void) BURGER_NOEXCEPT
 {
 	// Load magic initialization constants.
 
@@ -299,7 +300,7 @@ void BURGER_API Burger::GOSTHasher_t::Init(void) BURGER_NOEXCEPT
 	\param pBlock Pointer to a buffer of 8 32 bit values in native endian to
 		hash
 
-	\sa Process(const void *,uintptr_t), Finalize(void) or Init(void)
+	\sa process(const void *,uintptr_t), finalize(void) or init(void)
 
 ***************************************/
 
@@ -315,8 +316,8 @@ void BURGER_API Burger::GOSTHasher_t::Init(void) BURGER_NOEXCEPT
 		g_SBoxTable[2][(uTemp >> 16U) & 0xFFU] ^ g_SBoxTable[3][uTemp >> 24U]
 #endif
 
-void BURGER_API Burger::GOSTHasher_t::Process(
-	const uint32_t* pBlock) BURGER_NOEXCEPT
+void BURGER_API Burger::GOSTHasher_t::process(
+	const uint32_t pBlock[8]) BURGER_NOEXCEPT
 {
 	uint32_t TempHash[8];
 	uint32_t TempBlock[8];
@@ -557,22 +558,24 @@ void BURGER_API Burger::GOSTHasher_t::Process(
 	integers and pass them to the actual function to do the data processing
 
 	\param pBlock Pointer to a buffer of 32 byte values to hash
-	\sa Process(const void *,uintptr_t), Finalize(void) or Init(void)
+
+	\sa process(const void *,uintptr_t), finalize(void) or init(void)
 
 ***************************************/
 
-void BURGER_API Burger::GOSTHasher_t::Process(
-	const uint8_t* pBlock) BURGER_NOEXCEPT
+void BURGER_API Burger::GOSTHasher_t::process(
+	const uint8_t pBlock[32]) BURGER_NOEXCEPT
 {
 	uint32_t Buffer[8];
 
 	// Adjust the sum
 
 	uint32_t uCarry = 0;
-	uint_t i = 0;
+	uintptr_t i = 0;
 	do {
 		const uint32_t uTemp = LittleEndian::LoadAny(
 			static_cast<const uint32_t*>(static_cast<const void*>(pBlock)));
+
 		pBlock += sizeof(uint32_t);
 		Buffer[i] = uTemp;
 		const uint32_t uPrevious = m_uSum[i];
@@ -585,10 +588,10 @@ void BURGER_API Burger::GOSTHasher_t::Process(
 
 		// Set carry if detected
 		uCarry = ((uCarry < uTemp) || (uCarry < uPrevious)) ? 1U : 0;
-	} while (++i < 8);
+	} while (++i < 8U);
 
 	// Process the converted buffer
-	Process(Buffer);
+	process(Buffer);
 }
 
 /*! ************************************
@@ -601,11 +604,12 @@ void BURGER_API Burger::GOSTHasher_t::Process(
 
 	\param pInput Pointer to a buffer of data to hash
 	\param uLength Number of bytes to hash
-	\sa Process(const uint8_t *), Finalize(void)
+
+	\sa process(const uint8_t[32]), finalize(void)
 
 ***************************************/
 
-void BURGER_API Burger::GOSTHasher_t::Process(
+void BURGER_API Burger::GOSTHasher_t::process(
 	const void* pInput, uintptr_t uLength) BURGER_NOEXCEPT
 {
 	// Compute number of bytes mod 32
@@ -614,24 +618,29 @@ void BURGER_API Burger::GOSTHasher_t::Process(
 	// Update number of bits (Perform a 32 bit add)
 	m_uByteCount += uLength;
 
-	uintptr_t i = 32 - uIndex;
+	uintptr_t i = 32U - uIndex;
 
 	// Transform as many times as possible.
 
-	if (uLength >= i) { // Should I copy or pack?
+	// Should I copy or pack?
+	if (uLength >= i) {
 
 		MemoryCopy(&m_CacheBuffer[uIndex], pInput, i);
-		Process(m_CacheBuffer);
-		m_uTotalCount += 256; // Bit count
+		process(m_CacheBuffer);
+
+		// Bit count
+		m_uTotalCount += 256U;
 
 		// Perform the checksum directly on the memory buffers
 
-		if ((i + 31) < uLength) {
+		if ((i + 31U) < uLength) {
 			do {
-				Process(static_cast<const uint8_t*>(pInput) + i);
-				m_uTotalCount += 256; // Bit count
-				i += 32;
-			} while ((i + 31) < uLength);
+				process(static_cast<const uint8_t*>(pInput) + i);
+
+				// Bit count
+				m_uTotalCount += 256U;
+				i += 32U;
+			} while ((i + 31U) < uLength);
 		}
 		uIndex = 0;
 	} else {
@@ -650,19 +659,19 @@ void BURGER_API Burger::GOSTHasher_t::Process(
 	When multi-pass hashing is performed, this call is necessary to finalize the
 	hash so that the generated checksum can be applied into the hash
 
-	\sa Init(void), Process(const void *,uintptr_t)
+	\sa init(void), process(const void *,uintptr_t)
 
 ***************************************/
 
-void BURGER_API Burger::GOSTHasher_t::Finalize(void) BURGER_NOEXCEPT
+void BURGER_API Burger::GOSTHasher_t::finalize(void) BURGER_NOEXCEPT
 {
 	// If there was any remaining data, hash it
 
 	uintptr_t uByteCount = static_cast<uintptr_t>(m_uByteCount) & 0x1FU;
 	if (uByteCount) {
-		MemoryClear(&m_CacheBuffer[uByteCount], 32 - uByteCount);
-		Process(m_CacheBuffer);
-		m_uTotalCount += uByteCount << 3;
+		MemoryClear(&m_CacheBuffer[uByteCount], 32U - uByteCount);
+		process(m_CacheBuffer);
+		m_uTotalCount += uByteCount << 3U;
 	}
 
 	// Hash in the data size count and the data sum
@@ -670,9 +679,9 @@ void BURGER_API Burger::GOSTHasher_t::Finalize(void) BURGER_NOEXCEPT
 	uint32_t Temp[8];
 	MemoryClear(Temp, sizeof(Temp));
 	Temp[0] = static_cast<uint32_t>(m_uTotalCount);
-	Temp[1] = static_cast<uint32_t>(m_uTotalCount >> 32);
-	Process(Temp);
-	Process(m_uSum);
+	Temp[1] = static_cast<uint32_t>(m_uTotalCount >> 32U);
+	process(Temp);
+	process(m_uSum);
 
 	// Save off the hash in Little Endian format
 
@@ -694,20 +703,24 @@ void BURGER_API Burger::GOSTHasher_t::Finalize(void) BURGER_NOEXCEPT
 	\param pInput Pointer to a buffer of data to hash
 	\param uLength Number of bytes to hash
 
-	\sa Burger::GOSTHasher_t
+	\sa \ref GOSTHasher_t
 
 ***************************************/
 
-void BURGER_API Burger::Hash(
+void BURGER_API Burger::hash(
 	GOST_t* pOutput, const void* pInput, uintptr_t uLength) BURGER_NOEXCEPT
 {
 	GOSTHasher_t Context;
+
 	// Initialize
-	Context.Init();
+	Context.init();
+
 	// Process all of the data
-	Context.Process(pInput, uLength);
+	Context.process(pInput, uLength);
+
 	// Wrap up the processing
-	Context.Finalize();
+	Context.finalize();
+
 	// Return the resulting hash
 	MemoryCopy(pOutput, &Context.m_Hash, 32);
 }
@@ -728,25 +741,25 @@ void BURGER_API Burger::Hash(
 
 ***************************************/
 
-void BURGER_API Burger::GenerateGOSTTable(
+void BURGER_API Burger::generate_GOST_table(
 	uint32_t* pOutput, const uint32_t pSBoxTable[8][16]) BURGER_NOEXCEPT
 {
 	// Create the Shift Box
 
-	uint_t i = 0;
-	uint_t a = 0;
+	uintptr_t i = 0;
+	uintptr_t a = 0;
 	do {
-		const uint32_t uTemp1 = pSBoxTable[1][a] << 15;
-		const uint32_t uTemp2 = pSBoxTable[3][a] << 23;
-		const uint32_t uTemp3 = Burger::RotateLeft(pSBoxTable[5][a], 31);
-		const uint32_t uTemp4 = pSBoxTable[7][a] << 7;
-		uint_t b = 0;
+		const uint32_t uTemp1 = pSBoxTable[1][a] << 15U;
+		const uint32_t uTemp2 = pSBoxTable[3][a] << 23U;
+		const uint32_t uTemp3 = Burger::RotateLeft(pSBoxTable[5][a], 31U);
+		const uint32_t uTemp4 = pSBoxTable[7][a] << 7U;
+		uintptr_t b = 0;
 		do {
-			pOutput[i] = uTemp1 | (pSBoxTable[0][b] << 11);
-			pOutput[i + 256] = uTemp2 | (pSBoxTable[2][b] << 19);
-			pOutput[i + 512] = uTemp3 | (pSBoxTable[4][b] << 27);
-			pOutput[i + 768] = uTemp4 | (pSBoxTable[6][b] << 3);
+			pOutput[i] = uTemp1 | (pSBoxTable[0][b] << 11U);
+			pOutput[i + 256] = uTemp2 | (pSBoxTable[2][b] << 19U);
+			pOutput[i + 512] = uTemp3 | (pSBoxTable[4][b] << 27U);
+			pOutput[i + 768] = uTemp4 | (pSBoxTable[6][b] << 3U);
 			++i;
-		} while (++b < 16);
-	} while (++a < 16);
+		} while (++b < 16U);
+	} while (++a < 16U);
 }

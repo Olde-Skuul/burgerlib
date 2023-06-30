@@ -32,14 +32,14 @@
 	\param pData Pointer to a data chunk to hash
 	\param uDataSize Size of the data chunk in bytes
 	\return 32 bit wide hash of the class
-	\sa SDBMHashCaseFunctor(), HashMapShared or SDBMHash()
+	\sa SDBMHashCaseFunctor(), HashMapShared or SDBM_hash()
 
 ***************************************/
 
 uintptr_t BURGER_API Burger::SDBMHashFunctor(
 	const void* pData, uintptr_t uDataSize) BURGER_NOEXCEPT
 {
-	return SDBMHash(pData, uDataSize);
+	return SDBM_hash(pData, uDataSize);
 }
 
 /*! ************************************
@@ -54,14 +54,14 @@ uintptr_t BURGER_API Burger::SDBMHashFunctor(
 	\param pData Pointer to a data chunk to hash
 	\param uDataSize Size of the data chunk in bytes
 	\return 32 bit wide hash of the class
-	\sa SDBMHashFunctor(), HashMapShared or SDBMHashCase()
+	\sa SDBMHashFunctor(), HashMapShared or SDBM_hash_case()
 
 ***************************************/
 
 uintptr_t BURGER_API Burger::SDBMHashCaseFunctor(
 	const void* pData, uintptr_t uDataSize) BURGER_NOEXCEPT
 {
-	return SDBMHashCase(pData, uDataSize);
+	return SDBM_hash_case(pData, uDataSize);
 }
 
 /*! ************************************
@@ -81,7 +81,7 @@ uintptr_t BURGER_API Burger::SDBMHashCaseFunctor(
 uintptr_t BURGER_API Burger::DJB2HashAddFunctor(
 	const void* pData, uintptr_t uDataSize) BURGER_NOEXCEPT
 {
-	return DJB2HashAdd(pData, uDataSize);
+	return DJB2_hash_add(pData, uDataSize);
 }
 
 /*! ************************************
@@ -102,7 +102,7 @@ uintptr_t BURGER_API Burger::DJB2HashAddFunctor(
 uintptr_t BURGER_API Burger::DJB2HashAddCaseFunctor(
 	const void* pData, uintptr_t uDataSize) BURGER_NOEXCEPT
 {
-	return DJB2HashAddCase(pData, uDataSize);
+	return DJB2_hash_add_case(pData, uDataSize);
 }
 
 /*! ************************************
@@ -122,7 +122,7 @@ uintptr_t BURGER_API Burger::DJB2HashAddCaseFunctor(
 uintptr_t BURGER_API Burger::DJB2HashXorFunctor(
 	const void* pData, uintptr_t uDataSize) BURGER_NOEXCEPT
 {
-	return DJB2HashXor(pData, uDataSize);
+	return DJB2_hash_xor(pData, uDataSize);
 }
 
 /*! ************************************
@@ -142,7 +142,7 @@ uintptr_t BURGER_API Burger::DJB2HashXorFunctor(
 uintptr_t BURGER_API Burger::DJB2HashXorCaseFunctor(
 	const void* pData, uintptr_t uDataSize) BURGER_NOEXCEPT
 {
-	return DJB2HashXorCase(pData, uDataSize);
+	return DJB2_hash_xor_case(pData, uDataSize);
 }
 
 /*! ************************************
@@ -162,7 +162,7 @@ uintptr_t BURGER_API Burger::DJB2HashXorCaseFunctor(
 uintptr_t BURGER_API Burger::DJB2StringHashXorFunctor(
 	const void* pData, uintptr_t /* uDataSize */) BURGER_NOEXCEPT
 {
-	return DJB2HashXor(static_cast<const String*>(pData)->c_str(),
+	return DJB2_hash_xor(static_cast<const String*>(pData)->c_str(),
 		static_cast<const String*>(pData)->length());
 }
 
@@ -184,7 +184,7 @@ uintptr_t BURGER_API Burger::DJB2StringHashXorFunctor(
 uintptr_t BURGER_API Burger::DJB2StringHashXorCaseFunctor(
 	const void* pData, uintptr_t /*uDataSize */) BURGER_NOEXCEPT
 {
-	return DJB2HashXorCase(static_cast<const String*>(pData)->c_str(),
+	return DJB2_hash_xor_case(static_cast<const String*>(pData)->c_str(),
 		static_cast<const String*>(pData)->length());
 }
 

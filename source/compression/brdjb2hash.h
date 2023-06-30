@@ -5,7 +5,7 @@
 	Implemented following the documentation found in
 	http::/www.cs.yorku.ca/~oz/hash.html
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -24,13 +24,13 @@
 
 /* BEGIN */
 namespace Burger {
-extern uintptr_t BURGER_API DJB2HashAdd(const void* pInput,
+extern uintptr_t BURGER_API DJB2_hash_add(const void* pInput,
 	uintptr_t uInputCount, uint32_t uHashSeed = 5381U) BURGER_NOEXCEPT;
-extern uintptr_t BURGER_API DJB2HashAddCase(const void* pInput,
+extern uintptr_t BURGER_API DJB2_hash_add_case(const void* pInput,
 	uintptr_t uInputCount, uint32_t uHashSeed = 5381U) BURGER_NOEXCEPT;
-extern uintptr_t BURGER_API DJB2HashXor(const void* pInput,
+extern uintptr_t BURGER_API DJB2_hash_xor(const void* pInput,
 	uintptr_t uInputCount, uint32_t uHashSeed = 5381U) BURGER_NOEXCEPT;
-extern uintptr_t BURGER_API DJB2HashXorCase(const void* pInput,
+extern uintptr_t BURGER_API DJB2_hash_xor_case(const void* pInput,
 	uintptr_t uInputCount, uint32_t uHashSeed = 5381U) BURGER_NOEXCEPT;
 }
 /* END */
