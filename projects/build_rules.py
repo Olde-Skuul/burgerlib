@@ -229,7 +229,7 @@ ARG_LISTS = [
     ("xboxone", "unittests", "console", ["vs2017"]),
     ("xboxgdk", "burger", "library", ["vs2022"]),
     ("xboxonex", "burger", "library", ["vs2022"]),
-    ("wiiu", "burger", "library", ["vs2013"]),
+    ("wiiu", "burger", "library", ["vs2015"]),
     ("switch", "burger", "library", ["vs2022"]),
     ("switch", "unittests", "app", ["vs2022"]),
     ("shield", "burger", "library", ["vs2015"]),
@@ -665,7 +665,8 @@ def vs2003_rules(project):
         project.source_files_list.extend(
             ("../source/asm/masm/xgetbv.x86",
              "../source/asm/masm/cpuid.x86",
-             "../source/asm/masm/cpuidex.x86"))
+             "../source/asm/masm/cpuidex.x86",
+             "../source/asm/masm/swapendian64.x86"))
 
         # stripcomments.exe is on the path, but VS 2003 doesn't use it
         # So, replace the call to where the binary actually is
@@ -855,6 +856,10 @@ def project_settings(project):
     if platform is PlatformTypes.ps3:
         project.source_folders_list.extend(BURGER_LIB_PS3)
 
+        # PS3 assembly code
+        project.source_files_list.append(
+            "../source/asm/ps3_asm/swapendian64.s")
+
     if platform is PlatformTypes.ps4:
         project.source_folders_list.extend(BURGER_LIB_PS4)
 
@@ -864,6 +869,10 @@ def project_settings(project):
 
     if platform is PlatformTypes.vita:
         project.source_folders_list.extend(BURGER_LIB_VITA)
+
+        # PSVita assembly code
+        project.source_files_list.append(
+            "../source/asm/psvita_asm/swapendian64.s")
 
         project.vs_props.append(
             "$(VCTargetsPath)\\BuildCustomizations\\vitacg.props")
@@ -902,6 +911,10 @@ def project_settings(project):
     # Nintendo
     if platform is PlatformTypes.wiiu:
         project.source_folders_list.extend(BURGER_LIB_WIIU)
+
+        # WiiU assembly code
+        project.source_files_list.append(
+            "../source/asm/wiiu_asm/swapendian64.s")
 
     if platform is PlatformTypes.switch:
         project.source_folders_list.extend(BURGER_LIB_SWITCH)

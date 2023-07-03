@@ -38,14 +38,14 @@
 
 /***************************************
 
-    Swap the endian
+	Swap the endian
 
-    While there are intrinsics for byte swapping, have
-    actually seen the code output?
+	While there are intrinsics for byte swapping, have
+	actually seen the code output?
 
-    No?
+	No?
 
-    Don't. You'll wail in terror.
+	Don't. You'll wail in terror.
 
 ***************************************/
 
@@ -658,17 +658,17 @@ struct NativeEndian {
     static BURGER_INLINE void StoreAny(signed long* pOutput, signed long iInput) BURGER_NOEXCEPT {
         StoreAny(reinterpret_cast<ulong2uint_t*>(pOutput), static_cast<ulong2uint_t>(iInput)); }
 #endif
-    // clang-format on
+	// clang-format on
 
-    template<typename T>
-    static BURGER_INLINE void Fixup(T) BURGER_NOEXCEPT
-    {
-    }
+	template<typename T>
+	static BURGER_INLINE void Fixup(T) BURGER_NOEXCEPT
+	{
+	}
 
-    template<typename T>
-    static BURGER_INLINE void FixupAny(T) BURGER_NOEXCEPT
-    {
-    }
+	template<typename T>
+	static BURGER_INLINE void FixupAny(T) BURGER_NOEXCEPT
+	{
+	}
 };
 
 #if (defined(BURGER_METROWERKS) && defined(BURGER_X86))
@@ -679,26 +679,22 @@ struct NativeEndian {
 
 #if defined(BURGER_LITTLEENDIAN)
 
-struct LittleEndian: public NativeEndian {
-};
-struct BigEndian: public SwapEndian {
-};
+struct LittleEndian: public NativeEndian {};
+struct BigEndian: public SwapEndian {};
 #define BURGER_BIGENDIAN16(x) (((x & 0xFFU) << 8U) + ((x >> 8U) & 0xFFU))
 #define BURGER_BIGENDIAN32(x) \
-    (((x & 0xFFU) << 24U) + ((x << 8U) & 0xFF0000U) + ((x >> 8U) & 0xFF00U) + \
-        ((x >> 24U) & 0xFFU))
+	(((x & 0xFFU) << 24U) + ((x << 8U) & 0xFF0000U) + ((x >> 8U) & 0xFF00U) + \
+		((x >> 24U) & 0xFFU))
 #define BURGER_LITTLEENDIAN16(x) (x)
 #define BURGER_LITTLEENDIAN32(x) (x)
 #else
 
-struct LittleEndian: public SwapEndian {
-};
-struct BigEndian: public NativeEndian {
-};
+struct LittleEndian: public SwapEndian {};
+struct BigEndian: public NativeEndian {};
 #define BURGER_LITTLEENDIAN16(x) (((x & 0xFFU) << 8U) + ((x >> 8U) & 0xFFU))
 #define BURGER_LITTLEENDIAN32(x) \
-    (((x & 0xFFU) << 24U) + ((x << 8U) & 0xFF0000U) + ((x >> 8U) & 0xFF00U) + \
-        ((x >> 24U) & 0xFFU))
+	(((x & 0xFFU) << 24U) + ((x << 8U) & 0xFF0000U) + ((x >> 8U) & 0xFF00U) + \
+		((x >> 24U) & 0xFFU))
 #define BURGER_BIGENDIAN16(x) (x)
 #define BURGER_BIGENDIAN32(x) (x)
 
@@ -706,16 +702,16 @@ struct BigEndian: public NativeEndian {
 
 extern void BURGER_API ConvertEndian(uint16_t* pInput, uintptr_t uCount);
 extern void BURGER_API ConvertEndian(
-    uint16_t* pOutput, const uint16_t* pInput, uintptr_t uCount);
+	uint16_t* pOutput, const uint16_t* pInput, uintptr_t uCount);
 extern void BURGER_API ConvertEndian(uint32_t* pInput, uintptr_t uCount);
 extern void BURGER_API ConvertEndian(
-    uint32_t* pOutput, const uint32_t* pInput, uintptr_t uCount);
+	uint32_t* pOutput, const uint32_t* pInput, uintptr_t uCount);
 extern void BURGER_API ConvertEndian(uint64_t* pInput, uintptr_t uCount);
 extern void BURGER_API ConvertEndian(
-    uint64_t* pOutput, const uint64_t* pInput, uintptr_t uCount);
+	uint64_t* pOutput, const uint64_t* pInput, uintptr_t uCount);
 extern void BURGER_API SwapCharsToBytes(void* pInput, uintptr_t uLength);
 extern void BURGER_API SwapCharsToBytes(
-    void* pOutput, const void* pInput, uintptr_t uLength);
+	void* pOutput, const void* pInput, uintptr_t uLength);
 
 }
 

@@ -1327,6 +1327,9 @@
     <ClCompile Include="..\unittest\testmacros.cpp">
       <Filter>unittest</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\asm\psvita_asm\swapendian64.s">
+      <Filter>source\asm\psvita_asm</Filter>
+    </ClCompile>
     <VitaCGCompile Include="..\source\graphics\shadersvita\pstexturecolorvita.vitacg">
       <Filter>source\graphics\shadersvita</Filter>
     </VitaCGCompile>
@@ -1344,6 +1347,12 @@
     </Filter>
     <Filter Include="source\ansi">
       <UniqueIdentifier>182FA521-F326-33D2-A2B2-8E680B240F36</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\asm">
+      <UniqueIdentifier>916C5296-16CB-3DA1-8E68-738EB10CC7E6</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\asm\psvita_asm">
+      <UniqueIdentifier>10A5C29D-41F0-3688-AAE5-0BAF2E2AA817</UniqueIdentifier>
     </Filter>
     <Filter Include="source\audio">
       <UniqueIdentifier>834CEEB7-4D1D-3C80-B461-7712FF842A2F</UniqueIdentifier>

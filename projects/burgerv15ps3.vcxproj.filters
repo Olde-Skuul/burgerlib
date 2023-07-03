@@ -352,7 +352,7 @@
     <ClInclude Include="..\source\lowlevel\brcodelibrary.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\lowlevel\brcriticalsection.h">
+    <ClInclude Include="..\source\lowlevel\brconditionvariable.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brdebug.h">
@@ -361,7 +361,7 @@
     <ClInclude Include="..\source\lowlevel\brdetectmultilaunch.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\lowlevel\brdoublylinkedlist.h">
+    <ClInclude Include="..\source\lowlevel\brdoublelinkedlist.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brendian.h">
@@ -394,7 +394,13 @@
     <ClInclude Include="..\source\lowlevel\brlinkedlistpointer.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brmacros.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\lowlevel\brmetrowerks.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brmutex.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\broscursor.h">
@@ -410,6 +416,9 @@
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brrunqueue.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brsemaphore.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brsimplearray.h">
@@ -430,6 +439,9 @@
     <ClInclude Include="..\source\lowlevel\brtemplates.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brthread.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\lowlevel\brtick.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
@@ -437,6 +449,9 @@
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brtypes.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brvectortypes.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brvisualstudio.h">
@@ -472,6 +487,9 @@
     <ClInclude Include="..\source\math\brfloatingpoint.h">
       <Filter>source\math</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\math\brfphalf.h">
+      <Filter>source\math</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\math\brfpinfo.h">
       <Filter>source\math</Filter>
     </ClInclude>
@@ -485,9 +503,6 @@
       <Filter>source\math</Filter>
     </ClInclude>
     <ClInclude Include="..\source\math\brmatrix4d.h">
-      <Filter>source\math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\math\brmp3math.h">
       <Filter>source\math</Filter>
     </ClInclude>
     <ClInclude Include="..\source\math\brvector2d.h">
@@ -916,7 +931,7 @@
     <ClCompile Include="..\source\lowlevel\brcodelibrary.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\lowlevel\brcriticalsection.cpp">
+    <ClCompile Include="..\source\lowlevel\brconditionvariable.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
     <ClCompile Include="..\source\lowlevel\brdebug.cpp">
@@ -925,7 +940,7 @@
     <ClCompile Include="..\source\lowlevel\brdetectmultilaunch.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\lowlevel\brdoublylinkedlist.cpp">
+    <ClCompile Include="..\source\lowlevel\brdoublelinkedlist.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
     <ClCompile Include="..\source\lowlevel\brendian.cpp">
@@ -955,6 +970,9 @@
     <ClCompile Include="..\source\lowlevel\brlinkedlistpointer.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\lowlevel\brmutex.cpp">
+      <Filter>source\lowlevel</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\lowlevel\broscursor.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
@@ -968,6 +986,9 @@
       <Filter>source\lowlevel</Filter>
     </ClCompile>
     <ClCompile Include="..\source\lowlevel\brrunqueue.cpp">
+      <Filter>source\lowlevel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\lowlevel\brsemaphore.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
     <ClCompile Include="..\source\lowlevel\brsimplearray.cpp">
@@ -985,6 +1006,9 @@
     <ClCompile Include="..\source\lowlevel\brtemplates.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\lowlevel\brthread.cpp">
+      <Filter>source\lowlevel</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\lowlevel\brtick.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
@@ -992,6 +1016,9 @@
       <Filter>source\lowlevel</Filter>
     </ClCompile>
     <ClCompile Include="..\source\lowlevel\brtypes.cpp">
+      <Filter>source\lowlevel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\lowlevel\brvectortypes.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
     <ClCompile Include="..\source\math\brearcliptriangulate.cpp">
@@ -1018,6 +1045,9 @@
     <ClCompile Include="..\source\math\brfloatingpoint.cpp">
       <Filter>source\math</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\math\brfphalf.cpp">
+      <Filter>source\math</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\math\brfpinfo.cpp">
       <Filter>source\math</Filter>
     </ClCompile>
@@ -1031,9 +1061,6 @@
       <Filter>source\math</Filter>
     </ClCompile>
     <ClCompile Include="..\source\math\brmatrix4d.cpp">
-      <Filter>source\math</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\math\brmp3math.cpp">
       <Filter>source\math</Filter>
     </ClCompile>
     <ClCompile Include="..\source\math\brsinecosine.cpp">
@@ -1057,10 +1084,19 @@
     <ClCompile Include="..\source\memory\brmemorymanager.cpp">
       <Filter>source\memory</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\platforms\ps3\brcriticalsectionps3.cpp">
+    <ClCompile Include="..\source\platforms\ps3\brfilenameps3.cpp">
       <Filter>source\platforms\ps3</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\platforms\ps3\brfilenameps3.cpp">
+    <ClCompile Include="..\source\platforms\ps3\brmutexps3.cpp">
+      <Filter>source\platforms\ps3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\ps3\brsemaphoreps3.cpp">
+      <Filter>source\platforms\ps3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\ps3\brthreadps3.cpp">
+      <Filter>source\platforms\ps3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\ps3\brtickps3.cpp">
       <Filter>source\platforms\ps3</Filter>
     </ClCompile>
     <ClCompile Include="..\source\random\brmersennetwist.cpp">
@@ -1132,11 +1168,20 @@
     <ClCompile Include="..\source\text\brwin437.cpp">
       <Filter>source\text</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\asm\ps3_asm\swapendian64.s">
+      <Filter>source\asm\ps3_asm</Filter>
+    </ClCompile>
     <Filter Include="source">
       <UniqueIdentifier>1172F80D-BDF0-33E9-9555-0F6242319015</UniqueIdentifier>
     </Filter>
     <Filter Include="source\ansi">
       <UniqueIdentifier>664943FF-244E-34F0-AA09-19A0B0C43A4D</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\asm">
+      <UniqueIdentifier>55F7DACB-0C5D-3ECF-B763-98791449384D</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\asm\ps3_asm">
+      <UniqueIdentifier>2DF80B90-2CDF-3B9F-A710-2FC7A7F04C80</UniqueIdentifier>
     </Filter>
     <Filter Include="source\audio">
       <UniqueIdentifier>D3923053-9E63-352A-BCA4-E7FA7599A942</UniqueIdentifier>
@@ -1176,6 +1221,9 @@
     </Filter>
     <Filter Include="source\memory">
       <UniqueIdentifier>54DD184B-59DD-3D74-BEC2-2C07E59BF05C</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\platforms">
+      <UniqueIdentifier>39F8D59D-76DD-3B30-9851-2116547B6AE0</UniqueIdentifier>
     </Filter>
     <Filter Include="source\platforms\ps3">
       <UniqueIdentifier>269945B6-6810-3732-A470-2DC55AAB171D</UniqueIdentifier>

@@ -1198,6 +1198,9 @@
     <ClCompile Include="..\source\text\brwin437.cpp">
       <Filter>source\text</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\asm\psvita_asm\swapendian64.s">
+      <Filter>source\asm\psvita_asm</Filter>
+    </ClCompile>
     <VitaCGCompile Include="..\source\graphics\shadersvita\pstexturecolorvita.vitacg">
       <Filter>source\graphics\shadersvita</Filter>
     </VitaCGCompile>
@@ -1215,6 +1218,12 @@
     </Filter>
     <Filter Include="source\ansi">
       <UniqueIdentifier>AD2301EF-6BA5-322D-BBCF-A597F85BE553</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\asm">
+      <UniqueIdentifier>A99C61B7-310A-33CD-B9D4-68E6554F8A19</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\asm\psvita_asm">
+      <UniqueIdentifier>3F41BE26-9973-3529-AFA9-AFD8F32281D3</UniqueIdentifier>
     </Filter>
     <Filter Include="source\audio">
       <UniqueIdentifier>6DC1603C-8CCB-3DBB-BF41-07FCA7B8A4AD</UniqueIdentifier>

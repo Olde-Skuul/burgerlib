@@ -319,9 +319,6 @@
     <ClInclude Include="..\source\graphics\shaders\brshader2dcolorvertex.h">
       <Filter>source\graphics\shaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\graphics\vulkan\brvulkanerrors.h">
-      <Filter>source\graphics\vulkan</Filter>
-    </ClInclude>
     <ClInclude Include="..\source\input\brjoypad.h">
       <Filter>source\input</Filter>
     </ClInclude>
@@ -355,7 +352,7 @@
     <ClInclude Include="..\source\lowlevel\brcodelibrary.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\lowlevel\brcriticalsection.h">
+    <ClInclude Include="..\source\lowlevel\brconditionvariable.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brdebug.h">
@@ -364,7 +361,7 @@
     <ClInclude Include="..\source\lowlevel\brdetectmultilaunch.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\lowlevel\brdoublylinkedlist.h">
+    <ClInclude Include="..\source\lowlevel\brdoublelinkedlist.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brendian.h">
@@ -397,7 +394,13 @@
     <ClInclude Include="..\source\lowlevel\brlinkedlistpointer.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brmacros.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\lowlevel\brmetrowerks.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brmutex.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\broscursor.h">
@@ -413,6 +416,9 @@
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brrunqueue.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brsemaphore.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brsimplearray.h">
@@ -433,6 +439,9 @@
     <ClInclude Include="..\source\lowlevel\brtemplates.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brthread.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\lowlevel\brtick.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
@@ -440,6 +449,9 @@
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brtypes.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brvectortypes.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brvisualstudio.h">
@@ -475,6 +487,9 @@
     <ClInclude Include="..\source\math\brfloatingpoint.h">
       <Filter>source\math</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\math\brfphalf.h">
+      <Filter>source\math</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\math\brfpinfo.h">
       <Filter>source\math</Filter>
     </ClInclude>
@@ -488,9 +503,6 @@
       <Filter>source\math</Filter>
     </ClInclude>
     <ClInclude Include="..\source\math\brmatrix4d.h">
-      <Filter>source\math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\math\brmp3math.h">
       <Filter>source\math</Filter>
     </ClInclude>
     <ClInclude Include="..\source\math\brvector2d.h">
@@ -511,8 +523,8 @@
     <ClInclude Include="..\source\memory\brmemorymanager.h">
       <Filter>source\memory</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\platforms\switch\brswitchtypes.h">
-      <Filter>source\platforms\switch</Filter>
+    <ClInclude Include="..\source\platforms\wiiu\brwiiutypes.h">
+      <Filter>source\platforms\wiiu</Filter>
     </ClInclude>
     <ClInclude Include="..\source\random\brmersennetwist.h">
       <Filter>source\random</Filter>
@@ -585,75 +597,6 @@
     </ClInclude>
     <ClInclude Include="..\source\text\brwin437.h">
       <Filter>source\text</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\common.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\createtables.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbralgorithm.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrcodelibrary.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrcompression.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrdisplay.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrendian.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrfileloaders.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrfilemanager.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrfixedpoint.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrfloatingpoint.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrhashes.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrmatrix3d.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrmatrix4d.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrnetwork.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrnumberto.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrprintf.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrstaticrtti.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrstrings.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrtimedate.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrtypes.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testcharset.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testmacros.h">
-      <Filter>unittest</Filter>
     </ClInclude>
     <ClCompile Include="..\source\ansi\brcapturestdout.cpp">
       <Filter>source\ansi</Filter>
@@ -955,9 +898,6 @@
     <ClCompile Include="..\source\graphics\shaders\brshader2dcolorvertex.cpp">
       <Filter>source\graphics\shaders</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\graphics\vulkan\brvulkanerrors.cpp">
-      <Filter>source\graphics\vulkan</Filter>
-    </ClCompile>
     <ClCompile Include="..\source\input\brjoypad.cpp">
       <Filter>source\input</Filter>
     </ClCompile>
@@ -991,7 +931,7 @@
     <ClCompile Include="..\source\lowlevel\brcodelibrary.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\lowlevel\brcriticalsection.cpp">
+    <ClCompile Include="..\source\lowlevel\brconditionvariable.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
     <ClCompile Include="..\source\lowlevel\brdebug.cpp">
@@ -1000,7 +940,7 @@
     <ClCompile Include="..\source\lowlevel\brdetectmultilaunch.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\lowlevel\brdoublylinkedlist.cpp">
+    <ClCompile Include="..\source\lowlevel\brdoublelinkedlist.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
     <ClCompile Include="..\source\lowlevel\brendian.cpp">
@@ -1030,6 +970,9 @@
     <ClCompile Include="..\source\lowlevel\brlinkedlistpointer.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\lowlevel\brmutex.cpp">
+      <Filter>source\lowlevel</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\lowlevel\broscursor.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
@@ -1043,6 +986,9 @@
       <Filter>source\lowlevel</Filter>
     </ClCompile>
     <ClCompile Include="..\source\lowlevel\brrunqueue.cpp">
+      <Filter>source\lowlevel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\lowlevel\brsemaphore.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
     <ClCompile Include="..\source\lowlevel\brsimplearray.cpp">
@@ -1060,6 +1006,9 @@
     <ClCompile Include="..\source\lowlevel\brtemplates.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\lowlevel\brthread.cpp">
+      <Filter>source\lowlevel</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\lowlevel\brtick.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
@@ -1067,6 +1016,9 @@
       <Filter>source\lowlevel</Filter>
     </ClCompile>
     <ClCompile Include="..\source\lowlevel\brtypes.cpp">
+      <Filter>source\lowlevel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\lowlevel\brvectortypes.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
     <ClCompile Include="..\source\math\brearcliptriangulate.cpp">
@@ -1093,6 +1045,9 @@
     <ClCompile Include="..\source\math\brfloatingpoint.cpp">
       <Filter>source\math</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\math\brfphalf.cpp">
+      <Filter>source\math</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\math\brfpinfo.cpp">
       <Filter>source\math</Filter>
     </ClCompile>
@@ -1106,9 +1061,6 @@
       <Filter>source\math</Filter>
     </ClCompile>
     <ClCompile Include="..\source\math\brmatrix4d.cpp">
-      <Filter>source\math</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\math\brmp3math.cpp">
       <Filter>source\math</Filter>
     </ClCompile>
     <ClCompile Include="..\source\math\brsinecosine.cpp">
@@ -1201,134 +1153,71 @@
     <ClCompile Include="..\source\text\brwin437.cpp">
       <Filter>source\text</Filter>
     </ClCompile>
-    <ClCompile Include="..\unittest\common.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\createtables.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbralgorithm.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrcodelibrary.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrcompression.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrdisplay.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrendian.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrfileloaders.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrfilemanager.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrfixedpoint.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrfloatingpoint.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrhashes.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrmatrix3d.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrmatrix4d.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrnetwork.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrnumberto.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrprintf.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrstaticrtti.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrstrings.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrtimedate.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrtypes.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testcharset.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testmacros.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
+    <ASM Include="..\source\asm\wiiu_asm\swapendian64.s">
+      <Filter>source\asm\wiiu_asm</Filter>
+    </ASM>
     <Filter Include="source">
-      <UniqueIdentifier>93822F2E-0BF2-3CE0-84CF-616E747000E3</UniqueIdentifier>
+      <UniqueIdentifier>405DC52E-78A7-3C20-ACDE-9D3FE09E3C25</UniqueIdentifier>
     </Filter>
     <Filter Include="source\ansi">
-      <UniqueIdentifier>2FC2CCD1-30BA-3270-BE50-6DCCB78A0E71</UniqueIdentifier>
+      <UniqueIdentifier>EC462438-1E55-398E-9618-9A1019274DA1</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\asm">
+      <UniqueIdentifier>2172833F-95B5-37EA-8374-206720D6E701</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\asm\wiiu_asm">
+      <UniqueIdentifier>3D944A95-56ED-3007-B39C-B4FF6BFC6663</UniqueIdentifier>
     </Filter>
     <Filter Include="source\audio">
-      <UniqueIdentifier>30DC2C50-CEE4-3AC8-A638-F9B698D62A81</UniqueIdentifier>
+      <UniqueIdentifier>8880005D-02D4-3E28-81E2-92B2349F97B6</UniqueIdentifier>
     </Filter>
     <Filter Include="source\commandline">
-      <UniqueIdentifier>01DE234D-3B3A-3A89-92BD-76DBA861939F</UniqueIdentifier>
+      <UniqueIdentifier>480BC461-DB85-3155-8274-601148DBF166</UniqueIdentifier>
     </Filter>
     <Filter Include="source\compression">
-      <UniqueIdentifier>9894C3CE-9882-31E6-AF53-78C57498E6EB</UniqueIdentifier>
+      <UniqueIdentifier>772DA27D-FA30-326B-949D-4045E1ED0A98</UniqueIdentifier>
     </Filter>
     <Filter Include="source\file">
-      <UniqueIdentifier>ED30A5DB-E128-386B-9494-64DAFA4C59FE</UniqueIdentifier>
+      <UniqueIdentifier>F58F4788-D32C-316D-AC7B-475F5E9169EB</UniqueIdentifier>
     </Filter>
     <Filter Include="source\flashplayer">
-      <UniqueIdentifier>53505089-6C8B-3DB2-9642-2F4BAD6DB6D0</UniqueIdentifier>
+      <UniqueIdentifier>F1AB2B09-C2B7-3B1D-AFB3-B7106A343318</UniqueIdentifier>
     </Filter>
     <Filter Include="source\generated">
-      <UniqueIdentifier>5A22DC92-1FBB-3423-827A-6298A812231D</UniqueIdentifier>
+      <UniqueIdentifier>907CDB6A-0754-3638-9D78-D732C08749B5</UniqueIdentifier>
     </Filter>
     <Filter Include="source\graphics">
-      <UniqueIdentifier>3334A896-6588-315D-8F7F-D7AC5F2FD31F</UniqueIdentifier>
+      <UniqueIdentifier>E422D91E-1A18-3214-A0AE-A1F5C2A440F5</UniqueIdentifier>
     </Filter>
     <Filter Include="source\graphics\effects">
-      <UniqueIdentifier>2EE9DBF1-5243-31E0-9141-E6291F3C1380</UniqueIdentifier>
+      <UniqueIdentifier>F34445B6-D97D-3B2F-9DB1-163E071B415B</UniqueIdentifier>
     </Filter>
     <Filter Include="source\graphics\shaders">
-      <UniqueIdentifier>680045D9-B252-3A03-AC6E-686ABFBC41FE</UniqueIdentifier>
-    </Filter>
-    <Filter Include="source\graphics\vulkan">
-      <UniqueIdentifier>385F3A32-7955-327C-89D0-122E5E93C2E5</UniqueIdentifier>
+      <UniqueIdentifier>80DC880B-B18B-3E51-96F7-D8929DA86D06</UniqueIdentifier>
     </Filter>
     <Filter Include="source\input">
-      <UniqueIdentifier>8A2DA591-D309-3054-82B9-E75B35AFD633</UniqueIdentifier>
+      <UniqueIdentifier>CF5CD40A-FCCC-3155-9CFD-821089DAD8BD</UniqueIdentifier>
     </Filter>
     <Filter Include="source\lowlevel">
-      <UniqueIdentifier>7AD620C4-CFE3-330F-96A4-BB0D4E02273C</UniqueIdentifier>
+      <UniqueIdentifier>B624CE6D-B859-30F5-96A9-543743AFEEFB</UniqueIdentifier>
     </Filter>
     <Filter Include="source\math">
-      <UniqueIdentifier>E10C7BEF-A2FF-3316-8206-7BA9C6E451C9</UniqueIdentifier>
+      <UniqueIdentifier>D1036A8B-8B16-38C1-AE58-2A7B64CA1374</UniqueIdentifier>
     </Filter>
     <Filter Include="source\memory">
-      <UniqueIdentifier>734AC03C-0CE5-3A39-B486-CB915A94CDA6</UniqueIdentifier>
+      <UniqueIdentifier>B2791887-15F9-3169-BBB4-1CA236890807</UniqueIdentifier>
     </Filter>
-    <Filter Include="source\platforms\switch">
-      <UniqueIdentifier>D96A0719-D964-3B73-BF81-93823220F685</UniqueIdentifier>
+    <Filter Include="source\platforms">
+      <UniqueIdentifier>0434DA66-9C56-3266-A3A1-B26FE51AD9FB</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\platforms\wiiu">
+      <UniqueIdentifier>20203F9E-B8AE-3937-8038-83B26AF819EC</UniqueIdentifier>
     </Filter>
     <Filter Include="source\random">
-      <UniqueIdentifier>9DDFD6CE-8BB0-316D-A3CC-81734F85ABFB</UniqueIdentifier>
+      <UniqueIdentifier>5438A721-98F6-313F-A439-C2E65D6997E1</UniqueIdentifier>
     </Filter>
     <Filter Include="source\text">
-      <UniqueIdentifier>1863BC1F-F359-3093-AC8D-834A9C2A3747</UniqueIdentifier>
-    </Filter>
-    <Filter Include="unittest">
-      <UniqueIdentifier>1C252D2E-6FE9-3B19-97EE-DC5A4DB087E7</UniqueIdentifier>
+      <UniqueIdentifier>3F27BDB5-45D2-3630-806E-D2B7A4F38FB2</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

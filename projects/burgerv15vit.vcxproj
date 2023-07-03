@@ -76,7 +76,7 @@
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersvita;$(ProjectDir)..\source\graphics\shadersvita\generated;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\psvita;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\asm\psvita_asm;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersvita;$(ProjectDir)..\source\graphics\shadersvita\generated;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\psvita;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;SN_TARGET_PSP2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -104,7 +104,7 @@
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersvita;$(ProjectDir)..\source\graphics\shadersvita\generated;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\psvita;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\asm\psvita_asm;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersvita;$(ProjectDir)..\source\graphics\shadersvita\generated;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\psvita;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;SN_TARGET_PSP2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -135,7 +135,7 @@
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersvita;$(ProjectDir)..\source\graphics\shadersvita\generated;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\psvita;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\asm\psvita_asm;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersvita;$(ProjectDir)..\source\graphics\shadersvita\generated;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\psvita;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;SN_TARGET_PSP2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -555,6 +555,7 @@
     <ClCompile Include="..\source\text\brutf8.cpp" />
     <ClCompile Include="..\source\text\brwin1252.cpp" />
     <ClCompile Include="..\source\text\brwin437.cpp" />
+    <ClCompile Include="..\source\asm\psvita_asm\swapendian64.s" />
     <VitaCGCompile Include="..\source\graphics\shadersvita\pstexturecolorvita.vitacg">
       <TargetProfile>sce_fp_psp2</TargetProfile>
       <HeaderFileName>%(RootDir)%(Directory)Generated\%(FileName).h</HeaderFileName>

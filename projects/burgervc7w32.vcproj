@@ -371,6 +371,41 @@
 						</FileConfiguration>
 					</File>
 					<File
+						RelativePath="..\source\asm\masm\swapendian64.x86">
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling swapendian64.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendian64.obj&quot; /Ta&quot;../source/asm/masm/swapendian64.x86&quot;"
+								Outputs="$(IntDir)swapendian64.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling swapendian64.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendian64.obj&quot; /Ta&quot;../source/asm/masm/swapendian64.x86&quot;"
+								Outputs="$(IntDir)swapendian64.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling swapendian64.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendian64.obj&quot; /Ta&quot;../source/asm/masm/swapendian64.x86&quot;"
+								Outputs="$(IntDir)swapendian64.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling swapendian64.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendian64.obj&quot; /Ta&quot;../source/asm/masm/swapendian64.x86&quot;"
+								Outputs="$(IntDir)swapendian64.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
 						RelativePath="..\source\asm\masm\xgetbv.x86">
 						<FileConfiguration
 							Name="Debug|Win32">
