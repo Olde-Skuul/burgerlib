@@ -1922,11 +1922,9 @@
 					_DEBUG,
 				);
 				GCC_THREADSAFE_STATICS = NO;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				"GCC_VERSION[sdk=macosx10.4]" = com.apple.compilers.llvmgcc42;
-				"GCC_VERSION[sdk=macosx10.5]" = com.apple.compilers.llvmgcc42;
-				"GCC_VERSION[sdk=macosx10.5][arch=i386]" = 4.2;
-				"GCC_VERSION[sdk=macosx10.5][arch=ppc64]" = 4.0;
+				GCC_VERSION = "";
+				"GCC_VERSION[sdk=macosx*][arch=ppc64]" = 4.0;
+				"GCC_VERSION[sdk=macosx*][arch=ppc]" = 4.0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
@@ -1952,7 +1950,8 @@
 					../source/platforms/unix,
 				);
 				MACH_O_TYPE = mh_execute;
-				MACOSX_DEPLOYMENT_TARGET = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				"MACOSX_DEPLOYMENT_TARGET[arch=ppc]" = 10.4;
 				OBJROOT = temp;
 				ONLY_ACTIVE_ARCH = NO;
 				PREBINDING = YES;
@@ -2001,11 +2000,9 @@
 					NDEBUG,
 				);
 				GCC_THREADSAFE_STATICS = NO;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				"GCC_VERSION[sdk=macosx10.4]" = com.apple.compilers.llvmgcc42;
-				"GCC_VERSION[sdk=macosx10.5]" = com.apple.compilers.llvmgcc42;
-				"GCC_VERSION[sdk=macosx10.5][arch=i386]" = 4.2;
-				"GCC_VERSION[sdk=macosx10.5][arch=ppc64]" = 4.0;
+				GCC_VERSION = "";
+				"GCC_VERSION[sdk=macosx*][arch=ppc64]" = 4.0;
+				"GCC_VERSION[sdk=macosx*][arch=ppc]" = 4.0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
@@ -2031,7 +2028,8 @@
 					../source/platforms/unix,
 				);
 				MACH_O_TYPE = mh_execute;
-				MACOSX_DEPLOYMENT_TARGET = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				"MACOSX_DEPLOYMENT_TARGET[arch=ppc]" = 10.4;
 				OBJROOT = temp;
 				ONLY_ACTIVE_ARCH = NO;
 				PREBINDING = YES;
@@ -2080,11 +2078,9 @@
 					_DEBUG,
 				);
 				GCC_THREADSAFE_STATICS = NO;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				"GCC_VERSION[sdk=macosx10.4]" = com.apple.compilers.llvmgcc42;
-				"GCC_VERSION[sdk=macosx10.5]" = com.apple.compilers.llvmgcc42;
-				"GCC_VERSION[sdk=macosx10.5][arch=i386]" = 4.2;
-				"GCC_VERSION[sdk=macosx10.5][arch=ppc64]" = 4.0;
+				GCC_VERSION = "";
+				"GCC_VERSION[sdk=macosx*][arch=ppc64]" = 4.0;
+				"GCC_VERSION[sdk=macosx*][arch=ppc]" = 4.0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
@@ -2110,7 +2106,8 @@
 					../source/platforms/unix,
 				);
 				MACH_O_TYPE = mh_execute;
-				MACOSX_DEPLOYMENT_TARGET = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				"MACOSX_DEPLOYMENT_TARGET[arch=ppc]" = 10.4;
 				OBJROOT = temp;
 				ONLY_ACTIVE_ARCH = NO;
 				PREBINDING = YES;

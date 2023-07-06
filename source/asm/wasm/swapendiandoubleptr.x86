@@ -1,0 +1,53 @@
+;
+; X86 assembly for implementing the function
+; Burger::_swapendiandouble(const double*) for Open Watcom
+;
+; Build with wasm.exe
+;
+; double BURGER_API Burger::_swapendiandouble(const double* pInput)
+; pInput = eax
+; Note: All integer registers are NON-VOLATILE!
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+;
+
+	.686
+
+_TEXT segment para 'CODE'
+
+	align 16
+	PUBLIC `W?_swapendiandouble$:Burger$n(pnxd)d`
+`W?_swapendiandouble$:Burger$n(pnxd)d` proc
+
+; Save eax/edx
+	push	edx
+	push	ecx
+
+; Fetch the double
+	mov		ecx, dword ptr[eax]
+	mov		edx, dword ptr[eax + 4]
+
+; Swap the 64 bits
+	bswap	ecx
+	bswap	edx
+
+; Store the value on the stack
+	push	ecx
+	push	edx
+
+; Load the double into the FPU
+	fld		qword ptr[esp]
+
+; Fix the stack
+	add		esp, 8
+	pop		ecx
+	pop		edx
+
+; Exit
+	ret
+
+`W?_swapendiandouble$:Burger$n(pnxd)d` endp
+
+_TEXT ends
+
+	end

@@ -124,7 +124,7 @@ static void BURGER_API get_fake_mac_address(
 
 	// Let's mix it up to make a true mess
 	Burger::MD5_t Mixer;
-	Burger::Hash(&Mixer, &Stuff, sizeof(Stuff));
+	Burger::hash(&Mixer, &Stuff, sizeof(Stuff));
 	Burger::MemoryCopy(pOutput, &Mixer, sizeof(*pOutput));
 }
 

@@ -548,6 +548,10 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/common.obj &
 	$(A)/cpuid.obj &
 	$(A)/cpuidex.obj &
+	$(A)/swapendiandouble.obj &
+	$(A)/swapendiandoubleptr.obj &
+	$(A)/swapendianfloat.obj &
+	$(A)/swapendianfloatptr.obj &
 	$(A)/testbralgorithm.obj &
 	$(A)/testbrcodelibrary.obj &
 	$(A)/testbrcompression.obj &

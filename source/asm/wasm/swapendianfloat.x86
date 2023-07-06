@@ -1,0 +1,47 @@
+;
+; X86 assembly for implementing the function
+; Burger::_swapendianfloat(float) for Open Watcom
+;
+; Build with wasm.exe
+;
+; float BURGER_API Burger::_swapendianfloat(float fInput)
+; fInput = [esp+4]
+; Note: All integer registers are NON-VOLATILE!
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+;
+
+	.686
+
+_TEXT segment para 'CODE'
+
+	align 16
+	PUBLIC `W?_swapendianfloat$:Burger$n(b)b`
+`W?_swapendianfloat$:Burger$n(b)b` proc
+
+; Save registers being used
+	push	edx
+
+; Get the float
+	mov		edx, dword ptr[esp + 8]
+
+; Swap the float	
+	bswap	edx
+
+; Store the float onto itself
+	mov		dword ptr[esp + 8], edx
+
+; Load into the x87 FPU
+	fld		dword ptr[esp + 8]
+
+; Restore registers
+	pop		edx
+
+; Exit
+	ret		4
+
+`W?_swapendianfloat$:Burger$n(b)b` endp
+
+_TEXT ends
+
+	end

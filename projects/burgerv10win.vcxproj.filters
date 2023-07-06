@@ -1519,6 +1519,18 @@
     <ClCompile Include="..\source\text\brwin437.cpp">
       <Filter>source\text</Filter>
     </ClCompile>
+    <MASM Include="..\source\asm\masm\swapendiandouble.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\swapendiandoubleptr.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\swapendianfloat.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\swapendianfloatptr.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
     <HLSL Include="..\source\graphics\shadersdx9\pscclr4dx9.hlsl">
       <Filter>source\graphics\shadersdx9</Filter>
     </HLSL>
@@ -1575,6 +1587,12 @@
     </Filter>
     <Filter Include="source\ansi">
       <UniqueIdentifier>10AD83B9-694B-3732-8BFD-F73B1B438BC1</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\asm">
+      <UniqueIdentifier>B4B4F472-799A-310B-930A-8C017535890D</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\asm\masm">
+      <UniqueIdentifier>F043990E-ABE2-3762-842A-BE8122F0EBE7</UniqueIdentifier>
     </Filter>
     <Filter Include="source\audio">
       <UniqueIdentifier>189D4D5D-A981-394D-8F04-56DFCD5D24E7</UniqueIdentifier>

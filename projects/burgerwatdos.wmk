@@ -539,6 +539,10 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/msdos_interrupts.obj &
 	$(A)/msdos_memory.obj &
 	$(A)/msdos_structs.obj &
+	$(A)/swapendiandouble.obj &
+	$(A)/swapendiandoubleptr.obj &
+	$(A)/swapendianfloat.obj &
+	$(A)/swapendianfloatptr.obj &
 	$(A)/x32_zero_base.obj
 
 #

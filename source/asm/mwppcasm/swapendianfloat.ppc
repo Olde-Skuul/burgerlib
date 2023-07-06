@@ -1,0 +1,27 @@
+;
+; Swap the endian of a 32 bit float
+;
+; Done in assembly, because that's how you know it's done right
+; PowerPC PEF version
+;
+
+	INCLUDE 'macros.ppc'
+
+;
+; Unmangled function prototype
+; float Burger::_swapendianfloat(float) BURGER_NOEXCEPT
+;
+
+	EXPORT _swapendianfloat__6BurgerFf[DS]
+	EXPORT _swapendianfloat__6BurgerFf[PR]
+
+	DeclareProc _swapendianfloat__6BurgerFf
+
+	stfs	fp1, 24(SP)		; Store the 32 bit float on the stack
+	addi	r4, sp, 24		; Index to the stack addresses
+	lwbrx	r3, r0, r4		; Load the values endian reversed
+	stw		r3, 24(SP)		; Store the swapped data
+	lfs 	fp1, 24(SP)		; Load the endian reversed float
+	blr
+
+	END

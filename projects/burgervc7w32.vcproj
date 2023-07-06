@@ -406,6 +406,146 @@
 						</FileConfiguration>
 					</File>
 					<File
+						RelativePath="..\source\asm\masm\swapendiandouble.x86">
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling swapendiandouble.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandouble.obj&quot; /Ta&quot;../source/asm/masm/swapendiandouble.x86&quot;"
+								Outputs="$(IntDir)swapendiandouble.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling swapendiandouble.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandouble.obj&quot; /Ta&quot;../source/asm/masm/swapendiandouble.x86&quot;"
+								Outputs="$(IntDir)swapendiandouble.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling swapendiandouble.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandouble.obj&quot; /Ta&quot;../source/asm/masm/swapendiandouble.x86&quot;"
+								Outputs="$(IntDir)swapendiandouble.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling swapendiandouble.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandouble.obj&quot; /Ta&quot;../source/asm/masm/swapendiandouble.x86&quot;"
+								Outputs="$(IntDir)swapendiandouble.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm\swapendiandoubleptr.x86">
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling swapendiandoubleptr.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandoubleptr.obj&quot; /Ta&quot;../source/asm/masm/swapendiandoubleptr.x86&quot;"
+								Outputs="$(IntDir)swapendiandoubleptr.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling swapendiandoubleptr.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandoubleptr.obj&quot; /Ta&quot;../source/asm/masm/swapendiandoubleptr.x86&quot;"
+								Outputs="$(IntDir)swapendiandoubleptr.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling swapendiandoubleptr.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandoubleptr.obj&quot; /Ta&quot;../source/asm/masm/swapendiandoubleptr.x86&quot;"
+								Outputs="$(IntDir)swapendiandoubleptr.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling swapendiandoubleptr.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandoubleptr.obj&quot; /Ta&quot;../source/asm/masm/swapendiandoubleptr.x86&quot;"
+								Outputs="$(IntDir)swapendiandoubleptr.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm\swapendianfloat.x86">
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling swapendianfloat.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloat.obj&quot; /Ta&quot;../source/asm/masm/swapendianfloat.x86&quot;"
+								Outputs="$(IntDir)swapendianfloat.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling swapendianfloat.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloat.obj&quot; /Ta&quot;../source/asm/masm/swapendianfloat.x86&quot;"
+								Outputs="$(IntDir)swapendianfloat.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling swapendianfloat.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloat.obj&quot; /Ta&quot;../source/asm/masm/swapendianfloat.x86&quot;"
+								Outputs="$(IntDir)swapendianfloat.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling swapendianfloat.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloat.obj&quot; /Ta&quot;../source/asm/masm/swapendianfloat.x86&quot;"
+								Outputs="$(IntDir)swapendianfloat.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm\swapendianfloatptr.x86">
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling swapendianfloatptr.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloatptr.obj&quot; /Ta&quot;../source/asm/masm/swapendianfloatptr.x86&quot;"
+								Outputs="$(IntDir)swapendianfloatptr.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling swapendianfloatptr.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloatptr.obj&quot; /Ta&quot;../source/asm/masm/swapendianfloatptr.x86&quot;"
+								Outputs="$(IntDir)swapendianfloatptr.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling swapendianfloatptr.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloatptr.obj&quot; /Ta&quot;../source/asm/masm/swapendianfloatptr.x86&quot;"
+								Outputs="$(IntDir)swapendianfloatptr.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling swapendianfloatptr.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloatptr.obj&quot; /Ta&quot;../source/asm/masm/swapendianfloatptr.x86&quot;"
+								Outputs="$(IntDir)swapendianfloatptr.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
 						RelativePath="..\source\asm\masm\xgetbv.x86">
 						<FileConfiguration
 							Name="Debug|Win32">

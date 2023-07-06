@@ -546,6 +546,10 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brwindowsapp.obj &
 	$(A)/cpuid.obj &
 	$(A)/cpuidex.obj &
+	$(A)/swapendiandouble.obj &
+	$(A)/swapendiandoubleptr.obj &
+	$(A)/swapendianfloat.obj &
+	$(A)/swapendianfloatptr.obj &
 	$(A)/win_d3d11.obj &
 	$(A)/win_d3d9.obj &
 	$(A)/win_ddraw.obj &

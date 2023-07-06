@@ -147,6 +147,18 @@ BURGER_INLINE double _mm_cvtsd_f64(__m128d vInput)
 	return vInput.m128d_f64[0];
 }
 
+BURGER_INLINE __int64 _mm_cvtsi128_si64(__m128i vInput)
+{
+	return vInput.m128i_u64[0];
+}
+
+BURGER_INLINE __m128i _mm_cvtsi64_si128(__int64 iInput)
+{
+	__m128i vResult;
+	vResult.m128i_u64[0] = iInput;
+	return vResult;
+}
+
 BURGER_INLINE __m128 _mm_castpd_ps(__m128d vInput)
 {
 	union {

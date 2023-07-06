@@ -1,0 +1,43 @@
+;
+; X86 assembly for implementing the function
+; Burger::_swapendianfloat(float) for Visual Studio x86
+;
+; Build with masm.exe
+;
+; float Burger::_swapendianfloat(float fInput)
+;
+
+	.686
+
+_TEXT segment para 'CODE'
+
+	align 16
+public ?_swapendianfloat@Burger@@YIMM@Z
+?_swapendianfloat@Burger@@YIMM@Z proc
+
+; Get the float
+	mov		edx, dword ptr[esp + 4]
+
+; Get the return address
+	mov		eax, dword ptr[esp]
+
+; Swap the float	
+	bswap	edx
+
+; Store the float
+	mov		dword ptr[esp + 4], edx
+
+; Load into the x87 FPU
+	fld		dword ptr[esp + 4]
+
+; Fix the stack
+	add		esp, 8
+
+; Exit
+	jmp		eax
+
+?_swapendianfloat@Burger@@YIMM@Z endp
+
+_TEXT ends
+
+	end

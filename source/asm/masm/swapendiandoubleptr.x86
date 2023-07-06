@@ -1,0 +1,43 @@
+;
+; X86 assembly for implementing the function
+; Burger::_swapendiandouble(const double*) for Visual Studio x86
+;
+; Build with masm.exe
+;
+; double Burger::_swapendiandouble(const double* pInput)
+;
+
+	.686
+
+_TEXT segment para 'CODE'
+
+	align 16
+public ?_swapendiandouble@Burger@@YINPBN@Z
+?_swapendiandouble@Burger@@YINPBN@Z proc
+
+; Fetch the double
+	mov		eax, dword ptr[ecx]
+	mov		edx, dword ptr[ecx + 4]
+
+; Swap the 64 bits
+	bswap	eax
+	bswap	edx
+
+; Store double, swapped
+	push	eax
+	push	edx
+
+; Load the double into the FPU
+	fld qword ptr[esp]
+
+; Fix the stack
+	add esp, 8
+
+; Exit
+	ret
+
+?_swapendiandouble@Burger@@YINPBN@Z endp
+
+_TEXT ends
+
+	end

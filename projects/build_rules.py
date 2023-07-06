@@ -514,7 +514,11 @@ def watcom_rules(project):
         # Asm functions for all platforms
         project.source_files_list.extend(
             ("../source/asm/wasm/cpuid.x86",
-             "../source/asm/wasm/cpuidex.x86"))
+             "../source/asm/wasm/cpuidex.x86",
+             "../source/asm/wasm/swapendianfloat.x86",
+             "../source/asm/wasm/swapendiandouble.x86",
+             "../source/asm/wasm/swapendianfloatptr.x86",
+             "../source/asm/wasm/swapendiandoubleptr.x86"))
 
         if platform.is_windows():
 
@@ -705,9 +709,6 @@ def vs2005_2008_rules(project):
         # Enable hlsl
         project.vs_rules.append("../ide_plugins/vs2005_2008/hlsl.rules")
 
-        # Enable masm
-        project.vs_rules.append("masm.rules")
-
         # Enable masm64
         project.vs_rules.append("../ide_plugins/vs2005_2008/masm64.rules")
 
@@ -782,6 +783,18 @@ def project_settings(project):
     # Windows specific files
     if platform.is_windows():
         project.source_folders_list.extend(BURGER_LIB_WINDOWS)
+
+        # Add the assembly code for Windows
+        if ide.is_visual_studio():
+
+            # VS 2007-2010 default to 8087 math. All others use SSE2
+            if ide in (IDETypes.vs2003, IDETypes.vs2005,
+                       IDETypes.vs2008, IDETypes.vs2010):
+                project.source_files_list.extend((
+                    "../source/asm/masm/swapendianfloat.x86",
+                    "../source/asm/masm/swapendiandouble.x86",
+                    "../source/asm/masm/swapendianfloatptr.x86",
+                    "../source/asm/masm/swapendiandoubleptr.x86"))
 
         # Add in the headers for Windows, but there be dragons
         if not ide.is_codewarrior() and ide is not IDETypes.watcom:

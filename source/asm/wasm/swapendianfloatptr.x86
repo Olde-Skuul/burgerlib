@@ -1,0 +1,48 @@
+;
+; X86 assembly for implementing the function
+; Burger::_swapendianfloat(const float*) for Open Watcom
+;
+; Build with wasm.exe
+;
+; float BURGER_API Burger::_swapendianfloat(const float* pInput)
+; pInput = eax
+; Note: All integer registers are NON-VOLATILE!
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+;
+
+	.686
+
+_TEXT segment para 'CODE'
+
+	align 16
+	PUBLIC `W?_swapendianfloat$:Burger$n(pnxb)b`
+`W?_swapendianfloat$:Burger$n(pnxb)b` proc
+
+; Save edx
+	push	edx
+
+; Get the float
+	mov		edx, dword ptr[eax]
+
+; Swap the float
+	bswap	edx
+
+; Store the float in the temp variable
+	push	edx
+
+; Load into the x87 FPU
+	fld		dword ptr[esp]
+
+; Fix the stack and restore edx
+	pop		edx
+	pop		edx
+
+; Exit
+	ret
+
+`W?_swapendianfloat$:Burger$n(pnxb)b` endp
+
+_TEXT ends
+
+	end

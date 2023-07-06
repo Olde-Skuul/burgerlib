@@ -1,0 +1,30 @@
+;
+; Swap the endian of a 64 bit float
+;
+; Done in assembly, because that's how you know it's done right
+; PowerPC PEF version
+;
+
+	INCLUDE 'macros.ppc'
+
+;
+; Unmangled function prototype
+; double Burger::_swapendiandouble(double) BURGER_NOEXCEPT
+;
+
+	EXPORT _swapendiandouble__6BurgerFd[DS]
+	EXPORT _swapendiandouble__6BurgerFd[PR]
+
+	DeclareProc _swapendiandouble__6BurgerFd
+
+	stfd	fp1, 24(SP)		; Store the 64 bit float on the stack
+	addi	r5, sp, 24		; Index to the stack addresses
+	addi	r6, sp, 28
+	lwbrx	r3, r0, r5		; Load the values endian reversed
+	lwbrx	r4, r0, r6
+	stw		r4, 24(SP)		; Store the swapped data
+	stw		r3, 28(SP)
+	lfd		fp1, 24(SP)		; Load the endian reversed float
+	blr
+
+	END

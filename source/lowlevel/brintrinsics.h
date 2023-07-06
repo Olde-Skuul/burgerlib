@@ -42,6 +42,12 @@ extern unsigned long __cdecl _byteswap_ulong(unsigned long);
 extern unsigned __int64 __cdecl _byteswap_uint64(unsigned __int64);
 #pragma intrinsic(_byteswap_ushort, _byteswap_ulong, _byteswap_uint64)
 
+#if defined(BURGER_XBOXONE)
+extern unsigned short __cdecl _load_be_u16(void const*);
+extern unsigned int __cdecl _load_be_u32(void const*);
+extern unsigned __int64 __cdecl _load_be_u64(void const*);
+#endif
+
 #elif (defined(BURGER_SNSYSTEMS) && defined(BURGER_ARM32))
 extern uint32_t __builtin_rev(uint32_t);
 
@@ -525,6 +531,34 @@ BURGER_INLINE uint64_t _swapendian64(uint64_t uInput) BURGER_NOEXCEPT
 }
 
 #elif ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
+	defined(BURGER_ARM32)) && \
+	!defined(DOXYGEN)
+
+BURGER_INLINE uint64_t _swapendian64(uint64_t uInput) BURGER_NOEXCEPT
+{
+	union {
+		struct {
+			uint32_t l, h;
+		} word32;
+		uint64_t uWord64;
+	} uTemp;
+
+	// Convert to 32 bit registers
+	uTemp.uWord64 = uInput;
+	uint32_t l = uTemp.word32.l;
+	uint32_t h = uTemp.word32.h;
+
+	// Endian swap
+	__asm__("rev %0,%1" : "=r"(l) : "r"(l));
+	__asm__("rev %0,%1" : "=r"(h) : "r"(h));
+
+	// Restore as 64 bit value
+	uTemp.word32.l = h;
+	uTemp.word32.h = l;
+	return uTemp.uWord64;
+}
+
+#elif ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
 	defined(BURGER_ARM64)) && \
 	!defined(DOXYGEN)
 
@@ -533,6 +567,34 @@ BURGER_INLINE uint64_t _swapendian64(uint64_t uInput) BURGER_NOEXCEPT
 	uint64_t uResult;
 	__asm__("rev %x0,%x1" : "=r"(uResult) : "r"(uInput));
 	return uResult;
+}
+
+#elif ( \
+	(defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_X86)) && \
+	!defined(DOXYGEN)
+
+BURGER_INLINE uint64_t _swapendian64(uint64_t uInput) BURGER_NOEXCEPT
+{
+	union {
+		struct {
+			uint32_t l, h;
+		} word32;
+		uint64_t uWord64;
+	} uTemp;
+
+	// Convert to 32 bit registers
+	uTemp.uWord64 = uInput;
+	uint32_t l = uTemp.word32.l;
+	uint32_t h = uTemp.word32.h;
+
+	// Endian swap
+	__asm__("bswap %0" : "+r"(l));
+	__asm__("bswap %0" : "+r"(h));
+
+	// Restore as 64 bit value
+	uTemp.word32.l = h;
+	uTemp.word32.h = l;
+	return uTemp.uWord64;
 }
 
 #elif ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
