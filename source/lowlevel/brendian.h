@@ -55,10 +55,53 @@
 
 namespace Burger {
 
-extern float BURGER_API _swapendianfloat(float) BURGER_NOEXCEPT;
-extern double BURGER_API _swapendiandouble(double) BURGER_NOEXCEPT;
-extern float BURGER_API _swapendianfloat(const float*) BURGER_NOEXCEPT;
-extern double BURGER_API _swapendiandouble(const double*) BURGER_NOEXCEPT;
+extern float BURGER_API _swapendianfloat(float fInput) BURGER_NOEXCEPT;
+extern double BURGER_API _swapendiandouble(double dInput) BURGER_NOEXCEPT;
+extern float BURGER_API _swapendianfloat(const float* pInput) BURGER_NOEXCEPT;
+extern double BURGER_API _swapendiandouble(
+	const double* pInput) BURGER_NOEXCEPT;
+
+extern uint16_t BURGER_API _load_unaligned(
+	const uint16_t* pInput) BURGER_NOEXCEPT;
+extern uint32_t BURGER_API _load_unaligned(
+	const uint32_t* pInput) BURGER_NOEXCEPT;
+extern uint64_t BURGER_API _load_unaligned(
+	const uint64_t* pInput) BURGER_NOEXCEPT;
+extern float BURGER_API _load_unaligned(const float* pInput) BURGER_NOEXCEPT;
+extern double BURGER_API _load_unaligned(const double* pInput) BURGER_NOEXCEPT;
+
+extern void BURGER_API _store_unaligned(
+	uint16_t* pOutput, uint16_t uInput) BURGER_NOEXCEPT;
+extern void BURGER_API _store_unaligned(
+	uint32_t* pOutput, uint32_t uInput) BURGER_NOEXCEPT;
+extern void BURGER_API _store_unaligned(
+	uint64_t* pOutput, uint64_t uInput) BURGER_NOEXCEPT;
+extern void BURGER_API _store_unaligned(
+	float* pOutput, float fInput) BURGER_NOEXCEPT;
+extern void BURGER_API _store_unaligned(
+	double* pOutput, double dInput) BURGER_NOEXCEPT;
+
+extern uint16_t BURGER_API _load_unaligned_swap(
+	const uint16_t* pInput) BURGER_NOEXCEPT;
+extern uint32_t BURGER_API _load_unaligned_swap(
+	const uint32_t* pInput) BURGER_NOEXCEPT;
+extern uint64_t BURGER_API _load_unaligned_swap(
+	const uint64_t* pInput) BURGER_NOEXCEPT;
+extern float BURGER_API _load_unaligned_swap(
+	const float* pInput) BURGER_NOEXCEPT;
+extern double BURGER_API _load_unaligned_swap(
+	const double* pInput) BURGER_NOEXCEPT;
+
+extern void BURGER_API _store_unaligned_swap(
+	uint16_t* pOutput, uint16_t uInput) BURGER_NOEXCEPT;
+extern void BURGER_API _store_unaligned_swap(
+	uint32_t* pOutput, uint32_t uInput) BURGER_NOEXCEPT;
+extern void BURGER_API _store_unaligned_swap(
+	uint64_t* pOutput, uint64_t uInput) BURGER_NOEXCEPT;
+extern void BURGER_API _store_unaligned_swap(
+	float* pOutput, float fInput) BURGER_NOEXCEPT;
+extern void BURGER_API _store_unaligned_swap(
+	double* pOutput, double dInput) BURGER_NOEXCEPT;
 
 #if !defined(DOXYGEN)
 // Internal templates
@@ -67,7 +110,7 @@ namespace Swap {
 // Handlers for SwapEndian::Load()
 template<typename T, uintptr_t size, bool is_arithmetic, bool is_pointer>
 struct load_dispatch {
-	BURGER_INLINE BURGER_CONSTEXPR T operator()(T Input) BURGER_NOEXCEPT
+	BURGER_INLINE T operator()(T Input) BURGER_NOEXCEPT
 	{
 		// Instantiated on bad input
 		BURGER_STATIC_ASSERT(Input * Input < 0);
@@ -78,7 +121,7 @@ struct load_dispatch {
 // Handlers for direct intrinsics (No pointers)
 template<typename T>
 struct load_dispatch<T, 1, true, false> {
-	BURGER_INLINE BURGER_CONSTEXPR T operator()(T Input) BURGER_NOEXCEPT
+	BURGER_INLINE T operator()(T Input) BURGER_NOEXCEPT
 	{
 		// Instantiated for single byte types
 		return Input;
@@ -204,7 +247,7 @@ struct load_dispatch_ptr {
 // Handlers for pointer intrinsics
 template<typename T>
 struct load_dispatch_ptr<T, 1, true> {
-	BURGER_INLINE BURGER_CONSTEXPR T operator()(const T* pInput) BURGER_NOEXCEPT
+	BURGER_INLINE T operator()(const T* pInput) BURGER_NOEXCEPT
 	{
 		// Instantiated for pointers to single byte types
 		BURGER_STATIC_ASSERT(is_arithmetic<T>::value);
@@ -982,7 +1025,7 @@ namespace Native {
 // Catchall for load()
 template<typename T, bool is_arithmetic, bool is_pointer>
 struct load_dispatch {
-	BURGER_INLINE BURGER_CONSTEXPR T operator()(T Input) BURGER_NOEXCEPT
+	BURGER_INLINE T operator()(T Input) BURGER_NOEXCEPT
 	{
 		// Instantiated on bad input
 		BURGER_STATIC_ASSERT(Input * Input < 0);
@@ -993,7 +1036,7 @@ struct load_dispatch {
 // Load arithmetic values
 template<typename T>
 struct load_dispatch<T, true, false> {
-	BURGER_INLINE BURGER_CONSTEXPR T operator()(T Input) BURGER_NOEXCEPT
+	BURGER_INLINE T operator()(T Input) BURGER_NOEXCEPT
 	{
 		// Instantiated for arithmetic integral types
 		return Input;
@@ -1003,7 +1046,7 @@ struct load_dispatch<T, true, false> {
 // Load from a pointer to an arithmetic value
 template<typename T>
 struct load_dispatch<T, false, true> {
-	BURGER_INLINE BURGER_CONSTEXPR typename remove_pointer<T>::type operator()(
+	BURGER_INLINE typename remove_pointer<T>::type operator()(
 		T Input) BURGER_NOEXCEPT
 	{
 		// Instantiated for pointers to arithmetic integral types
@@ -1012,6 +1055,98 @@ struct load_dispatch<T, false, true> {
 		return *Input;
 	}
 };
+
+// Catchall for store()
+template<typename T, bool is_arithmetic>
+struct store_dispatch {
+	BURGER_INLINE void operator()(T* /* pOutput */, T Input) BURGER_NOEXCEPT
+	{
+		// Instantiated on bad input
+		BURGER_STATIC_ASSERT(Input * Input < 0);
+	}
+};
+
+// Store arithmetic values
+template<typename T>
+struct store_dispatch<T, true> {
+	BURGER_INLINE void operator()(T* pOutput, T Input) BURGER_NOEXCEPT
+	{
+		// Instantiated for arithmetic integral types
+		*pOutput = Input;
+	}
+};
+
+// Implemented on systems that don't support non-aligned reads and writes in
+// hardware
+#if !(defined(BURGER_INTEL) || defined(BURGER_ARM64))
+
+// Catchall for all pointer types
+template<typename T, uintptr_t size, bool bIsArithmetic>
+struct loadany_dispatch {
+	BURGER_INLINE T operator()(T* pInput) BURGER_NOEXCEPT
+	{
+		// If this is triggered, a pointer was passed to an unsupported data
+		// type
+		BURGER_STATIC_ASSERT(pInput || !pInput);
+		return *pInput;
+	}
+};
+
+// Handlers for pointer intrinsics
+template<typename T>
+struct loadany_dispatch<T, 1, true> {
+	BURGER_INLINE T operator()(const T* pInput) BURGER_NOEXCEPT
+	{
+		// Instantiated for pointers to single byte types
+		return *pInput;
+	}
+};
+
+template<typename T>
+struct loadany_dispatch<T, 2, true> {
+	BURGER_INLINE T operator()(const T* pInput) BURGER_NOEXCEPT
+	{
+		return static_cast<T>(
+			_load_unaligned(reinterpret_cast<const uint16_t*>(pInput)));
+	}
+};
+
+template<typename T>
+struct loadany_dispatch<T, 4, true> {
+	BURGER_INLINE T operator()(const T* pInput) BURGER_NOEXCEPT
+	{
+		return static_cast<T>(
+			_load_unaligned(reinterpret_cast<const uint32_t*>(pInput)));
+	}
+};
+
+template<typename T>
+struct loadany_dispatch<T, 8, true> {
+	BURGER_INLINE T operator()(const T* pInput) BURGER_NOEXCEPT
+	{
+		return static_cast<T>(
+			_load_unaligned(reinterpret_cast<const uint64_t*>(pInput)));
+	}
+};
+
+template<>
+struct loadany_dispatch<float, sizeof(float), true> {
+	BURGER_INLINE float operator()(const float* pInput) BURGER_NOEXCEPT
+	{
+		// Return the float
+		return _load_unaligned(pInput);
+	}
+};
+
+template<>
+struct loadany_dispatch<double, sizeof(double), true> {
+	BURGER_INLINE double operator()(const double* pInput) BURGER_NOEXCEPT
+	{
+		// Return the double
+		return _load_unaligned(pInput);
+	}
+};
+#endif
 }
 #endif
 
@@ -1025,42 +1160,36 @@ struct NativeEndian {
 			is_pointer<T>::value>()(Input);
 	}
 
-	// clang-format off
-    static BURGER_INLINE void Store(char* pOutput, char iInput) BURGER_NOEXCEPT { pOutput[0] = iInput; }
-    static BURGER_INLINE void Store(uint8_t* pOutput, uint8_t uInput) BURGER_NOEXCEPT { pOutput[0] = uInput; }
-    static BURGER_INLINE void Store(int8_t* pOutput, int8_t iInput) BURGER_NOEXCEPT { pOutput[0] = iInput; }
-    static BURGER_INLINE void Store(uint16_t* pOutput, uint16_t uInput) BURGER_NOEXCEPT { pOutput[0] = uInput; }
-    static BURGER_INLINE void Store(int16_t* pOutput, int16_t iInput) BURGER_NOEXCEPT { pOutput[0] = iInput; }
-    static BURGER_INLINE void Store(uint32_t* pOutput, uint32_t uInput) BURGER_NOEXCEPT { pOutput[0] = uInput; }
-    static BURGER_INLINE void Store(int32_t* pOutput, int32_t iInput) BURGER_NOEXCEPT { pOutput[0] = iInput; }
-    static BURGER_INLINE void Store(int64_t* pOutput, int64_t iInput) BURGER_NOEXCEPT { pOutput[0] = iInput; }
-    static BURGER_INLINE void Store(uint64_t* pOutput, uint64_t uInput) BURGER_NOEXCEPT { pOutput[0] = uInput; }
-    static BURGER_INLINE void Store(float* pOutput, float fInput) BURGER_NOEXCEPT { pOutput[0] = fInput; }
-    static BURGER_INLINE void Store(double* pOutput, double dInput) BURGER_NOEXCEPT { pOutput[0] = dInput; }
+	template<typename T>
+	static BURGER_INLINE void Store(T* pOutput, T Input) BURGER_NOEXCEPT
+	{
+		Native::store_dispatch<T, is_arithmetic<T>::value>()(pOutput, Input);
+	}
 
-    static BURGER_INLINE BURGER_CONSTEXPR char LoadAny(const char* pInput) BURGER_NOEXCEPT { return pInput[0]; }
-    static BURGER_INLINE BURGER_CONSTEXPR uint8_t LoadAny(const uint8_t* pInput) BURGER_NOEXCEPT { return pInput[0]; }
-    static BURGER_INLINE BURGER_CONSTEXPR int8_t LoadAny(const int8_t* pInput) BURGER_NOEXCEPT { return pInput[0]; }
-#if (defined(BURGER_INTEL) || defined(BURGER_ARM64)) && !defined(DOXYGEN)
-    static BURGER_INLINE BURGER_CONSTEXPR uint16_t LoadAny(const uint16_t* pInput) BURGER_NOEXCEPT { return pInput[0]; }
-    static BURGER_INLINE BURGER_CONSTEXPR uint32_t LoadAny(const uint32_t* pInput) BURGER_NOEXCEPT { return pInput[0]; }
-    static BURGER_INLINE BURGER_CONSTEXPR uint64_t LoadAny(const uint64_t* pInput) BURGER_NOEXCEPT { return pInput[0]; }
-    static BURGER_INLINE BURGER_CONSTEXPR float LoadAny(const float* pInput) BURGER_NOEXCEPT { return pInput[0]; }
-    static BURGER_INLINE BURGER_CONSTEXPR double LoadAny(const double* pInput) BURGER_NOEXCEPT { return pInput[0]; }
+	template<typename T>
+	static BURGER_INLINE T LoadAny(T* pInput) BURGER_NOEXCEPT
+	{
+#if (defined(BURGER_INTEL) || defined(BURGER_ARM64))
+		return Native::load_dispatch<T*, is_arithmetic<T*>::value, true>()(
+			pInput);
 #else
-    static uint16_t BURGER_API LoadAny(const uint16_t* pInput) BURGER_NOEXCEPT;
-    static uint32_t BURGER_API LoadAny(const uint32_t* pInput) BURGER_NOEXCEPT;
-    static uint64_t BURGER_API LoadAny(const uint64_t* pInput) BURGER_NOEXCEPT;
-    static float BURGER_API LoadAny(const float* pInput) BURGER_NOEXCEPT;
-    static double BURGER_API LoadAny(const double* pInput) BURGER_NOEXCEPT;
+		typedef typename remove_cv<T>::type real_type;
+		return Native::loadany_dispatch<real_type, sizeof(real_type),
+			is_arithmetic<real_type>::value>()(const_cast<real_type*>(pInput));
 #endif
-    static BURGER_INLINE int16_t LoadAny(const int16_t* pInput) BURGER_NOEXCEPT {
-        return static_cast<int16_t>(LoadAny(reinterpret_cast<const uint16_t*>(pInput)));}
-    static BURGER_INLINE int32_t LoadAny(const int32_t* pInput) BURGER_NOEXCEPT {
-        return static_cast<int32_t>(LoadAny(reinterpret_cast<const uint32_t*>(pInput))); }
-    static BURGER_INLINE int64_t LoadAny(const int64_t* pInput) BURGER_NOEXCEPT {
-        return static_cast<int64_t>(LoadAny(reinterpret_cast<const uint64_t*>(pInput))); }
+	}
 
+// These CPUs allow non-aligned reads and writes
+#if (defined(BURGER_INTEL) || defined(BURGER_ARM64)) || defined(DOXYGEN)
+	template<typename T>
+	static BURGER_INLINE void StoreAny(T* pOutput, T Input) BURGER_NOEXCEPT
+	{
+		Native::store_dispatch<T, is_arithmetic<T>::value>()(pOutput, Input);
+	}
+
+#else
+
+	// clang-format off
     static BURGER_INLINE void StoreAny(char* pOutput, char iInput) BURGER_NOEXCEPT { pOutput[0] = iInput; }
     static BURGER_INLINE void StoreAny(uint8_t* pOutput, uint8_t uInput) BURGER_NOEXCEPT { pOutput[0] = uInput; }
     static BURGER_INLINE void StoreAny(int8_t* pOutput, int8_t iInput) BURGER_NOEXCEPT { pOutput[0] = iInput; }
@@ -1086,21 +1215,12 @@ struct NativeEndian {
         StoreAny(reinterpret_cast<uint64_t*>(pOutput),  static_cast<uint64_t>(iInput)); }
 
 #if defined(BURGER_HAS_WCHAR_T) || defined(DOXYGEN)
-	static BURGER_INLINE void Store(wchar_t* pOutput, wchar_t uInput) BURGER_NOEXCEPT { pOutput[0] = uInput; }
-    static BURGER_INLINE wchar_t LoadAny(const wchar_t* pInput) BURGER_NOEXCEPT {
-        return static_cast<wchar_t>(LoadAny(reinterpret_cast<const uint16_t*>(pInput))); }
     static BURGER_INLINE void StoreAny(wchar_t* pOutput, wchar_t uInput) BURGER_NOEXCEPT {
         StoreAny(reinterpret_cast<uint16_t*>(pOutput), uInput);
     }
 #endif
 
 #if defined(BURGER_INT_NOT_IN_STDINT) || defined(DOXYGEN)
-	static BURGER_INLINE void Store(unsigned int* pOutput, unsigned int uInput) BURGER_NOEXCEPT { pOutput[0] = uInput; }
-    static BURGER_INLINE void Store(signed int* pOutput, signed int iInput) BURGER_NOEXCEPT { pOutput[0] = iInput; }
-    static BURGER_INLINE BURGER_CONSTEXPR unsigned int LoadAny(const unsigned int* pInput) BURGER_NOEXCEPT {
-        return static_cast<unsigned int>(LoadAny(reinterpret_cast<const uint2uint_t*>(pInput)));}
-    static BURGER_INLINE BURGER_CONSTEXPR signed int LoadAny(const signed int* pInput) BURGER_NOEXCEPT {
-        return static_cast<signed int>(LoadAny(reinterpret_cast<const uint2uint_t*>(pInput))); }
     static BURGER_INLINE void StoreAny(unsigned int* pOutput, unsigned int uInput) BURGER_NOEXCEPT {
         StoreAny(reinterpret_cast<uint2uint_t*>(pOutput), static_cast<uint2uint_t>(uInput)); }
     static BURGER_INLINE void StoreAny(signed int* pOutput, signed int iInput) BURGER_NOEXCEPT {
@@ -1108,18 +1228,13 @@ struct NativeEndian {
 #endif
 
 #if defined(BURGER_LONG_NOT_IN_STDINT) || defined(DOXYGEN)
-	static BURGER_INLINE void Store(unsigned long* pOutput, unsigned long uInput) BURGER_NOEXCEPT { pOutput[0] = uInput; }
-    static BURGER_INLINE void Store(signed long* pOutput, signed long iInput) BURGER_NOEXCEPT { pOutput[0] = iInput; }
-    static BURGER_INLINE unsigned long LoadAny(const unsigned long* pInput) BURGER_NOEXCEPT {
-        return static_cast<unsigned long>(LoadAny(reinterpret_cast<const ulong2uint_t*>(pInput))); }
-    static BURGER_INLINE signed long LoadAny(const signed long* pInput) BURGER_NOEXCEPT {
-        return static_cast<signed long>(LoadAny(reinterpret_cast<const ulong2uint_t*>(pInput))); }
     static BURGER_INLINE void StoreAny(unsigned long* pOutput, unsigned long uInput) BURGER_NOEXCEPT {
         StoreAny(reinterpret_cast<ulong2uint_t*>(pOutput), static_cast<ulong2uint_t>(uInput)); }
     static BURGER_INLINE void StoreAny(signed long* pOutput, signed long iInput) BURGER_NOEXCEPT {
         StoreAny(reinterpret_cast<ulong2uint_t*>(pOutput), static_cast<ulong2uint_t>(iInput)); }
 #endif
 	// clang-format on
+#endif
 
 	template<typename T>
 	static BURGER_INLINE void Fixup(T) BURGER_NOEXCEPT

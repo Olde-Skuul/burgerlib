@@ -145,6 +145,7 @@
 #include "brsha1.h"
 #include "brsdbmhash.h"
 #include "brdjb2hash.h"
+#include "brendian.h"
 #include "brmemoryhandle.h"
 
 #include "brlocalization.h"
@@ -163,7 +164,6 @@
 #include "brvitatypes.h"
 #include "brwiiutypes.h"
 #include "bralgorithm.h"
-#include "brendian.h"
 #include "brargumenttype.h"
 #include "brcodelibrary.h"
 #include "brstdouthelpers.h"

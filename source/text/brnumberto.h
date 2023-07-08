@@ -105,7 +105,7 @@ extern char* BURGER_API NumberToAscii(
 #if !defined(DOXYGEN)
 template<typename T, uintptr_t size, bool is_integral>
 struct NumberToAscii_Dispatch {
-	BURGER_INLINE char* operator()(char*, T, uint_t uDigits) BURGER_NOEXCEPT
+	BURGER_INLINE char* operator()(char*, T, uint_t /* uDigits */) BURGER_NOEXCEPT
 	{
 		// Only integral values are valid.
 		BURGER_STATIC_ASSERT(is_integral);

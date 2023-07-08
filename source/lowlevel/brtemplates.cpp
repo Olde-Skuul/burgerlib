@@ -600,6 +600,22 @@
 
 /*! ************************************
 
+	\struct Burger::is_fundamental
+	\brief Test if a type is arithmetic or void
+
+	A template that checks a type if it is an integer, float, or void
+
+	\tparam T Type to check.
+
+	Based on
+	[std::is_fundamental](https://en.cppreference.com/w/cpp/types/is_fundamental)
+
+	\sa is_arithmetic or is_floating_point
+
+***************************************/
+
+/*! ************************************
+
 	\struct Burger::is_arithmetic
 	\brief Test if a type is an integer or a floating point number.
 

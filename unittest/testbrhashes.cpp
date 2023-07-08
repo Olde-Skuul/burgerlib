@@ -326,14 +326,14 @@ static uint_t TestMD2(void) BURGER_NOEXCEPT
 	uintptr_t uCount = BURGER_ARRAYSIZE(g_HashTestTable);
 	do {
 		Burger::MD2_t Tester;
-		Burger::Hash(
+		Burger::hash(
 			&Tester, pWork->m_pString, Burger::StringLength(pWork->m_pString));
 		const uint_t uTest = static_cast<uint_t>(Burger::MemoryCompare(
 			Tester.m_Hash, pWork->m_HashMD2.m_Hash, sizeof(Tester)));
 		uFailure |= uTest;
 		if (uTest) {
 			ReportFailure(
-				"Burger::Hash(MD2_t,\"%s\") = 0x%02X%02X%02X%02X, expected 0x%02X%02X%02X%02X",
+				"Burger::hash(MD2_t,\"%s\") = 0x%02X%02X%02X%02X, expected 0x%02X%02X%02X%02X",
 				uTest, pWork->m_pString, Tester.m_Hash[0], Tester.m_Hash[1],
 				Tester.m_Hash[2], Tester.m_Hash[3], pWork->m_HashMD2.m_Hash[0],
 				pWork->m_HashMD2.m_Hash[1], pWork->m_HashMD2.m_Hash[2],
@@ -355,7 +355,7 @@ static uint_t TestMD4(void) BURGER_NOEXCEPT
 	uintptr_t uCount = BURGER_ARRAYSIZE(g_HashTestTable);
 	do {
 		Burger::MD4_t Tester;
-		Burger::Hash(&Tester,
+		Burger::hash(&Tester,
 			reinterpret_cast<const uint8_t*>(pWork->m_pString),
 			Burger::StringLength(pWork->m_pString));
 		const uint_t uTest = static_cast<uint_t>(Burger::MemoryCompare(
@@ -363,7 +363,7 @@ static uint_t TestMD4(void) BURGER_NOEXCEPT
 		uFailure |= uTest;
 		if (uTest) {
 			ReportFailure(
-				"Burger::Hash(MD4_t,\"%s\") = 0x%02X%02X%02X%02X, expected 0x%02X%02X%02X%02X",
+				"Burger::hash(MD4_t,\"%s\") = 0x%02X%02X%02X%02X, expected 0x%02X%02X%02X%02X",
 				uTest, pWork->m_pString, Tester.m_Hash[0], Tester.m_Hash[1],
 				Tester.m_Hash[2], Tester.m_Hash[3], pWork->m_HashMD4.m_Hash[0],
 				pWork->m_HashMD4.m_Hash[1], pWork->m_HashMD4.m_Hash[2],
@@ -385,7 +385,7 @@ static uint_t TestMD5(void) BURGER_NOEXCEPT
 	uintptr_t uCount = BURGER_ARRAYSIZE(g_HashTestTable);
 	do {
 		Burger::MD5_t Tester;
-		Burger::Hash(&Tester,
+		Burger::hash(&Tester,
 			reinterpret_cast<const uint8_t*>(pWork->m_pString),
 			Burger::StringLength(pWork->m_pString));
 		const uint_t uTest = static_cast<uint_t>(Burger::MemoryCompare(
@@ -393,7 +393,7 @@ static uint_t TestMD5(void) BURGER_NOEXCEPT
 		uFailure |= uTest;
 		if (uTest) {
 			ReportFailure(
-				"Burger::Hash(MD5_t,\"%s\") = 0x%02X%02X%02X%02X, expected 0x%02X%02X%02X%02X",
+				"Burger::hash(MD5_t,\"%s\") = 0x%02X%02X%02X%02X, expected 0x%02X%02X%02X%02X",
 				uTest, pWork->m_pString, Tester.m_Hash[0], Tester.m_Hash[1],
 				Tester.m_Hash[2], Tester.m_Hash[3], pWork->m_HashMD5.m_Hash[0],
 				pWork->m_HashMD5.m_Hash[1], pWork->m_HashMD5.m_Hash[2],
@@ -415,7 +415,7 @@ static uint_t TestSHA1(void) BURGER_NOEXCEPT
 	uintptr_t uCount = BURGER_ARRAYSIZE(g_HashTestTable);
 	do {
 		Burger::SHA1_t Tester;
-		Burger::Hash(&Tester,
+		Burger::hash(&Tester,
 			reinterpret_cast<const uint8_t*>(pWork->m_pString),
 			Burger::StringLength(pWork->m_pString));
 		const uint_t uTest = static_cast<uint_t>(Burger::MemoryCompare(
@@ -423,7 +423,7 @@ static uint_t TestSHA1(void) BURGER_NOEXCEPT
 		uFailure |= uTest;
 		if (uTest) {
 			ReportFailure(
-				"Burger::Hash(SHA1_t,\"%s\") = 0x%02X%02X%02X%02X, expected 0x%02X%02X%02X%02X",
+				"Burger::hash(SHA1_t,\"%s\") = 0x%02X%02X%02X%02X, expected 0x%02X%02X%02X%02X",
 				uTest, pWork->m_pString, Tester.m_Hash[0], Tester.m_Hash[1],
 				Tester.m_Hash[2], Tester.m_Hash[3], pWork->m_HashSHA1.m_Hash[0],
 				pWork->m_HashSHA1.m_Hash[1], pWork->m_HashSHA1.m_Hash[2],
@@ -445,7 +445,7 @@ static uint_t TestGOST(void) BURGER_NOEXCEPT
 	uintptr_t uCount = BURGER_ARRAYSIZE(g_HashTestTable);
 	do {
 		Burger::GOST_t Tester;
-		Burger::Hash(&Tester,
+		Burger::hash(&Tester,
 			reinterpret_cast<const uint8_t*>(pWork->m_pString),
 			Burger::StringLength(pWork->m_pString));
 		const uint_t uTest = static_cast<uint_t>(Burger::MemoryCompare(
@@ -453,7 +453,7 @@ static uint_t TestGOST(void) BURGER_NOEXCEPT
 		uFailure |= uTest;
 		if (uTest) {
 			ReportFailure(
-				"Burger::Hash(GOST_t,\"%s\") = 0x%02X%02X%02X%02X, expected 0x%02X%02X%02X%02X",
+				"Burger::hash(GOST_t,\"%s\") = 0x%02X%02X%02X%02X, expected 0x%02X%02X%02X%02X",
 				uTest, pWork->m_pString, Tester.m_Hash[0], Tester.m_Hash[1],
 				Tester.m_Hash[2], Tester.m_Hash[3], pWork->m_HashGOST.m_Hash[0],
 				pWork->m_HashGOST.m_Hash[1], pWork->m_HashGOST.m_Hash[2],

@@ -83,8 +83,8 @@ public:
 	/** Copy constructor. */
 	BURGER_CONSTEXPR allocator(const allocator&) BURGER_DEFAULT_CONSTRUCTOR;
 
-	/** Assignment copy constructor. */
-	allocator& operator=(const allocator&) BURGER_DEFAULT_CONSTRUCTOR;
+	/* Assignment copy constructor. */
+	//allocator& operator=(const allocator&) BURGER_DEFAULT_CONSTRUCTOR;
 
 #if defined(BURGER_RVALUE_REFERENCES)
 	/** Move constructor. */
@@ -125,7 +125,7 @@ public:
 
 	BURGER_INLINE uintptr_t max_size() const BURGER_NOEXCEPT
 	{
-		return UINTMAX_MAX;
+		return UINTPTR_MAX;
 	}
 
 	/** Default constructs an object */

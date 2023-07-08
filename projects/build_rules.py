@@ -1055,6 +1055,12 @@ def configuration_settings(configuration):
     platform = configuration.platform
     ide = configuration.ide
 
+    # BECKY This is a HACK!!
+    # brtestbrendian.cpp crashes the watcom compiler
+    # if debugging is turned on. Will fix later
+    if ide is IDETypes.watcom:
+        configuration.debug = False
+
     # Use fastcall convention on windows 32 bit Intel
     if platform is PlatformTypes.win32:
         configuration.fastcall = True

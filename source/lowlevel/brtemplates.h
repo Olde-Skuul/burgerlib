@@ -211,12 +211,16 @@ struct ice_not<true> {
 #endif
 
 // Implementation of is_same
-template<typename T, typename U>
-struct is_same: false_type {};
+template<class T, class U>
+struct is_same {
+	static BURGER_CONSTEXPR const bool value = false;
+};
 
-#if defined(BURGER_HAS_SFINAE) && !defined(DOXYGEN)
-template<typename T>
-struct is_same<T, T>: true_type {};
+#if !defined(DOXYGEN)
+template<class T>
+struct is_same<T, T> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
 #endif
 
 // Implementation of remove_const
@@ -228,21 +232,19 @@ struct remove_const {
 #if !defined(DOXYGEN)
 template<class T>
 struct remove_const<T const> {
-	typedef T type; ///< Type without const
+	typedef T type;
 };
 
 #if !(defined(BURGER_METROWERKS) && defined(BURGER_X86))
 template<class T>
 struct remove_const<T const[]>
 {
-	typedef T type[]; ///< Type without const
+	typedef T type[];
 };
 #endif
 
 template<class T, uintptr_t N>
-struct remove_const<T const [N]> {
-	typedef T type[N]; ///< Type without const
-};
+struct remove_const<T const [N]> { typedef T type[N]; };
 #endif
 
 // Implementation of remove_volatile
@@ -254,21 +256,19 @@ struct remove_volatile {
 #if !defined(DOXYGEN)
 template<class T>
 struct remove_volatile<T volatile> {
-	typedef T type; ///< Type without volatile
+	typedef T type;
 };
 
 #if !(defined(BURGER_METROWERKS) && defined(BURGER_X86))
 template<class T>
 struct remove_volatile<T volatile[]>
 {
-	typedef T type[]; ///< Type without volatile
+	typedef T type[];
 };
 #endif
 
 template<class T, uintptr_t N>
-struct remove_volatile<T volatile [N]> {
-	typedef T type[N]; ///< Type without volatile
-};
+struct remove_volatile<T volatile [N]> { typedef T type[N]; };
 #endif
 
 // Implementation of remove_cv
@@ -287,7 +287,7 @@ struct add_const {
 #if !defined(DOXYGEN)
 template<class T>
 struct add_const<T&> {
-	typedef T& type; ///< Type with const
+	typedef T& type;
 };
 #endif
 
@@ -300,7 +300,7 @@ struct add_volatile {
 #if !defined(DOXYGEN)
 template<class T>
 struct add_volatile<T&> {
-	typedef T& type; ///< Type with volatile
+	typedef T& type;
 };
 #endif
 
@@ -313,7 +313,7 @@ struct add_cv {
 #if !defined(DOXYGEN)
 template<class T>
 struct add_cv<T&> {
-	typedef T& type; ///< Type with const and volatile
+	typedef T& type;
 };
 #endif
 
@@ -326,194 +326,232 @@ struct remove_reference {
 #if !defined(DOXYGEN)
 template<class T>
 struct remove_reference<T&> {
-	typedef T type; ///< Type with reference removed
+	typedef T type;
 };
 
 #if defined(BURGER_RVALUE_REFERENCES)
 template<class T>
 struct remove_reference<T&&> {
-	typedef T type; ///< Type with reference removed
+	typedef T type;
 };
 #endif
 #endif
 
 // Implementation of is_const
+
 template<class T>
-struct is_const: false_type {};
+struct is_const {
+	static BURGER_CONSTEXPR const bool value = false;
+};
 
 #if !defined(DOXYGEN)
 template<class T>
-struct is_const<const T>: true_type {};
+struct is_const<const T> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
 #endif
 
 // Implementation of is_volatile
 template<class T>
-struct is_volatile: false_type {};
+struct is_volatile {
+	static BURGER_CONSTEXPR const bool value = false;
+};
 
 #if !defined(DOXYGEN)
 template<class T>
-struct is_volatile<volatile T>: true_type {};
+struct is_volatile<volatile T> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
 #endif
 
 // Implementation of is_void
-template<class T>
-struct is_void: false_type {};
-
 #if !defined(DOXYGEN)
-template<>
-struct is_void<void>: true_type {};
+namespace details {
+template<class T>
+struct is_void_imp {
+	static BURGER_CONSTEXPR const bool value = false;
+};
 
 template<>
-struct is_void<const void>: true_type {};
-
-template<>
-struct is_void<volatile void>: true_type {};
-
-template<>
-struct is_void<const volatile void>: true_type {};
+struct is_void_imp<void> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
+}
 #endif
 
-// Implementation of is_floating_point
 template<class T>
-struct is_floating_point: false_type {};
-
-#if !defined(DOXYGEN)
-template<class T>
-struct is_floating_point<volatile const T>: is_floating_point<T> {};
-
-template<class T>
-struct is_floating_point<const T>: is_floating_point<T> {};
-
-template<class T>
-struct is_floating_point<volatile T>: is_floating_point<T> {};
-
-template<>
-struct is_floating_point<float>: true_type {};
-
-template<>
-struct is_floating_point<double>: true_type {};
-
-template<>
-struct is_floating_point<long double>: true_type {};
-#endif
+struct is_void {
+	static BURGER_CONSTEXPR const bool value =
+		details::is_void_imp<typename remove_cv<T>::type>::value;
+};
 
 // Implementation of is_integral
-template<class T>
-struct is_integral: false_type {};
-
 #if !defined(DOXYGEN)
+namespace details {
 template<class T>
-struct is_integral<const T>: is_integral<T> {};
-
-template<class T>
-struct is_integral<volatile const T>: is_integral<T> {};
-
-template<class T>
-struct is_integral<volatile T>: is_integral<T> {};
+struct is_integral_imp {
+	static BURGER_CONSTEXPR const bool value = false;
+};
 
 template<>
-struct is_integral<char>: true_type {};
+struct is_integral_imp<bool> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
 
 template<>
-struct is_integral<signed char>: true_type {};
+struct is_integral_imp<char> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
 
 template<>
-struct is_integral<unsigned char>: true_type {};
+struct is_integral_imp<signed char> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
 
 template<>
-struct is_integral<short>: true_type {};
+struct is_integral_imp<unsigned char> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
 
 template<>
-struct is_integral<unsigned short>: true_type {};
+struct is_integral_imp<short> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
 
 template<>
-struct is_integral<int>: true_type {};
+struct is_integral_imp<unsigned short> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
 
 template<>
-struct is_integral<unsigned int>: true_type {};
+struct is_integral_imp<int> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
 
 template<>
-struct is_integral<long>: true_type {};
+struct is_integral_imp<unsigned int> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
 
 template<>
-struct is_integral<unsigned long>: true_type {};
+struct is_integral_imp<long> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
 
 template<>
-struct is_integral<long long>: true_type {};
+struct is_integral_imp<unsigned long> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
 
 template<>
-struct is_integral<unsigned long long>: true_type {};
+struct is_integral_imp<long long> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
 
 template<>
-struct is_integral<bool>: true_type {};
-
-#if defined(BURGER_HAS_CHAR8_T)
-template<>
-struct is_integral<char8_t>: true_type {};
-#endif
+struct is_integral_imp<unsigned long long> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
 
 #if defined(BURGER_HAS_WCHAR_T)
 template<>
-struct is_integral<wchar_t>: true_type {};
+struct is_integral_imp<wchar_t> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
+#endif
+
+#if defined(BURGER_HAS_CHAR8_T)
+template<>
+struct is_integral_imp<char8_t> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
 #endif
 
 #if defined(BURGER_HAS_CHAR16_T)
 template<>
-struct is_integral<char16_t>: true_type {};
+struct is_integral_imp<char16_t> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
 
 template<>
-struct is_integral<char32_t>: true_type {};
+struct is_integral_imp<char32_t> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
 #endif
+}
 #endif
+
+template<class T>
+struct is_integral {
+	static BURGER_CONSTEXPR const bool value =
+		details::is_integral_imp<typename remove_cv<T>::type>::value;
+};
+
+// Implementation of is_floating_point
+#if !defined(DOXYGEN)
+namespace details {
+template<class T>
+struct is_floating_imp {
+	static BURGER_CONSTEXPR const bool value = false;
+};
+
+template<>
+struct is_floating_imp<float> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
+
+template<>
+struct is_floating_imp<double> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
+
+template<>
+struct is_floating_imp<long double> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
+}
+#endif
+
+template<class T>
+struct is_floating_point {
+	static BURGER_CONSTEXPR const bool value =
+		details::is_floating_imp<typename remove_cv<T>::type>::value;
+};
 
 // Implementation of is_arithmetic
 template<class T>
-struct is_arithmetic
-	: bool_constant<is_integral<T>::value || is_floating_point<T>::value> {};
+struct is_arithmetic {
+	static BURGER_CONSTEXPR const bool value =
+		is_integral<T>::value || is_floating_point<T>::value;
+};
+
+// Implementation of is_fundamental
+template<class T>
+struct is_fundamental {
+	static BURGER_CONSTEXPR const bool value =
+		is_arithmetic<T>::value || is_void<T>::value;
+};
 
 // Implementation of is_pointer
-template<class T>
-struct is_pointer: false_type {};
-
 #if !defined(DOXYGEN)
+namespace details {
 template<class T>
-struct is_pointer<T*>: true_type {};
+struct is_pointer_imp {
+	static BURGER_CONSTEXPR const bool value = false;
+};
 
 template<class T>
-struct is_pointer<T* const>: true_type {};
-
-template<class T>
-struct is_pointer<T* volatile>: true_type {};
-
-template<class T>
-struct is_pointer<T* const volatile>: true_type {};
-
-template<class T>
-struct is_pointer<T const>: is_pointer<T> {};
-
-template<class T>
-struct is_pointer<T volatile>: is_pointer<T> {};
-
-template<class T>
-struct is_pointer<T const volatile>: is_pointer<T> {};
-#endif
-
-// Implementation of move
-#if !defined(BURGER_RVALUE_REFERENCES)
-template<class T>
-BURGER_CONSTEXPR BURGER_INLINE typename remove_reference<T>::type& move(
-	T& t) BURGER_NOEXCEPT
-{
-	return static_cast<typename remove_reference<T>::type&>(t);
-}
-#else
-template<class T>
-BURGER_CONSTEXPR BURGER_INLINE typename remove_reference<T>::type&& move(
-	T&& t) BURGER_NOEXCEPT
-{
-	return static_cast<typename remove_reference<T>::type&&>(t);
+struct is_pointer_imp<T*> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
 }
 #endif
+
+template<class T>
+struct is_pointer {
+	static BURGER_CONSTEXPR const bool value =
+		details::is_pointer_imp<typename remove_cv<T>::type>::value;
+};
 
 // Implementation of remove_pointer
 #if defined(BURGER_MSVC) && (BURGER_MSVC < 190000000)
@@ -579,106 +617,241 @@ struct remove_pointer<T* const volatile> {
 #endif
 #endif
 
+// Implementation of move
+#if !defined(BURGER_RVALUE_REFERENCES)
+template<class T>
+BURGER_CONSTEXPR BURGER_INLINE typename remove_reference<T>::type& move(
+	T& t) BURGER_NOEXCEPT
+{
+	return static_cast<typename remove_reference<T>::type&>(t);
+}
+#else
+template<class T>
+BURGER_CONSTEXPR BURGER_INLINE typename remove_reference<T>::type&& move(
+	T&& t) BURGER_NOEXCEPT
+{
+	return static_cast<typename remove_reference<T>::type&&>(t);
+}
+#endif
+
 // Implementation of is_lvalue_reference
 template<class T>
-struct is_lvalue_reference: false_type {};
+struct is_lvalue_reference {
+	static BURGER_CONSTEXPR const bool value = false;
+};
 
 #if !defined(DOXYGEN)
 template<class T>
-struct is_lvalue_reference<T&>: true_type {};
+struct is_lvalue_reference<T&> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
 #endif
 
 // Implementation of is_rvalue_reference
 template<class T>
-struct is_rvalue_reference: false_type {};
+struct is_rvalue_reference {
+	static BURGER_CONSTEXPR const bool value = false;
+};
 
 #if defined(BURGER_RVALUE_REFERENCES) && !defined(DOXYGEN)
 template<class T>
-struct is_rvalue_reference<T&&>: true_type {};
+struct is_rvalue_reference<T&&> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
 
+// Visual Studio 2012 or lower needs these extras
 #if (defined(BURGER_MSVC) && (BURGER_MSVC <= 170000000)) && !defined(DOXYGEN)
 template<class R>
-struct is_rvalue_reference<R (&&)()>: true_type {};
+struct is_rvalue_reference<R (&&)()> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
+
 template<class R, class T0>
-struct is_rvalue_reference<R (&&)(T0)>: true_type {};
+struct is_rvalue_reference<R (&&)(T0)> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
+
 template<class R, class T0, class T1>
-struct is_rvalue_reference<R (&&)(T0, T1)>: true_type {};
+struct is_rvalue_reference<R (&&)(T0, T1)> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
+
 template<class R, class T0, class T1, class T2>
-struct is_rvalue_reference<R (&&)(T0, T1, T2)>: true_type {};
+struct is_rvalue_reference<R (&&)(T0, T1, T2)> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
+
 template<class R, class T0, class T1, class T2, class T3>
-struct is_rvalue_reference<R (&&)(T0, T1, T2, T3)>: true_type {};
+struct is_rvalue_reference<R (&&)(T0, T1, T2, T3)> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
+
 template<class R, class T0, class T1, class T2, class T3, class T4>
-struct is_rvalue_reference<R (&&)(T0, T1, T2, T3, T4)>: true_type {};
+struct is_rvalue_reference<R (&&)(T0, T1, T2, T3, T4)> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
 
 template<class R>
-struct is_rvalue_reference<R (&&)(...)>: true_type {};
+struct is_rvalue_reference<R (&&)(...)> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
+
 template<class R, class T0>
-struct is_rvalue_reference<R (&&)(T0, ...)>: true_type {};
+struct is_rvalue_reference<R (&&)(T0, ...)> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
+
 template<class R, class T0, class T1>
-struct is_rvalue_reference<R (&&)(T0, T1, ...)>: true_type {};
+struct is_rvalue_reference<R (&&)(T0, T1, ...)> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
+
 template<class R, class T0, class T1, class T2>
-struct is_rvalue_reference<R (&&)(T0, T1, T2, ...)>: true_type {};
+struct is_rvalue_reference<R (&&)(T0, T1, T2, ...)> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
+
 template<class R, class T0, class T1, class T2, class T3>
-struct is_rvalue_reference<R (&&)(T0, T1, T2, T3, ...)>: true_type {};
+struct is_rvalue_reference<R (&&)(T0, T1, T2, T3, ...)> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
+
 template<class R, class T0, class T1, class T2, class T3, class T4>
-struct is_rvalue_reference<R (&&)(T0, T1, T2, T3, T4, ...)>: true_type {};
+struct is_rvalue_reference<R (&&)(T0, T1, T2, T3, T4, ...)> {
+	static BURGER_CONSTEXPR const bool value = true;
+};
 
 template<class R>
-struct is_rvalue_reference<R (&)()>: false_type {};
+struct is_rvalue_reference<R (&)()> {
+	static BURGER_CONSTEXPR const bool value = false;
+};
+
 template<class R, class T0>
-struct is_rvalue_reference<R (&)(T0)>: false_type {};
+struct is_rvalue_reference<R (&)(T0)> {
+	static BURGER_CONSTEXPR const bool value = false;
+};
+
 template<class R, class T0, class T1>
-struct is_rvalue_reference<R (&)(T0, T1)>: false_type {};
+struct is_rvalue_reference<R (&)(T0, T1)> {
+	static BURGER_CONSTEXPR const bool value = false;
+};
+
 template<class R, class T0, class T1, class T2>
-struct is_rvalue_reference<R (&)(T0, T1, T2)>: false_type {};
+struct is_rvalue_reference<R (&)(T0, T1, T2)> {
+	static BURGER_CONSTEXPR const bool value = false;
+};
+
 template<class R, class T0, class T1, class T2, class T3>
-struct is_rvalue_reference<R (&)(T0, T1, T2, T3, ...)>: false_type {};
+struct is_rvalue_reference<R (&)(T0, T1, T2, T3, ...)> {
+	static BURGER_CONSTEXPR const bool value = false;
+};
+
 template<class R, class T0, class T1, class T2, class T3, class T4>
-struct is_rvalue_reference<R (&)(T0, T1, T2, T3, T4)>: false_type {};
+struct is_rvalue_reference<R (&)(T0, T1, T2, T3, T4)> {
+	static BURGER_CONSTEXPR const bool value = false;
+};
 
 template<class R>
-struct is_rvalue_reference<R (&)(...)>: false_type {};
+struct is_rvalue_reference<R (&)(...)> {
+	static BURGER_CONSTEXPR const bool value = false;
+};
+
 template<class R, class T0>
-struct is_rvalue_reference<R (&)(T0, ...)>: false_type {};
+struct is_rvalue_reference<R (&)(T0, ...)> {
+	static BURGER_CONSTEXPR const bool value = false;
+};
+
 template<class R, class T0, class T1>
-struct is_rvalue_reference<R (&)(T0, T1, ...)>: false_type {};
+struct is_rvalue_reference<R (&)(T0, T1, ...)> {
+	static BURGER_CONSTEXPR const bool value = false;
+};
+
 template<class R, class T0, class T1, class T2>
-struct is_rvalue_reference<R (&)(T0, T1, T2, ...)>: false_type {};
+struct is_rvalue_reference<R (&)(T0, T1, T2, ...)> {
+	static BURGER_CONSTEXPR const bool value = false;
+};
+
 template<class R, class T0, class T1, class T2, class T3>
-struct is_rvalue_reference<R (&)(T0, T1, T2, T3)>: false_type {};
+struct is_rvalue_reference<R (&)(T0, T1, T2, T3)> {
+	static BURGER_CONSTEXPR const bool value = false;
+};
+
 template<class R, class T0, class T1, class T2, class T3, class T4>
-struct is_rvalue_reference<R (&)(T0, T1, T2, T3, T4, ...)>: false_type {};
+struct is_rvalue_reference<R (&)(T0, T1, T2, T3, T4, ...)> {
+	static BURGER_CONSTEXPR const bool value = false;
+};
 
 #endif
 #endif
 
 // Implementation of is_reference
 template<class T>
-struct is_reference: bool_constant<is_lvalue_reference<T>::value ||
-						 is_rvalue_reference<T>::value> {};
+struct is_reference {
+	static BURGER_CONSTEXPR const bool value =
+		is_lvalue_reference<T>::value || is_rvalue_reference<T>::value;
+};
 
 // Implementation of is_signed and is_unsigned
 #if !defined(DOXYGEN)
+namespace details {
 // Use C cast, Metrowerks fails with static_cast<>
 template<class T>
-struct _signed_val_test: bool_constant<((typename remove_cv<T>::type) - 1) <
-							 ((typename remove_cv<T>::type)0)> {};
+struct is_signed_imp {
+	static BURGER_CONSTEXPR const bool value =
+		((typename remove_cv<T>::type) - 1) < ((typename remove_cv<T>::type)0);
+};
+}
 #endif
 
 template<class T>
-struct is_signed
-	: bool_constant<is_floating_point<T>::value ||
-		  (is_integral<T>::value &&
-			  _signed_val_test<typename conditional<is_integral<T>::value, T,
-				  int>::type>::value)> {};
+struct is_signed {
+	static BURGER_CONSTEXPR const bool value = is_floating_point<T>::value ||
+		(is_integral<T>::value &&
+			details::is_signed_imp<typename conditional<is_integral<T>::value,
+				T, int>::type>::value);
+};
 
 template<class T>
-struct is_unsigned
-	: bool_constant<is_integral<T>::value &&
-		  !_signed_val_test<typename conditional<is_integral<T>::value, T,
-			  int>::type>::value> {};
+struct is_unsigned {
+	static BURGER_CONSTEXPR const bool value = is_integral<T>::value &&
+		!details::is_signed_imp<
+			typename conditional<is_integral<T>::value, T, int>::type>::value;
+};
 
 // Implementation of is_function
+
+// PPC and X86 metrowerks has this test built in
+#if (BURGER_METROWERKS >= 0x2500) && !defined(DOXYGEN)
+namespace details {
+template<class T>
+struct is_function_impl {
+	static BURGER_CONSTEXPR const bool value = __builtin_type(T) == 0x8000;
+};
+}
+
+template<class T>
+struct is_function {
+	static BURGER_CONSTEXPR const bool value =
+		details::is_function_impl<typename remove_cv<T>::type>::value;
+};
+
+// Clang/GNUC feature
+#elif __has_builtin(__is_function) && !defined(DOXYGEN)
+template<class T>
+struct is_function {
+	static BURGER_CONSTEXPR const bool value = __is_function(T);
+};
+
+// Clang/GNUC makes functions const references
+#elif defined(BURGER_GNUC) || defined(BURGER_CLANG) && !defined(DOXYGEN)
+template<class T>
+struct is_function {
+	static BURGER_CONSTEXPR const bool value =
+		!(is_reference<T>::value || is_const<const T>::value);
+};
+
+#else
+
 #if !defined(DOXYGEN)
 // If more than 24 parameters are needed, reevaluate your life choices.
 namespace type_traits {
@@ -788,6 +961,7 @@ template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
 yes_type is_function_ptr_tester(R (*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9,
 	T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24));
 
+// These will confuse the Open Watcom 1.9 compiler
 #if !defined(BURGER_WATCOM)
 template<class R>
 yes_type is_function_ptr_tester(R (*)(...));
@@ -896,6 +1070,7 @@ yes_type is_function_ptr_tester(
 		T16, T17, T18, T19, T20, T21, T22, T23, T24...));
 #endif
 
+// Test for Visual Studio calling conventions
 #if defined(_MSC_EXTENSIONS)
 template<class R>
 yes_type is_function_ptr_tester(R(__cdecl*)());
@@ -1336,61 +1511,109 @@ yes_type is_function_ptr_tester(
 #endif
 }
 
+namespace details {
 template<typename T>
 struct is_function_impl {
 	static T* t;
-	static const bool value = (sizeof(type_traits::is_function_ptr_tester(t)) ==
-		sizeof(type_traits::yes_type));
+	static BURGER_CONSTEXPR const bool value =
+		(sizeof(type_traits::is_function_ptr_tester(t)) ==
+			sizeof(type_traits::yes_type));
 };
 
 template<typename T>
-struct is_function_impl<T&>: false_type {};
+struct is_function_impl<T&> {
+	static BURGER_CONSTEXPR const bool value = false;
+};
 
 #if defined(BURGER_RVALUE_REFERENCES)
 template<typename T>
-struct is_function_impl<T&&>: false_type {};
+struct is_function_impl<T&&> {
+	static BURGER_CONSTEXPR const bool value = false;
+};
 #endif
 #endif
+}
 
 template<class T>
-struct is_function: integral_constant<bool, is_function_impl<T>::value> {};
-
-#if !defined(DOXYGEN)
-#if (!defined(BURGER_MSVC) || (BURGER_MSVC >= 170000000))
-template<class T>
-struct is_function<T&>: public false_type {};
+struct is_function {
+	static BURGER_CONSTEXPR const bool value =
+		details::is_function_impl<typename remove_cv<T>::type>::value;
+};
 #endif
 
-#if defined(BURGER_RVALUE_REFERENCES)
+#if (!defined(BURGER_MSVC) || (BURGER_MSVC >= 170000000)) && !defined(DOXYGEN)
 template<class T>
-struct is_function<T&&>: public false_type {};
+struct is_function<T&> {
+	static BURGER_CONSTEXPR const bool value = false;
+};
+#endif
+
+#if defined(BURGER_RVALUE_REFERENCES) && !defined(DOXYGEN)
+template<class T>
+struct is_function<T&&> {
+	static BURGER_CONSTEXPR const bool value = false;
+};
 
 #if defined(BURGER_MSVC) && (BURGER_MSVC <= 170000000)
 template<class R>
-struct is_function<R (&&)()>: false_type {};
+struct is_function<R (&&)()> {
+	static BURGER_CONSTEXPR const bool value = false;
+};
+
 template<class R, class T0>
-struct is_function<R (&&)(T0)>: false_type {};
+struct is_function<R (&&)(T0)> {
+	static BURGER_CONSTEXPR const bool value = false;
+};
+
 template<class R, class T0, class T1>
-struct is_function<R (&&)(T0, T1)>: false_type {};
+struct is_function<R (&&)(T0, T1)> {
+	static BURGER_CONSTEXPR const bool value = false;
+};
+
 template<class R, class T0, class T1, class T2>
-struct is_function<R (&&)(T0, T1, T2)>: false_type {};
+struct is_function<R (&&)(T0, T1, T2)> {
+	static BURGER_CONSTEXPR const bool value = false;
+};
+
 template<class R, class T0, class T1, class T2, class T3>
-struct is_function<R (&&)(T0, T1, T2, T3)>: false_type {};
+struct is_function<R (&&)(T0, T1, T2, T3)> {
+	static BURGER_CONSTEXPR const bool value = false;
+};
+
 template<class R, class T0, class T1, class T2, class T3, class T4>
-struct is_function<R (&&)(T0, T1, T2, T3, T4)>: false_type {};
+struct is_function<R (&&)(T0, T1, T2, T3, T4)> {
+	static BURGER_CONSTEXPR const bool value = false;
+};
+
 template<class R>
-struct is_function<R (&&)(...)>: false_type {};
+struct is_function<R (&&)(...)> {
+	static BURGER_CONSTEXPR const bool value = false;
+};
+
 template<class R, class T0>
-struct is_function<R (&&)(T0, ...)>: false_type {};
+struct is_function<R (&&)(T0, ...)> {
+	static BURGER_CONSTEXPR const bool value = false;
+};
+
 template<class R, class T0, class T1>
-struct is_function<R (&&)(T0, T1, ...)>: false_type {};
+struct is_function<R (&&)(T0, T1, ...)> {
+	static BURGER_CONSTEXPR const bool value = false;
+};
+
 template<class R, class T0, class T1, class T2>
-struct is_function<R (&&)(T0, T1, T2, ...)>: false_type {};
+struct is_function<R (&&)(T0, T1, T2, ...)> {
+	static BURGER_CONSTEXPR const bool value = false;
+};
+
 template<class R, class T0, class T1, class T2, class T3>
-struct is_function<R (&&)(T0, T1, T2, T3, ...)>: false_type {};
+struct is_function<R (&&)(T0, T1, T2, T3, ...)> {
+	static BURGER_CONSTEXPR const bool value = false;
+};
+
 template<class R, class T0, class T1, class T2, class T3, class T4>
-struct is_function<R (&&)(T0, T1, T2, T3, T4, ...)>: false_type {};
-#endif
+struct is_function<R (&&)(T0, T1, T2, T3, T4, ...)> {
+	static BURGER_CONSTEXPR const bool value = false;
+};
 #endif
 #endif
 
@@ -1507,7 +1730,6 @@ BURGER_INLINE double Max(double dA, double dB) BURGER_NOEXCEPT
 }
 #endif
 #endif
-
 }
 /* END */
 
