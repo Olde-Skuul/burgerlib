@@ -475,6 +475,7 @@ static void BURGER_API ShowCompilerMacros(uint_t uVerbose) BURGER_NOEXCEPT
 		SHOW_MACRO(__AVX512DQ__);
 		SHOW_MACRO(__AVX512F__);
 		SHOW_MACRO(__AVX512VL__);
+		SHOW_MACRO(__XSAVE__);
 
 		// Itanium
 		SHOW_MACRO(_M_IA64);

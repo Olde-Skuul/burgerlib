@@ -1,0 +1,31 @@
+#
+# X64 assembly for implementing the intrinsic _xgetbv for
+# the Clang and GNU tool chain
+#
+# Build with as
+#
+# extern uint64_t _xgetbv(uint_t xcr) BURGER_NOEXCEPT;
+#
+
+	.ifdef __amd64__
+
+	.align 8
+	.text
+	.globl _xgetbv
+_xgetbv:
+
+# rdi is the input, move to ecx which is the proper
+# register for xgetbv
+	movq	%rdi, %rcx
+
+# xgetbv instruction is the sequence below
+	.byte	0x0F, 0x01, 0xD0
+#	xgetbv
+
+# Answer is in edx:eax, move to rax for uint64_t
+	shl		$0x20, %rdx
+	or		%rdx, %rax
+
+	ret
+
+	.endif

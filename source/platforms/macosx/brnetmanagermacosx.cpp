@@ -98,7 +98,7 @@ static const int g_Protocols[8] = {AF_INET, IPPROTO_UDP, AF_INET6, IPPROTO_UDP,
 ***************************************/
 
 Burger::eError BURGER_API Burger::NetAddr_t::ToSocketAddr(
-	sockaddr* pOutput) const BURGER_NOEXCEPT
+	sockaddr* pOutput) const
 {
 	eError uResult = kErrorNone;
 	switch (m_uType) {
@@ -177,7 +177,7 @@ Burger::eError BURGER_API Burger::NetAddr_t::ToSocketAddr(
 ***************************************/
 
 Burger::eError BURGER_API Burger::NetAddr_t::FromSocketAddr(
-	const sockaddr* pInput) BURGER_NOEXCEPT
+	const sockaddr* pInput)
 {
 	eError uResult = kErrorNone;
 	switch (pInput->sa_family) {

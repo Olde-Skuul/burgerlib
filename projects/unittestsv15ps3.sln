@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "unittests", "unittestsv15ps3.vcxproj", "{E5F658AB-BAD8-3809-86AA-C2F92CA78ACE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|PS3 = Debug|PS3
+		Internal|PS3 = Internal|PS3
+		Release|PS3 = Release|PS3
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E5F658AB-BAD8-3809-86AA-C2F92CA78ACE}.Debug|PS3.ActiveCfg = Debug|PS3
+		{E5F658AB-BAD8-3809-86AA-C2F92CA78ACE}.Debug|PS3.Build.0 = Debug|PS3
+		{E5F658AB-BAD8-3809-86AA-C2F92CA78ACE}.Internal|PS3.ActiveCfg = Internal|PS3
+		{E5F658AB-BAD8-3809-86AA-C2F92CA78ACE}.Internal|PS3.Build.0 = Internal|PS3
+		{E5F658AB-BAD8-3809-86AA-C2F92CA78ACE}.Release|PS3.ActiveCfg = Release|PS3
+		{E5F658AB-BAD8-3809-86AA-C2F92CA78ACE}.Release|PS3.Build.0 = Release|PS3
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

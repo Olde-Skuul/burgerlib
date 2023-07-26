@@ -76,6 +76,7 @@
 		389742E2742CC8D0351F36B7 /* brmemoryansi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E76EB9EC0ED4ED75A71A6511 /* brmemoryansi.cpp */; };
 		38F6D733F21118B51BF2D20E /* brbase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B201FFDC2995BE20D19BDA8B /* brbase.cpp */; };
 		3958D7B70FFAAB1A8236CA95 /* bradler32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB058AE2A1E543DBF26B4A63 /* bradler32.cpp */; };
+		39FE2673D0B25ACD73DC4615 /* getpowerpcrounding.ppc in Sources */ = {isa = PBXBuildFile; fileRef = F7112DC8BFB29D57BBCE7E11 /* getpowerpcrounding.ppc */; };
 		3AA0B969F1313E05282E105F /* brdisplayopenglsoftware8.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7762B32B5184D9B14F81FB1F /* brdisplayopenglsoftware8.cpp */; };
 		3AA8BFEEED54EAA4021F3174 /* brfilenamedarwin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 52E0F065102E5FC344790526 /* brfilenamedarwin.cpp */; };
 		3AB8DC9CBACBD99325C3337C /* brfpinfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 609D62073D58F8B622863E9F /* brfpinfo.cpp */; };
@@ -109,6 +110,7 @@
 		5940E73B7229031C8BD081B3 /* brsimplearray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 86E02C9E5711EB000BD71A32 /* brsimplearray.cpp */; };
 		5BBC1FAC368AC4D8B1ABF77B /* brmemoryhandle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F057AF0D2DB8309BB2F172B /* brmemoryhandle.cpp */; };
 		5D7788B027208514D7500A1A /* brsounddecompress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FDF831F4EFFF2083621EF3FD /* brsounddecompress.cpp */; };
+		5E771F39B018D6192473C80E /* swapendian64.ppc in Sources */ = {isa = PBXBuildFile; fileRef = 3932ACFFF4649197B1D79386 /* swapendian64.ppc */; };
 		5FE413617023E547210F8298 /* brrect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DD055E466097C3215BFE4456 /* brrect.cpp */; };
 		5FF8E38BA044D8584CE1470A /* brcapturestdout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2EE3F7B01275B466873F4803 /* brcapturestdout.cpp */; };
 		60F55D53DAFF5C9802AD6864 /* brassert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8DC7277CC42E5C40CB5669ED /* brassert.cpp */; };
@@ -123,6 +125,7 @@
 		6BFB322E364E26FBD1828E6D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39EDF37A025CE139D5738163 /* AudioToolbox.framework */; };
 		6C4584015F5B3A9797CF883A /* brmacosxtypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 856B9BD0454437B8AB084A96 /* brmacosxtypes.cpp */; };
 		6C4AEFA44B1C061CC348D357 /* brstdouthelpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 474F278289FBFC37056BB3F7 /* brstdouthelpers.cpp */; };
+		6CF8320250FE47CB0C51BE18 /* setpowerpcrounding.ppc in Sources */ = {isa = PBXBuildFile; fileRef = 6B1E738A3E415F66E376DEE9 /* setpowerpcrounding.ppc */; };
 		6D430186591584DF2D1D2FAB /* brrenderersoftware16.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 705FE12611781D26F91758A6 /* brrenderersoftware16.cpp */; };
 		6D482D77FE14C73B61999AF0 /* testbrendian.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28894616D8DCC04E03BC1D88 /* testbrendian.cpp */; };
 		6E17C85D7A1E49E7726B8A6E /* brtimedate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FBABDFAA3F678ED8AB70FE51 /* brtimedate.cpp */; };
@@ -164,6 +167,7 @@
 		8B3613B1F1AC48231C68E24F /* brfplargeint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 987D465D9A084666294E9877 /* brfplargeint.cpp */; };
 		8B5A1F5A6E8450A6542A72E3 /* breffect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A968AB49523FA4EEAB696E79 /* breffect.cpp */; };
 		8E6ED506163079EE9F91FD70 /* testbrstrings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3E0495C9DD897B5050139C5A /* testbrstrings.cpp */; };
+		8FDE8E3BFC88361F0F2502AC /* swapendiandouble.ppc in Sources */ = {isa = PBXBuildFile; fileRef = 624F3D09711B23A4131340C8 /* swapendiandouble.ppc */; };
 		90BA3A0CC8908671A723DE19 /* brgridindex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 038B128E5AB6C36F44A480E2 /* brgridindex.cpp */; };
 		90EE6F1B31383D3E10F56601 /* brnumberstringhex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7922DF37E72943BAEDD51072 /* brnumberstringhex.cpp */; };
 		948AB427B3B1F73A8D389FB4 /* brmemoryfunctions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1021C68B6FD69D243F26E64E /* brmemoryfunctions.cpp */; };
@@ -220,6 +224,7 @@
 		C007790DE5F85AB1F3BFAD28 /* brthreadunix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 632885712676DE3FBCDE1EA6 /* brthreadunix.cpp */; };
 		C068BE9712440B8616DD5A8C /* brpackfloat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5DB507BA74A4EA90665355E7 /* brpackfloat.cpp */; };
 		C0B89B1752A029E59C299AE7 /* brarray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DA7E3C522EAA7E54EA2F8486 /* brarray.cpp */; };
+		C0BAEBC3C404D3E526ABF7EE /* swapendian64ptr.ppc in Sources */ = {isa = PBXBuildFile; fileRef = 03E13BA52217AD56996DDF61 /* swapendian64ptr.ppc */; };
 		C139D3538BBF86DB827CF044 /* brfilemanagerdarwin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F5D95BE308D0F33B24FC6CB /* brfilemanagerdarwin.cpp */; };
 		C1800275148CEC3EBBC2C21D /* brinputmemorystream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F512E5623B1F1C32F82DC454 /* brinputmemorystream.cpp */; };
 		C2FE1FB8202165B70B1DD712 /* brsha1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 971D7C8102B0F30142012D3D /* brsha1.cpp */; };
@@ -256,6 +261,7 @@
 		DCE2A8306F5DA6A607C82AEE /* brvector4d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E8F0C71148CA11912153CC0 /* brvector4d.cpp */; };
 		DD968F82CFA1DEDFD78529DE /* vs20sprite2dgl.glsl in Sources */ = {isa = PBXBuildFile; fileRef = 461F44B0DB7F4BA13AA51C63 /* vs20sprite2dgl.glsl */; };
 		DE91E4D4724D2F734D473E08 /* bradler16.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 022FC89CA2DF3DF208BE0CCB /* bradler16.cpp */; };
+		DF7E3CD1C83034AA85D91066 /* swapendianstore64.ppc in Sources */ = {isa = PBXBuildFile; fileRef = A7E311AD46650CD884B1F529 /* swapendianstore64.ppc */; };
 		E04A0549BEBED2B23DFF0C23 /* brfileapf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D71244499C331A5832AA2849 /* brfileapf.cpp */; };
 		E6EE61019DA96CEE83502C74 /* breffectstaticpositiontexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4904A5F9A7E943B2E4749BD6 /* breffectstaticpositiontexture.cpp */; };
 		E8FB2882B43A3D916C742AE8 /* brcompress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 983E3E5ACC3B70EE6854865B /* brcompress.cpp */; };
@@ -308,6 +314,7 @@
 		03A3C3D9C6951838E280F714 /* brfixedvector2d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = brfixedvector2d.h; path = ../source/math/brfixedvector2d.h; sourceTree = SOURCE_ROOT; };
 		03BC4A39F9B4FEC06DAB8864 /* brpoint2dmacosx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brpoint2dmacosx.cpp; path = ../source/platforms/macosx/brpoint2dmacosx.cpp; sourceTree = SOURCE_ROOT; };
 		03C90408DF7B4CBF5E74A2F6 /* brhashmap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = brhashmap.h; path = ../source/compression/brhashmap.h; sourceTree = SOURCE_ROOT; };
+		03E13BA52217AD56996DDF61 /* swapendian64ptr.ppc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm.asm; name = swapendian64ptr.ppc; path = ../source/asm/xcodeasm/swapendian64ptr.ppc; sourceTree = SOURCE_ROOT; };
 		04095512D50D2A6A106E4DB0 /* bralaw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bralaw.h; path = ../source/audio/bralaw.h; sourceTree = SOURCE_ROOT; };
 		041E38C1871325E5B662A61A /* testbrstaticrtti.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = testbrstaticrtti.cpp; path = ../unittest/testbrstaticrtti.cpp; sourceTree = SOURCE_ROOT; };
 		043024A67A973CB85A55F247 /* testbrtimedate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = testbrtimedate.cpp; path = ../unittest/testbrtimedate.cpp; sourceTree = SOURCE_ROOT; };
@@ -420,6 +427,7 @@
 		384981D76495EA6EAB668BC7 /* brfilemanager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brfilemanager.cpp; path = ../source/file/brfilemanager.cpp; sourceTree = SOURCE_ROOT; };
 		38821271BCC0E8D6623334FB /* brglobalsmacosx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brglobalsmacosx.cpp; path = ../source/platforms/macosx/brglobalsmacosx.cpp; sourceTree = SOURCE_ROOT; };
 		38EC664DC0CD63D8DA0EF46C /* broscursor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = broscursor.h; path = ../source/lowlevel/broscursor.h; sourceTree = SOURCE_ROOT; };
+		3932ACFFF4649197B1D79386 /* swapendian64.ppc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm.asm; name = swapendian64.ppc; path = ../source/asm/xcodeasm/swapendian64.ppc; sourceTree = SOURCE_ROOT; };
 		39EDF37A025CE139D5738163 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		3A871AA1CE734CBC6BAACEC0 /* testbrfixedpoint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = testbrfixedpoint.cpp; path = ../unittest/testbrfixedpoint.cpp; sourceTree = SOURCE_ROOT; };
 		3AD90E8395FB06191B37216E /* brmatrix4d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = brmatrix4d.h; path = ../source/math/brmatrix4d.h; sourceTree = SOURCE_ROOT; };
@@ -494,6 +502,7 @@
 		61CF6CA9873A26D8C312B820 /* testmacros.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = testmacros.cpp; path = ../unittest/testmacros.cpp; sourceTree = SOURCE_ROOT; };
 		62255E3FDCB1488E8349BB77 /* brfilelbm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brfilelbm.cpp; path = ../source/file/brfilelbm.cpp; sourceTree = SOURCE_ROOT; };
 		6231F702D4519F6DDEED50FB /* brargumenttype.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brargumenttype.cpp; path = ../source/lowlevel/brargumenttype.cpp; sourceTree = SOURCE_ROOT; };
+		624F3D09711B23A4131340C8 /* swapendiandouble.ppc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm.asm; name = swapendiandouble.ppc; path = ../source/asm/xcodeasm/swapendiandouble.ppc; sourceTree = SOURCE_ROOT; };
 		6288AFA87D053D9636013D71 /* brmutex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = brmutex.h; path = ../source/lowlevel/brmutex.h; sourceTree = SOURCE_ROOT; };
 		62B5B2C38B5159B91F478BDF /* brcodelibrarymacosx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brcodelibrarymacosx.cpp; path = ../source/platforms/macosx/brcodelibrarymacosx.cpp; sourceTree = SOURCE_ROOT; };
 		62D542AAA0E865D3A851DABA /* brfloatingpoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = brfloatingpoint.h; path = ../source/math/brfloatingpoint.h; sourceTree = SOURCE_ROOT; };
@@ -519,6 +528,7 @@
 		69C777F27488C49A16D9D3A4 /* brsounddecompress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = brsounddecompress.h; path = ../source/audio/brsounddecompress.h; sourceTree = SOURCE_ROOT; };
 		69C94B82D5913625570C01BB /* brfixedpoint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brfixedpoint.cpp; path = ../source/math/brfixedpoint.cpp; sourceTree = SOURCE_ROOT; };
 		6A0B260B54578F9FDFE2AAE4 /* brutf32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brutf32.cpp; path = ../source/text/brutf32.cpp; sourceTree = SOURCE_ROOT; };
+		6B1E738A3E415F66E376DEE9 /* setpowerpcrounding.ppc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm.asm; name = setpowerpcrounding.ppc; path = ../source/asm/xcodeasm/setpowerpcrounding.ppc; sourceTree = SOURCE_ROOT; };
 		6BA2397F1BF857877381D16F /* brsoundmacosx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brsoundmacosx.cpp; path = ../source/platforms/macosx/brsoundmacosx.cpp; sourceTree = SOURCE_ROOT; };
 		6C0D9296F5A998566E4FD723 /* brulaw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = brulaw.h; path = ../source/audio/brulaw.h; sourceTree = SOURCE_ROOT; };
 		6D35417529EADAC0585E0852 /* brdxt1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brdxt1.cpp; path = ../source/compression/brdxt1.cpp; sourceTree = SOURCE_ROOT; };
@@ -637,6 +647,7 @@
 		A5B684A986160ABD8E6986F6 /* brimportxm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brimportxm.cpp; path = ../source/audio/brimportxm.cpp; sourceTree = SOURCE_ROOT; };
 		A66E86B1E9FD9C647507EBF0 /* brshader2dcolorvertex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = brshader2dcolorvertex.h; path = ../source/graphics/shaders/brshader2dcolorvertex.h; sourceTree = SOURCE_ROOT; };
 		A787D46AE954808E7129519F /* brmemorymanager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = brmemorymanager.h; path = ../source/memory/brmemorymanager.h; sourceTree = SOURCE_ROOT; };
+		A7E311AD46650CD884B1F529 /* swapendianstore64.ppc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm.asm; name = swapendianstore64.ppc; path = ../source/asm/xcodeasm/swapendianstore64.ppc; sourceTree = SOURCE_ROOT; };
 		A88139D90731A0DCDB69D2EB /* brvector3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = brvector3d.h; path = ../source/math/brvector3d.h; sourceTree = SOURCE_ROOT; };
 		A8A2843F695096490ADAFA94 /* testbrdisplay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = testbrdisplay.h; path = ../unittest/testbrdisplay.h; sourceTree = SOURCE_ROOT; };
 		A968AB49523FA4EEAB696E79 /* breffect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = breffect.cpp; path = ../source/graphics/effects/breffect.cpp; sourceTree = SOURCE_ROOT; };
@@ -780,6 +791,7 @@
 		F5642D1CAB3734FC8BB75C70 /* brdirectorysearchmacosx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brdirectorysearchmacosx.cpp; path = ../source/platforms/macosx/brdirectorysearchmacosx.cpp; sourceTree = SOURCE_ROOT; };
 		F57E2CAD6BE283BADC11C243 /* brcompressdeflate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brcompressdeflate.cpp; path = ../source/compression/brcompressdeflate.cpp; sourceTree = SOURCE_ROOT; };
 		F6F068CE9DC4039C5AB03BCC /* brdisplayobject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = brdisplayobject.h; path = ../source/graphics/brdisplayobject.h; sourceTree = SOURCE_ROOT; };
+		F7112DC8BFB29D57BBCE7E11 /* getpowerpcrounding.ppc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm.asm; name = getpowerpcrounding.ppc; path = ../source/asm/xcodeasm/getpowerpcrounding.ppc; sourceTree = SOURCE_ROOT; };
 		F75D8BDACC484442604AD4E3 /* unix_shims.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = unix_shims.h; path = ../source/platforms/unix/unix_shims.h; sourceTree = SOURCE_ROOT; };
 		F76C09C01E578D8DBF33578A /* brlastinfirstout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = brlastinfirstout.h; path = ../source/lowlevel/brlastinfirstout.h; sourceTree = SOURCE_ROOT; };
 		F7E98DEC115EEA1138097433 /* brfilemanagerunix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brfilemanagerunix.cpp; path = ../source/platforms/unix/brfilemanagerunix.cpp; sourceTree = SOURCE_ROOT; };
@@ -961,6 +973,7 @@
 			isa = PBXGroup;
 			children = (
 				F743B70FA3E2BBD6796E1E9C /* ansi */,
+				270CC0161734BFCF49A56EDB /* asm */,
 				D2888B8AAA43493764E2F9D4 /* audio */,
 				31C4BAF635E6B71F33E9A798 /* commandline */,
 				B6C6BCD59F70E57833600C9B /* compression */,
@@ -984,6 +997,15 @@
 			);
 			name = source;
 			path = ../source;
+			sourceTree = SOURCE_ROOT;
+		};
+		270CC0161734BFCF49A56EDB /* asm */ = {
+			isa = PBXGroup;
+			children = (
+				AE7D7AED657793D20786C95F /* xcodeasm */,
+			);
+			name = asm;
+			path = ../source/asm;
 			sourceTree = SOURCE_ROOT;
 		};
 		2A39B427C1F84D146E8565C8 /* generated */ = {
@@ -1259,6 +1281,20 @@
 			);
 			name = Products;
 			sourceTree = "<group>";
+		};
+		AE7D7AED657793D20786C95F /* xcodeasm */ = {
+			isa = PBXGroup;
+			children = (
+				F7112DC8BFB29D57BBCE7E11 /* getpowerpcrounding.ppc */,
+				6B1E738A3E415F66E376DEE9 /* setpowerpcrounding.ppc */,
+				3932ACFFF4649197B1D79386 /* swapendian64.ppc */,
+				03E13BA52217AD56996DDF61 /* swapendian64ptr.ppc */,
+				624F3D09711B23A4131340C8 /* swapendiandouble.ppc */,
+				A7E311AD46650CD884B1F529 /* swapendianstore64.ppc */,
+			);
+			name = xcodeasm;
+			path = ../source/asm/xcodeasm;
+			sourceTree = SOURCE_ROOT;
 		};
 		AEAD6BC25F014A8DFF0DEF7B /* math */ = {
 			isa = PBXGroup;
@@ -1564,7 +1600,7 @@
 			buildPhases = (
 				BECED51AC5FF525E417ED54B /* Sources */,
 				C82F410B6C258E0BC35086D5 /* Frameworks */,
-				0B2F360148B0FEA8A29C6D30 /* ShellScript */,
+				95764DF0C432F27C58E21F27 /* ShellScript */,
 			);
 			buildRules = (
 				2DE0B4B17C3AA4AE11CF041B /* PBXBuildRule */,
@@ -1584,7 +1620,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 			};
-			buildConfigurationList = 12C3C2DAFA4D87DF9ACF0C65 /* Build configuration list for PBXProject "unittestsxc3osx" */;
+			buildConfigurationList = E9E4182E1AE35858F7963FDF /* Build configuration list for PBXProject "unittests" */;
 			compatibilityVersion = "Xcode 3.1";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
@@ -1601,7 +1637,7 @@
 /* End PBXProject section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0B2F360148B0FEA8A29C6D30 /* ShellScript */ = {
+		95764DF0C432F27C58E21F27 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1610,11 +1646,11 @@
 				"${CONFIGURATION_BUILD_DIR}/${EXECUTABLE_NAME}",
 			);
 			outputPaths = (
-				"${SRCROOT}/bin/${EXECUTABLE_NAME}",
+				"${SRCROOT}/bin/${EXECUTABLE_NAME}${SUFFIX}",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ ! -d ${SRCROOT}/bin ]; then mkdir ${SRCROOT}/bin; fi\n${CP} ${CONFIGURATION_BUILD_DIR}/${EXECUTABLE_NAME} ${SRCROOT}/bin/${EXECUTABLE_NAME}\n";
+			shellScript = "if [ ! -d ${SRCROOT}/bin ]; then mkdir ${SRCROOT}/bin; fi\n${CP} ${CONFIGURATION_BUILD_DIR}/${EXECUTABLE_NAME} ${SRCROOT}/bin/${EXECUTABLE_NAME}${SUFFIX}\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1862,6 +1898,12 @@
 				1AE42A1C05DD852AE28B27A7 /* brwin1252.cpp in Sources */,
 				133795CF1A3E58079968B097 /* brwin437.cpp in Sources */,
 				49745060390962E4CF3C6C6A /* common.cpp in Sources */,
+				39FE2673D0B25ACD73DC4615 /* getpowerpcrounding.ppc in Sources */,
+				6CF8320250FE47CB0C51BE18 /* setpowerpcrounding.ppc in Sources */,
+				5E771F39B018D6192473C80E /* swapendian64.ppc in Sources */,
+				C0BAEBC3C404D3E526ABF7EE /* swapendian64ptr.ppc in Sources */,
+				8FDE8E3BFC88361F0F2502AC /* swapendiandouble.ppc in Sources */,
+				DF7E3CD1C83034AA85D91066 /* swapendianstore64.ppc in Sources */,
 				7FC7126BE160B529A96DF3E6 /* testbralgorithm.cpp in Sources */,
 				7CAA7A213F8053ADFF6E9272 /* testbrcodelibrary.cpp in Sources */,
 				D60AE0DF9E88E0222BE3B49C /* testbrcompression.cpp in Sources */,
@@ -1892,17 +1934,102 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		11D5D13FD967238D231BAE8D /* Debug */ = {
+		1AB957765C6F33533E4DB5EC /* Internal */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+			};
+			name = Internal;
+		};
+		2B2CA83595197938D60BDBB3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = (
 					ppc,
 					ppc64,
 					i386,
 					x86_64,
 				);
-				CONFIGURATION_BUILD_DIR = "$(SYMROOT)/$(PRODUCT_NAME)";
-				CONFIGURATION_TEMP_DIR = "$(SYMROOT)/$(PRODUCT_NAME)";
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)/$(PRODUCT_NAME)$(SUFFIX)";
+				CONFIGURATION_TEMP_DIR = "$(SYMROOT)/$(PRODUCT_NAME)$(SUFFIX)";
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_CW_ASM_SYNTAX = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				"GCC_DYNAMIC_NO_PIC[arch=i386]" = YES;
+				"GCC_DYNAMIC_NO_PIC[arch=ppc64]" = YES;
+				"GCC_DYNAMIC_NO_PIC[arch=ppc]" = YES;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_MODEL_PPC64 = NO;
+				"GCC_MODEL_PPC64[arch=ppc64]" = YES;
+				GCC_MODEL_TUNING = G4;
+				"GCC_MODEL_TUNING[arch=ppc64]" = G5;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = NDEBUG;
+				GCC_THREADSAFE_STATICS = NO;
+				GCC_VERSION = "";
+				"GCC_VERSION[arch=ppc64]" = 4.0;
+				"GCC_VERSION[arch=ppc]" = 4.0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = YES;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
+				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = NO;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_PROTOTYPE_CONVERSION = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = YES;
+				GCC_WARN_UNUSED_VALUE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_PROFILING_CODE = NO;
+				HEADER_SEARCH_PATHS = (
+					../sdks/steamworks/public/steam,
+					../source/platforms/unix,
+				);
+				MACH_O_TYPE = mh_execute;
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				"MACOSX_DEPLOYMENT_TARGET[arch=ppc]" = 10.4;
+				OBJROOT = temp;
+				ONLY_ACTIVE_ARCH = NO;
+				PREBINDING = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				"SDKROOT[arch=ppc64]" = macosx10.5;
+				"SDKROOT[arch=ppc]" = macosx10.5;
+				STRINGS_FILE_OUTPUT_ENCODING = "UTF-8";
+				SUFFIX = xc3osxrel;
+				SYMROOT = temp;
+			};
+			name = Release;
+		};
+		4AC4D29C7639B8FE0397A120 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		9CD7E78496E748E747A5C693 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = (
+					ppc,
+					ppc64,
+					i386,
+					x86_64,
+				);
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)/$(PRODUCT_NAME)$(SUFFIX)";
+				CONFIGURATION_TEMP_DIR = "$(SYMROOT)/$(PRODUCT_NAME)$(SUFFIX)";
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				GCC_CW_ASM_SYNTAX = YES;
@@ -1918,13 +2045,11 @@
 				GCC_MODEL_TUNING = G4;
 				"GCC_MODEL_TUNING[arch=ppc64]" = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					_DEBUG,
-				);
+				GCC_PREPROCESSOR_DEFINITIONS = _DEBUG;
 				GCC_THREADSAFE_STATICS = NO;
 				GCC_VERSION = "";
-				"GCC_VERSION[sdk=macosx*][arch=ppc64]" = 4.0;
-				"GCC_VERSION[sdk=macosx*][arch=ppc]" = 4.0;
+				"GCC_VERSION[arch=ppc64]" = 4.0;
+				"GCC_VERSION[arch=ppc]" = 4.0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
@@ -1955,170 +2080,15 @@
 				OBJROOT = temp;
 				ONLY_ACTIVE_ARCH = NO;
 				PREBINDING = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)xc3osxdbg";
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				"SDKROOT[arch=ppc64]" = macosx10.5;
 				"SDKROOT[arch=ppc]" = macosx10.5;
 				STRINGS_FILE_OUTPUT_ENCODING = "UTF-8";
+				SUFFIX = xc3osxdbg;
 				SYMROOT = temp;
 			};
 			name = Debug;
-		};
-		1AB957765C6F33533E4DB5EC /* Internal */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-			};
-			name = Internal;
-		};
-		26D88A25E2D41B3B9CA1D158 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = (
-					ppc,
-					ppc64,
-					i386,
-					x86_64,
-				);
-				CONFIGURATION_BUILD_DIR = "$(SYMROOT)/$(PRODUCT_NAME)";
-				CONFIGURATION_TEMP_DIR = "$(SYMROOT)/$(PRODUCT_NAME)";
-				DEAD_CODE_STRIPPING = YES;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				GCC_CW_ASM_SYNTAX = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				"GCC_DYNAMIC_NO_PIC[arch=i386]" = YES;
-				"GCC_DYNAMIC_NO_PIC[arch=ppc64]" = YES;
-				"GCC_DYNAMIC_NO_PIC[arch=ppc]" = YES;
-				GCC_ENABLE_CPP_EXCEPTIONS = NO;
-				GCC_ENABLE_CPP_RTTI = NO;
-				GCC_MODEL_PPC64 = NO;
-				"GCC_MODEL_PPC64[arch=ppc64]" = YES;
-				GCC_MODEL_TUNING = G4;
-				"GCC_MODEL_TUNING[arch=ppc64]" = G5;
-				GCC_OPTIMIZATION_LEVEL = s;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					NDEBUG,
-				);
-				GCC_THREADSAFE_STATICS = NO;
-				GCC_VERSION = "";
-				"GCC_VERSION[sdk=macosx*][arch=ppc64]" = 4.0;
-				"GCC_VERSION[sdk=macosx*][arch=ppc]" = 4.0;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = YES;
-				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
-				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
-				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = NO;
-				GCC_WARN_MISSING_PARENTHESES = YES;
-				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
-				GCC_WARN_PROTOTYPE_CONVERSION = YES;
-				GCC_WARN_SHADOW = YES;
-				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_LABEL = YES;
-				GCC_WARN_UNUSED_PARAMETER = YES;
-				GCC_WARN_UNUSED_VALUE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				GENERATE_PROFILING_CODE = NO;
-				HEADER_SEARCH_PATHS = (
-					../sdks/steamworks/public/steam,
-					../source/platforms/unix,
-				);
-				MACH_O_TYPE = mh_execute;
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
-				"MACOSX_DEPLOYMENT_TARGET[arch=ppc]" = 10.4;
-				OBJROOT = temp;
-				ONLY_ACTIVE_ARCH = NO;
-				PREBINDING = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)xc3osxrel";
-				SDKROOT = macosx;
-				"SDKROOT[arch=ppc64]" = macosx10.5;
-				"SDKROOT[arch=ppc]" = macosx10.5;
-				STRINGS_FILE_OUTPUT_ENCODING = "UTF-8";
-				SYMROOT = temp;
-			};
-			name = Release;
-		};
-		4AC4D29C7639B8FE0397A120 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-			};
-			name = Release;
-		};
-		B01D6A5E90CF7233E2F044A6 /* Internal */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = (
-					ppc,
-					ppc64,
-					i386,
-					x86_64,
-				);
-				CONFIGURATION_BUILD_DIR = "$(SYMROOT)/$(PRODUCT_NAME)";
-				CONFIGURATION_TEMP_DIR = "$(SYMROOT)/$(PRODUCT_NAME)";
-				DEAD_CODE_STRIPPING = YES;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				GCC_CW_ASM_SYNTAX = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				"GCC_DYNAMIC_NO_PIC[arch=i386]" = YES;
-				"GCC_DYNAMIC_NO_PIC[arch=ppc64]" = YES;
-				"GCC_DYNAMIC_NO_PIC[arch=ppc]" = YES;
-				GCC_ENABLE_CPP_EXCEPTIONS = NO;
-				GCC_ENABLE_CPP_RTTI = NO;
-				GCC_MODEL_PPC64 = NO;
-				"GCC_MODEL_PPC64[arch=ppc64]" = YES;
-				GCC_MODEL_TUNING = G4;
-				"GCC_MODEL_TUNING[arch=ppc64]" = G5;
-				GCC_OPTIMIZATION_LEVEL = s;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					_DEBUG,
-				);
-				GCC_THREADSAFE_STATICS = NO;
-				GCC_VERSION = "";
-				"GCC_VERSION[sdk=macosx*][arch=ppc64]" = 4.0;
-				"GCC_VERSION[sdk=macosx*][arch=ppc]" = 4.0;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = YES;
-				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
-				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
-				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = NO;
-				GCC_WARN_MISSING_PARENTHESES = YES;
-				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
-				GCC_WARN_PROTOTYPE_CONVERSION = YES;
-				GCC_WARN_SHADOW = YES;
-				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_LABEL = YES;
-				GCC_WARN_UNUSED_PARAMETER = YES;
-				GCC_WARN_UNUSED_VALUE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				GENERATE_PROFILING_CODE = NO;
-				HEADER_SEARCH_PATHS = (
-					../sdks/steamworks/public/steam,
-					../source/platforms/unix,
-				);
-				MACH_O_TYPE = mh_execute;
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
-				"MACOSX_DEPLOYMENT_TARGET[arch=ppc]" = 10.4;
-				OBJROOT = temp;
-				ONLY_ACTIVE_ARCH = NO;
-				PREBINDING = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)xc3osxint";
-				SDKROOT = macosx;
-				"SDKROOT[arch=ppc64]" = macosx10.5;
-				"SDKROOT[arch=ppc]" = macosx10.5;
-				STRINGS_FILE_OUTPUT_ENCODING = "UTF-8";
-				SYMROOT = temp;
-			};
-			name = Internal;
 		};
 		B4BA725C48CDDA68CDBB1567 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -2126,25 +2096,97 @@
 			};
 			name = Debug;
 		};
+		D817F520B4913D69A1AA81B6 /* Internal */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = (
+					ppc,
+					ppc64,
+					i386,
+					x86_64,
+				);
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)/$(PRODUCT_NAME)$(SUFFIX)";
+				CONFIGURATION_TEMP_DIR = "$(SYMROOT)/$(PRODUCT_NAME)$(SUFFIX)";
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_CW_ASM_SYNTAX = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				"GCC_DYNAMIC_NO_PIC[arch=i386]" = YES;
+				"GCC_DYNAMIC_NO_PIC[arch=ppc64]" = YES;
+				"GCC_DYNAMIC_NO_PIC[arch=ppc]" = YES;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_MODEL_PPC64 = NO;
+				"GCC_MODEL_PPC64[arch=ppc64]" = YES;
+				GCC_MODEL_TUNING = G4;
+				"GCC_MODEL_TUNING[arch=ppc64]" = G5;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = _DEBUG;
+				GCC_THREADSAFE_STATICS = NO;
+				GCC_VERSION = "";
+				"GCC_VERSION[arch=ppc64]" = 4.0;
+				"GCC_VERSION[arch=ppc]" = 4.0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = YES;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
+				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = NO;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_PROTOTYPE_CONVERSION = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = YES;
+				GCC_WARN_UNUSED_VALUE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_PROFILING_CODE = NO;
+				HEADER_SEARCH_PATHS = (
+					../sdks/steamworks/public/steam,
+					../source/platforms/unix,
+				);
+				MACH_O_TYPE = mh_execute;
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				"MACOSX_DEPLOYMENT_TARGET[arch=ppc]" = 10.4;
+				OBJROOT = temp;
+				ONLY_ACTIVE_ARCH = NO;
+				PREBINDING = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				"SDKROOT[arch=ppc64]" = macosx10.5;
+				"SDKROOT[arch=ppc]" = macosx10.5;
+				STRINGS_FILE_OUTPUT_ENCODING = "UTF-8";
+				SUFFIX = xc3osxint;
+				SYMROOT = temp;
+			};
+			name = Internal;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		12C3C2DAFA4D87DF9ACF0C65 /* Build configuration list for PBXProject "unittestsxc3osx" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				11D5D13FD967238D231BAE8D /* Debug */,
-				B01D6A5E90CF7233E2F044A6 /* Internal */,
-				26D88A25E2D41B3B9CA1D158 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		2790B8E7AAF88D737F450F35 /* Build configuration list for PBXNativeTarget "unittests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B4BA725C48CDDA68CDBB1567 /* Debug */,
 				1AB957765C6F33533E4DB5EC /* Internal */,
 				4AC4D29C7639B8FE0397A120 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E9E4182E1AE35858F7963FDF /* Build configuration list for PBXProject "unittests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9CD7E78496E748E747A5C693 /* Debug */,
+				D817F520B4913D69A1AA81B6 /* Internal */,
+				2B2CA83595197938D60BDBB3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

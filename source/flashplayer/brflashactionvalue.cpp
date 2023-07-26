@@ -31,7 +31,7 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::Flash::ActionScriptProperty,Burger::Weak
 
 ***************************************/
 
-#if defined(BURGER_VITA) || defined(BURGER_LINUX)
+#if defined(BURGER_VITA) || defined(BURGER_LINUX) || defined(BURGER_WIIU) || defined(BURGER_PS3)
 
 namespace Burger { namespace Flash {
 class ActionScriptFunction : public ReferenceCounter {

@@ -16,12 +16,62 @@
 #include "brfloatingpoint.h"
 #include "brtemplates.h"
 
+/*! ************************************
+
+	\brief Swap endian of a 16 bit integer
+
+	Reverse the endian of a 16 bit integer. Implemented in assembly on some
+	platforms.
+
+	\param uInput The value to return endian swapped
+
+	\return Input endian swapped
+
+	\sa _swapendian32(uint32_t), or _swapendian64(uint64_t)
+
+***************************************/
+
+#if ((defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
+	(defined(BURGER_APPLE_SC) && defined(BURGER_68K)) || \
+	(defined(BURGER_METROWERKS) && \
+		(defined(BURGER_68K) || defined(BURGER_X86) || \
+			defined(BURGER_PPC))) || \
+	((defined(BURGER_MRC) || defined(BURGER_GHS)) && defined(BURGER_PPC)) || \
+	(defined(BURGER_SNSYSTEMS) && \
+		(defined(BURGER_ARM32) || defined(BURGER_PPC))) || \
+	(__has_builtin(__builtin_bswap16) || (BURGER_GNUC >= 40800)) || \
+	((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
+		(defined(BURGER_68K) || defined(BURGER_PPC) || defined(BURGER_ARM) || \
+			defined(BURGER_INTEL))) || \
+	defined(BURGER_INTEL_COMPILER) || defined(BURGER_MSVC)) && \
+	!defined(DOXYGEN)
+
+#else
+uint16_t BURGER_API _swapendian16(uint16_t uInput) BURGER_NOEXCEPT
+{
+	return ((uInput & 0xFF) << 8) | ((uInput >> 8) & 0xFF);
+}
+#endif
+
+/*! ************************************
+
+	\brief Swap endian of a 32 bit integer
+
+	Reverse the endian of a 32 bit integer. Implemented in assembly on some
+	platforms.
+
+	\param uInput The value to return endian swapped
+
+	\return Input endian swapped
+
+	\sa _swapendian16(uint16_t), or _swapendian64(uint64_t)
+
+***************************************/
+
 #if (defined(BURGER_METROWERKS) && defined(BURGER_ARM32)) && !defined(DOXYGEN)
 
 // Nintendo DS ARM doesn't have REV
-asm uint32_t BURGER_API Burger::SwapEndian::Load(
-	uint32_t uInput) BURGER_NOEXCEPT
-{
+asm uint32_t BURGER_API _swapendian32(uint32_t uInput) BURGER_NOEXCEPT{
 	// clang-format off
 
 	// r1 = 12^56,34^78,12^56,34^78
@@ -39,6 +89,79 @@ asm uint32_t BURGER_API Burger::SwapEndian::Load(
 	// clang-format on
 }
 
+#elif ((defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
+	(defined(BURGER_APPLE_SC) && defined(BURGER_68K)) || \
+	(defined(BURGER_METROWERKS) && \
+		(defined(BURGER_68K) || defined(BURGER_X86) || \
+			defined(BURGER_PPC))) || \
+	(__has_builtin(__builtin_bswap32) || (BURGER_GNUC >= 40300) || \
+		defined(BURGER_ARM_COMPILER)) || \
+	((defined(BURGER_MRC) || defined(BURGER_SNSYSTEMS) || \
+		 defined(BURGER_GHS)) && \
+		defined(BURGER_PPC)) || \
+	(defined(BURGER_SNSYSTEMS) && defined(BURGER_ARM32)) || \
+	((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
+		(defined(BURGER_68K) || defined(BURGER_PPC) || \
+			defined(BURGER_ARM32) || defined(BURGER_ARM64) || \
+			defined(BURGER_INTEL))) || \
+	defined(BURGER_INTEL_COMPILER) || defined(BURGER_MSVC)) && \
+	!defined(DOXYGEN)
+
+#else
+uint32_t BURGER_API _swapendian32(uint32_t uInput) BURGER_NOEXCEPT
+{
+	return ((uInput & 0xFF000000) >> 24) | ((uInput & 0x00FF0000) >> 8) |
+		((uInput & 0x0000FF00) << 8) | ((uInput & 0x000000FF) << 24);
+}
+#endif
+
+/*! ************************************
+
+	\brief Swap endian of a 64 bit integer.
+
+	64 bit operations for endian swap are specialized on different platforms
+	since some forms require the return value to be in a structure.
+
+	\param uInput 64 integer to swap endian.
+
+	\return Input with all 8 bytes reversed.
+
+	\sa _swapendian16(uint16_t), or _swapendian32(uint32_t)
+
+***************************************/
+
+#if ((defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
+	(defined(BURGER_APPLE_SC) && defined(BURGER_68K)) || \
+	(defined(BURGER_METROWERKS) && defined(BURGER_X86)) || \
+	(__has_builtin(__builtin_bswap64) || (BURGER_GNUC >= 40300) || \
+		defined(BURGER_ARM_COMPILER)) || \
+	((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
+		defined(BURGER_ARM32)) || \
+	((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
+		defined(BURGER_ARM64)) || \
+	((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
+		defined(BURGER_X86)) || \
+	((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
+		defined(BURGER_AMD64)) || \
+	defined(BURGER_INTEL_COMPILER) || (BURGER_MSVC >= 140000000) || \
+	(defined(BURGER_MSVC) && defined(BURGER_X86))) && \
+	!defined(DOXYGEN)
+
+// Written in assembly (MacOS, PS3, Vita, WiiU)
+#elif ((defined(BURGER_METROWERKS) && \
+		   (defined(BURGER_68K) || defined(BURGER_PPC))) || \
+	(defined(BURGER_GHS) && defined(BURGER_PPC)) || \
+	(defined(BURGER_SNSYSTEMS) && \
+		(defined(BURGER_PPC) || defined(BURGER_ARM32))) || \
+	(defined(BURGER_MACOSX) && defined(BURGER_PPC))) && \
+	!defined(DOXYGEN)
+#else
+uint64_t BURGER_API _swapendian64(uint64_t uInput) BURGER_NOEXCEPT
+{
+	return _swapendian32(static_cast<uint32_t>(uInput >> 32)) |
+		(static_cast<uint64_t>(_swapendian32(static_cast<uint32_t>(uInput)))
+			<< 32);
+}
 #endif
 
 /*! ************************************
@@ -102,7 +225,8 @@ float BURGER_API Burger::_swapendianfloat(float fInput) BURGER_NOEXCEPT
 	(defined(BURGER_METROWERKS) && \
 		(defined(BURGER_X86) || defined(BURGER_PPC) || \
 			defined(BURGER_68K))) || \
-	(defined(BURGER_MSVC) && defined(BURGER_X86) && !defined(BURGER_SSE2))) && \
+	(defined(BURGER_MSVC) && defined(BURGER_X86) && !defined(BURGER_SSE2)) || \
+	(defined(BURGER_MACOSX) && defined(BURGER_PPC))) && \
 	!defined(DOXYGEN)
 // These are in assembly
 #else
@@ -297,6 +421,9 @@ uint32_t BURGER_API Burger::_load_unaligned(
 
 ***************************************/
 
+#if (defined(BURGER_METROWERKS) && defined(BURGER_PPC)) && !defined(DOXYGEN)
+
+#else
 uint64_t BURGER_API Burger::_load_unaligned(
 	const uint64_t* pInput) BURGER_NOEXCEPT
 {
@@ -324,6 +451,7 @@ uint64_t BURGER_API Burger::_load_unaligned(
 	// Return the 64 bit value in a register
 	return uResult;
 }
+#endif
 
 /*! ************************************
 
@@ -448,6 +576,9 @@ void BURGER_API Burger::_store_unaligned(
 
 ***************************************/
 
+#if (defined(BURGER_METROWERKS) && defined(BURGER_PPC)) && !defined(DOXYGEN)
+
+#else
 void BURGER_API Burger::_store_unaligned(
 	uint64_t* pOutput, uint64_t uInput) BURGER_NOEXCEPT
 {
@@ -468,6 +599,7 @@ void BURGER_API Burger::_store_unaligned(
 	reinterpret_cast<uint8_t*>(pOutput)[7] =
 		reinterpret_cast<const uint8_t*>(&uInput)[7];
 }
+#endif
 
 /*! ************************************
 
@@ -626,6 +758,9 @@ uint32_t BURGER_API Burger::_load_unaligned_swap(
 
 ***************************************/
 
+#if (defined(BURGER_METROWERKS) && defined(BURGER_PPC)) && !defined(DOXYGEN)
+
+#else
 uint64_t BURGER_API Burger::_load_unaligned_swap(
 	const uint64_t* pInput) BURGER_NOEXCEPT
 {
@@ -652,6 +787,7 @@ uint64_t BURGER_API Burger::_load_unaligned_swap(
 	// Return the 64 bit value in a register
 	return Result;
 }
+#endif
 
 /*! ************************************
 
@@ -701,7 +837,7 @@ float BURGER_API Burger::_load_unaligned_swap(
 	have to be 64-bit aligned. uint8_t alignment is acceptable.
 
 	\param pInput Pointer to the value to endian convert
-	
+
 	\return The value with the bytes swapped.
 
 	\note \ref nullptr pointers are illegal and will page fault.
@@ -819,6 +955,9 @@ void BURGER_API Burger::_store_unaligned_swap(
 
 ***************************************/
 
+#if (defined(BURGER_METROWERKS) && defined(BURGER_PPC)) && !defined(DOXYGEN)
+
+#else
 void BURGER_API Burger::_store_unaligned_swap(
 	uint64_t* pOutput, uint64_t uInput) BURGER_NOEXCEPT
 {
@@ -839,6 +978,7 @@ void BURGER_API Burger::_store_unaligned_swap(
 	reinterpret_cast<uint8_t*>(pOutput)[7] =
 		reinterpret_cast<const uint8_t*>(&uInput)[0];
 }
+#endif
 
 /*! ************************************
 
@@ -947,330 +1087,19 @@ void BURGER_API Burger::_store_unaligned_swap(
 
 /*! ************************************
 
-	\fn Burger::SwapEndian::Store(char *pOutput,char iInput)
-	\brief Store an 8 bit signed value to memory with byte alignment.
+	\fn Burger::SwapEndian::Store(T* pOutput, T Input)
+	\brief Reverse the endian of stored arithmetic value
 
-	\note Since 8 bit values can't be endian swapped, this function only exists
-	for completeness sake
+	Given a pointer to an arithmetic value, store the input value endian
+	swapped.
 
-	\param pOutput Pointer to an 8 bit value.
-	\param iInput The 8 bit signed value.
+	\tparam T Arithmetic type
+	\param pOutput Pointer to a value to store as endian swapped
+	\param Input The value to byte swap
 
-	\sa NativeEndian::Store(char*,char)
+	\note \ref nullptr is illegal and will page fault.
 
-***************************************/
-
-/*! ************************************
-
-	\fn Burger::SwapEndian::Store(uint8_t *pOutput,uint8_t uInput)
-	\brief Store an 8 bit unsigned value to memory with byte alignment.
-
-	\note Since 8 bit values can't be endian swapped, this function only exists
-	for completeness sake
-
-	\param pOutput Pointer to an 8 bit value.
-	\param uInput The 8 bit unsigned value.
-
-	\sa NativeEndian::Store(uint8_t*,char)
-
-***************************************/
-
-/*! ************************************
-
-	\fn Burger::SwapEndian::Store(int8_t *pOutput,int8_t iInput)
-	\brief Store an 8 bit signed value to memory with byte alignment.
-
-	\note Since 8 bit values can't be endian swapped, this function only exists
-	for completeness sake
-
-	\param pOutput Pointer to an 8 bit value.
-	\param iInput The 8 bit signed value.
-
-	\sa NativeEndian::Store(int8_t*,int8_t)
-
-***************************************/
-
-/*! ************************************
-
-	\brief Reverse the endian of a 16 bit integer
-
-	Given a pointer to a 16 bit value, load it and swap the bytes
-	so that 0x1234 becomes 0x3412
-
-	\param pOutput Pointer to a value to endian convert
-	\param uInput The value with the bytes swapped.
-
-	\note nullptr is illegal and will page fault.
-
-	\sa NativeEndian::Store(uint16_t *, uint16_t)
-
-***************************************/
-
-#if ((defined(BURGER_METROWERKS) && defined(BURGER_X86)) || \
-	(defined(BURGER_METROWERKS) && defined(BURGER_68K)) || \
-	(defined(BURGER_METROWERKS) && defined(BURGER_PPC)) || \
-	defined(BURGER_XBOX360) || defined(BURGER_PS3) || \
-	defined(BURGER_INTEL_COMPILER) || \
-	(defined(BURGER_WATCOM) && defined(BURGER_X86)) || defined(BURGER_MSVC) || \
-	(defined(BURGER_GNUC) && !defined(__SNC__))) && \
-	!defined(DOXYGEN)
-#else
-
-void BURGER_API Burger::SwapEndian::Store(
-	uint16_t* pOutput, uint16_t uInput) BURGER_NOEXCEPT
-{
-	uint_t uTemp = (uInput >> 8U) & 0xFFU;
-	uTemp |= (uInput << 8U) & 0xFF00U;
-	pOutput[0] = static_cast<uint16_t>(uTemp);
-}
-
-#endif
-
-/*! ************************************
-
-	\fn Burger::SwapEndian::Store(int16_t *pOutput,int16_t iInput);
-	\brief Reverse the endian of a 16 bit signed integer and store it
-
-	Given a 16 bit value, swap the bytes
-	so that 0x1234 becomes 0x3412 and store it
-
-	\param pOutput Pointer to where to store the data.
-	\param iInput The value to byte swap and store.
-
-	\note \ref NULL pointers are illegal and will page fault.
-	\note This function is inlined to actually use
-		SwapEndian::Store(uint16_t*,uint16_t).
-
-	\sa NativeEndian::Store(int16_t*,int16_t)
-
-***************************************/
-
-/*! ************************************
-
-	\brief Reverse the endian of a 32 bit integer
-
-	Given a pointer to a 32 bit value, load it and swap the bytes
-	so that 0x12345678 becomes 0x78563412
-
-	\param pOutput Pointer to value to endian convert
-	\param uInput The value with the bytes swapped.
-
-	\note nullptr is illegal and will page fault.
-
-	\sa NativeEndian::Store(uint32_t *, uint32_t)
-
-***************************************/
-
-#if ((defined(BURGER_METROWERKS) && defined(BURGER_X86)) || \
-	(defined(BURGER_METROWERKS) && defined(BURGER_68K)) || \
-	(defined(BURGER_METROWERKS) && defined(BURGER_PPC)) || \
-	defined(BURGER_XBOX360) || defined(BURGER_PS3) || \
-	defined(BURGER_INTEL_COMPILER) || \
-	(defined(BURGER_WATCOM) && defined(BURGER_X86)) || defined(BURGER_MSVC) || \
-	(defined(BURGER_GNUC) && !defined(__SNC__))) && \
-	!defined(DOXYGEN)
-#else
-
-void BURGER_API Burger::SwapEndian::Store(
-	uint32_t* pOutput, uint32_t uInput) BURGER_NOEXCEPT
-{
-	uint32_t uTemp = (uInput >> 24U) & 0xFFU;
-	uTemp |= (uInput >> 8U) & 0xFF00U;
-	uTemp |= (uInput << 8U) & 0xFF0000U;
-	uTemp |= uInput << 24U;
-	pOutput[0] = uTemp;
-}
-
-#endif
-
-/*! ************************************
-
-	\fn Burger::SwapEndian::Store(int32_t *pOutput,int32_t iInput);
-	\brief Reverse the endian of a 32 bit signed integer and store it
-
-	Given a 32 bit value, swap the bytes
-	so that 0x12345678 becomes 0x78563412 and store it
-
-	\param pOutput Pointer to where to store the data.
-	\param iInput The value to byte swap and store.
-
-	\note nullptr is illegal and will page fault.
-	\note This function is inlined to actually use
-		SwapEndian::Store(uint32_t*,uint32_t).
-
-	\sa NativeEndian::Store(int32_t*,int32_t)
-
-***************************************/
-
-/*! ************************************
-
-	\brief Store a 64-bit integer with endian reversal
-
-	Given a 64-bit value, swap the bytes so that 0x123456789ABCDEF0 becomes
-	0xF0DEBC9A78563412  and store it.
-
-	\param pOutput Pointer to the value to endian convert
-	\param uInput The value to store
-
-	\note nullptr is illegal and will page fault.
-
-	\sa NativeEndian::Store(uint64_t *,uint64_t)
-
-***************************************/
-
-#if (defined(BURGER_XBOX360) || defined(BURGER_PS3) || \
-	(defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
-	(defined(BURGER_INTEL) && defined(BURGER_MSVC)) || \
-	((defined(BURGER_GNUC) && !defined(__SNC__)) && \
-		(defined(BURGER_AMD64) || defined(BURGER_ARM64) || \
-			defined(BURGER_PPC)))) && \
-	!defined(DOXYGEN)
-
-#else
-
-void BURGER_API Burger::SwapEndian::Store(
-	uint64_t* pOutput, uint64_t uInput) BURGER_NOEXCEPT
-{
-	uint8_t bTemp1 = reinterpret_cast<const uint8_t*>(&uInput)[7];
-	uint8_t bTemp2 = reinterpret_cast<const uint8_t*>(&uInput)[6];
-	reinterpret_cast<uint8_t*>(pOutput)[0] = bTemp1; // Perform the swap
-	reinterpret_cast<uint8_t*>(pOutput)[1] = bTemp2;
-	bTemp1 = reinterpret_cast<const uint8_t*>(&uInput)[5];
-	bTemp2 = reinterpret_cast<const uint8_t*>(&uInput)[4];
-	reinterpret_cast<uint8_t*>(pOutput)[2] = bTemp1;
-	reinterpret_cast<uint8_t*>(pOutput)[3] = bTemp2;
-	bTemp1 = reinterpret_cast<const uint8_t*>(&uInput)[3];
-	bTemp2 = reinterpret_cast<const uint8_t*>(&uInput)[2];
-	reinterpret_cast<uint8_t*>(pOutput)[4] = bTemp1;
-	reinterpret_cast<uint8_t*>(pOutput)[5] = bTemp2;
-	bTemp1 = reinterpret_cast<const uint8_t*>(&uInput)[1];
-	bTemp2 = reinterpret_cast<const uint8_t*>(&uInput)[0];
-	reinterpret_cast<uint8_t*>(pOutput)[6] = bTemp1;
-	reinterpret_cast<uint8_t*>(pOutput)[7] = bTemp2;
-}
-
-#endif
-
-/*! ************************************
-
-	\fn Burger::SwapEndian::Store(int64_t *pOutput,int64_t iInput);
-	\brief Reverse the endian of a 64 bit signed integer and store it
-
-	Given a 64 bit value, swap the bytes so that 0x123456789ABCDEF0 becomes
-	0xF0DEBC9A78563412 and store it
-
-	\param pOutput Pointer to where to store the data.
-	\param iInput The value to byte swap and store.
-
-	\note \ref NULL pointers are illegal and will page fault.
-	\note This function is inlined to actually use
-		SwapEndian::Store(uint64_t*,uint64_t).
-
-	\sa NativeEndian::Store(int64_t*,int64_t)
-
-***************************************/
-
-/*! ************************************
-
-	\brief Store a 32-bit float with endian reversal
-
-	Given a 32-bit float, swap the bytes and store it.
-
-	\param pOutput Pointer to the 32 bit float to endian convert
-	\param fInput The value to store
-
-	\note \ref NULL pointers are illegal and will page fault.
-
-	\sa SwapEndian::Store(float) or NativeEndian::Store(float *,float)
-
-***************************************/
-
-void BURGER_API Burger::SwapEndian::Store(
-	float* pOutput, float fInput) BURGER_NOEXCEPT
-{
-	uint8_t bTemp1 =
-		reinterpret_cast<const uint8_t*>(&fInput)[3]; // Perform the swap
-	uint8_t bTemp2 = reinterpret_cast<const uint8_t*>(&fInput)[2];
-	reinterpret_cast<uint8_t*>(pOutput)[0] = bTemp1;
-	reinterpret_cast<uint8_t*>(pOutput)[1] = bTemp2;
-	bTemp1 = reinterpret_cast<const uint8_t*>(&fInput)[1];
-	bTemp2 = reinterpret_cast<const uint8_t*>(&fInput)[0];
-	reinterpret_cast<uint8_t*>(pOutput)[2] = bTemp1;
-	reinterpret_cast<uint8_t*>(pOutput)[3] = bTemp2;
-}
-
-/*! ************************************
-
-	\brief Store a 64-bit float with endian reversal
-
-	Given a 64-bit float, swap the bytes and store it.
-
-	\param pOutput Pointer to the 64 bit float to endian convert
-	\param dInput The value to store
-
-	\note \ref NULL pointers are illegal and will page fault.
-
-	\sa SwapEndian::Store(double) or NativeEndian::Store(double *,double)
-
-***************************************/
-
-void BURGER_API Burger::SwapEndian::Store(
-	double* pOutput, double dInput) BURGER_NOEXCEPT
-{
-	uint8_t bTemp1 =
-		reinterpret_cast<const uint8_t*>(&dInput)[7]; // Perform the swap
-	uint8_t bTemp2 = reinterpret_cast<const uint8_t*>(&dInput)[6];
-	reinterpret_cast<uint8_t*>(pOutput)[0] = bTemp1;
-	reinterpret_cast<uint8_t*>(pOutput)[1] = bTemp2;
-	bTemp1 = reinterpret_cast<const uint8_t*>(&dInput)[5];
-	bTemp2 = reinterpret_cast<const uint8_t*>(&dInput)[4];
-	reinterpret_cast<uint8_t*>(pOutput)[2] = bTemp1;
-	reinterpret_cast<uint8_t*>(pOutput)[3] = bTemp2;
-	bTemp1 = reinterpret_cast<const uint8_t*>(&dInput)[3];
-	bTemp2 = reinterpret_cast<const uint8_t*>(&dInput)[2];
-	reinterpret_cast<uint8_t*>(pOutput)[4] = bTemp1;
-	reinterpret_cast<uint8_t*>(pOutput)[5] = bTemp2;
-	bTemp1 = reinterpret_cast<const uint8_t*>(&dInput)[1];
-	bTemp2 = reinterpret_cast<const uint8_t*>(&dInput)[0];
-	reinterpret_cast<uint8_t*>(pOutput)[6] = bTemp1;
-	reinterpret_cast<uint8_t*>(pOutput)[7] = bTemp2;
-}
-
-/*! ************************************
-
-	\fn Burger::SwapEndian::Store(unsigned int *pOutput,unsigned int uInput);
-	\brief Reverse the endian of a 32 bit unsigned integer
-
-	Given a 32 bit value, swap the bytes
-	so that 0x12345678 becomes 0x78563412 and store it
-
-	\param pOutput Pointer to a value to store
-	\param uInput The value to endian convert
-
-	\note \ref NULL pointers are illegal and will page fault.
-	\note This function is inlined to actually use
-		SwapEndian::Store(uint32_t*,uint32_t).
-
-	\sa SwapEndian::Store(uint32_t*,uint32_t)
-
-***************************************/
-
-/*! ************************************
-
-	\fn Burger::SwapEndian::Store(signed int *pOutput,signed int iInput);
-	\brief Reverse the endian of a 32 bit signed integer
-
-	Given a 32 bit value, swap the bytes
-	so that 0x12345678 becomes 0x78563412 and store it
-
-	\param pOutput Pointer to a value to store
-	\param iInput The value to endian convert
-
-	\note \ref NULL pointers are illegal and will page fault.
-	\note This function is inlined to actually use
-		SwapEndian::Store(uint32_t*,uint32_t).
-
-	\sa SwapEndian::Store(uint32_t*,uint32_t)
+	\sa NativeEndian::Store(T*, T)
 
 ***************************************/
 
@@ -1287,7 +1116,7 @@ void BURGER_API Burger::SwapEndian::Store(
 	\param pInput Pointer to an 8 bit value.
 	\return The 8 bit signed value.
 
-	\sa NativeEndian::LoadAny(const char*)
+	\sa NativeEndian::LoadAny(const T*)
 
 ***************************************/
 
@@ -1304,7 +1133,7 @@ void BURGER_API Burger::SwapEndian::Store(
 	\param pInput Pointer to an 8 bit value.
 	\return The 8 bit unsigned value.
 
-	\sa NativeEndian::LoadAny(const uint8_t*)
+	\sa NativeEndian::LoadAny(const T*)
 
 ***************************************/
 
@@ -1321,7 +1150,7 @@ void BURGER_API Burger::SwapEndian::Store(
 	\param pInput Pointer to an 8 bit value.
 	\return The 8 bit signed value.
 
-	\sa NativeEndian::LoadAny(const int8_t*)
+	\sa NativeEndian::LoadAny(const T*)
 
 ***************************************/
 
@@ -1448,7 +1277,7 @@ uint32_t BURGER_API Burger::SwapEndian::LoadAny(
 
 	\note \ref NULL pointers are illegal and will page fault.
 
-	\sa NativeEndian::LoadAny(const uint64_t*)
+	\sa NativeEndian::LoadAny(const T*)
 
 ***************************************/
 
@@ -1519,7 +1348,7 @@ uint64_t BURGER_API Burger::SwapEndian::LoadAny(
 
 	\note \ref NULL pointers are illegal and will page fault.
 
-	\sa SwapEndian::Load(float) or NativeEndian::Load(const float *)
+	\sa SwapEndian::Load(float) or NativeEndian::Load(const T *)
 
 ***************************************/
 
@@ -1577,7 +1406,7 @@ float BURGER_API Burger::SwapEndian::LoadAny(
 
 	\note \ref NULL pointers are illegal and will page fault.
 
-	\sa SwapEndian::Load(double) or NativeEndian::Load(const double *)
+	\sa SwapEndian::Load(double) or NativeEndian::Load(const T *)
 
 ***************************************/
 
@@ -1653,7 +1482,7 @@ double BURGER_API Burger::SwapEndian::LoadAny(
 	\param pOutput Pointer to an 8 bit value.
 	\param iInput The 8 bit signed value.
 
-	\sa NativeEndian::StoreAny(char*,char)
+	\sa NativeEndian::StoreAny(T*,T)
 
 ***************************************/
 
@@ -1670,7 +1499,7 @@ double BURGER_API Burger::SwapEndian::LoadAny(
 	\param pOutput Pointer to an 8 bit value.
 	\param uInput The 8 bit unsigned value.
 
-	\sa NativeEndian::StoreAny(uint8_t*,char)
+	\sa NativeEndian::StoreAny(T*,T)
 
 ***************************************/
 
@@ -1687,7 +1516,7 @@ double BURGER_API Burger::SwapEndian::LoadAny(
 	\param pOutput Pointer to an 8 bit value.
 	\param iInput The 8 bit signed value.
 
-	\sa NativeEndian::StoreAny(int8_t*,int8_t)
+	\sa NativeEndian::StoreAny(T*,T)
 
 ***************************************/
 
@@ -1702,7 +1531,7 @@ double BURGER_API Burger::SwapEndian::LoadAny(
 	\param pOutput Pointer to a 16 bit value.
 	\param uInput The 16 bit unsigned value.
 
-	\sa NativeEndian::Store(uint16_t*,uint16_t) or
+	\sa NativeEndian::Store(T*,T) or
 		SwapEndian::Store(uint16_t *,uint16_t).
 
 ***************************************/
@@ -1735,7 +1564,7 @@ void BURGER_API Burger::SwapEndian::StoreAny(
 	\param pOutput Pointer to a 32 bit value.
 	\param uInput The 32 bit unsigned value.
 
-	\sa NativeEndian::Store(uint32_t*,uint32_t)
+	\sa NativeEndian::Store(T*,T)
 
 ***************************************/
 
@@ -1775,7 +1604,7 @@ void BURGER_API Burger::SwapEndian::StoreAny(
 	\param pOutput Pointer to a 64 bit value.
 	\param uInput The 64 bit unsigned value.
 
-	\sa NativeEndian::Store(uint64_t*,uint64_t)
+	\sa NativeEndian::Store(T*,T)
 
 ***************************************/
 
@@ -1815,7 +1644,7 @@ void BURGER_API Burger::SwapEndian::StoreAny(
 	\param pOutput Pointer to a float value.
 	\param fInput The float value.
 
-	\sa NativeEndian::Store(float*,float) or
+	\sa NativeEndian::Store(T*,T) or
 		SwapEndian::Store(float *,float).
 
 ***************************************/
@@ -1844,7 +1673,7 @@ void BURGER_API Burger::SwapEndian::StoreAny(
 	\param pOutput Pointer to a double value.
 	\param dInput The double value.
 
-	\sa NativeEndian::Store(double*,double)
+	\sa NativeEndian::Store(T*,T)
 
 ***************************************/
 
@@ -1878,7 +1707,7 @@ void BURGER_API Burger::SwapEndian::StoreAny(
 
 	\param pInput Pointer to an 8 bit value.
 
-	\sa NativeEndian::Fixup(char*)
+	\sa NativeEndian::Fixup(T*)
 
 ***************************************/
 
@@ -1891,7 +1720,7 @@ void BURGER_API Burger::SwapEndian::StoreAny(
 
 	\param pInput Pointer to an 8 bit value.
 
-	\sa NativeEndian::Fixup(uint8_t*)
+	\sa NativeEndian::Fixup(T*)
 
 ***************************************/
 
@@ -1904,7 +1733,7 @@ void BURGER_API Burger::SwapEndian::StoreAny(
 
 	\param pInput Pointer to an 8 bit value.
 
-	\sa NativeEndian::Fixup(int8_t *)
+	\sa NativeEndian::Fixup(T *)
 
 ***************************************/
 
@@ -1920,7 +1749,7 @@ void BURGER_API Burger::SwapEndian::StoreAny(
 
 	\note \ref NULL pointers are illegal and will page fault.
 
-	\sa NativeEndian::Fixup(uint16_t *)
+	\sa NativeEndian::Fixup(T *)
 
 ***************************************/
 
@@ -1936,7 +1765,7 @@ void BURGER_API Burger::SwapEndian::StoreAny(
 
 	\note \ref NULL pointers are illegal and will page fault.
 
-	\sa SwapEndian::FixupAny(uint32_t *) or NativeEndian::Fixup(uint32_t *)
+	\sa SwapEndian::FixupAny(uint32_t *) or NativeEndian::Fixup(T *)
 
 ***************************************/
 
@@ -1951,7 +1780,7 @@ void BURGER_API Burger::SwapEndian::StoreAny(
 
 	\note \ref NULL pointers are illegal and will page fault.
 
-	\sa SwapEndian::FixupAny(uint64_t *) or NativeEndian::Fixup(uint64_t *)
+	\sa SwapEndian::FixupAny(uint64_t *) or NativeEndian::Fixup(T *)
 
 ***************************************/
 
@@ -1978,7 +1807,7 @@ void BURGER_API Burger::SwapEndian::Fixup(uint64_t* pInput) BURGER_NOEXCEPT
 
 	\param pInput Pointer to an 8 bit value.
 
-	\sa NativeEndian::FixupAny(char*)
+	\sa NativeEndian::FixupAny(T*)
 
 ***************************************/
 
@@ -1991,7 +1820,7 @@ void BURGER_API Burger::SwapEndian::Fixup(uint64_t* pInput) BURGER_NOEXCEPT
 
 	\param pInput Pointer to an 8 bit value.
 
-	\sa NativeEndian::FixupAny(uint8_t*)
+	\sa NativeEndian::FixupAny(T*)
 
 ***************************************/
 
@@ -2004,7 +1833,7 @@ void BURGER_API Burger::SwapEndian::Fixup(uint64_t* pInput) BURGER_NOEXCEPT
 
 	\param pInput Pointer to an 8 bit value.
 
-	\sa NativeEndian::FixupAny(int8_t *)
+	\sa NativeEndian::FixupAny(T *)
 
 ***************************************/
 
@@ -2020,7 +1849,7 @@ void BURGER_API Burger::SwapEndian::Fixup(uint64_t* pInput) BURGER_NOEXCEPT
 
 	\note \ref NULL pointers are illegal and will page fault.
 
-	\sa NativeEndian::FixupAny(uint16_t *)
+	\sa NativeEndian::FixupAny(T *)
 
 ***************************************/
 
@@ -2044,7 +1873,7 @@ void BURGER_API Burger::SwapEndian::FixupAny(uint16_t* pInput) BURGER_NOEXCEPT
 
 	\note \ref NULL pointers are illegal and will page fault.
 
-	\sa SwapEndian::Fixup(uint32_t *) or NativeEndian::FixupAny(uint32_t *)
+	\sa SwapEndian::Fixup(uint32_t *) or NativeEndian::FixupAny(T *)
 
 ***************************************/
 
@@ -2072,7 +1901,7 @@ void BURGER_API Burger::SwapEndian::FixupAny(uint32_t* pInput) BURGER_NOEXCEPT
 
 	\note \ref NULL pointers are illegal and will page fault.
 
-	\sa SwapEndian::Fixup(uint64_t *) or NativeEndian::FixupAny(uint64_t *)
+	\sa SwapEndian::Fixup(uint64_t *) or NativeEndian::FixupAny(T *)
 
 ***************************************/
 
@@ -2561,7 +2390,7 @@ void BURGER_API Burger::SwapEndian::FixupAny(uint64_t* pInput) BURGER_NOEXCEPT
 	\struct Burger::NativeEndian
 	\brief Loads a 16, 32 or 64 bit value with no byte swapping.
 
-	The classes Burger::LittleEndian and Burger::BigEndian either map to \ref
+	The classes \ref LittleEndian and \ref BigEndian either map to \ref
 	NativeEndian or \ref SwapEndian. If the machine's endian matches the class,
 	then it maps to this class.
 
@@ -2569,11 +2398,11 @@ void BURGER_API Burger::SwapEndian::FixupAny(uint64_t* pInput) BURGER_NOEXCEPT
 	when the program is asking for no endian swapping since the data being read
 	is the same endian as the machine.
 
-	The only functions that do not disappear are the LoadAny(??? *) group of
-	calls since they have the ability to fetch a 16, 32 or 64 bit value
-	regardless of the alignment of the data pointer. These are useful in
-	grabbing data from a byte stream and won't trigger an alignment access
-	fault.
+	The only functions that do not disappear are the LoadAny(T*) or
+	StoreAny(T*, T) group of calls since they have the ability to fetch a 16, 32
+	or 64 bit value regardless of the alignment of the data pointer. These are
+	useful in grabbing data from a byte stream and won't trigger an alignment
+	access fault.
 
 	Under most circumstances, you will not call this class directly.
 
@@ -2596,6 +2425,7 @@ void BURGER_API Burger::SwapEndian::FixupAny(uint64_t* pInput) BURGER_NOEXCEPT
 		aligned to the data type's granularity.
 
 	\tparam T arithmetic type or pointer to arithmetic type.
+
 	\param Input The value to load from pointer or return as is.
 
 	\return The input value or the loaded value from pointer.
@@ -2606,7 +2436,7 @@ void BURGER_API Burger::SwapEndian::FixupAny(uint64_t* pInput) BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\fn Burger::NativeEndian::Store(T* pOutput,T Input)
+	\fn Burger::NativeEndian::Store(T* pOutput, T Input)
 	\brief Store an arithmetic value
 
 	Given either an arithmetic type and its pointer, store the value without
@@ -2619,6 +2449,7 @@ void BURGER_API Burger::SwapEndian::FixupAny(uint64_t* pInput) BURGER_NOEXCEPT
 		aligned to the data type's granularity.
 
 	\tparam T arithmetic type.
+
 	\param pOutput Pointer to an arithmetic value.
 	\param Input The arithmetic value.
 
@@ -2635,360 +2466,36 @@ void BURGER_API Burger::SwapEndian::FixupAny(uint64_t* pInput) BURGER_NOEXCEPT
 	and reconstruct it into a value in native endian.
 
 	\tparam T arithmetic type.
-	
+
 	\param pInput Pointer to a value.
 
 	\return The loaded value
 
-	\sa SwapEndian::LoadAny(const signed long*)
+	\sa StoreAny(T*, T), or SwapEndian::LoadAny(const T*)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::NativeEndian::StoreAny(char *pOutput,char iInput)
-	\brief Store an 8 bit signed value to memory with byte alignment.
-
-	It assumes that the output pointer is unaligned.
-
-	\note Since 8 bit values can't be unaligned, this function only exists for
-	completeness sake
-
-	\param pOutput Pointer to an 8 bit value.
-	\param iInput The 8 bit signed value.
-
-	\sa SwapEndian::StoreAny(char*,char)
-
-***************************************/
-
-/*! ************************************
-
-	\fn Burger::NativeEndian::StoreAny(uint8_t *pOutput,uint8_t uInput)
-	\brief Store an 8 bit unsigned value to memory with byte alignment.
-
-	It assumes that the output pointer is unaligned.
-
-	\note Since 8 bit values can't be unaligned, this function only exists for
-	completeness sake
-
-	\param pOutput Pointer to an 8 bit value.
-	\param uInput The 8 bit unsigned value.
-
-	\sa SwapEndian::StoreAny(uint8_t*,char)
-
-***************************************/
-
-/*! ************************************
-
-	\fn Burger::NativeEndian::StoreAny(int8_t *pOutput,int8_t iInput)
-	\brief Store an 8 bit signed value to memory with byte alignment.
-
-	It assumes that the output pointer is unaligned.
-
-	\note Since 8 bit values can't be unaligned, this function only exists for
-	completeness sake
-
-	\param pOutput Pointer to an 8 bit value.
-	\param iInput The 8 bit signed value.
-
-	\sa SwapEndian::StoreAny(int8_t*,int8_t)
-
-***************************************/
-
-/*! ************************************
-
+	\fn Burger::NativeEndian::StoreAny(T*, T)
 	\brief Store a 16 bit unsigned value to memory with byte alignment.
 
 	Assuming the output pointer is unaligned, it will store data a byte at a
 	time into a 16 bit value in native endian.
 
-	\param pOutput Pointer to a 16 bit value.
-	\param uInput The 16 bit unsigned value.
-
-	\sa SwapEndian::StoreAny(uint16_t*,uint16_t)
-
-***************************************/
-
-#if (defined(BURGER_INTEL) || defined(BURGER_ARM64)) && !defined(DOXYGEN)
-
-#else
-void BURGER_API Burger::NativeEndian::StoreAny(
-	uint16_t* pOutput, uint16_t uInput) BURGER_NOEXCEPT
-{
-#if defined(BURGER_BIGENDIAN)
-	reinterpret_cast<uint8_t*>(pOutput)[0] = static_cast<uint8_t>(uInput >> 8U);
-	reinterpret_cast<uint8_t*>(pOutput)[1] = static_cast<uint8_t>(uInput);
-#else
-	reinterpret_cast<uint8_t*>(pOutput)[0] = static_cast<uint8_t>(uInput);
-	reinterpret_cast<uint8_t*>(pOutput)[1] = static_cast<uint8_t>(uInput >> 8U);
-#endif
-}
-#endif
-
-/*! ************************************
-
-	\brief Store a 32 bit unsigned value to memory with byte alignment.
-
-	Assuming the output pointer is unaligned, it will store data a byte at a
-	time into a 32 bit value in native endian.
-
-	\param pOutput Pointer to a 32 bit value.
-	\param uInput The 32 bit unsigned value.
-
-	\sa SwapEndian::StoreAny(uint32_t*,uint32_t)
-
-***************************************/
-
-#if (defined(BURGER_INTEL) || defined(BURGER_ARM64)) && !defined(DOXYGEN)
-
-#else
-void BURGER_API Burger::NativeEndian::StoreAny(
-	uint32_t* pOutput, uint32_t uInput) BURGER_NOEXCEPT
-{
-#if defined(BURGER_BIGENDIAN)
-	reinterpret_cast<uint8_t*>(pOutput)[0] =
-		static_cast<uint8_t>(uInput >> 24U);
-	reinterpret_cast<uint8_t*>(pOutput)[1] =
-		static_cast<uint8_t>(uInput >> 16U);
-	reinterpret_cast<uint8_t*>(pOutput)[2] = static_cast<uint8_t>(uInput >> 8U);
-	reinterpret_cast<uint8_t*>(pOutput)[3] = static_cast<uint8_t>(uInput);
-#else
-	reinterpret_cast<uint8_t*>(pOutput)[0] = static_cast<uint8_t>(uInput);
-	reinterpret_cast<uint8_t*>(pOutput)[1] = static_cast<uint8_t>(uInput >> 8U);
-	reinterpret_cast<uint8_t*>(pOutput)[2] =
-		static_cast<uint8_t>(uInput >> 16U);
-	reinterpret_cast<uint8_t*>(pOutput)[3] =
-		static_cast<uint8_t>(uInput >> 24U);
-#endif
-}
-#endif
-
-/*! ************************************
-
-	\brief Store a 64 bit unsigned value to memory with byte alignment.
-
-	Assuming the output pointer is unaligned, it will store data a byte at a
-	time into a 64 bit value in native endian.
-
-	\param pOutput Pointer to a 64 bit value.
-	\param uInput The 64 bit unsigned value.
-
-	\sa SwapEndian::StoreAny(uint64_t*,uint64_t)
-
-***************************************/
-
-#if (defined(BURGER_INTEL) || defined(BURGER_ARM64)) && !defined(DOXYGEN)
-
-#else
-void BURGER_API Burger::NativeEndian::StoreAny(
-	uint64_t* pOutput, uint64_t uInput) BURGER_NOEXCEPT
-{
-	reinterpret_cast<uint8_t*>(pOutput)[0] =
-		reinterpret_cast<const uint8_t*>(&uInput)[0];
-	reinterpret_cast<uint8_t*>(pOutput)[1] =
-		reinterpret_cast<const uint8_t*>(&uInput)[1];
-	reinterpret_cast<uint8_t*>(pOutput)[2] =
-		reinterpret_cast<const uint8_t*>(&uInput)[2];
-	reinterpret_cast<uint8_t*>(pOutput)[3] =
-		reinterpret_cast<const uint8_t*>(&uInput)[3];
-	reinterpret_cast<uint8_t*>(pOutput)[4] =
-		reinterpret_cast<const uint8_t*>(&uInput)[4];
-	reinterpret_cast<uint8_t*>(pOutput)[5] =
-		reinterpret_cast<const uint8_t*>(&uInput)[5];
-	reinterpret_cast<uint8_t*>(pOutput)[6] =
-		reinterpret_cast<const uint8_t*>(&uInput)[6];
-	reinterpret_cast<uint8_t*>(pOutput)[7] =
-		reinterpret_cast<const uint8_t*>(&uInput)[7];
-}
-#endif
-
-/*! ************************************
-
-	\brief Store a float value to memory with byte alignment.
-
-	Assuming the output pointer is unaligned, it will store data a byte at a
-	time into a 32 bit float value in native endian.
-
-	\param pOutput Pointer to a float value.
-	\param fInput The float value.
-
-	\sa SwapEndian::StoreAny(float*,float)
-
-***************************************/
-
-#if (defined(BURGER_INTEL) || defined(BURGER_ARM64)) && !defined(DOXYGEN)
-
-#else
-void BURGER_API Burger::NativeEndian::StoreAny(
-	float* pOutput, float fInput) BURGER_NOEXCEPT
-{
-	reinterpret_cast<uint8_t*>(pOutput)[0] =
-		reinterpret_cast<const uint8_t*>(&fInput)[0];
-	reinterpret_cast<uint8_t*>(pOutput)[1] =
-		reinterpret_cast<const uint8_t*>(&fInput)[1];
-	reinterpret_cast<uint8_t*>(pOutput)[2] =
-		reinterpret_cast<const uint8_t*>(&fInput)[2];
-	reinterpret_cast<uint8_t*>(pOutput)[3] =
-		reinterpret_cast<const uint8_t*>(&fInput)[3];
-}
-#endif
-
-/*! ************************************
-
-	\brief Store a double value to memory with byte alignment.
-
-	Assuming the output pointer is unaligned, it will store data a byte at a
-	time into a 64 bit float value in native endian.
-
-	\param pOutput Pointer to a double value.
-	\param dInput The double value.
-
-	\sa SwapEndian::StoreAny(double*,double).
-
-***************************************/
-
-#if (defined(BURGER_INTEL) || defined(BURGER_ARM64)) && !defined(DOXYGEN)
-
-#else
-void BURGER_API Burger::NativeEndian::StoreAny(
-	double* pOutput, double dInput) BURGER_NOEXCEPT
-{
-	reinterpret_cast<uint8_t*>(pOutput)[0] =
-		reinterpret_cast<const uint8_t*>(&dInput)[0];
-	reinterpret_cast<uint8_t*>(pOutput)[1] =
-		reinterpret_cast<const uint8_t*>(&dInput)[1];
-	reinterpret_cast<uint8_t*>(pOutput)[2] =
-		reinterpret_cast<const uint8_t*>(&dInput)[2];
-	reinterpret_cast<uint8_t*>(pOutput)[3] =
-		reinterpret_cast<const uint8_t*>(&dInput)[3];
-	reinterpret_cast<uint8_t*>(pOutput)[4] =
-		reinterpret_cast<const uint8_t*>(&dInput)[4];
-	reinterpret_cast<uint8_t*>(pOutput)[5] =
-		reinterpret_cast<const uint8_t*>(&dInput)[5];
-	reinterpret_cast<uint8_t*>(pOutput)[6] =
-		reinterpret_cast<const uint8_t*>(&dInput)[6];
-	reinterpret_cast<uint8_t*>(pOutput)[7] =
-		reinterpret_cast<const uint8_t*>(&dInput)[7];
-}
-#endif
-
-/*! ************************************
-
-	\fn Burger::NativeEndian::StoreAny(int16_t *pOutput,int16_t iInput)
-	\brief Store a 16 bit signed value to memory with byte alignment.
-
-	It assumes that the output pointer is unaligned.
+	\tparam T arithmetic type.
 
 	\param pOutput Pointer to a 16 bit value.
-	\param iInput The 16 bit signed value.
 
-	\sa SwapEndian::StoreAny(int16_t*,int16_t)
+	\param Input The 16 bit unsigned value.
 
-***************************************/
-
-/*! ************************************
-
-	\fn Burger::NativeEndian::StoreAny(int32_t *pOutput,int32_t iInput)
-	\brief Store a 32 bit signed value to memory with byte alignment.
-
-	It assumes that the output pointer is unaligned.
-
-	\param pOutput Pointer to a 32 bit value.
-	\param iInput The 32 bit signed value.
-
-	\sa SwapEndian::StoreAny(int32_t*,int32_t)
+	\sa LoadAny(const T*), or SwapEndian::StoreAny(T*, T)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::NativeEndian::StoreAny(int64_t *pOutput,int64_t iInput)
-	\brief Store a 64 bit signed value to memory with byte alignment.
-
-	It assumes that the output pointer is unaligned.
-
-	\param pOutput Pointer to a 64 bit value.
-	\param iInput The 64 bit signed value.
-
-	\sa SwapEndian::StoreAny(int64_t*,int64_t)
-
-***************************************/
-
-/*! ************************************
-
-	\fn Burger::NativeEndian::StoreAny(wchar_t *pOutput,wchar_t uInput)
-	\brief Store a 16 bit value to memory with byte alignment.
-
-	It assumes that the output pointer is unaligned.
-
-	\param pOutput Pointer to a 16 bit value.
-	\param uInput The 16 bit value.
-
-	\sa SwapEndian::StoreAny(wchar_t*,wchar_t)
-
-***************************************/
-
-/*! ************************************
-
-	\fn Burger::NativeEndian::StoreAny(unsigned int *pOutput,
-		unsigned int uInput)
-	\brief Store a 16-32 bit signed value to memory with byte alignment.
-
-	It assumes that the output pointer is unaligned.
-
-	\param pOutput Pointer to a 16-32 bit value.
-	\param uInput The 16-32 bit signed value.
-
-	\sa SwapEndian::StoreAny(unsigned int*,unsigned int)
-
-***************************************/
-
-/*! ************************************
-
-	\fn Burger::NativeEndian::StoreAny(signed int *pOutput,signed int iInput)
-	\brief Store a 16-32 bit signed value to memory with byte alignment.
-
-	It assumes that the output pointer is unaligned.
-
-	\param pOutput Pointer to a 16-32 bit value.
-	\param iInput The 16-32 bit signed value.
-
-	\sa SwapEndian::StoreAny(signed int*,signed int)
-
-***************************************/
-
-/*! ************************************
-
-	\fn Burger::NativeEndian::StoreAny(unsigned long *pOutput,
-		unsigned long uInput)
-	\brief Store a 32-64 bit signed value to memory with byte alignment.
-
-	It assumes that the output pointer is unaligned.
-
-	\param pOutput Pointer to a 32-64 bit value.
-	\param uInput The 32-64 bit signed value.
-
-	\sa SwapEndian::StoreAny(unsigned long*,unsigned long)
-
-***************************************/
-
-/*! ************************************
-
-	\fn Burger::NativeEndian::StoreAny(signed long *pOutput,signed long iInput)
-	\brief Store a 32-64 bit signed value to memory with byte alignment.
-
-	It assumes that the output pointer is unaligned.
-
-	\param pOutput Pointer to a 32-64 bit value.
-	\param iInput The 32-64 bit signed value.
-
-	\sa SwapEndian::StoreAny(signed long*,signed long)
-
-***************************************/
-
-/*! ************************************
-
-	\fn Burger::NativeEndian::Fixup(T)
+	\fn Burger::NativeEndian::Fixup(T*)
 	\brief Does nothing.
 
 	Native endian value do not need to be endian swapped, so this function will
@@ -2996,13 +2503,13 @@ void BURGER_API Burger::NativeEndian::StoreAny(
 
 	\tparam T Pointer to a value to not endian swap.
 
-	\sa SwapEndian::Fixup(char*)
+	\sa SwapEndian::Fixup(T*)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::NativeEndian::FixupAny(T)
+	\fn Burger::NativeEndian::FixupAny(T*)
 	\brief Does nothing.
 
 	The \ref SwapEndian class would swap the endian of a non aligned variable,
@@ -3011,7 +2518,7 @@ void BURGER_API Burger::NativeEndian::StoreAny(
 
 	\tparam T Pointer to a value to not endian swap.
 
-	\sa SwapEndian::FixupAny(char*)
+	\sa SwapEndian::FixupAny(T*)
 
 ***************************************/
 

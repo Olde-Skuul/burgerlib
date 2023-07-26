@@ -399,8 +399,8 @@
 					</SETTING>
 				</SETTING>
 				<SETTING><NAME>MWFrontEnd_C_cplusplus</NAME><VALUE>0</VALUE></SETTING>
-				<SETTING><NAME>MWFrontEnd_C_templateparser</NAME><VALUE>0</VALUE></SETTING>
-				<SETTING><NAME>MWFrontEnd_C_instance_manager</NAME><VALUE>0</VALUE></SETTING>
+				<SETTING><NAME>MWFrontEnd_C_templateparser</NAME><VALUE>1</VALUE></SETTING>
+				<SETTING><NAME>MWFrontEnd_C_instance_manager</NAME><VALUE>1</VALUE></SETTING>
 				<SETTING><NAME>MWFrontEnd_C_enableexceptions</NAME><VALUE>0</VALUE></SETTING>
 				<SETTING><NAME>MWFrontEnd_C_useRTTI</NAME><VALUE>0</VALUE></SETTING>
 				<SETTING><NAME>MWFrontEnd_C_booltruefalse</NAME><VALUE>1</VALUE></SETTING>
@@ -6998,8 +6998,8 @@
 					</SETTING>
 				</SETTING>
 				<SETTING><NAME>MWFrontEnd_C_cplusplus</NAME><VALUE>0</VALUE></SETTING>
-				<SETTING><NAME>MWFrontEnd_C_templateparser</NAME><VALUE>0</VALUE></SETTING>
-				<SETTING><NAME>MWFrontEnd_C_instance_manager</NAME><VALUE>0</VALUE></SETTING>
+				<SETTING><NAME>MWFrontEnd_C_templateparser</NAME><VALUE>1</VALUE></SETTING>
+				<SETTING><NAME>MWFrontEnd_C_instance_manager</NAME><VALUE>1</VALUE></SETTING>
 				<SETTING><NAME>MWFrontEnd_C_enableexceptions</NAME><VALUE>0</VALUE></SETTING>
 				<SETTING><NAME>MWFrontEnd_C_useRTTI</NAME><VALUE>0</VALUE></SETTING>
 				<SETTING><NAME>MWFrontEnd_C_booltruefalse</NAME><VALUE>1</VALUE></SETTING>
@@ -13597,8 +13597,8 @@
 					</SETTING>
 				</SETTING>
 				<SETTING><NAME>MWFrontEnd_C_cplusplus</NAME><VALUE>0</VALUE></SETTING>
-				<SETTING><NAME>MWFrontEnd_C_templateparser</NAME><VALUE>0</VALUE></SETTING>
-				<SETTING><NAME>MWFrontEnd_C_instance_manager</NAME><VALUE>0</VALUE></SETTING>
+				<SETTING><NAME>MWFrontEnd_C_templateparser</NAME><VALUE>1</VALUE></SETTING>
+				<SETTING><NAME>MWFrontEnd_C_instance_manager</NAME><VALUE>1</VALUE></SETTING>
 				<SETTING><NAME>MWFrontEnd_C_enableexceptions</NAME><VALUE>0</VALUE></SETTING>
 				<SETTING><NAME>MWFrontEnd_C_useRTTI</NAME><VALUE>0</VALUE></SETTING>
 				<SETTING><NAME>MWFrontEnd_C_booltruefalse</NAME><VALUE>1</VALUE></SETTING>

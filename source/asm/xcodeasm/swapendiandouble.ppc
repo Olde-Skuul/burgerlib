@@ -1,0 +1,42 @@
+/*
+	PowerPC assembly for implementing the intrinsic _swapendiandouble for
+	MacOSX Darwin
+
+	Build with XCode tool chain
+
+	XCode uses a C++ parser and will try to assemble this file on all
+	CPU types, so test for the proper CPU type before invoking any cpu
+	instructions.
+
+	extern "C" double _swapendiandouble(double dInput) BURGER_NOEXCEPT;
+
+	Power PC 32 and 64 bit version. Input and output are f1
+*/
+
+#if defined(__ppc__) || defined(__ppc64__)
+	.align 2
+	.text
+
+	.globl __ZN6Burger17_swapendiandoubleEd
+__ZN6Burger17_swapendiandoubleEd:
+
+/* Store the 64 bit float on the stack */
+	stfd	f1, -16(r1)
+
+/* Index to the stack addresses */
+	addi	r5, r1, -16
+	addi	r6, r1, -12
+
+/* Load the values endian reversed */
+	lwbrx	r3, 0, r5
+	lwbrx	r4, 0, r6
+
+/* Store the swapped data */
+	stw		r4,	-16(r1)
+	stw		r3, -12(r1)
+
+/* Load the endian reversed double */
+	lfd		f1, -16(r1)
+	blr
+
+#endif

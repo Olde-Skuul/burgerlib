@@ -129,11 +129,6 @@ unsigned char _BitScanReverse64(unsigned long* Index, unsigned __int64 Mask);
 
 #endif
 
-// Visual Studio 2008 and earlier doesn't have this intrinsic
-#if defined(BURGER_INTEL) && (BURGER_MSVC < 160000000)
-extern "C" uint64_t __cdecl _xgetbv(unsigned int uInput);
-#endif
-
 // Visual studio 2005 and earlier don't have these SSE type conversions
 #if defined(BURGER_AMD64) && (BURGER_MSVC < 150000000)
 #include <emmintrin.h>
@@ -329,10 +324,6 @@ BURGER_INLINE uint8_t _BitScanReverse(unsigned long* Index, unsigned long Mask)
 		: "mr"(Mask));
 	return bZero;
 }
-#endif
-
-#if !__has_builtin(_xgetbv)
-extern uint64_t _xgetbv(uint_t xcr) BURGER_NOEXCEPT;
 #endif
 
 #elif defined(BURGER_PPC) && defined(BURGER_MSVC)

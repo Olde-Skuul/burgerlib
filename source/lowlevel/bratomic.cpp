@@ -1612,28 +1612,3 @@ uint64_t BURGER_API Burger::atomic_add(
 #endif
 }
 #endif
-
-/***************************************
-
-	\brief Intrinsic _xgetbv for clang and GNU
-
-	This instrinsic is not supported by older versions of clang and GNU, it's
-	added here for forward compatibility.
-
-	\param xcr Value for the ECX register
-
-	\return Value returned byt the xgetbv instruction
-
-***************************************/
-
-#if defined(BURGER_INTEL) && (defined(BURGER_CLANG) || defined(BURGER_GNUC))
-#if !__has_builtin(_xgetbv)
-uint64_t _xgetbv(uint_t xcr) BURGER_NOEXCEPT
-{
-	uint32_t eax, edx;
-	// xgetbv instruction
-	__asm__ volatile(".byte 0x0F, 0x01, 0xD0" : "=a"(eax), "=d"(edx) : "c"(xcr));
-	return eax | (static_cast<uint64_t>(edx) << 32U);
-}
-#endif
-#endif

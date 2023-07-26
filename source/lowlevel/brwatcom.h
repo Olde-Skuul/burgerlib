@@ -225,10 +225,6 @@ extern unsigned char _BitScanReverse(unsigned long* Index, unsigned long Mask);
 	"bsr eax,eax" \
 	"mov dword ptr [edx],eax" \
 	"setne al" parm[eax][ecx] value[eax] modify exact[eax];
-
-extern uint64_t _xgetbv(unsigned int uInput);
-#pragma aux _xgetbv = "db 0x0F, 0x01, 0xD0" parm[ecx] value[eax edx] modify \
-	exact[eax edx] nomemory;
 }
 #endif
 #endif

@@ -1,0 +1,40 @@
+;
+; Store a 64 bit integer with unaligned operations
+;
+; Done in assembly, because that's how you know it's done right
+; PowerPC PEF version
+;
+
+	INCLUDE 'macros.ppc'
+
+;
+; Unmangled function prototype
+; void BURGER_API Burger::_store_unaligned(uint64_t* pOutput, uint64_t uInput)
+;
+
+	EXPORT _store_unaligned__6BurgerFPUxUx[DS]
+	EXPORT _store_unaligned__6BurgerFPUxUx[PR]
+
+	DeclareProc _store_unaligned__6BurgerFPUxUx
+
+; Store the first 32 bits
+	srwi	r6,r4,24
+	extrwi	r7,r4,8,8
+	extrwi	r0,r4,8,16
+	stb		r6,0(r3)
+	stb		r7,1(r3)
+	stb		r0,2(r3)
+	stb		r4,3(r3)
+
+; Store the rest of the data
+	srwi	r6,r5,24
+	extrwi	r7,r5,8,8
+	extrwi	r0,r5,8,16
+	stb		r6,4(r3)
+	stb		r7,5(r3)
+	stb		r0,6(r3)
+	stb		r5,7(r3)
+
+	blr
+
+	END

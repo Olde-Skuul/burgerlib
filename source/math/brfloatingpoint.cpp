@@ -412,55 +412,6 @@ __asm__(
 
 ***************************************/
 
-#if defined(BURGER_XBOX360) || \
-	(defined(BURGER_PPC) && defined(BURGER_METROWERKS))
-
-BURGER_DECLSPECNAKED Burger::ePowerPCRounding BURGER_API
-Burger::SetPowerPCRounding(ePowerPCRounding /* eInput */)
-{
-	// clang-format off
-#if defined(BURGER_XBOX360)
-    BURGER_ASM
-    {
-#endif
-        mffs fp0            // Get the floating point control register
-        stfd fp0, -8(r1)    // Store it in memory
-        lwz r4, -4(r1)      // Load into an integer register
-        extrwi r5, r4, 2, 30 // Get the return value, mask off the lowest 2 bits (AND & 3)
-        rlwimi r4, r3, 0, 30, 31 // Move the lowest 2 bits into the existing value
-        stw r4, -4(r1)      // Store it in memory
-        lfd fp0, -8(r1)     // Reload the fp register
-        mtfsf 255, fp0      // Set the flags
-        mr r3, r5           // Return the previous value
-        blr                 // Exit
-#if defined(BURGER_XBOX360)
-    }
-#endif
-    // clang-format on 
-}
-
-#elif defined(BURGER_PPC) && defined(BURGER_MACOSX)
-
-__asm__(
-    "	.align	2,0\n"
-    "	.globl	__ZN6Burger18SetPowerPCRoundingENS_16ePowerPCRoundingE\n"
-    "__ZN6Burger18SetPowerPCRoundingENS_16ePowerPCRoundingE:\n"
-    "	mffs	f0\n"            // Get the floating point control register
-    "	stfd	f0,-8(r1)\n"     // Store it in memory
-    "	lwz		r4,-4(r1)\n"     // Load into an integer register
-    "	extrwi	r5,r4,2,30\n"    // Get the return value, mask off the lowest 2
-                                 // bits (AND & 3)
-    "	rlwimi	r4,r3,0,30,31\n" // Move the lowest 2 bits into the existing
-                                 // value
-    "	stw		r4,-4(r1)\n"     // Store it in memory
-    "	lfd		f0,-8(r1)\n"     // Reload the fp register
-    "	mtfsf	255,f0\n"        // Set the flags
-    "	mr		r3,r5\n"         // Return the previous value
-    "	blr\n"                   // Exit
-);
-
-#endif
-
 /*! ************************************
 
     \fn Burger::ePowerPCRounding BURGER_API Burger::GetPowerPCRounding(void)
@@ -475,42 +426,6 @@ __asm__(
     \sa ePowerPCRounding or SetPowerPCRounding(ePowerPCRounding)
 
 ***************************************/
-
-#if defined(BURGER_XBOX360) || \
-    (defined(BURGER_PPC) && defined(BURGER_METROWERKS))
-
-BURGER_DECLSPECNAKED Burger::ePowerPCRounding BURGER_API Burger::GetPowerPCRounding(void)
-{
-    // clang-format off
-#if defined(BURGER_XBOX360)
-    BURGER_ASM
-    {
-#endif
-        mffs fp0            // Get the floating point control register
-        stfd fp0, -8(r1)    // Store it in memory
-        lwz r3, -4(r1)      // Load into an integer register
-        extrwi r3, r3, 2, 30  // Mask off the lowest 2 bits (AND & 3)
-        blr                 // Exit
-#if defined(BURGER_XBOX360)
-    }
-#endif
-	// clang-format on
-}
-
-#elif defined(BURGER_PPC) && defined(BURGER_MACOSX)
-
-__asm__(
-	"	.align	2,0\n"
-	"	.globl	__ZN6Burger18GetPowerPCRoundingEv\n"
-	"__ZN6Burger18GetPowerPCRoundingEv:\n"
-	"	mffs	f0\n"         // Get the floating point control register
-	"	stfd	f0,-8(r1)\n"  // Store it in memory
-	"	lwz		r3,-4(r1)\n"  // Load into an integer register
-	"	extrwi	r3,r3,2,30\n" // Mask off the lowest 2 bits (AND & 3)
-	"	blr\n"                // Exit
-);
-
-#endif
 
 /*! ************************************
 

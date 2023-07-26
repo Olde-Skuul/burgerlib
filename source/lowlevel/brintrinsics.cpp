@@ -17,17 +17,44 @@
 
 /*! ************************************
 
-	\fn _swapendian64(uint64_t uInput)
-	\brief Swap endian of a 64 bit integer.
+	\fn _xgetbv(uint_t xcr) BURGER_NOEXCEPT
+	\brief Intrinsic _xgetbv for Intel CPUs
 
-	64 bit operations for endian swap are specialized on different platforms
-	since some forms require the return value to be in a structure.
+	This intrinsic is included in most modern "C" compilers that target Intel
+	CPUs. For some older compilers, the intrinsic is implemented in Burgerlib
+	to ensure it's always available.
 
-	\param uInput 64 integer to swap endian.
+	\note Only available on Intel platforms, however test if the instruction is
+		available.
 
-	\return Input with all 8 bytes reversed.
+	\param xcr Value for the ECX register
+
+	\return Value returned by the xgetbv instruction
 
 ***************************************/
+
+#if defined(DOXYGEN)
+extern "C" uint64_t _xgetbv(uint_t xcr) BURGER_NOEXCEPT;
+#endif
+
+#if defined(BURGER_INTEL)
+
+#if defined(BURGER_LINUX) || (defined(BURGER_CLANG) && defined(__XSAVE__)) || \
+	__has_builtin(_xgetbv)
+
+#elif defined(BURGER_CLANG) || defined(BURGER_GNUC)
+uint64_t _xgetbv(uint_t xcr) BURGER_NOEXCEPT
+{
+	uint32_t eax, edx;
+	// xgetbv instruction
+	__asm__ volatile(".byte 0x0F, 0x01, 0xD0"
+					 : "=a"(eax), "=d"(edx)
+					 : "c"(xcr));
+	return eax | (static_cast<uint64_t>(edx) << 32U);
+}
+#endif
+
+#endif
 
 /*! ************************************
 
@@ -54,7 +81,7 @@
 	On modern CPUs, a yield instruction exists that will cause the current
 	thread to pause until an interrupt occurs. This is a quick way to get a
 	thread to sleep and instantly restart to test for a mutex or other thread
-    blocker.
+	blocker.
 
 	Depending on compiler, this is a define or a function call.
 

@@ -562,6 +562,7 @@ static uint_t BURGER_API ArgTypeUnitTestPointerTypes(void) BURGER_NOEXCEPT
 	uResult |=
 		TestArgType(&EA, "unsigned char *", Burger::kArgumentTypeUInt8Ptr);
 
+#if !defined(BURGER_WIIU)
 	wchar_t wc = 0x0000;
 	const wchar_t* pwc = &wc;
 	const Burger::ArgumentType EX(pwc);
@@ -569,6 +570,7 @@ static uint_t BURGER_API ArgTypeUnitTestPointerTypes(void) BURGER_NOEXCEPT
 
 	const Burger::ArgumentType EY(L"Hello World");
 	uResult |= TestArgType(&EY, "L\"Hello World\"", g_pWCharARG);
+#endif
 
 #if defined(BURGER_HAS_CHAR8_T)
 	char8_t char8data = 0;

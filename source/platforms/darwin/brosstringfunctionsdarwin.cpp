@@ -32,7 +32,7 @@
 
 ***************************************/
 
-void BURGER_API Burger::StringCopy(String* pOutput, const __CFString* pInput)
+void BURGER_API Burger::StringCopy(String* pOutput, const __CFString* pInput) BURGER_NOEXCEPT
 {
 	// Try the easy way the just yank a "C" string pointer out directly
 	const char* pResult = CFStringGetCStringPtr(pInput, kCFStringEncodingUTF8);

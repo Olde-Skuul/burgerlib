@@ -12,7 +12,7 @@
 
 ***************************************/
 
-#include "brintrinsics.h"
+#include "brendian.h"
 
 #if !defined(DOXYGEN) && defined(BURGER_68K)
 

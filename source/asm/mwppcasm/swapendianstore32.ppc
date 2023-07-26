@@ -1,0 +1,30 @@
+;
+; Store a 32 bit integer with byte swapping
+;
+; This function exists to get a bug in the Metrowerks Codewarrior 10
+; compiler, where it did not make the variable pointed to by pOutput
+; as "modified". Therefore, if the value was stored as a local variable
+; and then immediately read, the compiler may use the uInput value
+; instead of the byte swapped version, causing runtime code failure.
+;
+; Done in assembly, because that's how you know it's done right
+; PowerPC PEF version
+;
+
+	INCLUDE 'macros.ppc'
+
+;
+; Unmangled function prototype
+; void BURGER_API _swapendianstore32(void* pOutput, uint32_t uInput) BURGER_NOEXCEPT
+;
+
+	EXPORT _swapendianstore32[DS]
+	EXPORT _swapendianstore32[PR]
+
+	DeclareProc _swapendianstore32
+
+; Store the 32 bits, byte swapped
+	stwbrx	r4,r0,r3
+	blr
+
+	END

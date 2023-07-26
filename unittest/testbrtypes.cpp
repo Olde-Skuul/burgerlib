@@ -596,7 +596,7 @@ static void BURGER_API ShowCPUFeatures(uint_t uVerbose) BURGER_NOEXCEPT
 	// Handle PowerPC special registers
 	//
 
-#if defined(BURGER_POWERPC)
+#if defined(BURGER_PPC)
 	if (uVerbose & VERBOSE_MSG) {
 
 		Burger::ePowerPCRounding uRounding = Burger::GetPowerPCRounding();

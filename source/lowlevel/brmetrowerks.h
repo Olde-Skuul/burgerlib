@@ -123,16 +123,6 @@ BURGER_INLINE uint32_t _BitScanReverse(
 	// clang-format on
 }
 
-BURGER_INLINE uint64_t _xgetbv(register uint_t xcr) BURGER_NOEXCEPT
-{
-	// clang-format off
-    BURGER_ASM {
-    mov ecx, xcr
-    db 0x0F, 0x01, 0xD0
-    }
-	// clang-format on
-}
-
 #elif defined(BURGER_68K)
 
 // muls.l d1,d1:d0

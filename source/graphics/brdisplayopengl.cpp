@@ -325,6 +325,8 @@ void Burger::DisplayOpenGL::SetLighting(uint_t bEnable)
 	} else {
 		glDisable(GL_LIGHTING);
 	}
+#else
+	BURGER_UNUSED(bEnable);
 #endif
 }
 

@@ -1,5 +1,5 @@
 #
-# Espresso assembly for implementing the intrinsic _swapendian64 for
+# Sony Cell assembly for implementing the intrinsic _swapendian64 for
 # the Playstation 3
 #
 # Build with PS3 tool chain
@@ -11,11 +11,12 @@
 
 	.text
 
-	.global _swapendian64
-_swapendian64:
-	.type _swapendian64, @function
+	.globl ._swapendian64
+._swapendian64:
+	.type ._swapendian64, @function
 
-# Perform the endian swap on both 32 bit registers
+# Split to 2 32 bit registers
+	srdi	4,3,32
 
 # 4,1,2,3 <- 1,2,3,4
 	rlwinm	0,3,24,0,31
@@ -29,10 +30,8 @@ _swapendian64:
 	rlwimi	0,3,8,24,31
 	rlwimi	12,4,8,24,31
 
-# Return them, word swapped!
-	mr		3,12
-	mr		4,0		
+	sldi	3,0,32
+	or		3,3,12
 	blr
 
-	.size	_swapendian64,.-_swapendian64
-        
+	.size	._swapendian64,.-._swapendian64

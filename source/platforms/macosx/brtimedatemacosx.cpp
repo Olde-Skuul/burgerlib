@@ -65,7 +65,7 @@ void Burger::TimeDate_t::GetTime(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-uint_t Burger::TimeDate_t::Load(const UTCDateTime* pUTCDateTime)
+uint_t Burger::TimeDate_t::Load(const UTCDateTime* pUTCDateTime) BURGER_NOEXCEPT
 {
 	Clear();
 	uint_t uResult = TRUE;
@@ -86,7 +86,7 @@ uint_t Burger::TimeDate_t::Load(const UTCDateTime* pUTCDateTime)
 
 ***************************************/
 
-uint_t Burger::TimeDate_t::Store(UTCDateTime* pUTCDateTime) const
+uint_t Burger::TimeDate_t::Store(UTCDateTime* pUTCDateTime) const BURGER_NOEXCEPT
 {
 	CFAbsoluteTime AbsTime;
 	uint_t uResult = Store(&AbsTime);

@@ -1,0 +1,39 @@
+/*
+	Get the PowerPC floating point rounding value
+
+	PowerPC assembly for MacOSX Darwin
+
+	Build with XCode tool chain
+
+	XCode uses a C++ parser and will try to assemble this file on all
+	CPU types, so test for the proper CPU type before invoking any cpu
+	instructions.
+
+	ePowerPCRounding BURGER_API Burger::GetPowerPCRounding(void) BURGER_NOEXCEPT;
+
+	Power PC 32 and 64 bit version.
+*/
+
+#if defined(__ppc__) || defined(__ppc64__)
+	.align 2
+	.text
+
+	.globl __ZN6Burger18GetPowerPCRoundingEv
+__ZN6Burger18GetPowerPCRoundingEv:
+
+/* Get the floating point control register */
+	mffs	f0
+
+/* Store it in memory */
+	stfd	f0, -8(r1)
+
+/* Load into an integer register */
+	lwz		r3, -4(r1)
+
+/* Mask off the lowest 2 bits (AND & 3) */
+	clrlwi	r3, r3, 30
+	
+/* Exit */
+	blr
+
+#endif

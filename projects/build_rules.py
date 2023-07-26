@@ -14,6 +14,7 @@ determine special rules on how to handle building the code and / or data.
 # pylint: disable=unused-argument
 # pylint: disable=consider-using-f-string
 # pylint: disable=global-statement
+# pylint: disable=too-many-lines
 
 from __future__ import absolute_import, print_function, unicode_literals
 
@@ -95,6 +96,7 @@ BURGER_LIB_SOURCE = (
 # PS3 specific code
 BURGER_LIB_PS3 = (
     "../source/platforms/ps3",
+    "../source/asm/ps3_asm"
 )
 
 # PS4 specific code
@@ -116,6 +118,7 @@ BURGER_LIB_VITA = (
 # Nintendo WiiU specific code
 BURGER_LIB_WIIU = (
     "../source/platforms/wiiu",
+    "../source/asm/wiiu_asm"
 )
 
 # Nintendo Switch specific code
@@ -127,7 +130,8 @@ BURGER_LIB_SWITCH = (
 # Microsoft Xbox 360 specific code
 BURGER_LIB_XBOX_360 = (
     "../source/platforms/xbox360",
-    "../source/graphics/shadersxbox360"
+    "../source/graphics/shadersxbox360",
+    "../source/asm/xbox360asm"
 )
 
 # Microsoft Xbox ONE specific code
@@ -219,6 +223,7 @@ ARG_LISTS = [
       "watcom",
       "codewarrior50"]),
     ("ps3", "burger", "library", ["vs2015"]),
+    ("ps3", "unittests", "app", ["vs2015"]),
     ("ps4", "burger", "library", ["vs2022"]),
     ("ps5", "burger", "library", ["vs2022"]),
     ("vita", "burger", "library", ["vs2015"]),
@@ -230,6 +235,7 @@ ARG_LISTS = [
     ("xboxgdk", "burger", "library", ["vs2022"]),
     ("xboxonex", "burger", "library", ["vs2022"]),
     ("wiiu", "burger", "library", ["vs2015"]),
+    ("wiiu", "unittests", "app", ["vs2015"]),
     ("switch", "burger", "library", ["vs2022"]),
     ("switch", "unittests", "app", ["vs2022"]),
     ("shield", "burger", "library", ["vs2015"]),
@@ -237,8 +243,8 @@ ARG_LISTS = [
     ("stadia", "burger", "library", ["vs2022"]),
     ("msdos", "burger", "library", ["watcom"]),
     ("msdos4gw", "unittests", "console", ["watcom"]),
-    ("macosx", "burger", "library", ["xcode3"]),
-    ("macosx", "unittests", "console", ["xcode3"]),
+    ("macosx", "burger", "library", ["xcode3", "xcode14"]),
+    ("macosx", "unittests", "console", ["xcode3", "xcode14"]),
     ("ios", "burger", "library", ["xcode3"]),
     ("linux", "burger", "library", ["make"]),
     ("linux", "unittests", "console", ["make"]),
@@ -731,6 +737,21 @@ def vs2005_2008_rules(project):
         project.include_folders_list.append(
             sdks_folder() + "windows/ddraw/include")
 
+########################################
+
+
+def gnu_clang_rules(project):
+    """
+    Handle special cases for GNU/Clang compilers
+
+    Stadia, Linux, Switch, MacOSX, iOS, Android
+    """
+
+    ide = project.solution.ide
+    if ide is IDETypes.make:
+        project.source_files_list.append(
+            "../source/asm/gnux64/xgetbv.x64")
+
 
 ########################################
 
@@ -855,6 +876,9 @@ def project_settings(project):
     # Apple platforms
     if platform.is_macosx():
         project.source_folders_list.extend(BURGER_LIB_MACOSX)
+        if ide is IDETypes.xcode3:
+            project.source_folders_list.append(
+                "../source/asm/xcodeasm")
 
     if platform.is_ios():
         project.source_folders_list.extend(BURGER_LIB_IOS)
@@ -868,10 +892,6 @@ def project_settings(project):
     # Sony platforms
     if platform is PlatformTypes.ps3:
         project.source_folders_list.extend(BURGER_LIB_PS3)
-
-        # PS3 assembly code
-        project.source_files_list.append(
-            "../source/asm/ps3_asm/swapendian64.s")
 
     if platform is PlatformTypes.ps4:
         project.source_folders_list.extend(BURGER_LIB_PS4)
@@ -924,10 +944,6 @@ def project_settings(project):
     # Nintendo
     if platform is PlatformTypes.wiiu:
         project.source_folders_list.extend(BURGER_LIB_WIIU)
-
-        # WiiU assembly code
-        project.source_files_list.append(
-            "../source/asm/wiiu_asm/swapendian64.s")
 
     if platform is PlatformTypes.switch:
         project.source_folders_list.extend(BURGER_LIB_SWITCH)
@@ -1040,6 +1056,9 @@ def project_settings(project):
 
     # Add rules needed to build for Visual Studio 2005/2008
     vs2005_2008_rules(project)
+
+    # Add rules needed for gnu/clang based projects
+    gnu_clang_rules(project)
 
 ########################################
 

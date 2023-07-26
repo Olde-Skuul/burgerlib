@@ -1,0 +1,35 @@
+;
+; Get the PowerPC floating point rounding value
+;
+; Done in assembly, because that's how you know it's done right
+; PowerPC PEF version
+;
+
+	INCLUDE 'macros.ppc'
+
+;
+; Unmangled function prototype
+; ePowerPCRounding BURGER_API Burger::GetPowerPCRounding(void) BURGER_NOEXCEPT;
+;
+
+	EXPORT GetPowerPCRounding__6BurgerFv[DS]
+	EXPORT GetPowerPCRounding__6BurgerFv[PR]
+
+	DeclareProc GetPowerPCRounding__6BurgerFv
+
+; Get the floating point control register
+	mffs	fp0
+
+; Store it in memory
+	stfd	fp0, -8(r1)
+
+; Load into an integer register
+	lwz		r3, -4(r1)
+
+; Mask off the lowest 2 bits (AND & 3)
+	clrlwi	r3, r3, 30
+	
+; Exit
+	blr
+
+	END

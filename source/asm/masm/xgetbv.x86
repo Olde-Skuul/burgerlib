@@ -4,7 +4,7 @@
 ;
 ; Build with ml.exe
 ;
-; uint64_t __cdecl _xgetbv(unsigned int uInput)
+; uint64_t __fastcall _xgetbv(unsigned int uInput)
 ;
 
 	.686
@@ -12,26 +12,20 @@
 _TEXT segment para 'CODE'
 
 	align 16
-public __xgetbv
-__xgetbv proc
+public @_xgetbv@4
+@_xgetbv@4 proc
 
-; Don't damage ecx
-	push ecx
-
-; Get the value passed in from the caller
-	mov ecx, [esp+8]
+; ecx is the input, which is the proper register for xgetbv
 
 ; xgetbv instruction is the sequence below
 ; VS 2008 supports the instruction, but VS 2005 does not
 	db	00FH, 001H, 0D0H
 ;	xgetbv
 
-; Restore ecx
-	pop ecx
 ; Answer is in edx:eax, which is perfect for uint64_t
 	ret
 
-__xgetbv endp
+@_xgetbv@4 endp
 
 _TEXT ends
 

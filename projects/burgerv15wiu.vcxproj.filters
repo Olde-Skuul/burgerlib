@@ -1153,6 +1153,12 @@
     <ClCompile Include="..\source\text\brwin437.cpp">
       <Filter>source\text</Filter>
     </ClCompile>
+    <ASM Include="..\source\asm\wiiu_asm\getpowerpcrounding.s">
+      <Filter>source\asm\wiiu_asm</Filter>
+    </ASM>
+    <ASM Include="..\source\asm\wiiu_asm\setpowerpcrounding.s">
+      <Filter>source\asm\wiiu_asm</Filter>
+    </ASM>
     <ASM Include="..\source\asm\wiiu_asm\swapendian64.s">
       <Filter>source\asm\wiiu_asm</Filter>
     </ASM>

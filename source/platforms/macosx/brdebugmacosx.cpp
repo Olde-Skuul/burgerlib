@@ -149,7 +149,7 @@ void BURGER_API Burger::OkAlertMessage(
 ***************************************/
 
 uint_t BURGER_API Burger::OkCancelAlertMessage(
-	const char* pMessage, const char* pTitle)
+	const char* pMessage, const char* pTitle) BURGER_NOEXCEPT
 {
 	// Make sure that the OS cursor is visible otherwise the user will
 	// wonder what's up when he can't see the cursor to click the button

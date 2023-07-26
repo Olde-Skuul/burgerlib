@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "unittests", "unittestsv15wiu.vcxproj", "{BAE6956C-1519-36A2-9DDC-20C6532D0EF6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Cafe = Debug|Cafe
+		Internal|Cafe = Internal|Cafe
+		Release|Cafe = Release|Cafe
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BAE6956C-1519-36A2-9DDC-20C6532D0EF6}.Debug|Cafe.ActiveCfg = Debug|Cafe
+		{BAE6956C-1519-36A2-9DDC-20C6532D0EF6}.Debug|Cafe.Build.0 = Debug|Cafe
+		{BAE6956C-1519-36A2-9DDC-20C6532D0EF6}.Internal|Cafe.ActiveCfg = Internal|Cafe
+		{BAE6956C-1519-36A2-9DDC-20C6532D0EF6}.Internal|Cafe.Build.0 = Internal|Cafe
+		{BAE6956C-1519-36A2-9DDC-20C6532D0EF6}.Release|Cafe.ActiveCfg = Release|Cafe
+		{BAE6956C-1519-36A2-9DDC-20C6532D0EF6}.Release|Cafe.Build.0 = Release|Cafe
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

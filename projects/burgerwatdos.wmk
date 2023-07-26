@@ -275,10 +275,10 @@ INCLUDE_DIRS +=;../sdks/msdos/x32/include
 # Set the compiler flags for each of the build types
 #
 
-CFlagsDebugdos4gw= -bt=DOS -i="$(%WATCOM)/h;$(%WATCOM)/h/nt" -d2 -od -D_DEBUG -D__DOS4G__
-CFlagsDebugdosx32= -bt=DOS -i="$(%WATCOM)/h" -d2 -od -D_DEBUG -D__X32__
-CFlagsInternaldos4gw= -bt=DOS -i="$(%WATCOM)/h;$(%WATCOM)/h/nt" -d2 -oaxsh -D_DEBUG -D__DOS4G__
-CFlagsInternaldosx32= -bt=DOS -i="$(%WATCOM)/h" -d2 -oaxsh -D_DEBUG -D__X32__
+CFlagsDebugdos4gw= -bt=DOS -i="$(%WATCOM)/h;$(%WATCOM)/h/nt" -d0 -od -D_DEBUG -D__DOS4G__
+CFlagsDebugdosx32= -bt=DOS -i="$(%WATCOM)/h" -d0 -od -D_DEBUG -D__X32__
+CFlagsInternaldos4gw= -bt=DOS -i="$(%WATCOM)/h;$(%WATCOM)/h/nt" -d0 -oaxsh -D_DEBUG -D__DOS4G__
+CFlagsInternaldosx32= -bt=DOS -i="$(%WATCOM)/h" -d0 -oaxsh -D_DEBUG -D__X32__
 CFlagsReleasedos4gw= -bt=DOS -i="$(%WATCOM)/h;$(%WATCOM)/h/nt" -d0 -oaxsh -DNDEBUG -D__DOS4G__
 CFlagsReleasedosx32= -bt=DOS -i="$(%WATCOM)/h" -d0 -oaxsh -DNDEBUG -D__X32__
 

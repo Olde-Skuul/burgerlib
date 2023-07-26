@@ -24,12 +24,12 @@ _xgetbv proc
 
 
 ; Answer is in edx:eax, move to rax
-    shl rdx,32
-    or rax,rdx
+	shl rdx,32
+	or rax,rdx
 	ret
 
 _xgetbv endp
 
 _TEXT ends
 
-    end
+	end

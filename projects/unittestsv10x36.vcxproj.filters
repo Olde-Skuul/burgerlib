@@ -709,6 +709,12 @@
     <ClCompile Include="..\source\ansi\brstdouthelpers.cpp">
       <Filter>source\ansi</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\asm\xbox360asm\getpowerpcrounding.cpp">
+      <Filter>source\asm\xbox360asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\xbox360asm\setpowerpcrounding.cpp">
+      <Filter>source\asm\xbox360asm</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\audio\bralaw.cpp">
       <Filter>source\audio</Filter>
     </ClCompile>
@@ -1407,6 +1413,12 @@
     </Filter>
     <Filter Include="source\ansi">
       <UniqueIdentifier>E4CABBDE-B78F-3153-A5C1-8DBBFD2E57DE</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\asm">
+      <UniqueIdentifier>E2DD989E-C13D-3C03-A879-B459290BB066</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\asm\xbox360asm">
+      <UniqueIdentifier>2C561DFD-A5D2-3A30-B089-F0B6BEAE9B63</UniqueIdentifier>
     </Filter>
     <Filter Include="source\audio">
       <UniqueIdentifier>8D9A9C5C-7228-3D37-84BF-737957B79743</UniqueIdentifier>

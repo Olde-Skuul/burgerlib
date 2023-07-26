@@ -53,8 +53,455 @@
 
 ***************************************/
 
-namespace Burger {
+/***************************************
 
+	uint16_t _swapendian16(uint16_t uInput)
+
+***************************************/
+
+extern "C" {
+
+#if (defined(BURGER_WATCOM) && defined(BURGER_X86)) && !defined(DOXYGEN)
+
+extern uint16_t _swapendian16(uint16_t uInput);
+#pragma aux _swapendian16 = \
+	"ror ax,8" parm[ax] value[ax] modify exact[ax] nomemory;
+
+#elif (defined(BURGER_APPLE_SC) && defined(BURGER_68K)) && !defined(DOXYGEN)
+
+// rorw #8,d0
+#pragma parameter __D0 _swapendian16(__D0)
+uint16_t _swapendian16(uint16_t) = {0xE058};
+
+#elif (defined(BURGER_METROWERKS) && \
+	(defined(BURGER_68K) || defined(BURGER_X86))) && \
+	!defined(DOXYGEN)
+
+BURGER_INLINE uint16_t _swapendian16(uint16_t uInput) BURGER_NOEXCEPT
+{
+	return __ror(uInput, 8);
+}
+
+#elif (__has_builtin(__builtin_bswap16) || (BURGER_GNUC >= 40800)) && \
+	!defined(DOXYGEN)
+
+BURGER_INLINE uint16_t _swapendian16(uint16_t uInput) BURGER_NOEXCEPT
+{
+	return __builtin_bswap16(uInput);
+}
+
+#elif ((defined(BURGER_METROWERKS) || defined(BURGER_MRC) || \
+		   defined(BURGER_SNSYSTEMS) || defined(BURGER_GHS)) && \
+	defined(BURGER_PPC)) && \
+	!defined(DOXYGEN)
+
+BURGER_INLINE uint16_t _swapendian16(register uint16_t uInput) BURGER_NOEXCEPT
+{
+	register int iResult = __rlwinm(static_cast<int>(uInput), 24, 24, 31);
+	iResult = __rlwimi(iResult, static_cast<int>(uInput), 8, 16, 23);
+	return static_cast<uint16_t>(iResult);
+}
+
+#elif ( \
+	(defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_68K)) && \
+	!defined(DOXYGEN)
+
+BURGER_INLINE uint16_t _swapendian16(register uint16_t uInput) BURGER_NOEXCEPT
+{
+	__asm__("rorw $8,%0" : : "=d"(uInput) : "0"(uInput) : "cc");
+	return uInput;
+}
+
+#elif ( \
+	(defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_PPC)) && \
+	!defined(DOXYGEN)
+
+BURGER_INLINE uint16_t _swapendian16(uint16_t uInput) BURGER_NOEXCEPT
+{
+	__asm__(
+		"rlwinm %0,%1,8,16,23\n"
+		"rlwimi %0,%1,24,24,31"
+		: "=&r"(uInput)
+		: "r"(uInput));
+	return uInput;
+}
+
+#elif (defined(BURGER_SNSYSTEMS) && defined(BURGER_ARM32)) && !defined(DOXYGEN)
+
+BURGER_INLINE uint16_t _swapendian16(register uint16_t uInput) BURGER_NOEXCEPT
+{
+	return static_cast<uint16_t>((__builtin_rev(uInput) >> 16));
+}
+
+#elif ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
+	defined(BURGER_ARM32)) && \
+	!defined(DOXYGEN)
+
+BURGER_INLINE uint16_t _swapendian16(register uint16_t uInput) BURGER_NOEXCEPT
+{
+	uint16_t uResult;
+	__asm__("rev16 %0,%1" : "=r"(uResult) : "r"(uInput));
+	return uResult;
+}
+#elif ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
+	defined(BURGER_ARM64)) && \
+	!defined(DOXYGEN)
+
+BURGER_INLINE uint16_t _swapendian16(register uint16_t uInput) BURGER_NOEXCEPT
+{
+	uint16_t uResult;
+	__asm__("rev16 %w0,%w1" : "=r"(uResult) : "r"(uInput));
+	return uResult;
+}
+
+#elif ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
+	defined(BURGER_INTEL)) && \
+	!defined(DOXYGEN)
+
+BURGER_INLINE uint16_t _swapendian16(register uint16_t uInput) BURGER_NOEXCEPT
+{
+	__asm__("rorw $8,%0" : "+r"(uInput));
+	return uInput;
+}
+
+#elif defined(BURGER_INTEL_COMPILER) && !defined(DOXYGEN)
+
+// _bswap instead of _byteswap_ulong, because... reasons
+BURGER_INLINE uint16_t _swapendian16(uint16_t uInput) BURGER_NOEXCEPT
+{
+	return static_cast<uint16_t>(_bswap(uInput) >> 16);
+}
+
+#elif defined(BURGER_MSVC) && !defined(DOXYGEN)
+
+BURGER_INLINE uint16_t _swapendian16(uint16_t uInput) BURGER_NOEXCEPT
+{
+	return _byteswap_ushort(uInput);
+}
+
+#else
+extern uint16_t BURGER_API _swapendian16(uint16_t uInput) BURGER_NOEXCEPT;
+#endif
+
+/***************************************
+
+	uint32_t _swapendian32(uint32_t uInput)
+
+***************************************/
+
+#if (defined(BURGER_WATCOM) && defined(BURGER_X86)) && !defined(DOXYGEN)
+
+extern uint32_t _swapendian32(uint32_t uInput);
+#pragma aux _swapendian32 = \
+	"bswap eax" parm[eax] value[eax] modify exact[eax] nomemory;
+
+#elif (defined(BURGER_APPLE_SC) && defined(BURGER_68K)) && !defined(DOXYGEN)
+
+// rorw #8,d0, swap d0, rorw #8,d0
+#pragma parameter __D0 _swapendian32(__D0)
+uint32_t _swapendian32(uint32_t) = {0xE058, 0x4840, 0xE058};
+
+#elif (defined(BURGER_METROWERKS) && defined(BURGER_68K)) && !defined(DOXYGEN)
+
+// clang-format off
+BURGER_INLINE uint32_t _swapendian32(uint32_t : __D0) :
+	__D0 = {
+	0xE058,	// rorw #8,d0
+	0x4840,	// swap d0
+	0xE058	// rorw #8,d0
+};
+// clang-format on
+
+#elif (defined(BURGER_METROWERKS) && defined(BURGER_X86)) && !defined(DOXYGEN)
+
+BURGER_INLINE uint32_t _swapendian32(register uint32_t uInput) BURGER_NOEXCEPT
+{
+	__asm bswap uInput;
+	return uInput;
+}
+
+#elif (__has_builtin(__builtin_bswap32) || (BURGER_GNUC >= 40300) || \
+	defined(BURGER_IOS) || defined(BURGER_ARM_COMPILER)) && \
+	!defined(DOXYGEN)
+
+BURGER_INLINE uint32_t _swapendian32(uint32_t uInput) BURGER_NOEXCEPT
+{
+	return __builtin_bswap32(uInput);
+}
+
+#elif ((defined(BURGER_METROWERKS) || defined(BURGER_MRC) || \
+		   defined(BURGER_SNSYSTEMS) || defined(BURGER_GHS)) && \
+	defined(BURGER_PPC)) && \
+	!defined(DOXYGEN)
+
+BURGER_INLINE uint32_t _swapendian32(uint32_t uInput) BURGER_NOEXCEPT
+{
+	register int iResult = __rlwinm(static_cast<int>(uInput), 24, 0, 31);
+	iResult = __rlwimi(iResult, static_cast<int>(uInput), 8, 8, 15);
+	iResult = __rlwimi(iResult, static_cast<int>(uInput), 8, 24, 31);
+	return static_cast<uint32_t>(iResult);
+}
+
+#elif ( \
+	(defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_68K)) && \
+	!defined(DOXYGEN)
+
+BURGER_INLINE uint32_t _swapendian32(uint32_t uInput)
+{
+	__asm__(
+		"rolw #8,%0\n"
+		"swap %0\n"
+		"rolw #8,%0"
+		: "=d"(uInput)
+		: "0"(uInput)
+		: "cc");
+	return uInput;
+}
+
+#elif ( \
+	(defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_PPC)) && \
+	!defined(DOXYGEN)
+
+BURGER_INLINE uint32_t _swapendian32(uint32_t uInput)
+{
+	__asm__(
+		"rlwinm %0,%1,24,0,31\n"
+		"rlwimi %0,%1,8,8,15\n"
+		"rlwimi %0,%1,8,24,31"
+		: "=&r"(uInput)
+		: "r"(uInput));
+	return uInput;
+}
+
+#elif (defined(BURGER_SNSYSTEMS) && defined(BURGER_ARM32)) && !defined(DOXYGEN)
+
+BURGER_INLINE uint32_t _swapendian32(uint32_t uInput)
+{
+	return __builtin_rev(uInput);
+}
+
+#elif ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
+	defined(BURGER_ARM32)) && \
+	!defined(DOXYGEN)
+
+BURGER_INLINE uint32_t _swapendian32(uint32_t uInput)
+{
+	uint32_t uResult;
+	__asm__ ("rev %0, %1" : "=r" (uResult) : "r" (uInput));
+	return uResult;
+}
+
+#elif ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
+	defined(BURGER_ARM64)) && \
+	!defined(DOXYGEN)
+
+BURGER_INLINE uint32_t _swapendian32(uint32_t uInput)
+{
+	uint32_t uResult;
+	__asm__("rev %w0,%w1" : "=r"(uResult) : "r"(uInput));
+	return uResult;
+}
+
+#elif ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
+	defined(BURGER_INTEL)) && \
+	!defined(DOXYGEN)
+
+BURGER_INLINE uint32_t _swapendian32(uint32_t uInput)
+{
+	__asm__("bswap %0" : "+r"(uInput));
+	return uInput;
+}
+
+#elif defined(BURGER_INTEL_COMPILER) && !defined(DOXYGEN)
+
+// _bswap instead of _byteswap_ulong, because... reasons
+
+BURGER_INLINE uint32_t _swapendian32(uint32_t uInput)
+{
+	return _bswap(uInput);
+}
+
+#elif defined(BURGER_MSVC) && !defined(DOXYGEN)
+
+BURGER_INLINE uint32_t _swapendian32(uint32_t uInput)
+{
+	return _byteswap_ulong(uInput);
+}
+
+#else
+extern uint32_t BURGER_API _swapendian32(uint32_t uInput) BURGER_NOEXCEPT;
+#endif
+
+/***************************************
+
+	uint64_t _swapendian64(uint64_t uInput)
+
+***************************************/
+
+#if (defined(BURGER_WATCOM) && defined(BURGER_X86)) && !defined(DOXYGEN)
+
+extern uint64_t _swapendian64(uint64_t uInput);
+#pragma aux _swapendian64 = \
+	"bswap eax" \
+	"bswap edx" \
+	"xchg eax,edx" parm[eax edx] value[eax edx] modify \
+	exact[eax edx] nomemory;
+
+#elif (defined(BURGER_APPLE_SC) && defined(BURGER_68K)) && !defined(DOXYGEN)
+
+extern uint64_t _swapendian64(const uint64_t& rInput);
+
+#elif (defined(BURGER_METROWERKS) && defined(BURGER_X86)) && !defined(DOXYGEN)
+
+BURGER_INLINE uint64_t _swapendian64(register uint64_t uInput)
+{
+	register uint32_t uLo = static_cast<uint32_t>(uInput);
+	register uint32_t uHi = static_cast<uint32_t>(uInput >> 32);
+	__asm {
+		mov eax, uHi
+		mov edx, uLo
+		bswap eax
+		bswap edx
+	}
+}
+
+#elif (__has_builtin(__builtin_bswap64) || (BURGER_GNUC >= 40300) || \
+	defined(BURGER_ARM_COMPILER)) && \
+	!defined(DOXYGEN)
+
+BURGER_INLINE uint64_t _swapendian64(uint64_t uInput) BURGER_NOEXCEPT
+{
+	return __builtin_bswap64(uInput);
+}
+
+#elif ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
+	defined(BURGER_ARM32)) && \
+	!defined(DOXYGEN)
+
+BURGER_INLINE uint64_t _swapendian64(uint64_t uInput) BURGER_NOEXCEPT
+{
+	union {
+		struct {
+			uint32_t l, h;
+		} word32;
+		uint64_t uWord64;
+	} uTemp;
+
+	// Convert to 32 bit registers
+	uTemp.uWord64 = uInput;
+	uint32_t l = uTemp.word32.l;
+	uint32_t h = uTemp.word32.h;
+
+	// Endian swap
+#if defined(BURGER_IOS)
+	l = __builtin_bswap32(l);
+	h = __builtin_bswap32(h);
+#else
+	__asm__("rev %0,%1" : "=r"(l) : "r"(l));
+	__asm__("rev %0,%1" : "=r"(h) : "r"(h));
+#endif
+	// Restore as 64 bit value
+	uTemp.word32.l = h;
+	uTemp.word32.h = l;
+	return uTemp.uWord64;
+}
+
+#elif ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
+	defined(BURGER_ARM64)) && \
+	!defined(DOXYGEN)
+
+BURGER_INLINE uint64_t _swapendian64(uint64_t uInput) BURGER_NOEXCEPT
+{
+	uint64_t uResult;
+	__asm__("rev %x0,%x1" : "=r"(uResult) : "r"(uInput));
+	return uResult;
+}
+
+#elif ( \
+	(defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_X86)) && \
+	!defined(DOXYGEN)
+
+BURGER_INLINE uint64_t _swapendian64(uint64_t uInput) BURGER_NOEXCEPT
+{
+	union {
+		struct {
+			uint32_t l, h;
+		} word32;
+		uint64_t uWord64;
+	} uTemp;
+
+	// Convert to 32 bit registers
+	uTemp.uWord64 = uInput;
+	uint32_t l = uTemp.word32.l;
+	uint32_t h = uTemp.word32.h;
+
+	// Endian swap
+	__asm__("bswap %0" : "+r"(l));
+	__asm__("bswap %0" : "+r"(h));
+
+	// Restore as 64 bit value
+	uTemp.word32.l = h;
+	uTemp.word32.h = l;
+	return uTemp.uWord64;
+}
+
+#elif ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
+	defined(BURGER_AMD64)) && \
+	!defined(DOXYGEN)
+
+BURGER_INLINE uint64_t _swapendian64(uint64_t uInput) BURGER_NOEXCEPT
+{
+	__asm__("bswap %0" : "+r"(uInput));
+	return uInput;
+}
+
+#elif defined(BURGER_INTEL_COMPILER) && !defined(DOXYGEN)
+
+BURGER_INLINE uint64_t _swapendian64(uint64_t uInput) BURGER_NOEXCEPT
+{
+	return _bswap64(uInput);
+}
+
+// Note: This function will fail on Visual Studio 2003, so test for 2005 or
+// higher.
+#elif (BURGER_MSVC >= 140000000) && !defined(DOXYGEN)
+
+BURGER_INLINE uint64_t _swapendian64(uint64_t uInput) BURGER_NOEXCEPT
+{
+	return _byteswap_uint64(uInput);
+}
+
+#elif (defined(BURGER_MSVC) && defined(BURGER_X86)) && !defined(DOXYGEN)
+
+// Visual Studio 2003 has a bug that will cause bad code generation
+// if using the _byteswap_uint64(). The code below is a workaround
+
+BURGER_INLINE uint64_t _swapendian64(uint64_t uInput) BURGER_NOEXCEPT
+{
+	return _swapendian32(static_cast<uint32_t>(uInput >> 32)) |
+		(static_cast<uint64_t>(_swapendian32(static_cast<uint32_t>(uInput)))
+			<< 32);
+}
+
+#else
+extern uint64_t BURGER_API _swapendian64(uint64_t uInput) BURGER_NOEXCEPT;
+#endif
+
+#if (defined(BURGER_METROWERKS) && defined(BURGER_PPC)) || defined(DOXYGEN)
+extern void _swapendianstore16(void* pOutput, uint16_t uInput) BURGER_NOEXCEPT;
+extern void _swapendianstore32(void* pOutput, uint32_t uInput) BURGER_NOEXCEPT;
+extern void _swapendianstore64(void* pOutput, uint64_t uInput) BURGER_NOEXCEPT;
+#endif
+
+#if ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_PPC) && \
+	defined(BURGER_MACOSX)) || \
+	defined(DOXYGEN)
+extern uint64_t _swapendian64ptr(const void* pInput) BURGER_NOEXCEPT;
+extern void _swapendianstore64(void* pOutput, uint64_t uInput) BURGER_NOEXCEPT;
+#endif
+}
+
+namespace Burger {
 extern float BURGER_API _swapendianfloat(float fInput) BURGER_NOEXCEPT;
 extern double BURGER_API _swapendiandouble(double dInput) BURGER_NOEXCEPT;
 extern float BURGER_API _swapendianfloat(const float* pInput) BURGER_NOEXCEPT;
@@ -351,22 +798,8 @@ struct load_dispatch_ptr<T, 8, true> {
 
 // PowerMac G5 doesn't have the ldbrx instruction
 #elif (defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
-	defined(BURGER_PPC64) && !defined(BURGER_MACOSX)
-		T uTemp;
-		__asm__ __volatile__("ldbrx %0,0,%1"
-							 : "=r"(uTemp)
-							 : "r"(pInput), "m"(*pInput));
-		return uTemp;
-#elif (defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_PPC)
-		T uTemp;
-		__asm__ __volatile__("lwbrx %L0,0,%1"
-							 : "=r"(uTemp)
-							 : "r"(pInput), "m"(*pInput));
-		__asm__ __volatile__(
-			"lwbrx %0,0,%1"
-			: "=r"(uTemp)
-			: "r"((char*)pInput + 4), "m"(*pInput), "0"(uTemp));
-		return uTemp;
+	defined(BURGER_PPC) && defined(BURGER_MACOSX)
+		return static_cast<T>(_swapendian64ptr(pInput));
 #elif defined(BURGER_PS4) || defined(BURGER_PS5)
 		T uTemp;
 		__asm__ __volatile__("movbeq %1,%0" : "=r"(uTemp) : "m"(*pInput));
@@ -500,6 +933,130 @@ struct load_dispatch<T, sizeof(void*), false, true> {
 			is_arithmetic<raw_type>::value>()((const raw_type*)pInput);
 	}
 };
+
+// Catchall for SwapEndian::store()
+template<typename T, uintptr_t size, bool bIsArithmetic>
+struct store_dispatch {
+	BURGER_INLINE void operator()(T* pOutput, T Input) BURGER_NOEXCEPT
+	{
+		// If this is triggered, a pointer was passed to an unsupported data
+		// type
+		BURGER_STATIC_ASSERT(pOutput || !pOutput);
+		return *pOutput = Input;
+	}
+};
+
+// Store unaligned dispatchers
+template<typename T>
+struct store_dispatch<T, 1, true> {
+	BURGER_INLINE void operator()(T* pOutput, T Input) BURGER_NOEXCEPT
+	{
+		// Byte doesn't care
+		*pOutput = Input;
+	}
+};
+
+template<typename T>
+struct store_dispatch<T, 2, true> {
+	BURGER_INLINE void operator()(T* pOutput, T Input) BURGER_NOEXCEPT
+	{
+		// Store 16 bit shorts
+#if (defined(BURGER_METROWERKS) && (defined(BURGER_X86) || defined(BURGER_68K)))
+		*pOutput = static_cast<T>(__ror(static_cast<uint16_t>(Input), 8));
+#elif (defined(BURGER_METROWERKS) && defined(BURGER_PPC))
+		// Use this to allow the compiler to know pOutput is volatile
+		_swapendianstore16(pOutput, static_cast<uint16_t>(Input));
+		// This intrisic allows pOutput to remain "const", so an immediate
+		// read will use Input instead, which is bad code
+		//__sthbrx(static_cast<uint16_t>(Input), pOutput, 0);
+#elif defined(BURGER_XBOX360)
+		__storeshortbytereverse(Input, 0, pOutput);
+#elif defined(BURGER_PS3)
+		__sthbrx(pOutput, Input);
+#elif defined(BURGER_WIIU)
+		*const_cast<__bytereversed T*>(pOutput) = Input;
+#elif (defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_PPC)
+		__asm__("sthbrx %0,0,%1" : : "r"(Input), "r"(pOutput) : "memory");
+#else
+		*pOutput = static_cast<T>(_swapendian16(static_cast<uint16_t>(Input)));
+#endif
+	}
+};
+
+template<typename T>
+struct store_dispatch<T, 4, true> {
+	BURGER_INLINE void operator()(T* pOutput, T Input) BURGER_NOEXCEPT
+	{
+#if (defined(BURGER_METROWERKS) && defined(BURGER_PPC))
+		// Use this to allow the compiler to know pOutput is volatile
+		_swapendianstore32(pOutput, static_cast<uint32_t>(Input));
+		// This intrisic allows pOutput to remain "const", so an immediate
+		// read will use Input instead, which is bad code
+		// __stwbrx(static_cast<unsigned int>(Input), pOutput, 0);
+#elif defined(BURGER_XBOX360)
+		__storewordbytereverse(Input, 0, pOutput);
+#elif defined(BURGER_PS3)
+		__stwbrx(pOutput, Input);
+#elif defined(BURGER_WIIU)
+		*const_cast<__bytereversed T*>(pOutput) = Input;
+#elif (defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_PPC)
+		__asm__("stwbrx %0,0,%1" : : "r"(Input), "r"(pOutput) : "memory");
+#else
+		*pOutput = static_cast<T>(_swapendian32(static_cast<uint32_t>(Input)));
+#endif
+	}
+};
+
+template<typename T>
+struct store_dispatch<T, 8, true> {
+	BURGER_INLINE void operator()(T* pOutput, T Input) BURGER_NOEXCEPT
+	{
+#if defined(BURGER_METROWERKS) && defined(BURGER_PPC)
+		_swapendianstore64(pOutput, static_cast<uint64_t>(Input));
+#elif defined(BURGER_XBOX360)
+		__storedoublewordbytereverse(Input, 0, pOutput);
+#elif defined(BURGER_PS3)
+		__stdbrx(pOutput, Input);
+#elif defined(BURGER_WIIU)
+		__bytereversed uint32_t* pOutput2 =
+			reinterpret_cast<__bytereversed uint32_t*>(pOutput);
+		pOutput2[0] = static_cast<uint32_t>(Input);
+		pOutput2[1] = static_cast<uint32_t>(Input >> 32U);
+
+// PowerMac G5 doesn't have this stdbrx
+#elif (defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
+	defined(BURGER_PPC) && defined(BURGER_MACOSX)
+		_swapendianstore64(pOutput, Input);
+#else
+		*pOutput = static_cast<T>(_swapendian64(static_cast<uint64_t>(Input)));
+#endif
+	}
+};
+
+template<>
+struct store_dispatch<float, sizeof(float), true> {
+	BURGER_INLINE void operator()(float* pOutput, float fInput) BURGER_NOEXCEPT
+	{
+		// Swap the float without losing bits
+		uint32_float_t Temp;
+		Temp.f = fInput;
+		*static_cast<uint32_t*>(static_cast<void*>(pOutput)) =
+			_swapendian32(Temp.w);
+	}
+};
+
+template<>
+struct store_dispatch<double, sizeof(double), true> {
+	BURGER_INLINE void operator()(
+		double* pOutput, double dInput) BURGER_NOEXCEPT
+	{
+		// Swap the double without losing bits
+		uint64_double_t Temp;
+		Temp.d = dInput;
+		*static_cast<uint64_t*>(static_cast<void*>(pOutput)) =
+			_swapendian64(Temp.w);
+	}
+};
 }
 #endif
 
@@ -513,148 +1070,19 @@ struct SwapEndian {
 			is_pointer<T>::value>()(Input);
 	}
 
-#if (defined(BURGER_METROWERKS) && defined(BURGER_ARM32)) && !defined(DOXYGEN)
-	static uint32_t BURGER_API Load(uint32_t uInput) BURGER_NOEXCEPT;
-#endif
-
-	static BURGER_INLINE void Store(char* pOutput, char iInput) BURGER_NOEXCEPT
+	template<typename T>
+	static BURGER_INLINE void Store(T* pOutput, T Input) BURGER_NOEXCEPT
 	{
-		pOutput[0] = iInput;
-	}
-	static BURGER_INLINE void Store(
-		uint8_t* pOutput, uint8_t uInput) BURGER_NOEXCEPT
-	{
-		pOutput[0] = uInput;
-	}
-	static BURGER_INLINE void Store(
-		int8_t* pOutput, int8_t iInput) BURGER_NOEXCEPT
-	{
-		pOutput[0] = iInput;
-	}
-#if (defined(BURGER_METROWERKS) && defined(BURGER_X86)) && !defined(DOXYGEN)
-	static BURGER_INLINE void Store(
-		uint16_t* pOutput, uint16_t uInput) BURGER_NOEXCEPT
-	{
-		pOutput[0] = __ror(uInput, 8);
-	}
-	static BURGER_INLINE void Store(
-		uint32_t* pOutput, register uint32_t uInput) BURGER_NOEXCEPT
-	{
-		__asm bswap uInput;
-		pOutput[0] = uInput;
+		Swap::store_dispatch<T, sizeof(T), is_arithmetic<T>::value>()(
+			pOutput, Input);
 	}
 
-#elif (defined(BURGER_METROWERKS) && defined(BURGER_68K)) && !defined(DOXYGEN)
-
+	template<typename T>
 	static BURGER_INLINE void Store(
-		uint16_t* pOutput, uint16_t uInput) BURGER_NOEXCEPT
+		volatile T* pOutput, T Input) BURGER_NOEXCEPT
 	{
-		pOutput[0] = __ror(uInput, 8);
+		Store(const_cast<T*>(pOutput), Input);
 	}
-	static BURGER_INLINE void Store(
-		uint32_t* pOutput, register uint32_t uInput) BURGER_NOEXCEPT
-	{
-		pOutput[0] = _swapendian32(uInput);
-	}
-
-#elif (defined(BURGER_METROWERKS) && defined(BURGER_PPC)) && !defined(DOXYGEN)
-	static BURGER_INLINE void Store(
-		uint16_t* pOutput, uint16_t uInput) BURGER_NOEXCEPT
-	{
-		__sthbrx(uInput, pOutput, 0);
-	}
-	static BURGER_INLINE void Store(
-		uint32_t* pOutput, uint32_t uInput) BURGER_NOEXCEPT
-	{
-		__stwbrx(uInput, pOutput, 0);
-	}
-#elif defined(BURGER_XBOX360) && !defined(DOXYGEN)
-	static BURGER_INLINE void Store(
-		uint16_t* pOutput, uint16_t uInput) BURGER_NOEXCEPT
-	{
-		__storeshortbytereverse(uInput, 0, pOutput);
-	}
-	static BURGER_INLINE void Store(
-		uint32_t* pOutput, uint32_t uInput) BURGER_NOEXCEPT
-	{
-		__storewordbytereverse(uInput, 0, pOutput);
-	}
-#elif defined(BURGER_PS3) && !defined(DOXYGEN)
-	static BURGER_INLINE void Store(
-		uint16_t* pOutput, uint16_t uInput) BURGER_NOEXCEPT
-	{
-		__sthbrx(pOutput, uInput);
-	}
-	static BURGER_INLINE void Store(
-		uint32_t* pOutput, uint32_t uInput) BURGER_NOEXCEPT
-	{
-		__stwbrx(pOutput, uInput);
-	}
-#elif defined(BURGER_INTEL_COMPILER) && !defined(DOXYGEN)
-	static BURGER_INLINE void Store(
-		uint16_t* pOutput, uint16_t uInput) BURGER_NOEXCEPT
-	{
-		pOutput[0] = _swapendian16(uInput);
-	}
-	static BURGER_INLINE void Store(
-		uint32_t* pOutput, uint32_t uInput) BURGER_NOEXCEPT
-	{
-		pOutput[0] = _swapendian32(uInput);
-	}
-
-// Byteswap intrinsics were defined above
-#elif ((defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
-	defined(BURGER_MSVC) || (defined(BURGER_GNUC) && !defined(__SNC__))) && \
-	!defined(DOXYGEN)
-
-	static BURGER_INLINE void Store(
-		uint16_t* pOutput, uint16_t uInput) BURGER_NOEXCEPT
-	{
-		pOutput[0] = Load(uInput);
-	}
-	static BURGER_INLINE void Store(
-		uint32_t* pOutput, uint32_t uInput) BURGER_NOEXCEPT
-	{
-		pOutput[0] = Load(uInput);
-	}
-#else
-	static void BURGER_API Store(
-		uint16_t* pOutput, uint16_t uInput) BURGER_NOEXCEPT;
-	static void BURGER_API Store(
-		uint32_t* pOutput, uint32_t uInput) BURGER_NOEXCEPT;
-#endif
-
-#if defined(BURGER_XBOX360) && !defined(DOXYGEN)
-	static BURGER_INLINE void Store(
-		uint64_t* pOutput, uint64_t uInput) BURGER_NOEXCEPT
-	{
-		return __storedoublewordbytereverse(uInput, 0, pOutput);
-	}
-#elif defined(BURGER_PS3) && !defined(DOXYGEN)
-	static BURGER_INLINE void Store(
-		uint64_t* pOutput, uint64_t uInput) BURGER_NOEXCEPT
-	{
-		__stdbrx(pOutput, uInput);
-	}
-#elif ((defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
-	(defined(BURGER_INTEL) && defined(BURGER_MSVC)) || \
-	((defined(BURGER_GNUC) && !defined(__SNC__)) && \
-		(defined(BURGER_AMD64) || defined(BURGER_ARM64) || \
-			defined(BURGER_PPC)))) && \
-	!defined(DOXYGEN)
-
-	static BURGER_INLINE void Store(
-		uint64_t* pOutput, uint64_t uInput) BURGER_NOEXCEPT
-	{
-		pOutput[0] = Load(uInput);
-	}
-#else
-	static void BURGER_API Store(
-		uint64_t* pOutput, uint64_t uInput) BURGER_NOEXCEPT;
-#endif
-	static void BURGER_API Store(float* pOutput, float fInput) BURGER_NOEXCEPT;
-	static void BURGER_API Store(
-		double* pOutput, double dInput) BURGER_NOEXCEPT;
 
 	static BURGER_INLINE BURGER_CONSTEXPR char LoadAny(
 		const char* pInput) BURGER_NOEXCEPT
@@ -776,25 +1204,6 @@ struct SwapEndian {
 	static void BURGER_API FixupAny(uint32_t* pInput) BURGER_NOEXCEPT;
 	static void BURGER_API FixupAny(uint64_t* pInput) BURGER_NOEXCEPT;
 
-	static BURGER_INLINE void Store(
-		int16_t* pOutput, int16_t iInput) BURGER_NOEXCEPT
-	{
-		Store(reinterpret_cast<uint16_t*>(pOutput),
-			static_cast<uint16_t>(iInput));
-	}
-	static BURGER_INLINE void Store(
-		int32_t* pOutput, int32_t iInput) BURGER_NOEXCEPT
-	{
-		Store(reinterpret_cast<uint32_t*>(pOutput),
-			static_cast<uint32_t>(iInput));
-	}
-	static BURGER_INLINE void Store(
-		int64_t* pOutput, int64_t iInput) BURGER_NOEXCEPT
-	{
-		Store(reinterpret_cast<uint64_t*>(pOutput),
-			static_cast<uint64_t>(iInput));
-	}
-
 	static BURGER_INLINE int16_t LoadAny(const int16_t* pInput) BURGER_NOEXCEPT
 	{
 		return static_cast<int16_t>(
@@ -873,12 +1282,6 @@ struct SwapEndian {
 	}
 
 #if defined(BURGER_HAS_WCHAR_T) || defined(DOXYGEN)
-	static BURGER_INLINE void Store(
-		wchar_t* pOutput, wchar_t uInput) BURGER_NOEXCEPT
-	{
-		Store(reinterpret_cast<uint16_t*>(pOutput),
-			static_cast<uint16_t>(uInput));
-	}
 	static BURGER_INLINE wchar_t LoadAny(const wchar_t* pInput) BURGER_NOEXCEPT
 	{
 		return static_cast<wchar_t>(
@@ -900,18 +1303,6 @@ struct SwapEndian {
 #endif
 
 #if defined(BURGER_INT_NOT_IN_STDINT) || defined(DOXYGEN)
-	static BURGER_INLINE void Store(
-		unsigned int* pOutput, unsigned int uInput) BURGER_NOEXCEPT
-	{
-		Store(reinterpret_cast<uint2uint_t*>(pOutput),
-			static_cast<uint2uint_t>(uInput));
-	}
-	static BURGER_INLINE void Store(
-		signed int* pOutput, signed int iInput) BURGER_NOEXCEPT
-	{
-		Store(reinterpret_cast<uint2uint_t*>(pOutput),
-			static_cast<uint2uint_t>(iInput));
-	}
 	static BURGER_INLINE unsigned int LoadAny(
 		const unsigned int* pInput) BURGER_NOEXCEPT
 	{
@@ -955,18 +1346,6 @@ struct SwapEndian {
 #endif
 
 #if defined(BURGER_LONG_NOT_IN_STDINT) || defined(DOXYGEN)
-	static BURGER_INLINE void Store(
-		unsigned long* pOutput, unsigned long uInput) BURGER_NOEXCEPT
-	{
-		Store(reinterpret_cast<ulong2uint_t*>(pOutput),
-			static_cast<ulong2uint_t>(uInput));
-	}
-	static BURGER_INLINE void Store(
-		signed long* pOutput, signed long iInput) BURGER_NOEXCEPT
-	{
-		Store(reinterpret_cast<ulong2uint_t*>(pOutput),
-			static_cast<ulong2uint_t>(iInput));
-	}
 	static BURGER_INLINE unsigned long LoadAny(
 		const unsigned long* pInput) BURGER_NOEXCEPT
 	{
@@ -1022,7 +1401,7 @@ struct SwapEndian {
 // Namespace for native implementations
 namespace Native {
 
-// Catchall for load()
+// Catchall for NativeEndian::load()
 template<typename T, bool is_arithmetic, bool is_pointer>
 struct load_dispatch {
 	BURGER_INLINE T operator()(T Input) BURGER_NOEXCEPT
@@ -1056,13 +1435,14 @@ struct load_dispatch<T, false, true> {
 	}
 };
 
-// Catchall for store()
+// Catchall for NativeEndian::store()
 template<typename T, bool is_arithmetic>
 struct store_dispatch {
-	BURGER_INLINE void operator()(T* /* pOutput */, T Input) BURGER_NOEXCEPT
+	BURGER_INLINE void operator()(T* pOutput, T Input) BURGER_NOEXCEPT
 	{
 		// Instantiated on bad input
-		BURGER_STATIC_ASSERT(Input * Input < 0);
+		BURGER_STATIC_ASSERT(pOutput || !pOutput);
+		*pOutput = Input;
 	}
 };
 
@@ -1080,9 +1460,9 @@ struct store_dispatch<T, true> {
 // hardware
 #if !(defined(BURGER_INTEL) || defined(BURGER_ARM64))
 
-// Catchall for all pointer types
+// Catchall for NativeEndian::load_unaligned()
 template<typename T, uintptr_t size, bool bIsArithmetic>
-struct loadany_dispatch {
+struct load_unaligned_dispatch {
 	BURGER_INLINE T operator()(T* pInput) BURGER_NOEXCEPT
 	{
 		// If this is triggered, a pointer was passed to an unsupported data
@@ -1092,9 +1472,9 @@ struct loadany_dispatch {
 	}
 };
 
-// Handlers for pointer intrinsics
+// Handlers for NativeEndian::load_unaligned()
 template<typename T>
-struct loadany_dispatch<T, 1, true> {
+struct load_unaligned_dispatch<T, 1, true> {
 	BURGER_INLINE T operator()(const T* pInput) BURGER_NOEXCEPT
 	{
 		// Instantiated for pointers to single byte types
@@ -1103,7 +1483,7 @@ struct loadany_dispatch<T, 1, true> {
 };
 
 template<typename T>
-struct loadany_dispatch<T, 2, true> {
+struct load_unaligned_dispatch<T, 2, true> {
 	BURGER_INLINE T operator()(const T* pInput) BURGER_NOEXCEPT
 	{
 		return static_cast<T>(
@@ -1112,7 +1492,7 @@ struct loadany_dispatch<T, 2, true> {
 };
 
 template<typename T>
-struct loadany_dispatch<T, 4, true> {
+struct load_unaligned_dispatch<T, 4, true> {
 	BURGER_INLINE T operator()(const T* pInput) BURGER_NOEXCEPT
 	{
 		return static_cast<T>(
@@ -1121,7 +1501,7 @@ struct loadany_dispatch<T, 4, true> {
 };
 
 template<typename T>
-struct loadany_dispatch<T, 8, true> {
+struct load_unaligned_dispatch<T, 8, true> {
 	BURGER_INLINE T operator()(const T* pInput) BURGER_NOEXCEPT
 	{
 		return static_cast<T>(
@@ -1130,7 +1510,7 @@ struct loadany_dispatch<T, 8, true> {
 };
 
 template<>
-struct loadany_dispatch<float, sizeof(float), true> {
+struct load_unaligned_dispatch<float, sizeof(float), true> {
 	BURGER_INLINE float operator()(const float* pInput) BURGER_NOEXCEPT
 	{
 		// Return the float
@@ -1139,11 +1519,79 @@ struct loadany_dispatch<float, sizeof(float), true> {
 };
 
 template<>
-struct loadany_dispatch<double, sizeof(double), true> {
+struct load_unaligned_dispatch<double, sizeof(double), true> {
 	BURGER_INLINE double operator()(const double* pInput) BURGER_NOEXCEPT
 	{
 		// Return the double
 		return _load_unaligned(pInput);
+	}
+};
+
+// Catchall for NativeEndian::store_unaligned()
+template<typename T, uintptr_t size, bool bIsArithmetic>
+struct store_unaligned_dispatch {
+	BURGER_INLINE void operator()(T* pOutput, T Input) BURGER_NOEXCEPT
+	{
+		// If this is triggered, a pointer was passed to an unsupported data
+		// type
+		BURGER_STATIC_ASSERT(pOutput || !pOutput);
+		return *pOutput = Input;
+	}
+};
+
+// Store unaligned dispatchers
+template<typename T>
+struct store_unaligned_dispatch<T, 1, true> {
+	BURGER_INLINE void operator()(T* pOutput, T Input) BURGER_NOEXCEPT
+	{
+		// Byte doesn't care
+		*pOutput = Input;
+	}
+};
+
+template<typename T>
+struct store_unaligned_dispatch<T, 2, true> {
+	BURGER_INLINE void operator()(T* pOutput, T Input) BURGER_NOEXCEPT
+	{
+		_store_unaligned(
+			reinterpret_cast<uint16_t*>(pOutput), static_cast<uint16_t>(Input));
+	}
+};
+
+template<typename T>
+struct store_unaligned_dispatch<T, 4, true> {
+	BURGER_INLINE void operator()(T* pOutput, T Input) BURGER_NOEXCEPT
+	{
+		_store_unaligned(
+			reinterpret_cast<uint32_t*>(pOutput), static_cast<uint32_t>(Input));
+	}
+};
+
+template<typename T>
+struct store_unaligned_dispatch<T, 8, true> {
+	BURGER_INLINE void operator()(T* pOutput, T Input) BURGER_NOEXCEPT
+	{
+		_store_unaligned(
+			reinterpret_cast<uint64_t*>(pOutput), static_cast<uint64_t>(Input));
+	}
+};
+
+template<>
+struct store_unaligned_dispatch<float, sizeof(float), true> {
+	BURGER_INLINE void operator()(float* pOutput, float fInput) BURGER_NOEXCEPT
+	{
+		// Return the float
+		_store_unaligned(pOutput, fInput);
+	}
+};
+
+template<>
+struct store_unaligned_dispatch<double, sizeof(double), true> {
+	BURGER_INLINE void operator()(
+		double* pOutput, double dInput) BURGER_NOEXCEPT
+	{
+		// Return the double
+		_store_unaligned(pOutput, dInput);
 	}
 };
 #endif
@@ -1169,80 +1617,35 @@ struct NativeEndian {
 	template<typename T>
 	static BURGER_INLINE T LoadAny(T* pInput) BURGER_NOEXCEPT
 	{
+		// These CPUs allow non-aligned reads and writes
 #if (defined(BURGER_INTEL) || defined(BURGER_ARM64))
 		return Native::load_dispatch<T*, is_arithmetic<T*>::value, true>()(
 			pInput);
 #else
 		typedef typename remove_cv<T>::type real_type;
-		return Native::loadany_dispatch<real_type, sizeof(real_type),
+		return Native::load_unaligned_dispatch<real_type, sizeof(real_type),
 			is_arithmetic<real_type>::value>()(const_cast<real_type*>(pInput));
 #endif
 	}
 
-// These CPUs allow non-aligned reads and writes
-#if (defined(BURGER_INTEL) || defined(BURGER_ARM64)) || defined(DOXYGEN)
 	template<typename T>
 	static BURGER_INLINE void StoreAny(T* pOutput, T Input) BURGER_NOEXCEPT
 	{
+#if (defined(BURGER_INTEL) || defined(BURGER_ARM64))
 		Native::store_dispatch<T, is_arithmetic<T>::value>()(pOutput, Input);
+#else
+		Native::store_unaligned_dispatch<T, sizeof(T),
+			is_arithmetic<T>::value>()(pOutput, Input);
+#endif
 	}
 
-#else
-
-	// clang-format off
-    static BURGER_INLINE void StoreAny(char* pOutput, char iInput) BURGER_NOEXCEPT { pOutput[0] = iInput; }
-    static BURGER_INLINE void StoreAny(uint8_t* pOutput, uint8_t uInput) BURGER_NOEXCEPT { pOutput[0] = uInput; }
-    static BURGER_INLINE void StoreAny(int8_t* pOutput, int8_t iInput) BURGER_NOEXCEPT { pOutput[0] = iInput; }
-#if (defined(BURGER_INTEL) || defined(BURGER_ARM64)) && !defined(DOXYGEN)
-    static void BURGER_API StoreAny(uint16_t* pOutput, uint16_t uInput) BURGER_NOEXCEPT { pOutput[0] = uInput; }
-    static void BURGER_API StoreAny(uint32_t* pOutput, uint32_t uInput) BURGER_NOEXCEPT { pOutput[0] = uInput; }
-    static void BURGER_API StoreAny(uint64_t* pOutput, uint64_t uInput) BURGER_NOEXCEPT { pOutput[0] = uInput; }
-    static void BURGER_API StoreAny(float* pOutput, float fInput) BURGER_NOEXCEPT { pOutput[0] = fInput; }
-    static void BURGER_API StoreAny(double* pOutput, double dInput) BURGER_NOEXCEPT { pOutput[0] = dInput; }
-#else
-    static void BURGER_API StoreAny(uint16_t* pOutput, uint16_t uInput) BURGER_NOEXCEPT;
-    static void BURGER_API StoreAny(uint32_t* pOutput, uint32_t uInput) BURGER_NOEXCEPT;
-    static void BURGER_API StoreAny(uint64_t* pOutput, uint64_t uInput) BURGER_NOEXCEPT;
-    static void BURGER_API StoreAny(float* pOutput, float fInput) BURGER_NOEXCEPT;
-    static void BURGER_API StoreAny(double* pOutput, double dInput) BURGER_NOEXCEPT;
-#endif
-
-    static BURGER_INLINE void StoreAny(int16_t* pOutput, int16_t iInput) BURGER_NOEXCEPT {
-        StoreAny(reinterpret_cast<uint16_t*>(pOutput), static_cast<uint16_t>(iInput)); }
-    static BURGER_INLINE void StoreAny(int32_t* pOutput, int32_t iInput) BURGER_NOEXCEPT {
-        StoreAny(reinterpret_cast<uint32_t*>(pOutput), static_cast<uint32_t>(iInput)); }
-    static BURGER_INLINE void StoreAny(int64_t* pOutput, int64_t iInput) BURGER_NOEXCEPT {
-        StoreAny(reinterpret_cast<uint64_t*>(pOutput),  static_cast<uint64_t>(iInput)); }
-
-#if defined(BURGER_HAS_WCHAR_T) || defined(DOXYGEN)
-    static BURGER_INLINE void StoreAny(wchar_t* pOutput, wchar_t uInput) BURGER_NOEXCEPT {
-        StoreAny(reinterpret_cast<uint16_t*>(pOutput), uInput);
-    }
-#endif
-
-#if defined(BURGER_INT_NOT_IN_STDINT) || defined(DOXYGEN)
-    static BURGER_INLINE void StoreAny(unsigned int* pOutput, unsigned int uInput) BURGER_NOEXCEPT {
-        StoreAny(reinterpret_cast<uint2uint_t*>(pOutput), static_cast<uint2uint_t>(uInput)); }
-    static BURGER_INLINE void StoreAny(signed int* pOutput, signed int iInput) BURGER_NOEXCEPT {
-        StoreAny(reinterpret_cast<uint2uint_t*>(pOutput), static_cast<uint2uint_t>(iInput)); }
-#endif
-
-#if defined(BURGER_LONG_NOT_IN_STDINT) || defined(DOXYGEN)
-    static BURGER_INLINE void StoreAny(unsigned long* pOutput, unsigned long uInput) BURGER_NOEXCEPT {
-        StoreAny(reinterpret_cast<ulong2uint_t*>(pOutput), static_cast<ulong2uint_t>(uInput)); }
-    static BURGER_INLINE void StoreAny(signed long* pOutput, signed long iInput) BURGER_NOEXCEPT {
-        StoreAny(reinterpret_cast<ulong2uint_t*>(pOutput), static_cast<ulong2uint_t>(iInput)); }
-#endif
-	// clang-format on
-#endif
-
 	template<typename T>
-	static BURGER_INLINE void Fixup(T) BURGER_NOEXCEPT
+	static BURGER_INLINE void Fixup(T*) BURGER_NOEXCEPT
 	{
 	}
 
 	template<typename T>
-	static BURGER_INLINE void FixupAny(T) BURGER_NOEXCEPT
+	static BURGER_INLINE void FixupAny(T*) BURGER_NOEXCEPT
 	{
 	}
 };

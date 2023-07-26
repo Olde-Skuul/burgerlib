@@ -18,7 +18,7 @@
 #include "common.h"
 
 #if defined(BURGER_XBOX360) && defined(NDEBUG)
-//#define XBOXBUG
+// #define XBOXBUG
 #endif
 
 // These are unions to be able to access
@@ -428,10 +428,17 @@ static void BURGER_API TestBurgerSwapEndianTypes(void) BURGER_NOEXCEPT
 static uint_t BURGER_API TestBurgerSwapEndianLoadWord16(void) BURGER_NOEXCEPT
 {
 	uint16_t uResult = Burger::SwapEndian::Load(NEu16);
-	uint_t uFailure = (uResult != REu16);
+	uint_t uTest = (uResult != REu16);
+	uint_t uFailure = uTest;
 	ReportFailure(
-		"Burger::SwapEndian::Load(uint16_t) = 0x%04X / Wanted (0x%04X)",
-		uFailure, uResult, REu16);
+		"Burger::SwapEndian::Load(uint16_t) = 0x%04X / Wanted (0x%04X)", uTest,
+		uResult, REu16);
+
+	uResult = _swapendian16(NEu16);
+	uTest = (uResult != REu16);
+	uFailure |= uTest;
+	ReportFailure("_swapendian16(uint16_t) = 0x%04X / Wanted (0x%04X)", uTest,
+		uResult, REu16);
 	return uFailure;
 }
 
@@ -448,10 +455,17 @@ static uint_t BURGER_API TestBurgerSwapEndianLoadInt16(void) BURGER_NOEXCEPT
 static uint_t BURGER_API TestBurgerSwapEndianLoadWord32(void) BURGER_NOEXCEPT
 {
 	uint32_t uResult = Burger::SwapEndian::Load(NEu32);
-	uint_t uFailure = (uResult != REu32);
+	uint_t uTest = (uResult != REu32);
+	uint_t uFailure = uTest;
 	ReportFailure(
-		"Burger::SwapEndian::Load(uint32_t) = 0x%08X / Wanted (0x%08X)",
-		uFailure, uResult, REu32);
+		"Burger::SwapEndian::Load(uint32_t) = 0x%08X / Wanted (0x%08X)", uTest,
+		uResult, REu32);
+
+	uResult = _swapendian32(NEu32);
+	uTest = (uResult != REu32);
+	uFailure |= uTest;
+	ReportFailure("_swapendian32(uint32_t) = 0x%08X / Wanted (0x%08X)", uTest,
+		uResult, REu32);
 	return uFailure;
 }
 
@@ -468,14 +482,26 @@ static uint_t BURGER_API TestBurgerSwapEndianLoadInt32(void) BURGER_NOEXCEPT
 static uint_t BURGER_API TestBurgerSwapEndianLoadWord64(void) BURGER_NOEXCEPT
 {
 	uint64_t uResult = Burger::SwapEndian::Load(NEu64);
-	uint_t uFailure = (uResult != REu64);
+	uint_t uTest = (uResult != REu64);
+	uint_t uFailure = uTest;
 	Union64_t uMem1;
 	uMem1.m_Word64 = uResult;
 	Union64_t uMem2;
 	uMem2.m_Word64 = REu64;
 	ReportFailure(
 		"Burger::SwapEndian::Load(uint64_t) = 0x%08X%08X / Wanted (0x%08X%08X)",
-		uFailure, uMem1.m_Word32[BURGER_ENDIANINDEX_HIGH],
+		uTest, uMem1.m_Word32[BURGER_ENDIANINDEX_HIGH],
+		uMem1.m_Word32[BURGER_ENDIANINDEX_LOW],
+		uMem2.m_Word32[BURGER_ENDIANINDEX_HIGH],
+		uMem2.m_Word32[BURGER_ENDIANINDEX_LOW]);
+
+	uResult = _swapendian64(NEu64);
+	uTest = (uResult != REu64);
+	uFailure |= uTest;
+	uMem1.m_Word64 = uResult;
+	uMem2.m_Word64 = REu64;
+	ReportFailure("_swapendian64(uint64_t) = 0x%08X%08X / Wanted (0x%08X%08X)",
+		uTest, uMem1.m_Word32[BURGER_ENDIANINDEX_HIGH],
 		uMem1.m_Word32[BURGER_ENDIANINDEX_LOW],
 		uMem2.m_Word32[BURGER_ENDIANINDEX_HIGH],
 		uMem2.m_Word32[BURGER_ENDIANINDEX_LOW]);
@@ -605,6 +631,115 @@ static uint_t BURGER_API TestBurgerSwapEndianLoadDoublePtr(void) BURGER_NOEXCEPT
 	double fResult = Burger::SwapEndian::Load(&NEf64);
 	uint_t uFailure = (fResult != REf64);
 	ReportFailure("Burger::SwapEndian::Load(const double*) = %g / Wanted (%g)",
+		uFailure, fResult, REf64);
+	return uFailure;
+}
+
+//
+// Test SwapEndian::Store()
+//
+
+static uint_t BURGER_API TestBurgerSwapEndianStoreWord16Ptr(
+	void) BURGER_NOEXCEPT
+{
+	uint16_t uResult;
+	Burger::SwapEndian::Store(&uResult, NEu16);
+	uint_t uFailure = (uResult != REu16);
+	ReportFailure(
+		"Burger::SwapEndian::Store(const uint16_t *,uint16_t) = 0x%04X / Wanted (0x%04X)",
+		uFailure, uResult, REu16);
+	return uFailure;
+}
+
+static uint_t BURGER_API TestBurgerSwapEndianStoreInt16Ptr(void) BURGER_NOEXCEPT
+{
+	int16_t iResult;
+	Burger::SwapEndian::Store(&iResult, NEi16);
+	uint_t uFailure = (iResult != REi16);
+	ReportFailure(
+		"Burger::SwapEndian::Store(const int16_t *, int16_t) = 0x%04X / Wanted (0x%04X)",
+		uFailure, iResult, REi16);
+	return uFailure;
+}
+
+static uint_t BURGER_API TestBurgerSwapEndianStoreWord32Ptr(
+	void) BURGER_NOEXCEPT
+{
+	uint32_t uResult;
+	Burger::SwapEndian::Store(&uResult, NEu32);
+	uint_t uFailure = (uResult != REu32);
+	ReportFailure(
+		"Burger::SwapEndian::Store(const uint32_t *, uint32_t) = 0x%08X / Wanted (0x%08X)",
+		uFailure, uResult, REu32);
+	return uFailure;
+}
+
+static uint_t BURGER_API TestBurgerSwapEndianStoreInt32Ptr(void) BURGER_NOEXCEPT
+{
+	int32_t iResult;
+	Burger::SwapEndian::Store(&iResult, NEi32);
+	uint_t uFailure = (iResult != REi32);
+	ReportFailure(
+		"Burger::SwapEndian::Store(const int32_t *, int32_t) = 0x%08X / Wanted (0x%08X)",
+		uFailure, iResult, REi32);
+	return uFailure;
+}
+
+static uint_t BURGER_API TestBurgerSwapEndianStoreWord64Ptr(
+	void) BURGER_NOEXCEPT
+{
+	uint64_t uResult;
+	Burger::SwapEndian::Store(&uResult, NEu64);
+	uint_t uFailure = (uResult != REu64);
+	Union64_t uMem1;
+	uMem1.m_Word64 = uResult;
+	Union64_t uMem2;
+	uMem2.m_Word64 = REu64;
+	ReportFailure(
+		"Burger::SwapEndian::Store(const uint64_t *, uint64_t) = 0x%08X%08X / Wanted (0x%08X%08X)",
+		uFailure, uMem1.m_Word32[BURGER_ENDIANINDEX_HIGH],
+		uMem1.m_Word32[BURGER_ENDIANINDEX_LOW],
+		uMem2.m_Word32[BURGER_ENDIANINDEX_HIGH],
+		uMem2.m_Word32[BURGER_ENDIANINDEX_LOW]);
+	return uFailure;
+}
+
+static uint_t BURGER_API TestBurgerSwapEndianStoreInt64Ptr(void) BURGER_NOEXCEPT
+{
+	int64_t iResult;
+	Burger::SwapEndian::Store(&iResult, NEi64);
+	uint_t uFailure = (iResult != REi64);
+	Union64_t uMem1;
+	uMem1.m_Int64 = iResult;
+	Union64_t uMem2;
+	uMem2.m_Int64 = REi64;
+	ReportFailure(
+		"Burger::SwapEndian::Store(const int64_t *, int64_t) = 0x%08X%08X / Wanted (0x%08X%08X)",
+		uFailure, uMem1.m_Word32[BURGER_ENDIANINDEX_HIGH],
+		uMem1.m_Word32[BURGER_ENDIANINDEX_LOW],
+		uMem2.m_Word32[BURGER_ENDIANINDEX_HIGH],
+		uMem2.m_Word32[BURGER_ENDIANINDEX_LOW]);
+	return uFailure;
+}
+
+static uint_t BURGER_API TestBurgerSwapEndianStoreFloatPtr(void) BURGER_NOEXCEPT
+{
+	float fResult;
+	Burger::SwapEndian::Store(&fResult, NEf32);
+	uint_t uFailure = (fResult != REf32);
+	ReportFailure(
+		"Burger::SwapEndian::Store(const float *, float) = %g / Wanted (%g)",
+		uFailure, fResult, REf32);
+	return uFailure;
+}
+
+static uint_t BURGER_API TestBurgerSwapEndianStoreDoublePtr(
+	void) BURGER_NOEXCEPT
+{
+	double fResult;
+	Burger::SwapEndian::Store(&fResult, NEf64);
+	uint_t uFailure = (fResult != REf64);
+	ReportFailure("Burger::SwapEndian::Store(const double*) = %g / Wanted (%g)",
 		uFailure, fResult, REf64);
 	return uFailure;
 }
@@ -4715,6 +4850,16 @@ int BURGER_API TestBrendian(uint_t uVerbose) BURGER_NOEXCEPT
 	uTotal |= TestBurgerSwapEndianLoadInt64Ptr();
 	uTotal |= TestBurgerSwapEndianLoadFloatPtr();
 	uTotal |= TestBurgerSwapEndianLoadDoublePtr();
+
+	// SwapEndian::Store()
+	uTotal |= TestBurgerSwapEndianStoreWord16Ptr();
+	uTotal |= TestBurgerSwapEndianStoreInt16Ptr();
+	uTotal |= TestBurgerSwapEndianStoreWord32Ptr();
+	uTotal |= TestBurgerSwapEndianStoreInt32Ptr();
+	uTotal |= TestBurgerSwapEndianStoreWord64Ptr();
+	uTotal |= TestBurgerSwapEndianStoreInt64Ptr();
+	uTotal |= TestBurgerSwapEndianStoreFloatPtr();
+	uTotal |= TestBurgerSwapEndianStoreDoublePtr();
 
 	// SwapEndian::LoadAny()
 	uTotal |= TestBurgerSwapEndianLoadAnyWord16Ptr();
