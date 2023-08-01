@@ -3935,10 +3935,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\source\platforms\windows\brnetmanagerwindows.cpp"
-						>
-					</File>
-					<File
 						RelativePath="..\source\platforms\windows\broscursorwindows.cpp"
 						>
 					</File>

@@ -1171,6 +1171,9 @@
     <ClCompile Include="..\source\asm\ps3_asm\getpowerpcrounding.s">
       <Filter>source\asm\ps3_asm</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\asm\ps3_asm\loadunaligned64.s">
+      <Filter>source\asm\ps3_asm</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\asm\ps3_asm\setpowerpcrounding.s">
       <Filter>source\asm\ps3_asm</Filter>
     </ClCompile>

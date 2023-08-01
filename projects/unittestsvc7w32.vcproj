@@ -2336,9 +2336,6 @@
 						RelativePath="..\source\platforms\windows\brmutexwindows.cpp">
 					</File>
 					<File
-						RelativePath="..\source\platforms\windows\brnetmanagerwindows.cpp">
-					</File>
-					<File
 						RelativePath="..\source\platforms\windows\broscursorwindows.cpp">
 					</File>
 					<File

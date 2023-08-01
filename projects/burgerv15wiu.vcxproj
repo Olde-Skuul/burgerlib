@@ -547,6 +547,7 @@
     <ClCompile Include="..\source\text\brwin1252.cpp" />
     <ClCompile Include="..\source\text\brwin437.cpp" />
     <ASM Include="..\source\asm\wiiu_asm\getpowerpcrounding.s" />
+    <ASM Include="..\source\asm\wiiu_asm\loadunaligned64.s" />
     <ASM Include="..\source\asm\wiiu_asm\setpowerpcrounding.s" />
     <ASM Include="..\source\asm\wiiu_asm\swapendian64.s" />
   </ItemGroup>

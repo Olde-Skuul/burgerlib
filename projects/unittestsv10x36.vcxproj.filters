@@ -712,6 +712,9 @@
     <ClCompile Include="..\source\asm\xbox360asm\getpowerpcrounding.cpp">
       <Filter>source\asm\xbox360asm</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\asm\xbox360asm\loadunaligned64.cpp">
+      <Filter>source\asm\xbox360asm</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\asm\xbox360asm\setpowerpcrounding.cpp">
       <Filter>source\asm\xbox360asm</Filter>
     </ClCompile>

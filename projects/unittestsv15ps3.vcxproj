@@ -592,6 +592,7 @@
     <ClCompile Include="..\unittest\testcharset.cpp" />
     <ClCompile Include="..\unittest\testmacros.cpp" />
     <ClCompile Include="..\source\asm\ps3_asm\getpowerpcrounding.s" />
+    <ClCompile Include="..\source\asm\ps3_asm\loadunaligned64.s" />
     <ClCompile Include="..\source\asm\ps3_asm\setpowerpcrounding.s" />
     <ClCompile Include="..\source\asm\ps3_asm\swapendian64.s" />
   </ItemGroup>

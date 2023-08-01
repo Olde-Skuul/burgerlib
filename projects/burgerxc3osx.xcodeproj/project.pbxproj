@@ -14,6 +14,7 @@
 		0B30F0521F843054F4A531EC /* brmd2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6F648450058DCC14C741CD87 /* brmd2.cpp */; };
 		0C3D82A7D4E3CB8BF3BCDC87 /* brtimedate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FBABDFAA3F678ED8AB70FE51 /* brtimedate.cpp */; };
 		0D1CBAC6E8F523CFEACFCF8B /* brfixedpoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 69C94B82D5913625570C01BB /* brfixedpoint.cpp */; };
+		0D25E4D0BB5B95CEA7E40DED /* loadunaligned64.ppc in Sources */ = {isa = PBXBuildFile; fileRef = 6E031C53B068E51B675B4F0E /* loadunaligned64.ppc */; };
 		0E0A7FCF0817E9DCB0DAB9EE /* brthreadunix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 632885712676DE3FBCDE1EA6 /* brthreadunix.cpp */; };
 		0E653FCEC72F88F2D2A54FE1 /* brdirectorysearchmacosx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5642D1CAB3734FC8BB75C70 /* brdirectorysearchmacosx.cpp */; };
 		0F9CB024E3594954C3ABF580 /* brflashcolortransform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F8CC879EA9CC97CB57F370D /* brflashcolortransform.cpp */; };
@@ -483,6 +484,7 @@
 		6C13CCABF792DC51C7DA0689 /* libburgerxc3osx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libburgerxc3osx.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D35417529EADAC0585E0852 /* brdxt1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brdxt1.cpp; path = ../source/compression/brdxt1.cpp; sourceTree = SOURCE_ROOT; };
 		6D85A568B3F89AFBC3D66924 /* brfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = brfile.h; path = ../source/file/brfile.h; sourceTree = SOURCE_ROOT; };
+		6E031C53B068E51B675B4F0E /* loadunaligned64.ppc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm.asm; name = loadunaligned64.ppc; path = ../source/asm/xcodeasm/loadunaligned64.ppc; sourceTree = SOURCE_ROOT; };
 		6E88EC8C1229E682F762F1D7 /* bralgorithm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = bralgorithm.cpp; path = ../source/lowlevel/bralgorithm.cpp; sourceTree = SOURCE_ROOT; };
 		6ED67E0D07B112C10C0E64F9 /* brflashrgba.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brflashrgba.cpp; path = ../source/flashplayer/brflashrgba.cpp; sourceTree = SOURCE_ROOT; };
 		6F4A19DC465CC0E1A8CCDA65 /* brfpprintinfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brfpprintinfo.cpp; path = ../source/math/brfpprintinfo.cpp; sourceTree = SOURCE_ROOT; };
@@ -1113,6 +1115,7 @@
 			isa = PBXGroup;
 			children = (
 				F7112DC8BFB29D57BBCE7E11 /* getpowerpcrounding.ppc */,
+				6E031C53B068E51B675B4F0E /* loadunaligned64.ppc */,
 				6B1E738A3E415F66E376DEE9 /* setpowerpcrounding.ppc */,
 				3932ACFFF4649197B1D79386 /* swapendian64.ppc */,
 				03E13BA52217AD56996DDF61 /* swapendian64ptr.ppc */,
@@ -1714,6 +1717,7 @@
 				85CBA87234CE5F36008BBE40 /* brwin1252.cpp in Sources */,
 				90058F992B462A9275126627 /* brwin437.cpp in Sources */,
 				C035386087694D9C9B18C257 /* getpowerpcrounding.ppc in Sources */,
+				0D25E4D0BB5B95CEA7E40DED /* loadunaligned64.ppc in Sources */,
 				442601647B5A44CE0DD853AE /* setpowerpcrounding.ppc in Sources */,
 				E7D193C8F0970248D495422D /* swapendian64.ppc in Sources */,
 				42E3642C56F6847B76B47974 /* swapendian64ptr.ppc in Sources */,

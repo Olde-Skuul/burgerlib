@@ -580,6 +580,7 @@
     <ClCompile Include="..\source\ansi\brmemoryansi.cpp" />
     <ClCompile Include="..\source\ansi\brstdouthelpers.cpp" />
     <ClCompile Include="..\source\asm\xbox360asm\getpowerpcrounding.cpp" />
+    <ClCompile Include="..\source\asm\xbox360asm\loadunaligned64.cpp" />
     <ClCompile Include="..\source\asm\xbox360asm\setpowerpcrounding.cpp" />
     <ClCompile Include="..\source\audio\bralaw.cpp" />
     <ClCompile Include="..\source\audio\brimportit.cpp" />

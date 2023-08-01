@@ -1285,6 +1285,9 @@
     <ASM Include="..\source\asm\wiiu_asm\getpowerpcrounding.s">
       <Filter>source\asm\wiiu_asm</Filter>
     </ASM>
+    <ASM Include="..\source\asm\wiiu_asm\loadunaligned64.s">
+      <Filter>source\asm\wiiu_asm</Filter>
+    </ASM>
     <ASM Include="..\source\asm\wiiu_asm\setpowerpcrounding.s">
       <Filter>source\asm\wiiu_asm</Filter>
     </ASM>

@@ -1324,9 +1324,6 @@
     <ClCompile Include="..\source\platforms\windows\brmutexwindows.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\platforms\windows\brnetmanagerwindows.cpp">
-      <Filter>source\platforms\windows</Filter>
-    </ClCompile>
     <ClCompile Include="..\source\platforms\windows\broscursorwindows.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>

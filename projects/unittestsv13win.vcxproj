@@ -894,7 +894,6 @@
     <ClCompile Include="..\source\platforms\windows\brmemorymanagerwindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brmousewindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brmutexwindows.cpp" />
-    <ClCompile Include="..\source\platforms\windows\brnetmanagerwindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\broscursorwindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brosstringfunctionswindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brperforcewindows.cpp" />

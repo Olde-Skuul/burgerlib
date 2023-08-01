@@ -2513,13 +2513,6 @@
 				</FILE>
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brnetmanagerwindows.cpp</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-					<FILEKIND>Text</FILEKIND>
-					<FILEFLAGS>Debug</FILEFLAGS>
-				</FILE>
-				<FILE>
-					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brnumberstring.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 					<FILEKIND>Text</FILEKIND>
@@ -5909,11 +5902,6 @@
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brmutexwindows.cpp</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-				</FILEREF>
-				<FILEREF>
-					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brnetmanagerwindows.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
 				<FILEREF>
@@ -9771,13 +9759,6 @@
 				</FILE>
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brnetmanagerwindows.cpp</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-					<FILEKIND>Text</FILEKIND>
-					<FILEFLAGS>Debug</FILEFLAGS>
-				</FILE>
-				<FILE>
-					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brnumberstring.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 					<FILEKIND>Text</FILEKIND>
@@ -13167,11 +13148,6 @@
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brmutexwindows.cpp</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-				</FILEREF>
-				<FILEREF>
-					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brnetmanagerwindows.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
 				<FILEREF>
@@ -17029,13 +17005,6 @@
 				</FILE>
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brnetmanagerwindows.cpp</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-					<FILEKIND>Text</FILEKIND>
-					<FILEFLAGS></FILEFLAGS>
-				</FILE>
-				<FILE>
-					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brnumberstring.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 					<FILEKIND>Text</FILEKIND>
@@ -20425,11 +20394,6 @@
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brmutexwindows.cpp</PATH>
-					<PATHFORMAT>Windows</PATHFORMAT>
-				</FILEREF>
-				<FILEREF>
-					<PATHTYPE>Name</PATHTYPE>
-					<PATH>brnetmanagerwindows.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
 				<FILEREF>
@@ -24288,12 +24252,6 @@
 						<TARGETNAME>Debug</TARGETNAME>
 						<PATHTYPE>Name</PATHTYPE>
 						<PATH>brmutexwindows.cpp</PATH>
-						<PATHFORMAT>Windows</PATHFORMAT>
-					</FILEREF>
-					<FILEREF>
-						<TARGETNAME>Debug</TARGETNAME>
-						<PATHTYPE>Name</PATHTYPE>
-						<PATH>brnetmanagerwindows.cpp</PATH>
 						<PATHFORMAT>Windows</PATHFORMAT>
 					</FILEREF>
 					<FILEREF>
