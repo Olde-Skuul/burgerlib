@@ -238,7 +238,7 @@ uint32_t BURGER_API Burger::calc_crc32(
 	if (pInput && uInputLength) {
 
 		// Initialize the CRC
-		uCRC = ~SwapEndian::Load(uCRC);
+		uCRC = ~SwapEndian::load(uCRC);
 		do {
 			uCRC = g_CRC32Table[static_cast<const uint8_t*>(pInput)[0] ^
 					   (uCRC >> 24U)] ^
@@ -248,7 +248,7 @@ uint32_t BURGER_API Burger::calc_crc32(
 		} while (--uInputLength);
 
 		// Complement the CRC
-		uCRC = ~SwapEndian::Load(uCRC);
+		uCRC = ~SwapEndian::load(uCRC);
 	}
 	return uCRC;
 }

@@ -46,6 +46,9 @@ extern unsigned __int64 __cdecl _byteswap_uint64(unsigned __int64);
 extern unsigned short __cdecl _load_be_u16(void const*);
 extern unsigned int __cdecl _load_be_u32(void const*);
 extern unsigned __int64 __cdecl _load_be_u64(void const*);
+extern void __cdecl _store_be_u16(void *, unsigned short);
+extern void __cdecl _store_be_u32(void *, unsigned int);
+extern void __cdecl _store_be_u64(void *, unsigned __int64);
 #endif
 
 // Visual Studio 2008 and earlier doesn't have this intrinsic

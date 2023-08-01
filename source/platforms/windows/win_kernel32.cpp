@@ -269,7 +269,7 @@ uint_t BURGER_API Burger::Win32::TryAcquireSRWLockExclusive(
 		uResult = static_cast<TryAcquireSRWLockExclusivePtr>(
 			pTryAcquireSRWLockExclusive)(pSRWLock);
 	}
-	return uResult;
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************

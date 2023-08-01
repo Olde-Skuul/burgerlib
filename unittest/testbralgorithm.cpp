@@ -20,6 +20,11 @@
 #include "brstringfunctions.h"
 #include "common.h"
 
+// Get rid of a spurious warning about the use of sizeof()
+#if defined(BURGER_GHS)
+#pragma ghs nowarning 1931
+#endif
+
 #if defined(BURGER_WATCOM)
 // Unreachable code
 #pragma warning 13 9

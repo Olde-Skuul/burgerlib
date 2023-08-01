@@ -136,32 +136,32 @@ void BURGER_API Burger::MD4Hasher_t::process(
 
 	const uint32_t* pBlock32 =
 		static_cast<const uint32_t*>(static_cast<const void*>(pBlock));
-	const uint32_t x0 = LittleEndian::LoadAny(pBlock32);
-	const uint32_t x1 = LittleEndian::LoadAny(pBlock32 + 1);
-	const uint32_t x2 = LittleEndian::LoadAny(pBlock32 + 2);
-	const uint32_t x3 = LittleEndian::LoadAny(pBlock32 + 3);
-	const uint32_t x4 = LittleEndian::LoadAny(pBlock32 + 4);
-	const uint32_t x5 = LittleEndian::LoadAny(pBlock32 + 5);
-	const uint32_t x6 = LittleEndian::LoadAny(pBlock32 + 6);
-	const uint32_t x7 = LittleEndian::LoadAny(pBlock32 + 7);
-	const uint32_t x8 = LittleEndian::LoadAny(pBlock32 + 8);
-	const uint32_t x9 = LittleEndian::LoadAny(pBlock32 + 9);
-	const uint32_t x10 = LittleEndian::LoadAny(pBlock32 + 10);
-	const uint32_t x11 = LittleEndian::LoadAny(pBlock32 + 11);
-	const uint32_t x12 = LittleEndian::LoadAny(pBlock32 + 12);
-	const uint32_t x13 = LittleEndian::LoadAny(pBlock32 + 13);
-	const uint32_t x14 = LittleEndian::LoadAny(pBlock32 + 14);
-	const uint32_t x15 = LittleEndian::LoadAny(pBlock32 + 15);
+	const uint32_t x0 = LittleEndian::load_unaligned(pBlock32);
+	const uint32_t x1 = LittleEndian::load_unaligned(pBlock32 + 1);
+	const uint32_t x2 = LittleEndian::load_unaligned(pBlock32 + 2);
+	const uint32_t x3 = LittleEndian::load_unaligned(pBlock32 + 3);
+	const uint32_t x4 = LittleEndian::load_unaligned(pBlock32 + 4);
+	const uint32_t x5 = LittleEndian::load_unaligned(pBlock32 + 5);
+	const uint32_t x6 = LittleEndian::load_unaligned(pBlock32 + 6);
+	const uint32_t x7 = LittleEndian::load_unaligned(pBlock32 + 7);
+	const uint32_t x8 = LittleEndian::load_unaligned(pBlock32 + 8);
+	const uint32_t x9 = LittleEndian::load_unaligned(pBlock32 + 9);
+	const uint32_t x10 = LittleEndian::load_unaligned(pBlock32 + 10);
+	const uint32_t x11 = LittleEndian::load_unaligned(pBlock32 + 11);
+	const uint32_t x12 = LittleEndian::load_unaligned(pBlock32 + 12);
+	const uint32_t x13 = LittleEndian::load_unaligned(pBlock32 + 13);
+	const uint32_t x14 = LittleEndian::load_unaligned(pBlock32 + 14);
+	const uint32_t x15 = LittleEndian::load_unaligned(pBlock32 + 15);
 
 	// Convert endian on big endian machines
 	uint32_t* pHash32 =
 		static_cast<uint32_t*>(static_cast<void*>(m_Hash.m_Hash));
 
 	// Make a copy of the hash integers
-	uint32_t a = LittleEndian::Load(pHash32);
-	uint32_t b = LittleEndian::Load(pHash32 + 1);
-	uint32_t c = LittleEndian::Load(pHash32 + 2);
-	uint32_t d = LittleEndian::Load(pHash32 + 3);
+	uint32_t a = LittleEndian::load(pHash32);
+	uint32_t b = LittleEndian::load(pHash32 + 1);
+	uint32_t c = LittleEndian::load(pHash32 + 2);
+	uint32_t d = LittleEndian::load(pHash32 + 3);
 
 	// Round 1
 	FF4(a, b, c, d, x0, SHIFT411);  // 1
@@ -219,10 +219,10 @@ void BURGER_API Burger::MD4Hasher_t::process(
 
 	// Add in the adjusted hash (Store in little endian format)
 
-	LittleEndian::Store(pHash32, LittleEndian::Load(pHash32) + a);
-	LittleEndian::Store(pHash32 + 1, LittleEndian::Load(pHash32 + 1) + b);
-	LittleEndian::Store(pHash32 + 2, LittleEndian::Load(pHash32 + 2) + c);
-	LittleEndian::Store(pHash32 + 3, LittleEndian::Load(pHash32 + 3) + d);
+	LittleEndian::store(pHash32, LittleEndian::load(pHash32) + a);
+	LittleEndian::store(pHash32 + 1, LittleEndian::load(pHash32 + 1) + b);
+	LittleEndian::store(pHash32 + 2, LittleEndian::load(pHash32 + 2) + c);
+	LittleEndian::store(pHash32 + 3, LittleEndian::load(pHash32 + 3) + d);
 }
 
 /*! ************************************
@@ -292,7 +292,7 @@ void BURGER_API Burger::MD4Hasher_t::finalize(void) BURGER_NOEXCEPT
 
 	// Save number of bits
 
-	const uint64_t uBitCountLE = LittleEndian::Load(m_uByteCount << 3U);
+	const uint64_t uBitCountLE = LittleEndian::load(m_uByteCount << 3U);
 
 	// Pad out to 56 mod 64.
 	// Convert to 1-64

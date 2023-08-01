@@ -1004,7 +1004,7 @@ Burger::eError BURGER_API Burger::OutputMemoryStream::Append(
 Burger::eError BURGER_API Burger::OutputMemoryStream::Append(
 	uint64_t uInput) BURGER_NOEXCEPT
 {
-	uInput = LittleEndian::Load(uInput);
+	uInput = LittleEndian::load(uInput);
 	return Append(&uInput, sizeof(uint64_t));
 }
 
@@ -1024,7 +1024,7 @@ Burger::eError BURGER_API Burger::OutputMemoryStream::Append(
 Burger::eError BURGER_API Burger::OutputMemoryStream::Append(
 	float fInput) BURGER_NOEXCEPT
 {
-	LittleEndian::Fixup(&fInput);
+	LittleEndian::fixup(&fInput);
 	return Append(&fInput, sizeof(float));
 }
 
@@ -1044,7 +1044,7 @@ Burger::eError BURGER_API Burger::OutputMemoryStream::Append(
 Burger::eError BURGER_API Burger::OutputMemoryStream::Append(
 	double dInput) BURGER_NOEXCEPT
 {
-	LittleEndian::Fixup(&dInput);
+	LittleEndian::fixup(&dInput);
 	return Append(&dInput, sizeof(double));
 }
 
@@ -1259,7 +1259,7 @@ Burger::eError BURGER_API Burger::OutputMemoryStream::BigEndianAppend(
 Burger::eError BURGER_API Burger::OutputMemoryStream::BigEndianAppend(
 	uint64_t uInput) BURGER_NOEXCEPT
 {
-	uInput = BigEndian::Load(uInput);
+	uInput = BigEndian::load(uInput);
 	return Append(&uInput, sizeof(uint64_t));
 }
 
@@ -1279,7 +1279,7 @@ Burger::eError BURGER_API Burger::OutputMemoryStream::BigEndianAppend(
 Burger::eError BURGER_API Burger::OutputMemoryStream::BigEndianAppend(
 	float fInput) BURGER_NOEXCEPT
 {
-	BigEndian::Fixup(&fInput);
+	BigEndian::fixup(&fInput);
 	return Append(&fInput, sizeof(float));
 }
 
@@ -1299,7 +1299,7 @@ Burger::eError BURGER_API Burger::OutputMemoryStream::BigEndianAppend(
 Burger::eError BURGER_API Burger::OutputMemoryStream::BigEndianAppend(
 	double dInput) BURGER_NOEXCEPT
 {
-	BigEndian::Fixup(&dInput);
+	BigEndian::fixup(&dInput);
 	return Append(&dInput, sizeof(double));
 }
 

@@ -36,6 +36,10 @@
 
 #include "win_windows.h"
 
+#if defined(BURGER_METROWERKS)
+#pragma warn_impl_s2u_conv off
+#endif
+
 #include <dxgi.h>
 
 #include <d3d10_1.h>
@@ -49,6 +53,10 @@
 #endif
 
 #include <dwrite.h>
+#endif
+
+#if defined(BURGER_METROWERKS)
+#pragma warn_impl_s2u_conv reset
 #endif
 
 /*! ************************************

@@ -1357,10 +1357,10 @@ uint_t BURGER_API LBRectRead(LBRect *Output,FILE *fp)
 	int16_t Input[4];
 	
 	if (fread(&Input[0],1,8,fp)==8) {
-		Output->left = Burger::LittleEndian::Load(&Input[0]);
-		Output->top = Burger::LittleEndian::Load(&Input[1]);
-		Output->right = Burger::LittleEndian::Load(&Input[2]);
-		Output->bottom = Burger::LittleEndian::Load(&Input[3]);
+		Output->left = Burger::LittleEndian::load(&Input[0]);
+		Output->top = Burger::LittleEndian::load(&Input[1]);
+		Output->right = Burger::LittleEndian::load(&Input[2]);
+		Output->bottom = Burger::LittleEndian::load(&Input[3]);
 		return FALSE;
 	}
 	return TRUE;
@@ -1376,10 +1376,10 @@ uint_t BURGER_API LBRectWrite(const LBRect *Input,FILE *fp)
 {
 	int16_t Output[4];
 	
-	Output[0] = Burger::LittleEndian::Load(static_cast<int16_t>(Input->left));
-	Output[1] = Burger::LittleEndian::Load(static_cast<int16_t>(Input->top));
-	Output[2] = Burger::LittleEndian::Load(static_cast<int16_t>(Input->right));
-	Output[3] = Burger::LittleEndian::Load(static_cast<int16_t>(Input->bottom));
+	Output[0] = Burger::LittleEndian::load(static_cast<int16_t>(Input->left));
+	Output[1] = Burger::LittleEndian::load(static_cast<int16_t>(Input->top));
+	Output[2] = Burger::LittleEndian::load(static_cast<int16_t>(Input->right));
+	Output[3] = Burger::LittleEndian::load(static_cast<int16_t>(Input->bottom));
 	if (fwrite(&Output[0],1,8,fp)==8) {
 		return FALSE;
 	}

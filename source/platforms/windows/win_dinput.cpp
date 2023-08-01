@@ -27,7 +27,15 @@
 
 #include "win_windows.h"
 
+#if defined(BURGER_METROWERKS)
+#pragma warn_emptydecl off
+#endif
+
 #include <dinput.h>
+
+#if defined(BURGER_METROWERKS)
+#pragma warn_emptydecl reset
+#endif
 
 // Function prototypes, lovingly stolen from dinput.h and dinput8.h
 typedef HRESULT(WINAPI* DirectInput8CreatePtr)(HINSTANCE hinst, DWORD dwVersion,

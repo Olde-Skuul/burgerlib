@@ -444,11 +444,11 @@ const void * BURGER_API Burger::FindAIFFChunk(const void *pInput,uintptr_t uLeng
 			// Remove processed bytes
 			uLength-=uSkip;
 			pInput = static_cast<const uint8_t *>(pInput)+uSkip;
-			if (BigEndian::LoadAny(static_cast<const uint32_t *>(pInput)) == uChunkName) {	// Match?
+			if (BigEndian::load_unaligned(static_cast<const uint32_t *>(pInput)) == uChunkName) {	// Match?
 				pResult = pInput;
 				break;
 			}
-			uSkip = BigEndian::LoadAny(&static_cast<const uint32_t *>(pInput)[1]);
+			uSkip = BigEndian::load_unaligned(&static_cast<const uint32_t *>(pInput)[1]);
 			uSkip = (uSkip+8U+1U)&(~1U);	// Align to short
 		} while (uSkip<uLength);
 	}
@@ -480,11 +480,11 @@ const void * BURGER_API Burger::FindRIFFChunk(const void *pInput,uintptr_t uLeng
 			// Remove processed bytes
 			uLength-=uSkip;
 			pInput = static_cast<const uint8_t *>(pInput)+uSkip;
-			if (BigEndian::LoadAny(static_cast<const uint32_t *>(pInput)) == uChunkName) {	// Match?
+			if (BigEndian::load_unaligned(static_cast<const uint32_t *>(pInput)) == uChunkName) {	// Match?
 				pResult = pInput;
 				break;
 			}
-			uSkip = LittleEndian::LoadAny(&static_cast<const uint32_t *>(pInput)[1]);
+			uSkip = LittleEndian::load_unaligned(&static_cast<const uint32_t *>(pInput)[1]);
 			uSkip = (uSkip+8U+1U)&(~1U);	// Align to short
 		} while (uSkip<uLength);
 	}

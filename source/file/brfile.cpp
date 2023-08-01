@@ -931,7 +931,7 @@ uint32_t BURGER_API Burger::File::read_big_uint32(void) BURGER_NOEXCEPT
 	// Save the long word
 	uint32_t mValue;
 	read(&mValue, 4);
-	return BigEndian::Load(&mValue);
+	return BigEndian::load(&mValue);
 }
 
 /*! ************************************
@@ -952,7 +952,7 @@ uint16_t BURGER_API Burger::File::read_big_uint16(void) BURGER_NOEXCEPT
 	// Save the short word
 	uint16_t mValue;
 	read(&mValue, 2);
-	return BigEndian::Load(&mValue);
+	return BigEndian::load(&mValue);
 }
 
 /*! ************************************
@@ -973,7 +973,7 @@ uint32_t BURGER_API Burger::File::read_little_uint32(void) BURGER_NOEXCEPT
 	// Save the long word
 	uint32_t mValue;
 	read(&mValue, 4);
-	return LittleEndian::Load(&mValue);
+	return LittleEndian::load(&mValue);
 }
 
 /*! ************************************
@@ -994,5 +994,5 @@ uint16_t BURGER_API Burger::File::read_little_uint16(void) BURGER_NOEXCEPT
 	// Save the long word
 	uint16_t mValue;
 	read(&mValue, 2);
-	return LittleEndian::Load(&mValue);
+	return LittleEndian::load(&mValue);
 }

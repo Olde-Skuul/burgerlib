@@ -20,7 +20,15 @@
 
 #include "win_windows.h"
 
+#if defined(BURGER_METROWERKS)
+#pragma warn_emptydecl off
+#endif
+
 #include <d3dx9.h>
+
+#if defined(BURGER_METROWERKS)
+#pragma warn_emptydecl reset
+#endif
 
 #if !defined(DOXYGEN)
 BURGER_CREATE_STATICRTTI_PARENT(Burger::VertexBufferDirectX9,Burger::VertexBuffer);

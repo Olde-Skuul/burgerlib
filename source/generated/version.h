@@ -9,9 +9,9 @@
 #ifndef __VERSION_H__
 #define __VERSION_H__
 
-#define P4_CHANGELIST 21524
-#define P4_CHANGEDATE "2023/07/22"
-#define P4_CHANGETIME "21:13:23"
+#define P4_CHANGELIST 21755
+#define P4_CHANGEDATE "2023/07/31"
+#define P4_CHANGETIME "23:03:31"
 #define P4_CLIENT "burgerbecky32core"
 #define P4_USER "burgerbecky"
 

@@ -33,7 +33,7 @@ asm double BURGER_API Burger::_swapendiandouble(double /* dInput */) BURGER_NOEX
 	ror.w	#8, d1
 
 	// Save the result
-	move.l	d1, 0(a0)
+	move.l	d1, (a0)
 	move.l	d0, 4(a0)
 
 #if defined(BURGER_CFM)

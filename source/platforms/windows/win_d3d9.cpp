@@ -26,8 +26,16 @@
 
 #include "win_windows.h"
 
+#if defined(BURGER_METROWERKS)
+#pragma warn_emptydecl off
+#endif
+
 #include <d3d9.h>
 #include <d3dx9math.h>
+
+#if defined(BURGER_METROWERKS)
+#pragma warn_emptydecl reset
+#endif
 
 // Function prototypes, lovingly stolen from d3d9.h
 typedef IDirect3D9*(WINAPI* Direct3DCreate9Ptr)(UINT SDKVersion);

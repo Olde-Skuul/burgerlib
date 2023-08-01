@@ -176,7 +176,7 @@ void Burger::Font4Bit::DrawChar(uint_t uLetter)
 	uint_t uByteWidth = (uCharacterWidth+1)>>1;	// Convert to bytes per cel
 	// Calculate the location of the font strike
 	const uint8_t *pFontIndexes = &pFont->m_Widths[m_uCount];
-	uint_t uRGBListOffset = LittleEndian::LoadAny(&reinterpret_cast<const uint16_t *>(pFontIndexes)[uLetter]);
+	uint_t uRGBListOffset = LittleEndian::load_unaligned(&reinterpret_cast<const uint16_t *>(pFontIndexes)[uLetter]);
 	const uint8_t *pStrike = pFontIndexes+uRGBListOffset;
 
 	// Clip the font data
@@ -513,9 +513,9 @@ void BURGER_API Burger::Font4Bit::InstallToPalette(Burger::RezFile *pRezFile,uin
 			if (ppFont) {			// Did it load?
 				m_ppData = ppFont;	// Save the handle
 				const Font4BitImage_t *pFontImage = static_cast<Font4BitImage_t *>(ppFont[0]);
-				m_uHeight = LittleEndian::Load(&pFontImage->m_usHeight);
-				m_uCount = LittleEndian::Load(&pFontImage->m_usCount);
-				m_uFirst = LittleEndian::Load(&pFontImage->m_usFirst);
+				m_uHeight = LittleEndian::load(&pFontImage->m_usHeight);
+				m_uCount = LittleEndian::load(&pFontImage->m_usCount);
+				m_uFirst = LittleEndian::load(&pFontImage->m_usFirst);
 				m_uPixelOffset = m_uCount+BURGER_OFFSETOF(Font4BitImage_t,m_Widths);
 				m_uRezNum = uRezNum;		// Set the new font
 				m_pRezFile = pRezFile;
@@ -523,7 +523,7 @@ void BURGER_API Burger::Font4Bit::InstallToPalette(Burger::RezFile *pRezFile,uin
 					const uint8_t *pFontIndexes = &pFontImage->m_Widths[m_uCount];
 					// After the indexes, is a default color scheme, index to it and
 					// use it to draw
-					uint_t uRGBListOffset = LittleEndian::LoadAny(&reinterpret_cast<const uint16_t *>(pFontIndexes)[m_uCount]);
+					uint_t uRGBListOffset = LittleEndian::load_unaligned(&reinterpret_cast<const uint16_t *>(pFontIndexes)[m_uCount]);
 					SetColorRGBListToPalette(reinterpret_cast<const RGBColorList_t *>(pFontIndexes+uRGBListOffset),pPalette);
 				}
 			}
@@ -584,7 +584,7 @@ void BURGER_API Burger::Font4Bit::SetToPalette(const uint8_t *pPalette)
 		const uint8_t *pFontIndexes = &static_cast<const Font4BitImage_t *>(m_ppData[0])->m_Widths[m_uCount];
 		// After the indexes, is a default color scheme, index to it and
 		// use it to draw
-		uint_t uRGBListOffset = LittleEndian::LoadAny(&reinterpret_cast<const uint16_t *>(pFontIndexes)[m_uCount]);
+		uint_t uRGBListOffset = LittleEndian::load_unaligned(&reinterpret_cast<const uint16_t *>(pFontIndexes)[m_uCount]);
 		SetColorRGBListToPalette(reinterpret_cast<const RGBColorList_t *>(pFontIndexes+uRGBListOffset),pPalette);
 	}
 }

@@ -12,11 +12,10 @@
 #include "brendian.h"
 
 asm double BURGER_API Burger::_swapendiandouble(
-	const double* /* pInput */)
+	const double* pInput BURGER_68K_A0)
 {
-	// The input pointer is 8(a7)
-	movea.l	8(a7), a0
-	move.l  0(a0), d0
+	// The input pointer is a0
+	move.l  (a0), d0
 	move.l	4(a0), d1
 
 	// Swap endian of the low 16 bits
@@ -35,11 +34,11 @@ asm double BURGER_API Burger::_swapendiandouble(
 	movea.l 4(a7), a0
 
 	// Save the result
-	move.l	d1, 0(a0)
+	move.l	d1, (a0)
 	move.l	d0, 4(a0)
 
 #if defined(BURGER_CFM)
-	rtd		#8
+	rtd		#4
 #else
 	rts
 #endif

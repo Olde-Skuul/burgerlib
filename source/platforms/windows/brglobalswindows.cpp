@@ -49,6 +49,10 @@
 
 #include "win_windows.h"
 
+#if defined(BURGER_METROWERKS)
+#pragma warn_emptydecl off
+#endif
+
 #include <MMSystem.h>
 
 #include <SetupAPI.h>
@@ -63,6 +67,10 @@
 #include <shellapi.h>
 #include <shlobj.h>
 #include <winnt.h>
+
+#if defined(BURGER_METROWERKS)
+#pragma warn_emptydecl reset
+#endif
 
 //
 // Globals

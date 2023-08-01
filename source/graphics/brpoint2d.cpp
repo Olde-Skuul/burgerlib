@@ -141,8 +141,8 @@ Burger::eError Burger::Point2D_t::Read(FILE* fp) BURGER_NOEXCEPT
 
 	eError uResult = kErrorReadFailure;
 	if (fread(Input, 1, 4, fp) == 4) {
-		m_iX = LittleEndian::Load(&Input[0]);
-		m_iY = LittleEndian::Load(&Input[1]);
+		m_iX = LittleEndian::load(&Input[0]);
+		m_iY = LittleEndian::load(&Input[1]);
 		uResult = kErrorNone;
 	}
 	return uResult;
@@ -171,8 +171,8 @@ Burger::eError Burger::Point2D_t::Write(FILE* fp) const BURGER_NOEXCEPT
 {
 	int16_t Output[2];
 
-	Output[0] = static_cast<int16_t>(LittleEndian::Load(&m_iX));
-	Output[1] = static_cast<int16_t>(LittleEndian::Load(&m_iY));
+	Output[0] = static_cast<int16_t>(LittleEndian::load(&m_iX));
+	Output[1] = static_cast<int16_t>(LittleEndian::load(&m_iY));
 	eError uResult = kErrorWriteFailure;
 	if (fwrite(Output, 1, 4, fp) == 4) {
 		uResult = kErrorNone;
@@ -204,8 +204,8 @@ Burger::eError Burger::Point2D_t::Read(Burger::File* fp) BURGER_NOEXCEPT
 
 	eError uResult = kErrorReadFailure;
 	if (fp->read(Input, 4) == 4) {
-		m_iX = LittleEndian::Load(&Input[0]);
-		m_iY = LittleEndian::Load(&Input[1]);
+		m_iX = LittleEndian::load(&Input[0]);
+		m_iY = LittleEndian::load(&Input[1]);
 		uResult = kErrorNone;
 	}
 	return uResult;
@@ -234,8 +234,8 @@ Burger::eError Burger::Point2D_t::Write(Burger::File* fp) const BURGER_NOEXCEPT
 {
 	int16_t Output[2];
 
-	Output[0] = static_cast<int16_t>(LittleEndian::Load(&m_iX));
-	Output[1] = static_cast<int16_t>(LittleEndian::Load(&m_iY));
+	Output[0] = static_cast<int16_t>(LittleEndian::load(&m_iX));
+	Output[1] = static_cast<int16_t>(LittleEndian::load(&m_iY));
 	eError uResult = kErrorWriteFailure;
 	if (fp->write(Output, 4) == 4) {
 		uResult = kErrorNone;

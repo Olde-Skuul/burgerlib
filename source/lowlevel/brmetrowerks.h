@@ -92,8 +92,8 @@ BURGER_INLINE long _InterlockedCompareExchange(register long volatile* pOutput,
 	return lBefore;
 }
 
-extern void __cdecl __cpuid(int a[4], int b);
-extern void __cdecl __cpuidex(int a[4], int b, int c);
+extern void __fastcall __cpuid(int a[4], int b);
+extern void __fastcall __cpuidex(int a[4], int b, int c);
 
 BURGER_INLINE uint32_t _BitScanForward(
 	register unsigned long* Index, register unsigned long Mask)

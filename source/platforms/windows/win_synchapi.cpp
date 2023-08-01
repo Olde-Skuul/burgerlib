@@ -95,7 +95,7 @@ uint_t BURGER_API Burger::Win32::WaitOnAddress(volatile void* Address,
 		bResult = static_cast<WaitOnAddressPtr>(pWaitOnAddress)(
 			Address, CompareAddress, AddressSize, dwMilliseconds);
 	}
-	return bResult;
+	return static_cast<uint_t>(bResult);
 }
 
 /*! ************************************
@@ -222,7 +222,7 @@ uint_t BURGER_API Burger::Win32::SleepConditionVariableSRW(
 			pSleepConditionVariableSRW)(
 			ConditionVariable, SRWLock, dwMilliseconds, Flags);
 	}
-	return bResult;
+	return static_cast<uint_t>(bResult);
 }
 
 /*! ************************************
@@ -260,7 +260,7 @@ uint_t BURGER_API Burger::Win32::SleepConditionVariableCS(
 			static_cast<SleepConditionVariableCSPtr>(pSleepConditionVariableCS)(
 				ConditionVariable, CriticalSection, dwMilliseconds);
 	}
-	return bResult;
+	return static_cast<uint_t>(bResult);
 }
 
 #endif

@@ -28,11 +28,19 @@
 
 #include "win_windows.h"
 
+#if defined(BURGER_METROWERKS)
+#pragma warn_emptydecl off
+#endif
+
 #include <dinput.h>
 #include <stdio.h>
 #include <winreg.h>
 #include <Setupapi.h>
 #include <devguid.h>
+
+#if defined(BURGER_METROWERKS)
+#pragma warn_emptydecl reset
+#endif
 
 // Size of the mouse buffer for reading events from DirectInput
 #define DIRECTINPUT_MOUSEBUFFERSIZE 16

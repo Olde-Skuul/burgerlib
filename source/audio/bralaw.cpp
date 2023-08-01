@@ -172,7 +172,7 @@ Burger::eError Burger::DecompressALaw::Process(void* pOutput,
 
 					do {
 						// Convert to endian with unaligned data
-						NativeEndian::StoreAny(static_cast<int16_t*>(pOutput),
+						NativeEndian::store_unaligned(static_cast<int16_t*>(pOutput),
 							g_Table[static_cast<const uint8_t*>(pInput)[0]]);
 						pInput = static_cast<const uint8_t*>(pInput) + 1;
 						pOutput = static_cast<uint16_t*>(pOutput) + 1;

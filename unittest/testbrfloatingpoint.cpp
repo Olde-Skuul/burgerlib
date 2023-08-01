@@ -193,28 +193,28 @@ static uint_t BURGER_API TestFPConsts(void) BURGER_NOEXCEPT
 	uResult |= uFailure;
 	val32.u = ::g_fNan;
 	ReportFailure(
-		"Burger::g_fNan = %g / Wanted %g", uFailure, Burger::g_fNan, val32.f);
+		"Burger::g_fNan = %g / Wanted %g", uFailure, Burger::g_fNan.f, val32.f);
 
 	wfFloat = Burger::g_fQNan.w;
 	uFailure = (wfFloat != ::g_fQNan);
 	uResult |= uFailure;
 	val32.u = ::g_fQNan;
-	ReportFailure(
-		"Burger::g_fQNan = %g / Wanted %g", uFailure, Burger::g_fQNan, val32.f);
+	ReportFailure("Burger::g_fQNan = %g / Wanted %g", uFailure,
+		Burger::g_fQNan.f, val32.f);
 
 	uint64_t wdFloat = Burger::g_dNan.w;
 	uFailure = (wdFloat != ::g_dNan);
 	uResult |= uFailure;
 	val64.u = ::g_dNan;
 	ReportFailure(
-		"Burger::g_dNan = %g / Wanted %g", uFailure, Burger::g_dNan, val64.d);
+		"Burger::g_dNan = %g / Wanted %g", uFailure, Burger::g_dNan.d, val64.d);
 
 	wdFloat = Burger::g_dQNan.w;
 	uFailure = (wdFloat != ::g_dQNan);
 	uResult |= uFailure;
 	val64.u = ::g_dQNan;
-	ReportFailure(
-		"Burger::g_dQNan = %g / Wanted %g", uFailure, Burger::g_dQNan, val64.d);
+	ReportFailure("Burger::g_dQNan = %g / Wanted %g", uFailure,
+		Burger::g_dQNan.d, val64.d);
 
 	return uResult;
 }
@@ -382,7 +382,8 @@ static uint_t BURGER_API TestIsNanFloat(void) BURGER_NOEXCEPT
 	uintptr_t i = BURGER_ARRAYSIZE(IsNanTest);
 	uint_t uResult = FALSE;
 	do {
-		const float fOriginal = reinterpret_cast<const float*>(pWork)[0];
+		const float fOriginal =
+			static_cast<const float*>(static_cast<const void*>(pWork))[0];
 		const uint_t uExpected = (pWork[1] & NANTEST) != 0;
 		pWork += 2;
 		uint_t uTest = Burger::IsNan(fOriginal);
@@ -552,7 +553,8 @@ static uint_t BURGER_API TestIsFiniteFloat(void) BURGER_NOEXCEPT
 	uintptr_t i = BURGER_ARRAYSIZE(IsNanTest);
 	uint_t uResult = FALSE;
 	do {
-		const float fOriginal = reinterpret_cast<const float*>(pWork)[0];
+		const float fOriginal =
+			static_cast<const float*>(static_cast<const void*>(pWork))[0];
 		const uint_t uExpected = (pWork[1] & FINITETEST) != 0;
 		pWork += 2;
 		uint_t uTest = Burger::IsFinite(fOriginal);
@@ -566,7 +568,8 @@ static uint_t BURGER_API TestIsFiniteFloat(void) BURGER_NOEXCEPT
 		uTest = FPTest.is_finite();
 		uFailure = (uTest != uExpected);
 		uResult |= uFailure;
-		ReportFailure("Burger::FPInfo::is_finite((float)%.16g) = %u / Wanted %u",
+		ReportFailure(
+			"Burger::FPInfo::is_finite((float)%.16g) = %u / Wanted %u",
 			uFailure, fOriginal, uTest, uExpected);
 	} while (--i);
 	return uResult;
@@ -618,7 +621,8 @@ static uint_t BURGER_API TestIsNormalFloat(void) BURGER_NOEXCEPT
 	uintptr_t i = BURGER_ARRAYSIZE(IsNanTest);
 	uint_t uResult = FALSE;
 	do {
-		const float fOriginal = reinterpret_cast<const float*>(pWork)[0];
+		const float fOriginal =
+			static_cast<const float*>(static_cast<const void*>(pWork))[0];
 		const uint_t uExpected = (pWork[1] & NORMALTEST) != 0;
 		pWork += 2;
 		const uint_t uTest = Burger::IsNormal(fOriginal);
@@ -667,7 +671,8 @@ static uint_t BURGER_API TestSignBitFloat(void) BURGER_NOEXCEPT
 	uintptr_t i = BURGER_ARRAYSIZE(IsNanTest);
 	uint_t uResult = FALSE;
 	do {
-		const float fOriginal = reinterpret_cast<const float*>(pWork)[0];
+		const float fOriginal =
+			static_cast<const float*>(static_cast<const void*>(pWork))[0];
 		const uint_t uExpected = (pWork[1] & SIGNTEST) != 0;
 		pWork += 2;
 		uint_t uTest = Burger::SignBit(fOriginal);

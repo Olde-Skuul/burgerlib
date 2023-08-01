@@ -117,9 +117,9 @@ void BURGER_API Burger::DecompressMicrosoftADPCM::SetMonoDecoder(const void *pIn
 	m_Decoders[0].m_iCoef2 = g_Table[uBase+(32+7)];
 
 	// This data is not guaranteed to be 16 bit aligned
-	m_Decoders[0].m_iIndex = LittleEndian::LoadAny(static_cast<const int16_t *>(static_cast<const void *>(static_cast<const uint8_t *>(pInput)+1)));
-	m_Decoders[0].m_iSecondSample = LittleEndian::LoadAny(static_cast<const int16_t *>(static_cast<const void *>(static_cast<const uint8_t *>(pInput)+3)));
-	m_Decoders[0].m_iFirstSample = LittleEndian::LoadAny(static_cast<const int16_t *>(static_cast<const void *>(static_cast<const uint8_t *>(pInput)+5)));
+	m_Decoders[0].m_iIndex = LittleEndian::load_unaligned(static_cast<const int16_t *>(static_cast<const void *>(static_cast<const uint8_t *>(pInput)+1)));
+	m_Decoders[0].m_iSecondSample = LittleEndian::load_unaligned(static_cast<const int16_t *>(static_cast<const void *>(static_cast<const uint8_t *>(pInput)+3)));
+	m_Decoders[0].m_iFirstSample = LittleEndian::load_unaligned(static_cast<const int16_t *>(static_cast<const void *>(static_cast<const uint8_t *>(pInput)+5)));
 }
 
 /*! ************************************
@@ -150,14 +150,14 @@ void BURGER_API Burger::DecompressMicrosoftADPCM::SetStereoDecoder(const void *p
 	m_Decoders[1].m_iCoef2 = g_Table[uBase+(32+7)];
 
 	
-	m_Decoders[0].m_iIndex = LittleEndian::LoadAny(static_cast<const int16_t *>(pInput)+1);
-	m_Decoders[1].m_iIndex = LittleEndian::LoadAny(static_cast<const int16_t *>(pInput)+2);
+	m_Decoders[0].m_iIndex = LittleEndian::load_unaligned(static_cast<const int16_t *>(pInput)+1);
+	m_Decoders[1].m_iIndex = LittleEndian::load_unaligned(static_cast<const int16_t *>(pInput)+2);
 
-	m_Decoders[0].m_iSecondSample = LittleEndian::LoadAny(static_cast<const int16_t *>(pInput)+3);
-	m_Decoders[1].m_iSecondSample = LittleEndian::LoadAny(static_cast<const int16_t *>(pInput)+4);
+	m_Decoders[0].m_iSecondSample = LittleEndian::load_unaligned(static_cast<const int16_t *>(pInput)+3);
+	m_Decoders[1].m_iSecondSample = LittleEndian::load_unaligned(static_cast<const int16_t *>(pInput)+4);
 
-	m_Decoders[0].m_iFirstSample = LittleEndian::LoadAny(static_cast<const int16_t *>(pInput)+5);
-	m_Decoders[1].m_iFirstSample = LittleEndian::LoadAny(static_cast<const int16_t *>(pInput)+6);
+	m_Decoders[0].m_iFirstSample = LittleEndian::load_unaligned(static_cast<const int16_t *>(pInput)+5);
+	m_Decoders[1].m_iFirstSample = LittleEndian::load_unaligned(static_cast<const int16_t *>(pInput)+6);
 }
 
 /*! ************************************
@@ -216,9 +216,9 @@ uint_t BURGER_API Burger::DecompressMicrosoftADPCM::ADPCMDecodeBlock(int16_t *pO
 			m_Decoders[0].m_iCoef1 = g_Table[Temp+32];
 			m_Decoders[0].m_iCoef2 = g_Table[Temp+(32+7)];
 
-			m_Decoders[0].m_iIndex = LittleEndian::LoadAny(reinterpret_cast<const int16_t *>(pInput+1));
-			m_Decoders[0].m_iSecondSample = LittleEndian::LoadAny(reinterpret_cast<const int16_t *>(pInput+3));
-			m_Decoders[0].m_iFirstSample = LittleEndian::LoadAny(reinterpret_cast<const int16_t *>(pInput+5));
+			m_Decoders[0].m_iIndex = LittleEndian::load_unaligned(reinterpret_cast<const int16_t *>(pInput+1));
+			m_Decoders[0].m_iSecondSample = LittleEndian::load_unaligned(reinterpret_cast<const int16_t *>(pInput+3));
+			m_Decoders[0].m_iFirstSample = LittleEndian::load_unaligned(reinterpret_cast<const int16_t *>(pInput+5));
 
 			/* Decode two samples for the header */
 			pOutput[0] = static_cast<int16_t>(m_Decoders[0].m_iFirstSample);
@@ -262,14 +262,14 @@ uint_t BURGER_API Burger::DecompressMicrosoftADPCM::ADPCMDecodeBlock(int16_t *pO
 			m_Decoders[1].m_iCoef1 = g_Table[Temp+32];
 			m_Decoders[1].m_iCoef2 = g_Table[Temp+(32+7)];
 
-			m_Decoders[0].m_iIndex = LittleEndian::LoadAny(reinterpret_cast<const int16_t *>(pInput+2));
-			m_Decoders[1].m_iIndex = LittleEndian::LoadAny(reinterpret_cast<const int16_t *>(pInput+4));
+			m_Decoders[0].m_iIndex = LittleEndian::load_unaligned(reinterpret_cast<const int16_t *>(pInput+2));
+			m_Decoders[1].m_iIndex = LittleEndian::load_unaligned(reinterpret_cast<const int16_t *>(pInput+4));
 
-			m_Decoders[0].m_iSecondSample = LittleEndian::LoadAny(reinterpret_cast<const int16_t *>(pInput+6));
-			m_Decoders[1].m_iSecondSample = LittleEndian::LoadAny(reinterpret_cast<const int16_t *>(pInput+8));
+			m_Decoders[0].m_iSecondSample = LittleEndian::load_unaligned(reinterpret_cast<const int16_t *>(pInput+6));
+			m_Decoders[1].m_iSecondSample = LittleEndian::load_unaligned(reinterpret_cast<const int16_t *>(pInput+8));
 
-			m_Decoders[0].m_iFirstSample = LittleEndian::LoadAny(reinterpret_cast<const int16_t *>(pInput+10));
-			m_Decoders[1].m_iFirstSample = LittleEndian::LoadAny(reinterpret_cast<const int16_t *>(pInput+12));
+			m_Decoders[0].m_iFirstSample = LittleEndian::load_unaligned(reinterpret_cast<const int16_t *>(pInput+10));
+			m_Decoders[1].m_iFirstSample = LittleEndian::load_unaligned(reinterpret_cast<const int16_t *>(pInput+12));
 
 			// Decode two samples for the header
 			pOutput[0] = static_cast<int16_t>(m_Decoders[0].m_iFirstSample);

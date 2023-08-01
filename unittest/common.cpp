@@ -49,6 +49,10 @@ using namespace Burger;
 #include "win_windows.h"
 #endif
 
+#if defined(BURGER_XBOXONE)
+#include <objbase.h>
+#endif
+
 #if (defined(_MSC_VER) && (_MSC_VER < 1400)) || \
 	(defined(BURGER_METROWERKS) && !defined(__MSL__))
 #else
@@ -112,7 +116,7 @@ void BURGER_ANSIAPI ReportFailure(
 		}
 		TempString[uEndMark] = '\n';
 		fwrite(TempString, 1, uEndMark + 1, stdout);
-#if defined(BURGER_WINDOWS)
+#if defined(BURGER_WINDOWS) || defined(BURGER_XBOXONE)
 		TempString[uEndMark + 1] = '\0';
 		OutputDebugStringA(TempString);
 #endif
@@ -146,7 +150,7 @@ void BURGER_ANSIAPI Message(const char* pMessage, ...) BURGER_NOEXCEPT
 		va_end(Args); // End parm passing
 		TempString[uEndMark] = '\n';
 		fwrite(TempString, 1, uEndMark + 1, stdout);
-#if defined(BURGER_WINDOWS)
+#if defined(BURGER_WINDOWS) || defined(BURGER_XBOXONE)
 		TempString[uEndMark + 1] = '\0';
 		OutputDebugStringA(TempString);
 #endif
@@ -221,6 +225,11 @@ uint_t BURGER_API VerifyBuffer(const void* pBuffer, uintptr_t uSize,
 //
 // Test everything
 //
+
+#if defined(BURGER_XBOXONE) && !WINAPI_FAMILY_GAMES
+// Only for the XDK, this is not in the GDK
+[Platform::MTAThread]
+#endif
 
 int BURGER_ANSIAPI main(int argc, const char** argv)
 {

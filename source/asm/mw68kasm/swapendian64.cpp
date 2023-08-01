@@ -53,7 +53,7 @@ asm uint64_t _swapendian64(uint64_t uInput)
 	ror.w	#8, d1
 
 	// Save the result
-	move.l	d1, 0(a0)
+	move.l	d1, (a0)
 	move.l	d0, 4(a0)
 
 #if defined(BURGER_CFM)

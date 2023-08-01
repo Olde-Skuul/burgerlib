@@ -3743,7 +3743,7 @@ double BURGER_API Burger::BigEndianLoadExtended(
 
 	// Obtain the exponent and sign
 	uint_t uExponent =
-		BigEndian::Load(reinterpret_cast<const uint16_t*>(pInput));
+		BigEndian::load(reinterpret_cast<const uint16_t*>(pInput));
 	// Extract the sign
 	uint_t uSign = (uExponent >> 8U) & 0x80U;
 	// Normalize the exponent to the range of a double
@@ -3813,7 +3813,7 @@ double BURGER_API Burger::LittleEndianLoadExtended(
 
 	// Obtain the exponent and sign
 	uint_t uExponent =
-		LittleEndian::Load(&reinterpret_cast<const uint16_t*>(pInput)[4]);
+		LittleEndian::load(&reinterpret_cast<const uint16_t*>(pInput)[4]);
 	// Extract the sign
 	uint_t uSign = (uExponent >> 8U) & 0x80U;
 	// Normalize the exponent to the range of a double

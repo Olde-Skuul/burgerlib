@@ -43,7 +43,7 @@ asm float BURGER_API Burger::_swapendianfloat(float fInput) BURGER_NOEXCEPT
 	ror.w	#8, d0
 
 	// Save the result
-	move.l	d0, 0(a0)
+	move.l	d0, (a0)
 
 	rts
 #endif

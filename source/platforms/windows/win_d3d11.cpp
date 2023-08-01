@@ -26,7 +26,15 @@
 
 #include "win_windows.h"
 
+#if defined(BURGER_METROWERKS)
+#pragma warn_impl_s2u_conv off
+#endif
+
 #include <d3d11.h>
+
+#if defined(BURGER_METROWERKS)
+#pragma warn_impl_s2u_conv reset
+#endif
 
 // Function prototypes, lovingly stolen from d3d11.h and dxgi.h
 typedef HRESULT(WINAPI* D3D11CreateDevicePtr)(IDXGIAdapter* pAdapter,

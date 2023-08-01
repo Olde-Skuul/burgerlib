@@ -55,8 +55,8 @@ void Burger::Dxt1Packet_t::Decompress(RGBAWord8_t *pOutput,uintptr_t uStride) co
 
 	RGBAWord8_t Colors[4];
 
-	uint_t uColor1 = LittleEndian::Load(&m_uRGB565Color1);
-	uint_t uColor2 = LittleEndian::Load(&m_uRGB565Color2);
+	uint_t uColor1 = LittleEndian::load(&m_uRGB565Color1);
+	uint_t uColor2 = LittleEndian::load(&m_uRGB565Color2);
 	Palette::FromRGB16(&Colors[0],uColor1);
 	Palette::FromRGB16(&Colors[1],uColor2);
 	

@@ -19,7 +19,16 @@
 #include "brglobalmemorymanager.h"
 #include "brdisplaydirectx9.h"
 #include "brmemoryfunctions.h"
+
+#if defined(BURGER_METROWERKS)
+#pragma warn_emptydecl off
+#endif
+
 #include <d3d9.h>
+
+#if defined(BURGER_METROWERKS)
+#pragma warn_emptydecl reset
+#endif
 
 #if !defined(DOXYGEN)
 BURGER_CREATE_STATICRTTI_PARENT(Burger::TextureDirectX9,Burger::Texture);

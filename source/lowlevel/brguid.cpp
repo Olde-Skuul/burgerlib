@@ -193,13 +193,13 @@ static uint32_t BURGER_API GUID_from_hex(
 void BURGER_API Burger::GUID_init(GUID* pOutput) BURGER_NOEXCEPT
 {
 	// For unsupported platforms, punt
-	pOutput->Data1 = LittleEndian::Load(Tick::read_us());
+	pOutput->Data1 = LittleEndian::load(Tick::read_us());
 	reinterpret_cast<uint32_t*>(pOutput)[1] =
-		LittleEndian::Load(Tick::read_us());
+		LittleEndian::load(Tick::read_us());
 	reinterpret_cast<uint32_t*>(pOutput)[2] =
-		LittleEndian::Load(Tick::read_us());
+		LittleEndian::load(Tick::read_us());
 	reinterpret_cast<uint32_t*>(pOutput)[3] =
-		LittleEndian::Load(Tick::read_us());
+		LittleEndian::load(Tick::read_us());
 }
 #endif
 
@@ -221,17 +221,17 @@ void BURGER_API Burger::GUID_to_string(
 	char* pOutput, const GUID* pInput) BURGER_NOEXCEPT
 {
 	pOutput = NumberToAsciiHex(
-		pOutput, LittleEndian::Load(&pInput->Data1), LEADINGZEROS | 8U);
+		pOutput, LittleEndian::load(&pInput->Data1), LEADINGZEROS | 8U);
 
 	pOutput[0] = '-';
 
 	pOutput = NumberToAsciiHex(
-		pOutput + 1, LittleEndian::Load(&pInput->Data2), LEADINGZEROS | 4U);
+		pOutput + 1, LittleEndian::load(&pInput->Data2), LEADINGZEROS | 4U);
 
 	pOutput[0] = '-';
 
 	pOutput = NumberToAsciiHex(
-		pOutput + 1, LittleEndian::Load(&pInput->Data3), LEADINGZEROS | 4U);
+		pOutput + 1, LittleEndian::load(&pInput->Data3), LEADINGZEROS | 4U);
 
 	pOutput[0] = '-';
 
@@ -271,13 +271,13 @@ Burger::eError BURGER_API Burger::GUID_from_string(
 	GUID* pOutput, const char* pInput) BURGER_NOEXCEPT
 {
 	// Get the timestamp
-	pOutput->Data1 = LittleEndian::Load(GUID_from_hex(&pInput, 8U));
+	pOutput->Data1 = LittleEndian::load(GUID_from_hex(&pInput, 8U));
 
 	// The shorts
 	pOutput->Data2 =
-		LittleEndian::Load(static_cast<uint16_t>(GUID_from_hex(&pInput, 4U)));
+		LittleEndian::load(static_cast<uint16_t>(GUID_from_hex(&pInput, 4U)));
 	pOutput->Data3 =
-		LittleEndian::Load(static_cast<uint16_t>(GUID_from_hex(&pInput, 4U)));
+		LittleEndian::load(static_cast<uint16_t>(GUID_from_hex(&pInput, 4U)));
 
 	uint_t i = 0;
 	do {
@@ -409,8 +409,8 @@ int BURGER_API Burger::GUID_compare(
 	const GUID* pInput1, const GUID* pInput2) BURGER_NOEXCEPT
 {
 
-	uint32_t uTemp1 = LittleEndian::Load(&pInput1->Data1);
-	uint32_t uTemp2 = LittleEndian::Load(&pInput2->Data1);
+	uint32_t uTemp1 = LittleEndian::load(&pInput1->Data1);
+	uint32_t uTemp2 = LittleEndian::load(&pInput2->Data1);
 
 	int iResult;
 	if (uTemp1 < uTemp2) {
@@ -419,16 +419,16 @@ int BURGER_API Burger::GUID_compare(
 		iResult = 1;
 	} else {
 
-		uTemp1 = LittleEndian::Load(&pInput1->Data2);
-		uTemp2 = LittleEndian::Load(&pInput2->Data2);
+		uTemp1 = LittleEndian::load(&pInput1->Data2);
+		uTemp2 = LittleEndian::load(&pInput2->Data2);
 		if (uTemp1 < uTemp2) {
 			iResult = -1;
 		} else if (uTemp1 > uTemp2) {
 			iResult = 1;
 		} else {
 
-			uTemp1 = LittleEndian::Load(&pInput1->Data3);
-			uTemp2 = LittleEndian::Load(&pInput2->Data3);
+			uTemp1 = LittleEndian::load(&pInput1->Data3);
+			uTemp2 = LittleEndian::load(&pInput2->Data3);
 			if (uTemp1 < uTemp2) {
 				iResult = -1;
 			} else if (uTemp1 > uTemp2) {

@@ -679,12 +679,12 @@ uint_t Burger::FileBMP::Save(
 
 	// Write the length of the total file
 	// +2 is for "BM"
-	uint32_t uLittleData = LittleEndian::Load(
+	uint32_t uLittleData = LittleEndian::load(
 		static_cast<uint32_t>((uTell - uFileLengthMark) + 2));
 	pOutput->Overwrite(&uLittleData, sizeof(uint32_t), uFileLengthMark);
 
 	// Write the length of the packed data
-	uLittleData = LittleEndian::Load(static_cast<uint32_t>(uTell - uSizeMark));
+	uLittleData = LittleEndian::load(static_cast<uint32_t>(uTell - uSizeMark));
 	pOutput->Overwrite(&uLittleData, sizeof(uint32_t), uOutputMark);
 	return FALSE;
 }

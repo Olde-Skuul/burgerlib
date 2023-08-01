@@ -21,8 +21,16 @@
 #if !defined(DOXYGEN)
 #include "win_windows.h"
 
+#if defined(BURGER_METROWERKS)
+#pragma warn_impl_s2u_conv off
+#endif
+
 #include <d3d11.h>
 #include <ddraw.h>
+
+#if defined(BURGER_METROWERKS)
+#pragma warn_impl_s2u_conv reset
+#endif
 
 // Available on the Windows SDK 8.0 or higher
 // Mimic this for 7.0 or lower

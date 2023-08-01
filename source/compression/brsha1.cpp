@@ -113,19 +113,19 @@ void BURGER_API Burger::SHA1Hasher_t::process(
 	const uint32_t* pBlock32 =
 		static_cast<const uint32_t*>(static_cast<const void*>(pBlock));
 	do {
-		DataBlock[i] = BigEndian::LoadAny(pBlock32 + i);
+		DataBlock[i] = BigEndian::load_unaligned(pBlock32 + i);
 	} while (++i < 16U);
 
 	// Make a copy of the hash integers
-	uint32_t a = BigEndian::Load(
+	uint32_t a = BigEndian::load(
 		static_cast<uint32_t*>(static_cast<void*>(m_Hash.m_Hash + 0)));
-	uint32_t b = BigEndian::Load(
+	uint32_t b = BigEndian::load(
 		static_cast<uint32_t*>(static_cast<void*>(m_Hash.m_Hash + 4)));
-	uint32_t c = BigEndian::Load(
+	uint32_t c = BigEndian::load(
 		static_cast<uint32_t*>(static_cast<void*>(m_Hash.m_Hash + 8)));
-	uint32_t d = BigEndian::Load(
+	uint32_t d = BigEndian::load(
 		static_cast<uint32_t*>(static_cast<void*>(m_Hash.m_Hash + 12)));
-	uint32_t e = BigEndian::Load(
+	uint32_t e = BigEndian::load(
 		static_cast<uint32_t*>(static_cast<void*>(m_Hash.m_Hash + 16)));
 
 #if !defined(DOXYGEN)
@@ -257,29 +257,29 @@ void BURGER_API Burger::SHA1Hasher_t::process(
 	// Add in the adjusted hash (Store in big endian format)
 
 	{
-		BigEndian::Store(
+		BigEndian::store(
 			static_cast<uint32_t*>(static_cast<void*>(m_Hash.m_Hash + 0)),
-			BigEndian::Load(
+			BigEndian::load(
 				static_cast<uint32_t*>(static_cast<void*>(m_Hash.m_Hash + 0))) +
 				a);
-		BigEndian::Store(
+		BigEndian::store(
 			static_cast<uint32_t*>(static_cast<void*>(m_Hash.m_Hash + 4)),
-			BigEndian::Load(
+			BigEndian::load(
 				static_cast<uint32_t*>(static_cast<void*>(m_Hash.m_Hash + 4))) +
 				b);
-		BigEndian::Store(
+		BigEndian::store(
 			static_cast<uint32_t*>(static_cast<void*>(m_Hash.m_Hash + 8)),
-			BigEndian::Load(
+			BigEndian::load(
 				static_cast<uint32_t*>(static_cast<void*>(m_Hash.m_Hash + 8))) +
 				c);
-		BigEndian::Store(
+		BigEndian::store(
 			static_cast<uint32_t*>(static_cast<void*>(m_Hash.m_Hash + 12)),
-			BigEndian::Load(static_cast<uint32_t*>(
+			BigEndian::load(static_cast<uint32_t*>(
 				static_cast<void*>(m_Hash.m_Hash + 12))) +
 				d);
-		BigEndian::Store(
+		BigEndian::store(
 			static_cast<uint32_t*>(static_cast<void*>(m_Hash.m_Hash + 16)),
-			BigEndian::Load(static_cast<uint32_t*>(
+			BigEndian::load(static_cast<uint32_t*>(
 				static_cast<void*>(m_Hash.m_Hash + 16))) +
 				e);
 	}
@@ -356,7 +356,7 @@ void BURGER_API Burger::SHA1Hasher_t::finalize(void) BURGER_NOEXCEPT
 
 	// Save number of bits
 
-	const uint64_t uBitCountBE = BigEndian::Load(m_uByteCount << 3U);
+	const uint64_t uBitCountBE = BigEndian::load(m_uByteCount << 3U);
 
 	// Pad out to 56 mod 64.
 	// Convert to 1-64

@@ -369,7 +369,7 @@ Burger::RezFile::RezGroup_t * BURGER_API Burger::RezFile::ParseRezFileHeader(con
 			do {
 				uint_t uOldCount;
 				if (uSwapFlag&SWAPENDIAN) {
-					uOldCount = SwapEndian::Load(reinterpret_cast<const uint32_t *>(pWork+8));		/* Fix endian if needed */
+					uOldCount = SwapEndian::load(reinterpret_cast<const uint32_t *>(pWork+8));		/* Fix endian if needed */
 				} else {
 					uOldCount = reinterpret_cast<const uint32_t *>(pWork)[2];		// Get the count
 				}
@@ -381,7 +381,7 @@ Burger::RezFile::RezGroup_t * BURGER_API Burger::RezFile::ParseRezFileHeader(con
 		} else {
 		// Parse the new way
 			do {
-				uint_t uNewCount = LittleEndian::Load(&reinterpret_cast<const FileRezGroup_t *>(pWork)->m_uCount);	/* Get the count */
+				uint_t uNewCount = LittleEndian::load(&reinterpret_cast<const FileRezGroup_t *>(pWork)->m_uCount);	/* Get the count */
 				// Number of bytes needed to store this record
 				uNewLength += (uNewCount*sizeof(RezEntry_t))+(sizeof(RezGroup_t)-sizeof(RezEntry_t));
 				// Next group
@@ -411,9 +411,9 @@ Burger::RezFile::RezGroup_t * BURGER_API Burger::RezFile::ParseRezFileHeader(con
 					uint32_t uType;
 					// Load the type, base and count
 					if (uSwapFlag&SWAPENDIAN) {
-						uType = SwapEndian::Load(reinterpret_cast<const uint32_t *>(pWork));
-						pGroup->m_uBaseRezNum = SwapEndian::Load(&reinterpret_cast<const uint32_t *>(pWork)[1]);
-						pGroup->m_uCount = SwapEndian::Load(&reinterpret_cast<const uint32_t *>(pWork)[2]);
+						uType = SwapEndian::load(reinterpret_cast<const uint32_t *>(pWork));
+						pGroup->m_uBaseRezNum = SwapEndian::load(&reinterpret_cast<const uint32_t *>(pWork)[1]);
+						pGroup->m_uCount = SwapEndian::load(&reinterpret_cast<const uint32_t *>(pWork)[2]);
 					} else {
 						uType = reinterpret_cast<const uint32_t *>(pWork)[0];
 						pGroup->m_uBaseRezNum = reinterpret_cast<const uint32_t *>(pWork)[1];
@@ -436,9 +436,9 @@ Burger::RezFile::RezGroup_t * BURGER_API Burger::RezFile::ParseRezFileHeader(con
 							uint_t uLength;
 							uint_t uNameOffset;
 							if (uSwapFlag&SWAPENDIAN) {
-								uFileOffset = SwapEndian::Load(&reinterpret_cast<const uint32_t*>(pWork)[0]);
-								uLength = SwapEndian::Load(&reinterpret_cast<const uint32_t*>(pWork)[1]);
-								uNameOffset = SwapEndian::Load(&reinterpret_cast<const uint32_t*>(pWork)[2]);
+								uFileOffset = SwapEndian::load(&reinterpret_cast<const uint32_t*>(pWork)[0]);
+								uLength = SwapEndian::load(&reinterpret_cast<const uint32_t*>(pWork)[1]);
+								uNameOffset = SwapEndian::load(&reinterpret_cast<const uint32_t*>(pWork)[2]);
 							} else {
 								uFileOffset = reinterpret_cast<const uint32_t*>(pWork)[0];
 								uLength = reinterpret_cast<const uint32_t*>(pWork)[1];
@@ -482,8 +482,8 @@ Burger::RezFile::RezGroup_t * BURGER_API Burger::RezFile::ParseRezFileHeader(con
 
 				do {
 					// Get the base resource number and the resource count
-					pGroup->m_uBaseRezNum = LittleEndian::Load(&reinterpret_cast<const FileRezGroup_t*>(pWork)->m_uBaseRezNum);
-					pGroup->m_uCount = LittleEndian::Load(&reinterpret_cast<const FileRezGroup_t*>(pWork)->m_uCount);
+					pGroup->m_uBaseRezNum = LittleEndian::load(&reinterpret_cast<const FileRezGroup_t*>(pWork)->m_uBaseRezNum);
+					pGroup->m_uCount = LittleEndian::load(&reinterpret_cast<const FileRezGroup_t*>(pWork)->m_uCount);
 					pWork += (sizeof(uint32_t)*2);
 				
 					// Process each resource entry
@@ -495,10 +495,10 @@ Burger::RezFile::RezGroup_t * BURGER_API Burger::RezFile::ParseRezFileHeader(con
 							pEntry->m_ppData = NULL;
 							pEntry->m_pRezName = NULL;
 							// Adjust the file offset from the start of the file image
-							pEntry->m_uFileOffset = LittleEndian::Load(&reinterpret_cast<const FileRezEntry_t *>(pWork)->m_uFileOffset)+uStartOffset;
-							pEntry->m_uLength = LittleEndian::Load(&reinterpret_cast<const FileRezEntry_t *>(pWork)->m_uLength);
-							uint_t uNameOffset = LittleEndian::Load(&reinterpret_cast<const FileRezEntry_t *>(pWork)->m_uNameOffset);
-							pEntry->m_uCompressedLength = LittleEndian::Load(&reinterpret_cast<const FileRezEntry_t *>(pWork)->m_uCompressedLength);
+							pEntry->m_uFileOffset = LittleEndian::load(&reinterpret_cast<const FileRezEntry_t *>(pWork)->m_uFileOffset)+uStartOffset;
+							pEntry->m_uLength = LittleEndian::load(&reinterpret_cast<const FileRezEntry_t *>(pWork)->m_uLength);
+							uint_t uNameOffset = LittleEndian::load(&reinterpret_cast<const FileRezEntry_t *>(pWork)->m_uNameOffset);
+							pEntry->m_uCompressedLength = LittleEndian::load(&reinterpret_cast<const FileRezEntry_t *>(pWork)->m_uCompressedLength);
 							// Next 4 longwords (Rigid)
 							pWork += (sizeof(uint32_t)*4);
 							if (uNameOffset&ENTRYFLAGSNAMEOFFSETMASK) {
@@ -773,17 +773,17 @@ uint_t BURGER_API Burger::RezFile::Init(const char *pFileName,uint32_t uStartOff
 					if (MyHeader.m_CodecID[0][3]<32) {
 						uSwapFlag = OLDFORMAT;
 						// Endian test
-						if (MyHeader.m_uMemSize >= SwapEndian::Load(&MyHeader.m_uMemSize)) {
-							MyHeader.m_uMemSize = SwapEndian::Load(&MyHeader.m_uMemSize);
-							MyHeader.m_uGroupCount = SwapEndian::Load(&MyHeader.m_uGroupCount);
+						if (MyHeader.m_uMemSize >= SwapEndian::load(&MyHeader.m_uMemSize)) {
+							MyHeader.m_uMemSize = SwapEndian::load(&MyHeader.m_uMemSize);
+							MyHeader.m_uGroupCount = SwapEndian::load(&MyHeader.m_uGroupCount);
 							// Swap the endian
 							uSwapFlag |= SWAPENDIAN;
 						}
 						// I read in 24 bytes, it's really 12, so skip back
 						m_File.set_mark(uStartOffset+12);
 					} else {
-						LittleEndian::Fixup(&MyHeader.m_uMemSize);
-						LittleEndian::Fixup(&MyHeader.m_uGroupCount);
+						LittleEndian::fixup(&MyHeader.m_uMemSize);
+						LittleEndian::fixup(&MyHeader.m_uGroupCount);
 					}
 
 					// Allocate memory to load header

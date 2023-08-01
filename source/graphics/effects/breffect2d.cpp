@@ -19,7 +19,17 @@
 
 #include "win_windows.h"
 
+#if defined(BURGER_METROWERKS)
+#pragma warn_emptydecl off
+#endif
+
 #include <d3d9.h>
+
+#if defined(BURGER_METROWERKS)
+#pragma warn_emptydecl reset
+#endif
+
+
 BURGER_CREATE_STATICRTTI_PARENT(Burger::Effect2DDX9,Burger::Effect2D);
 BURGER_CREATE_STATICRTTI_PARENT(Burger::Effect2DOpenGL,Burger::Effect2D);
 #endif

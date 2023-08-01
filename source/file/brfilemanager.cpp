@@ -1449,7 +1449,7 @@ Burger::eError BURGER_API Burger::FileManager::rename_file(
 Burger::eError BURGER_API Burger::FileManager::rename_file(
 	Filename* pNewName, Filename* pOldName) BURGER_NOEXCEPT
 {
-#if defined(BURGER_DS)
+#if defined(BURGER_DS) || defined(BURGER_PS5)
 	// Always error out
 	return kErrorNotSupportedOnThisPlatform;
 #else

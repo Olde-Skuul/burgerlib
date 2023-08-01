@@ -317,7 +317,7 @@ Burger::eError Burger::DecompressSigned8BitAudio::Process(void *pOutput, uintptr
 {
 	// Which is smaller? Input or output?
 	uintptr_t uCount = Min(uInputChunkLength,uOutputChunkLength);
-	SwapCharsToBytes(static_cast<uint8_t *>(pOutput),static_cast<const uint8_t *>(pInput),uCount);
+	swap_chars_to_bytes(static_cast<uint8_t *>(pOutput),static_cast<const uint8_t *>(pInput),uCount);
 
 	// Store the amount of data that was processed
 
@@ -473,7 +473,7 @@ Burger::eError Burger::Decompress16BitBEAudio::Process(void *pOutput, uintptr_t 
 				if (uLength) {
 					// Is it aligned?
 					if (!((reinterpret_cast<uintptr_t>(pInput)|reinterpret_cast<uintptr_t>(pOutput))&1)) {
-						ConvertEndian(static_cast<uint16_t *>(pOutput),static_cast<const uint16_t *>(pInput),uLength);
+						swap_endian(static_cast<uint16_t *>(pOutput),static_cast<const uint16_t *>(pInput),uLength);
 						pInput = static_cast<const uint16_t *>(pInput)+uLength;
 						pOutput = static_cast<uint16_t *>(pOutput)+uLength;
 					} else {
@@ -732,7 +732,7 @@ Burger::eError Burger::Decompress16BitLEAudio::Process(void *pOutput, uintptr_t 
 					// Is it aligned?
 					if (!((reinterpret_cast<uintptr_t>(pInput)|reinterpret_cast<uintptr_t>(pOutput))&1)) {
 						// Convert to native endian quickly
-						ConvertEndian(static_cast<uint16_t *>(pOutput),static_cast<const uint16_t *>(pInput),uLength);
+						swap_endian(static_cast<uint16_t *>(pOutput),static_cast<const uint16_t *>(pInput),uLength);
 						pInput = static_cast<const uint16_t *>(pInput)+uLength;
 						pOutput = static_cast<uint16_t *>(pOutput)+uLength;
 
@@ -990,7 +990,7 @@ Burger::eError Burger::Decompress32BitBEAudio::Process(void *pOutput, uintptr_t 
 					uOutputChunkLength -= uLength;
 					// Is it aligned?
 					if (!((reinterpret_cast<uintptr_t>(pInput)|reinterpret_cast<uintptr_t>(pOutput))&3)) {
-						ConvertEndian(static_cast<uint32_t *>(pOutput),static_cast<const uint32_t *>(pInput),uLength>>2U);
+						swap_endian(static_cast<uint32_t *>(pOutput),static_cast<const uint32_t *>(pInput),uLength>>2U);
 						pInput = static_cast<const uint32_t *>(pInput)+uLength;
 						pOutput = static_cast<uint32_t *>(pOutput)+uLength;
 					} else {
@@ -1051,7 +1051,7 @@ Burger::eError Burger::Decompress32BitBEAudio::Process(void *pOutput, uintptr_t 
 				m_uCacheCount = static_cast<uint_t>(uCacheSize);
 				if (uCacheSize==sizeof(m_Cache)) {
 					// Perform the endian swap on the cache
-					SwapEndian::Fixup(static_cast<uint32_t *>(static_cast<void *>(m_Cache)));
+					SwapEndian::fixup(static_cast<uint32_t *>(static_cast<void *>(m_Cache)));
 					// Cache is full, send to processing
 					bAbort = FALSE;
 					uState = STATE_CACHEFULL;
@@ -1268,7 +1268,7 @@ Burger::eError Burger::Decompress32BitLEAudio::Process(void *pOutput, uintptr_t 
 					uOutputChunkLength -= uLength;
 					// Is it aligned?
 					if (!((reinterpret_cast<uintptr_t>(pInput)|reinterpret_cast<uintptr_t>(pOutput))&3)) {
-						ConvertEndian(static_cast<uint32_t *>(pOutput),static_cast<const uint32_t *>(pInput),uLength>>2U);
+						swap_endian(static_cast<uint32_t *>(pOutput),static_cast<const uint32_t *>(pInput),uLength>>2U);
 						pInput = static_cast<const uint32_t *>(pInput)+uLength;
 						pOutput = static_cast<uint32_t *>(pOutput)+uLength;
 					} else {
@@ -1329,7 +1329,7 @@ Burger::eError Burger::Decompress32BitLEAudio::Process(void *pOutput, uintptr_t 
 				m_uCacheCount = static_cast<uint_t>(uCacheSize);
 				if (uCacheSize==sizeof(m_Cache)) {
 					// Perform the endian swap on the cache
-					SwapEndian::Fixup(static_cast<uint32_t *>(static_cast<void *>(m_Cache)));
+					SwapEndian::fixup(static_cast<uint32_t *>(static_cast<void *>(m_Cache)));
 					// Cache is full, send to processing
 					bAbort = FALSE;
 					uState = STATE_CACHEFULL;

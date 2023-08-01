@@ -104,9 +104,9 @@ Burger::eError BURGER_API Burger::NetAddr_t::ToSocketAddr(
 	case TYPE_IPV4:
 		pOutput->sa_family = AF_INET;
 		reinterpret_cast<sockaddr_in*>(pOutput)->sin_port =
-			BigEndian::Load(static_cast<uint16_t>(U.IPv4.m_uPort));
+			BigEndian::load(static_cast<uint16_t>(U.IPv4.m_uPort));
 		reinterpret_cast<sockaddr_in*>(pOutput)->sin_addr.s_addr =
-			BigEndian::Load(U.IPv4.m_uIP);
+			BigEndian::load(U.IPv4.m_uIP);
 		MemoryClear(reinterpret_cast<sockaddr_in*>(pOutput)->sin_zero,
 			sizeof(reinterpret_cast<sockaddr_in*>(pOutput)->sin_zero));
 		break;
@@ -114,7 +114,7 @@ Burger::eError BURGER_API Burger::NetAddr_t::ToSocketAddr(
 	case TYPE_IPV6:
 		pOutput->sa_family = AF_INET6;
 		reinterpret_cast<sockaddr_in6*>(pOutput)->sin6_port =
-			BigEndian::Load(static_cast<uint16_t>(U.IPv6.m_uPort));
+			BigEndian::load(static_cast<uint16_t>(U.IPv6.m_uPort));
 		reinterpret_cast<sockaddr_in6*>(pOutput)->sin6_flowinfo = 0;
 		MemoryCopy(reinterpret_cast<sockaddr_in6*>(pOutput)->sin6_addr.u.Byte,
 			U.IPv6.m_IP,
@@ -125,7 +125,7 @@ Burger::eError BURGER_API Burger::NetAddr_t::ToSocketAddr(
 	case TYPE_IPX:
 		pOutput->sa_family = AF_IPX;
 		reinterpret_cast<sockaddr_ipx*>(pOutput)->sa_socket =
-			BigEndian::Load(static_cast<uint16_t>(U.IPX.m_uSocket));
+			BigEndian::load(static_cast<uint16_t>(U.IPX.m_uSocket));
 		MemoryCopy(reinterpret_cast<sockaddr_ipx*>(pOutput)->sa_netnum,
 			U.IPX.m_Net, 4);
 		MemoryCopy(reinterpret_cast<sockaddr_ipx*>(pOutput)->sa_nodenum,
@@ -135,7 +135,7 @@ Burger::eError BURGER_API Burger::NetAddr_t::ToSocketAddr(
 	case TYPE_APPLETALK:
 		pOutput->sa_family = AF_APPLETALK;
 		reinterpret_cast<sockaddr_at*>(pOutput)->sat_net =
-			BigEndian::Load(static_cast<uint16_t>(U.APPLETALK.m_uNetwork));
+			BigEndian::load(static_cast<uint16_t>(U.APPLETALK.m_uNetwork));
 		reinterpret_cast<sockaddr_at*>(pOutput)->sat_node =
 			static_cast<uint8_t>(U.APPLETALK.m_uNodeID);
 		reinterpret_cast<sockaddr_at*>(pOutput)->sat_socket =
@@ -280,15 +280,15 @@ Burger::eError BURGER_API Burger::NetAddr_t::FromSocketAddr(
 
 	case AF_INET:
 		m_uType = TYPE_IPV4;
-		U.IPv4.m_uPort = BigEndian::Load(
+		U.IPv4.m_uPort = BigEndian::load(
 			reinterpret_cast<const sockaddr_in*>(pInput)->sin_port);
-		U.IPv4.m_uIP = BigEndian::Load(static_cast<uint32_t>(
+		U.IPv4.m_uIP = BigEndian::load(static_cast<uint32_t>(
 			reinterpret_cast<const sockaddr_in*>(pInput)->sin_addr.s_addr));
 		break;
 
 	case AF_INET6:
 		m_uType = TYPE_IPV6;
-		U.IPv6.m_uPort = BigEndian::Load(
+		U.IPv6.m_uPort = BigEndian::load(
 			reinterpret_cast<const sockaddr_in6*>(pInput)->sin6_port);
 		MemoryCopy(U.IPv6.m_IP,
 			reinterpret_cast<const sockaddr_in6*>(pInput)->sin6_addr.u.Byte,
@@ -297,7 +297,7 @@ Burger::eError BURGER_API Burger::NetAddr_t::FromSocketAddr(
 
 	case AF_IPX:
 		m_uType = TYPE_IPX;
-		U.IPX.m_uSocket = BigEndian::Load(
+		U.IPX.m_uSocket = BigEndian::load(
 			reinterpret_cast<const sockaddr_ipx*>(pInput)->sa_socket);
 		MemoryCopy(U.IPX.m_Net,
 			reinterpret_cast<const sockaddr_ipx*>(pInput)->sa_netnum, 4);
@@ -307,7 +307,7 @@ Burger::eError BURGER_API Burger::NetAddr_t::FromSocketAddr(
 
 	case AF_APPLETALK:
 		m_uType = TYPE_APPLETALK;
-		U.APPLETALK.m_uNetwork = BigEndian::Load(
+		U.APPLETALK.m_uNetwork = BigEndian::load(
 			reinterpret_cast<const sockaddr_at*>(pInput)->sat_net);
 		U.APPLETALK.m_uNodeID =
 			reinterpret_cast<const sockaddr_at*>(pInput)->sat_node;
@@ -578,7 +578,7 @@ Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv4Address(
 					uResult = static_cast<eError>(
 						getaddrinfo(TempDNS.c_str(), NULL, &Hints, &pResult));
 					if (uResult == kErrorNone) {
-						uIPv4 = BigEndian::Load(static_cast<uint32_t>(
+						uIPv4 = BigEndian::load(static_cast<uint32_t>(
 							reinterpret_cast<sockaddr_in*>(pResult->ai_addr)
 								->sin_addr.s_addr));
 						// Release the addrinfo chain

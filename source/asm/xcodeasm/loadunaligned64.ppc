@@ -1,0 +1,89 @@
+/*
+	Load a 64 bit integer with unaligned operations
+
+	PowerPC assembly for MacOSX Darwin
+
+	Build with XCode tool chain
+
+	XCode uses a C++ parser and will try to assemble this file on all
+	CPU types, so test for the proper CPU type before invoking any cpu
+	instructions.
+
+	uint64_t BURGER_API Burger::_load_unaligned(const uint64_t* pInput)
+
+	Power PC 32 and 64 bit version.
+*/
+
+#if defined(__ppc__)
+	.align 2
+	.text
+
+	.globl __ZN6Burger15_load_unalignedEPKy
+__ZN6Burger15_load_unalignedEPKy:
+
+/* Load the lower 32 bits */
+	lbz		r7,0(r3)
+	lbz		r6,1(r3)
+	lbz		r5,2(r3)
+	lbz		r8,3(r3)
+
+/* r8 has x,x,2,3 */
+	rlwimi	r8,r5,8,16,23
+/* r6 has x,x,0,1 */
+	rlwimi	r6,r7,8,16,23
+/* r8 has 0,1,2,3 */
+	rlwimi	r8,r6,16,0,15
+
+/* Load the upper 32 bits */
+	lbz		r7,4(r3)
+	lbz		r6,5(r3)
+	lbz		r5,6(r3)
+	lbz		r4,7(r3)
+
+/* r4 has x,x,2,3 */
+	rlwimi	r4,r5,8,16,23
+/* r6 has x,x,0,1 */
+	rlwimi	r6,r7,8,16,23
+	mr		r3,r8
+
+/* r4 has 0,1,2,3 */
+	rlwimi	r4,r6,16,0,15
+
+/* Return the value in r3,r4 */
+	blr
+
+#elif defined(__ppc64__)
+	.align 2
+	.text
+
+	.globl __ZN6Burger15_load_unalignedEPKy
+__ZN6Burger15_load_unalignedEPKy:
+
+/* r7-r10 will get the upper 32 bits */
+	lbz		r10,0(r3)
+	lbz		r9,1(r3)
+	lbz		r8,2(r3)
+	lbz		r7,3(r3)
+
+/* r6-r3 will get the lower 32 bits */
+	lbz		r6,4(r3)
+	rlwimi	r7,r8,8,16,23
+	lbz		r5,5(r3)
+	rlwimi	r7,r9,16,8,15
+	lbz		r4,6(r3)
+	rlwimi	r7,r10,24,0,7
+	lbz		r3,7(r3)
+
+/* r7 will have the upper 32 bits */
+	sldi	r7,r7,32
+
+/* Merge the lower 32 bits */
+	rlwimi	r3,r4,8,16,23
+	rlwimi	r3,r5,16,8,15
+	rlwimi	r3,r6,24,0,7
+
+/* Merge everything */
+	or		r3,r3,r7
+	blr
+
+#endif

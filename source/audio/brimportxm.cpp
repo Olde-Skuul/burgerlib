@@ -528,14 +528,14 @@ uint_t BURGER_API Burger::ImportXM(Sequencer::SongPackage *pOutput,const uint8_t
 	const XMHeader_t *pXMHeader = static_cast<const XMHeader_t*>(static_cast<const void *>(pInput));
 	if ((uInputLength>=sizeof(XMHeader_t)) &&
 		(!MemoryCompare(pXMHeader->m_ID,"Extended Module: ",17)) &&
-		(LittleEndian::Load(&pXMHeader->m_uVersion) == 0x104)) {
+		(LittleEndian::load(&pXMHeader->m_uVersion) == 0x104)) {
 
 		// Assume data starvation error
 		uResult = Sequencer::IMPORT_TRUNCATION;
 
 		// Get the counts
 			
-		uint_t uInstrumentCount = LittleEndian::Load(&pXMHeader->m_uInstrumentCount);
+		uint_t uInstrumentCount = LittleEndian::load(&pXMHeader->m_uInstrumentCount);
 		if (uInstrumentCount>Sequencer::cInstrumentMaxCount) {
 			uInstrumentCount = Sequencer::cInstrumentMaxCount;
 		}
@@ -544,17 +544,17 @@ uint_t BURGER_API Burger::ImportXM(Sequencer::SongPackage *pOutput,const uint8_t
 
 		pOutput->Shutdown();
 		pOutput->m_SongDescription.SetName(pXMHeader->m_Name);
-		uint_t uOrderCount = LittleEndian::Load(&pXMHeader->m_uSongLength);
-		uint_t uPatternCount = LittleEndian::Load(&pXMHeader->m_uPatternCount);
+		uint_t uOrderCount = LittleEndian::load(&pXMHeader->m_uSongLength);
+		uint_t uPatternCount = LittleEndian::load(&pXMHeader->m_uPatternCount);
 		pOutput->m_SongDescription.m_uPatternCount = uPatternCount;
 		pOutput->m_SongDescription.m_uPointerCount = uOrderCount;
-		pOutput->m_SongDescription.m_uDefaultSpeed = LittleEndian::Load(&pXMHeader->m_uTempo);
-		pOutput->m_SongDescription.m_uDefaultTempo = LittleEndian::Load(&pXMHeader->m_uBeatsPerMinute);
+		pOutput->m_SongDescription.m_uDefaultSpeed = LittleEndian::load(&pXMHeader->m_uTempo);
+		pOutput->m_SongDescription.m_uDefaultTempo = LittleEndian::load(&pXMHeader->m_uBeatsPerMinute);
 		pOutput->m_SongDescription.m_uMasterVolume = 64;
 		pOutput->m_SongDescription.m_uMasterSpeed = 80;
 		pOutput->m_SongDescription.m_uMasterPitch = 80;
 		pOutput->m_SongDescription.m_uInstrumentCount = uInstrumentCount;
-		pOutput->m_SongDescription.m_uChannelCount = LittleEndian::Load(&pXMHeader->m_uChannelCount);
+		pOutput->m_SongDescription.m_uChannelCount = LittleEndian::load(&pXMHeader->m_uChannelCount);
 		if (uOrderCount > 128) {
 			pOutput->m_SongDescription.m_uPointerCount = 128;
 		}
@@ -607,10 +607,10 @@ uint_t BURGER_API Burger::ImportXM(Sequencer::SongPackage *pOutput,const uint8_t
 			uint_t uChannelCount = pOutput->m_SongDescription.m_uChannelCount;
 			i = 0;
 			do {
-				uint_t uSize = LittleEndian::LoadAny(static_cast<const uint32_t *>(static_cast<const void *>(pInput)));	// m_uSize
+				uint_t uSize = LittleEndian::load_unaligned(static_cast<const uint32_t *>(static_cast<const void *>(pInput)));	// m_uSize
 //				uint_t bPacking = pInput[4];		// m_bPacking
-				uint_t uRowCount = LittleEndian::LoadAny(static_cast<const uint16_t *>(static_cast<const void *>(pInput+5)));	// m_uRowCount
-				uint_t uPackSize = LittleEndian::LoadAny(static_cast<const uint16_t *>(static_cast<const void *>(pInput+7)));		// m_uPackSize
+				uint_t uRowCount = LittleEndian::load_unaligned(static_cast<const uint16_t *>(static_cast<const void *>(pInput+5)));	// m_uRowCount
+				uint_t uPackSize = LittleEndian::load_unaligned(static_cast<const uint16_t *>(static_cast<const void *>(pInput+7)));		// m_uPackSize
 				if (uInputLength<uSize) {
 					uResult = Sequencer::IMPORT_TRUNCATION;
 					break;
@@ -688,10 +688,10 @@ uint_t BURGER_API Burger::ImportXM(Sequencer::SongPackage *pOutput,const uint8_t
 					const uint8_t *pTempInput = pInput;
 					// XMInstrument_t is not native aligned, manually extract the data
 
-					uint_t uSize = LittleEndian::LoadAny((uint32_t *)pInput);
+					uint_t uSize = LittleEndian::load_unaligned((uint32_t *)pInput);
 					pInstrData->SetName(static_cast<const char *>(static_cast<const void *>(pInput+4)));
 					//uint_t bType = pInput[26];
-					uint_t uSampleCount = LittleEndian::LoadAny(static_cast<const uint16_t *>(static_cast<const void *>(pInput+27)));
+					uint_t uSampleCount = LittleEndian::load_unaligned(static_cast<const uint16_t *>(static_cast<const void *>(pInput+27)));
 					pInstrData->m_uNumberSamples = uSampleCount;
 					// Consume the structure
 					pInput += 29;
@@ -702,7 +702,7 @@ uint_t BURGER_API Burger::ImportXM(Sequencer::SongPackage *pOutput,const uint8_t
 					uint_t uSampleSize = 0;
 					if (uSampleCount) {
 						// Get the size of the data
-						uSampleSize = LittleEndian::LoadAny(static_cast<const uint32_t*>(static_cast<const void *>(pInput)));
+						uSampleSize = LittleEndian::load_unaligned(static_cast<const uint32_t*>(static_cast<const void *>(pInput)));
 
 						// Get the pointer to the patch
 						const XMPatch_t *pPatch = static_cast<const XMPatch_t *>(static_cast<const void *>(pInput+4));
@@ -718,8 +718,8 @@ uint_t BURGER_API Burger::ImportXM(Sequencer::SongPackage *pOutput,const uint8_t
 
 						i = 0;
 						do {
-							pInstrData->m_VolumeEnvelope[i].m_uPosition = LittleEndian::LoadAny(&pPatch->m_VolumeEnvelope[i*2]); 
-							pInstrData->m_VolumeEnvelope[i].m_uVolume = LittleEndian::LoadAny(&pPatch->m_VolumeEnvelope[i*2+1]);
+							pInstrData->m_VolumeEnvelope[i].m_uPosition = LittleEndian::load_unaligned(&pPatch->m_VolumeEnvelope[i*2]); 
+							pInstrData->m_VolumeEnvelope[i].m_uVolume = LittleEndian::load_unaligned(&pPatch->m_VolumeEnvelope[i*2+1]);
 						} while (++i<12);
 
 						pInstrData->m_uVolumeEnvelopeCount = pPatch->m_bVolumeEnvelopeCount;
@@ -734,7 +734,7 @@ uint_t BURGER_API Burger::ImportXM(Sequencer::SongPackage *pOutput,const uint8_t
 						if (pInstrData->m_uVolumeEndIndex >= pInstrData->m_uVolumeEnvelopeCount) {
 							pInstrData->m_uVolumeEndIndex = static_cast<uint8_t>(pInstrData->m_uVolumeEnvelopeCount-1U);
 						}
-						pInstrData->m_uVolumeFadeSpeed = LittleEndian::LoadAny(&pPatch->m_uVolumeFade);
+						pInstrData->m_uVolumeFadeSpeed = LittleEndian::load_unaligned(&pPatch->m_uVolumeFade);
 
 						//
 						// Pan envelopes
@@ -742,8 +742,8 @@ uint_t BURGER_API Burger::ImportXM(Sequencer::SongPackage *pOutput,const uint8_t
 
 						i = 0;
 						do {
-							pInstrData->m_PanEnvelope[i].m_uPosition = LittleEndian::LoadAny(&pPatch->m_PanEnvelope[i*2]);
-							pInstrData->m_PanEnvelope[i].m_uVolume = LittleEndian::LoadAny(&pPatch->m_PanEnvelope[i*2+1]);
+							pInstrData->m_PanEnvelope[i].m_uPosition = LittleEndian::load_unaligned(&pPatch->m_PanEnvelope[i*2]);
+							pInstrData->m_PanEnvelope[i].m_uVolume = LittleEndian::load_unaligned(&pPatch->m_PanEnvelope[i*2+1]);
 						} while (++i<12);
 
 						pInstrData->m_uPanEnvelopeCount = pPatch->m_bPanEnvelopeCount;
@@ -787,9 +787,9 @@ uint_t BURGER_API Burger::ImportXM(Sequencer::SongPackage *pOutput,const uint8_t
 							uInputLength -= uSampleSize;
 							Sequencer::SampleDescription *pSampleDescription = Sequencer::SampleDescription::New();
 							pOutput->m_pSampleDescriptions[uInstrument*Sequencer::cSampleMaxCount + uSampleIndex] = pSampleDescription;
-							pSampleDescription->m_uSampleSize = LittleEndian::LoadAny(&pXMSample->m_uLength);
-							pSampleDescription->m_uLoopStart = LittleEndian::LoadAny(&pXMSample->m_uLoopStart);
-							pSampleDescription->m_uLoopLength = LittleEndian::LoadAny(&pXMSample->m_uLoopLength);
+							pSampleDescription->m_uSampleSize = LittleEndian::load_unaligned(&pXMSample->m_uLength);
+							pSampleDescription->m_uLoopStart = LittleEndian::load_unaligned(&pXMSample->m_uLoopStart);
+							pSampleDescription->m_uLoopLength = LittleEndian::load_unaligned(&pXMSample->m_uLoopLength);
 
 							pSampleDescription->m_uVolume = pXMSample->m_bVolume;
 							pSampleDescription->m_uC2SamplesPerSecond = g_FineTune[(pXMSample->m_bFineTune + 128)/16];
@@ -857,7 +857,7 @@ uint_t BURGER_API Burger::ImportXM(Sequencer::SongPackage *pOutput,const uint8_t
 								if (uCounter) {
 									uint_t uTemp = 0;
 									do {
-										uTemp = LittleEndian::LoadAny(static_cast<const uint16_t *>(static_cast<const void *>(pSource))) + uTemp;
+										uTemp = LittleEndian::load_unaligned(static_cast<const uint16_t *>(static_cast<const void *>(pSource))) + uTemp;
 										static_cast<uint16_t *>(pDestination)[0] = static_cast<uint16_t>(uTemp);
 										pSource+=2;
 										pDestination=static_cast<uint16_t *>(pDestination)+1;

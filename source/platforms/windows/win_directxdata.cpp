@@ -22,8 +22,16 @@
 // Windows.h always comes first
 #include "win_windows.h"
 
+#if defined(BURGER_METROWERKS)
+#pragma warn_emptydecl off
+#endif
+
 #include <d3d9.h>
 #include <dinput.h>
+
+#if defined(BURGER_METROWERKS)
+#pragma warn_emptydecl reset
+#endif
 
 // Needed for Code Warrior
 #if !defined(DIDFT_OPTIONAL) && !defined(DOXYGEN)

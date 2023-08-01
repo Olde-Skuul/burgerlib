@@ -23,7 +23,16 @@
 #if defined(BURGER_WINDOWS) && !defined(DOXYGEN)
 #include "win_windows.h"
 
+#if defined(BURGER_METROWERKS)
+#pragma warn_emptydecl off
+#endif
+
 #include <d3d9.h>
+
+#if defined(BURGER_METROWERKS)
+#pragma warn_emptydecl reset
+#endif
+
 #endif
 
 #if defined(BURGER_OPENGL) && !defined(DOXYGEN)

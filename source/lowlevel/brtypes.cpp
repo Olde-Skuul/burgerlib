@@ -2234,6 +2234,122 @@ line of processors.
 
 /*! ************************************
 
+	\def BURGER_68K_A0
+	\brief Macro for register passing for 68K compilers
+
+	Use this macro for a pointer passed in the 68000 register A0.
+
+	Metrowerks and the Apple SC compilers allow register passing if a register
+	is specifically appended to a function parameter or a function declaration.
+	On all other platforms, these macros will convert to nothing.
+
+	\code
+
+	// Have the function accept the parameter in D1 on 68K
+	extern void foobar(int input BURGER_68K_D1);
+
+	uint32_t bar(uint32_t *pInput BURGER_68K_A1) BURGER_68K_D1
+	{
+		// Input is passed in A1, and loaded into D1 for return
+		// This compiles to a single instruction and a RET
+		return *pInput;
+	}
+
+	\endcode
+
+	\sa BURGER_68K_A1, BURGER_68K_D0, or BURGER_68K_D1
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_68K_A1
+	\brief Macro for register passing for 68K compilers
+
+	Use this macro for a pointer passed in the 68000 register A1.
+
+	Metrowerks and the Apple SC compilers allow register passing if a register
+	is specifically appended to a function parameter or a function declaration.
+	On all other platforms, these macros will convert to nothing.
+
+	\code
+
+	// Have the function accept the parameter in D1 on 68K
+	extern void foobar(int input BURGER_68K_D1);
+
+	uint32_t bar(uint32_t *pInput BURGER_68K_A1) BURGER_68K_D1
+	{
+		// Input is passed in A1, and loaded into D1 for return
+		// This compiles to a single instruction and a RET
+		return *pInput;
+	}
+
+	\endcode
+
+	\sa BURGER_68K_A0, BURGER_68K_D0, or BURGER_68K_D1
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_68K_D0
+	\brief Macro for register passing for 68K compilers
+
+	Use this macro for 8, 16, or 32 bit integer passed in the 68000 register D0.
+
+	Metrowerks and the Apple SC compilers allow register passing if a register
+	is specifically appended to a function parameter or a function declaration.
+	On all other platforms, these macros will convert to nothing.
+
+	\code
+
+	// Have the function accept the parameter in D1 on 68K
+	extern void foobar(int input BURGER_68K_D1);
+
+	uint32_t bar(uint32_t *pInput BURGER_68K_A1) BURGER_68K_D1
+	{
+		// Input is passed in A1, and loaded into D1 for return
+		// This compiles to a single instruction and a RET
+		return *pInput;
+	}
+
+	\endcode
+
+	\sa BURGER_68K_A0, BURGER_68K_A1, or BURGER_68K_D1
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_68K_D1
+	\brief Macro for register passing for 68K compilers
+
+	Use this macro for 8, 16, or 32 bit integer passed in the 68000 register D1.
+
+	Metrowerks and the Apple SC compilers allow register passing if a register
+	is specifically appended to a function parameter or a function declaration.
+	On all other platforms, these macros will convert to nothing.
+
+	\code
+
+	// Have the function accept the parameter in D1 on 68K
+	extern void foobar(int input BURGER_68K_D1);
+
+	uint32_t bar(uint32_t *pInput BURGER_68K_A1) BURGER_68K_D1
+	{
+		// Input is passed in A1, and loaded into D1 for return
+		// This compiles to a single instruction and a RET
+		return *pInput;
+	}
+
+	\endcode
+
+	\sa BURGER_68K_A0, BURGER_68K_A1, or BURGER_68K_D0
+
+***************************************/
+
+/*! ************************************
+
 	\def BURGER_ALIGN
 	\brief Macro to force data alignment.
 

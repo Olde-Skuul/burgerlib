@@ -70,7 +70,7 @@ uint_t BURGER_API Burger::WriteBig(FILE* fp, uint16_t uInput)
 {
 	uint16_t Value;
 	// Store as big endian
-	BigEndian::Store(&Value, uInput);
+	BigEndian::store(&Value, uInput);
 	uint_t uResult = 0;
 	if (fwrite(&Value, 1, 2, fp) != 2) { // Save the short word
 		uResult = static_cast<uint_t>(errno);
@@ -99,7 +99,7 @@ uint_t BURGER_API Burger::WriteBig(FILE* fp, uint32_t uInput)
 {
 	uint32_t Value;
 	// Store as big endian
-	BigEndian::Store(&Value, uInput);
+	BigEndian::store(&Value, uInput);
 	uint_t uResult = 0;
 	if (fwrite(&Value, 1, 4, fp) != 4) { // Save the long word
 		uResult = static_cast<uint_t>(errno);
@@ -128,7 +128,7 @@ uint_t BURGER_API Burger::WriteBig(FILE* fp, uint64_t uInput)
 {
 	uint64_t Value;
 	// Store as big endian
-	BigEndian::Store(&Value, uInput);
+	BigEndian::store(&Value, uInput);
 	uint_t uResult = 0;
 	if (fwrite(&Value, 1, 8, fp) != 8) { // Save the 64 bit word
 		uResult = static_cast<uint_t>(errno);
@@ -155,7 +155,7 @@ uint_t BURGER_API Burger::WriteBig(FILE* fp, float fInput)
 {
 	float Value;
 	// Store as big endian
-	BigEndian::Store(&Value, fInput);
+	BigEndian::store(&Value, fInput);
 	uint_t uResult = 0;
 	if (fwrite(&Value, 1, 4, fp) != 4) { // Save the 32 bit float
 		uResult = static_cast<uint_t>(errno);
@@ -182,7 +182,7 @@ uint_t BURGER_API Burger::WriteBig(FILE* fp, double dInput)
 {
 	double Value;
 	// Store as big endian
-	BigEndian::Store(&Value, dInput);
+	BigEndian::store(&Value, dInput);
 	uint_t uResult = 0;
 	if (fwrite(&Value, 1, 8, fp) != 8) { // Save the 64 bit float
 		uResult = static_cast<uint_t>(errno);
@@ -211,7 +211,7 @@ uint_t BURGER_API Burger::WriteLittle(FILE* fp, uint16_t uInput)
 {
 	uint16_t Value;
 	// Store as little endian
-	LittleEndian::Store(&Value, uInput);
+	LittleEndian::store(&Value, uInput);
 	uint_t uResult = 0;
 	if (fwrite(&Value, 1, 2, fp) != 2) { // Save the short word
 		uResult = static_cast<uint_t>(errno);
@@ -240,7 +240,7 @@ uint_t BURGER_API Burger::WriteLittle(FILE* fp, uint32_t uInput)
 {
 	uint32_t Value;
 	// Store as little endian
-	LittleEndian::Store(&Value, uInput);
+	LittleEndian::store(&Value, uInput);
 	uint_t uResult = 0;
 	if (fwrite(&Value, 1, 4, fp) != 4) { // Save the long word
 		uResult = static_cast<uint_t>(errno);
@@ -269,7 +269,7 @@ uint_t BURGER_API Burger::WriteLittle(FILE* fp, uint64_t uInput)
 {
 	uint64_t Value;
 	// Store as little endian
-	LittleEndian::Store(&Value, uInput);
+	LittleEndian::store(&Value, uInput);
 	uint_t uResult = 0;
 	if (fwrite(&Value, 1, 8, fp) != 8) { // Save the 64 bit word
 		uResult = static_cast<uint_t>(errno);
@@ -296,7 +296,7 @@ uint_t BURGER_API Burger::WriteLittle(FILE* fp, float fInput)
 {
 	float Value;
 	// Store as little endian
-	LittleEndian::Store(&Value, fInput);
+	LittleEndian::store(&Value, fInput);
 	uint_t uResult = 0;
 	if (fwrite(&Value, 1, 4, fp) != 4) { // Save the 32 bit float
 		uResult = static_cast<uint_t>(errno);
@@ -323,7 +323,7 @@ uint_t BURGER_API Burger::WriteLittle(FILE* fp, double dInput)
 {
 	double Value;
 	// Store as little endian
-	LittleEndian::Store(&Value, dInput);
+	LittleEndian::store(&Value, dInput);
 	uint_t uResult = 0;
 	if (fwrite(&Value, 1, 8, fp) != 8) { // Save the 64 bit float
 		uResult = static_cast<uint_t>(errno);
@@ -376,7 +376,7 @@ uint16_t BURGER_API Burger::read_big_uint16(FILE* fp)
 	uint16_t uResult = 0;
 	uint16_t Value;
 	if (fread(&Value, 1, 2, fp) == 2) {
-		uResult = BigEndian::Load(&Value);
+		uResult = BigEndian::load(&Value);
 	}
 	return uResult;
 }
@@ -400,7 +400,7 @@ uint32_t BURGER_API Burger::read_big_uint32(FILE* fp)
 	uint32_t uResult = 0;
 	uint32_t Value;
 	if (fread(&Value, 1, 4, fp) == 4) {
-		uResult = BigEndian::Load(&Value);
+		uResult = BigEndian::load(&Value);
 	}
 	return uResult;
 }
@@ -424,7 +424,7 @@ uint64_t BURGER_API Burger::ReadBigWord64(FILE* fp)
 	uint64_t uResult = 0;
 	uint64_t Value;
 	if (fread(&Value, 1, 8, fp) == 8) {
-		uResult = BigEndian::Load(&Value);
+		uResult = BigEndian::load(&Value);
 	}
 	return uResult;
 }
@@ -450,7 +450,7 @@ float BURGER_API Burger::ReadBigFloat(FILE* fp)
 	if (fread(&Value, 1, 4, fp) != 4) {
 		fResult = g_fNan;
 	} else {
-		fResult = BigEndian::Load(&Value);
+		fResult = BigEndian::load(&Value);
 	}
 	return fResult;
 }
@@ -476,7 +476,7 @@ double BURGER_API Burger::ReadBigDouble(FILE* fp)
 	if (fread(&Value, 1, 8, fp) != 8) {
 		dResult = g_dNan;
 	} else {
-		dResult = BigEndian::Load(&Value);
+		dResult = BigEndian::load(&Value);
 	}
 	return dResult;
 }
@@ -501,7 +501,7 @@ uint16_t BURGER_API Burger::read_little_uint16(FILE* fp)
 	uint16_t uResult = 0;
 	uint16_t Value;
 	if (fread(&Value, 1, 2, fp) == 2) {
-		uResult = LittleEndian::Load(&Value);
+		uResult = LittleEndian::load(&Value);
 	}
 	return uResult;
 }
@@ -526,7 +526,7 @@ uint32_t BURGER_API Burger::read_little_uint32(FILE* fp)
 	uint32_t uResult = 0;
 	uint32_t Value;
 	if (fread(&Value, 1, 4, fp) == 4) {
-		uResult = LittleEndian::Load(&Value);
+		uResult = LittleEndian::load(&Value);
 	}
 	return uResult;
 }
@@ -551,7 +551,7 @@ uint64_t BURGER_API Burger::ReadLittleWord64(FILE* fp)
 	uint64_t uResult = 0;
 	uint64_t Value;
 	if (fread(&Value, 1, 8, fp) == 8) {
-		uResult = LittleEndian::Load(&Value);
+		uResult = LittleEndian::load(&Value);
 	}
 	return uResult;
 }
@@ -577,7 +577,7 @@ float BURGER_API Burger::ReadLittleFloat(FILE* fp)
 	if (fread(&Value, 1, 4, fp) != 4) {
 		fResult = g_fNan;
 	} else {
-		fResult = LittleEndian::Load(&Value);
+		fResult = LittleEndian::load(&Value);
 	}
 	return fResult;
 }
@@ -603,7 +603,7 @@ double BURGER_API Burger::ReadLittleDouble(FILE* fp)
 	if (fread(&Value, 1, 8, fp) != 8) {
 		dResult = g_dNan;
 	} else {
-		dResult = LittleEndian::Load(&Value);
+		dResult = LittleEndian::load(&Value);
 	}
 	return dResult;
 }

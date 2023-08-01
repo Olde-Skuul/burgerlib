@@ -52,8 +52,8 @@ void Burger::Dxt3Packet_t::Decompress(RGBAWord8_t *pOutput,uintptr_t uStride) co
 
 	RGBAWord8_t Colors[4];
 
-	Palette::FromRGB16(&Colors[0],LittleEndian::Load(&m_uRGB565Color1));
-	Palette::FromRGB16(&Colors[1],LittleEndian::Load(&m_uRGB565Color2));
+	Palette::FromRGB16(&Colors[0],LittleEndian::load(&m_uRGB565Color1));
+	Palette::FromRGB16(&Colors[1],LittleEndian::load(&m_uRGB565Color2));
 	
 	// Create the two middle colors by scaling
 	

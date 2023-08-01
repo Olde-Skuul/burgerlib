@@ -259,20 +259,20 @@ uintptr_t BURGER_API Burger::Flash::DisassembleActionScript(const uint8_t* pInpu
 
 		// A single unsigned 16 bit value
 		case ARGUMENT_UI16:
-			Debug::Message(" Value uint16_t:%u\n",static_cast<uint_t>(LittleEndian::LoadAny(reinterpret_cast<const uint16_t *>(pInput+3))));
+			Debug::Message(" Value uint16_t:%u\n",static_cast<uint_t>(LittleEndian::load_unaligned(reinterpret_cast<const uint16_t *>(pInput+3))));
 			uResult = 5;
 			break;
 
 		// A single signed 16 bit value
 		case ARGUMENT_SI16:
-			Debug::Message(" Value int16_t:%d\n",static_cast<int_t>(LittleEndian::LoadAny(reinterpret_cast<const int16_t *>(pInput+3))));
+			Debug::Message(" Value int16_t:%d\n",static_cast<int_t>(LittleEndian::load_unaligned(reinterpret_cast<const int16_t *>(pInput+3))));
 			uResult = 5;
 			break;
 
 		// An ascii string
 		case ARGUMENT_STRING:
 			{
-				uResult = LittleEndian::LoadAny(reinterpret_cast<const uint16_t *>(pInput+1))+3U;
+				uResult = LittleEndian::load_unaligned(reinterpret_cast<const uint16_t *>(pInput+1))+3U;
 				uint8_t uTemp = pInput[uResult];
 				const_cast<uint8_t *>(pInput)[uResult] = 0;
 				Debug::PrintString(" \"");
@@ -285,7 +285,7 @@ uintptr_t BURGER_API Burger::Flash::DisassembleActionScript(const uint8_t* pInpu
 			// Two ascii string
 		case ARGUMENT_STRING2:
 			{
-				uResult = LittleEndian::LoadAny(reinterpret_cast<const uint16_t *>(pInput+1))+3U;
+				uResult = LittleEndian::load_unaligned(reinterpret_cast<const uint16_t *>(pInput+1))+3U;
 				uint8_t uTemp = pInput[uResult];
 				const_cast<uint8_t *>(pInput)[uResult] = 0;
 				Debug::PrintString(" \"");
@@ -299,12 +299,12 @@ uintptr_t BURGER_API Burger::Flash::DisassembleActionScript(const uint8_t* pInpu
 
 			// ActionWaitForFrame 16 bit, 8 bit
 		case ARGUMENT_WAITFORFRAME:
-			Debug::Message(" Frame:%u, Skip:%u\n",static_cast<uint_t>(LittleEndian::LoadAny(reinterpret_cast<const uint16_t *>(pInput+3))),static_cast<uint_t>(pInput[5]));
+			Debug::Message(" Frame:%u, Skip:%u\n",static_cast<uint_t>(LittleEndian::load_unaligned(reinterpret_cast<const uint16_t *>(pInput+3))),static_cast<uint_t>(pInput[5]));
 			break;
 
 		case ARGUMENT_DUMP:
 			{
-				uintptr_t uCount = LittleEndian::LoadAny(reinterpret_cast<const uint16_t *>(pInput+1));
+				uintptr_t uCount = LittleEndian::load_unaligned(reinterpret_cast<const uint16_t *>(pInput+1));
 				// Pass back the final size
 				uResult = uCount+3;
 				if (uCount) {
@@ -320,7 +320,7 @@ uintptr_t BURGER_API Burger::Flash::DisassembleActionScript(const uint8_t* pInpu
 
 		case ARGUMENT_ACTIONPUSH:
 			{
-				uintptr_t uLength = LittleEndian::LoadAny(reinterpret_cast<const uint16_t *>(pInput+1));
+				uintptr_t uLength = LittleEndian::load_unaligned(reinterpret_cast<const uint16_t *>(pInput+1));
 				uResult = uLength+3;
 				pInput+=3;
 				const uint8_t *pEnd = pInput+uLength;
@@ -337,7 +337,7 @@ uintptr_t BURGER_API Burger::Flash::DisassembleActionScript(const uint8_t* pInpu
 						break;
 					case 1:
 						// 32 bit float (Little endian)
-						Debug::Message(" FLOAT:%f",LittleEndian::LoadAny(reinterpret_cast<const float *>(pInput)));
+						Debug::Message(" FLOAT:%f",LittleEndian::load_unaligned(reinterpret_cast<const float *>(pInput)));
 						pInput+=4;
 						break;
 					case 2:
@@ -357,11 +357,11 @@ uintptr_t BURGER_API Burger::Flash::DisassembleActionScript(const uint8_t* pInpu
 						++pInput;
 						break;
 					case 6:
-						Debug::Message(" DOUBLE:%f",LittleEndian::LoadAny(reinterpret_cast<const double *>(pInput)));
+						Debug::Message(" DOUBLE:%f",LittleEndian::load_unaligned(reinterpret_cast<const double *>(pInput)));
 						pInput+=8;
 						break;
 					case 7:
-						Debug::Message(" UI32:%u",LittleEndian::LoadAny(reinterpret_cast<const uint32_t *>(pInput)));
+						Debug::Message(" UI32:%u",LittleEndian::load_unaligned(reinterpret_cast<const uint32_t *>(pInput)));
 						pInput+=4;
 						break;
 					case 8:
@@ -369,7 +369,7 @@ uintptr_t BURGER_API Burger::Flash::DisassembleActionScript(const uint8_t* pInpu
 						++pInput;
 						break;
 					case 9:
-						Debug::Message(" Constant16:0x%04X",LittleEndian::LoadAny(reinterpret_cast<const uint16_t *>(pInput)));
+						Debug::Message(" Constant16:0x%04X",LittleEndian::load_unaligned(reinterpret_cast<const uint16_t *>(pInput)));
 						pInput+=2;
 						break;
 					}
@@ -379,10 +379,10 @@ uintptr_t BURGER_API Burger::Flash::DisassembleActionScript(const uint8_t* pInpu
 			break;
 		case ARGUMENT_CONSTANT_POOL:
 			{
-				uintptr_t uLength = LittleEndian::LoadAny(reinterpret_cast<const uint16_t *>(pInput+1));
+				uintptr_t uLength = LittleEndian::load_unaligned(reinterpret_cast<const uint16_t *>(pInput+1));
 				uResult = uLength+3;
 				if (uLength>=2) {
-					uintptr_t uCount = LittleEndian::LoadAny(reinterpret_cast<const uint16_t *>(pInput+3));
+					uintptr_t uCount = LittleEndian::load_unaligned(reinterpret_cast<const uint16_t *>(pInput+3));
 					if (uCount) {
 						Debug::Message(" Constants:%u",static_cast<uint_t>(uCount));
 						uint8_t *pTemp = &const_cast<uint8_t *>(pInput)[uResult];
@@ -403,11 +403,11 @@ uintptr_t BURGER_API Burger::Flash::DisassembleActionScript(const uint8_t* pInpu
 			break;
 		case ARGUMENT_DEFINEFUNCTION2:
 			{
-				uintptr_t uLength = LittleEndian::LoadAny(reinterpret_cast<const uint16_t *>(pInput+1));
+				uintptr_t uLength = LittleEndian::load_unaligned(reinterpret_cast<const uint16_t *>(pInput+1));
 				uResult = uLength+3;
 				const char *pFunctionName = reinterpret_cast<const char *>(pInput+3);
 				pInput += StringLength(pFunctionName)+4;
-				uint_t uNumParams = LittleEndian::LoadAny(reinterpret_cast<const uint16_t *>(pInput));
+				uint_t uNumParams = LittleEndian::load_unaligned(reinterpret_cast<const uint16_t *>(pInput));
 				uint_t uRegisterCount = pInput[2];
 				pInput+=3;
 				Debug::Message(" Function name:\"%s\" Argc:%u, RegCount:%u",pFunctionName,static_cast<uint_t>(uNumParams),static_cast<uint_t>(uRegisterCount));
@@ -449,7 +449,7 @@ uintptr_t BURGER_API Burger::Flash::DisassembleActionScript(const uint8_t* pInpu
 					} while (--uNumParams);
 				}
 
-				uNumParams = LittleEndian::LoadAny(reinterpret_cast<const uint16_t *>(pInput));
+				uNumParams = LittleEndian::load_unaligned(reinterpret_cast<const uint16_t *>(pInput));
 				Debug::Message(" Code size %u\n",static_cast<uint_t>(uNumParams));
 			}
 		}

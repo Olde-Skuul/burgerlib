@@ -11,13 +11,12 @@
 
 #include "brendian.h"
 
-asm float BURGER_API Burger::_swapendianfloat(const float* /* pInput */) BURGER_NOEXCEPT
+asm float BURGER_API Burger::_swapendianfloat(
+	const float* pInput BURGER_68K_A0) BURGER_NOEXCEPT
 {
 // CFM returns the value in d0
 #if defined(BURGER_CFM)
-	// The input is 4(a7)
-	movea.l	4(a7), a0
-	move.l	0(a0), d0
+	move.l	(a0), d0
 
 	// Swap endian of the low 16 bits
 	ror.w	#8, d0
@@ -28,13 +27,10 @@ asm float BURGER_API Burger::_swapendianfloat(const float* /* pInput */) BURGER_
 	// Swap endian of the upper 16 bits
 	ror.w	#8, d0
 
-	rtd		#4
+	rts
 #else
-	// The input is 8(a7)
-	movea.l	8(a7), a0
-
 	// Get the value
-	move.l	0(a0), d0
+	move.l	(a0), d0
 
 	// Swap endian of the low 16 bits
 	ror.w	#8, d0
@@ -49,7 +45,7 @@ asm float BURGER_API Burger::_swapendianfloat(const float* /* pInput */) BURGER_
 	movea.l 4(a7), a0
 
 	// Save the result
-	move.l	d0, 0(a0)
+	move.l	d0, (a0)
 
 	rts
 #endif

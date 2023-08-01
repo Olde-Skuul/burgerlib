@@ -392,7 +392,7 @@ uint_t BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const uint8_t
 
 		// Set up the pointer to the orders
 
-		uint_t uOrderCount = LittleEndian::Load(&pITHeader->m_uOrderCount);
+		uint_t uOrderCount = LittleEndian::load(&pITHeader->m_uOrderCount);
 		if (uInputLength>=uOrderCount) {
 
 			// Mark the data and consume it
@@ -401,7 +401,7 @@ uint_t BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const uint8_t
 			uInputLength-=uOrderCount;
 
 			// Instruments (Not 32 bit aligned)
-			uint_t uInstrumentCount = LittleEndian::Load(&pITHeader->m_uInstrumentCount);
+			uint_t uInstrumentCount = LittleEndian::load(&pITHeader->m_uInstrumentCount);
 			if (uInputLength>=(uInstrumentCount*4)) {
 
 				// Mark the instrument sizes (May not be 32 bit aligned!!)
@@ -410,7 +410,7 @@ uint_t BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const uint8_t
 				uInputLength -= uInstrumentCount * 4;
 
 				// Samples (Not 32 bit aligned)
-				uint_t uSampleCount = LittleEndian::Load(&pITHeader->m_uSampleCount);
+				uint_t uSampleCount = LittleEndian::load(&pITHeader->m_uSampleCount);
 				if (uInputLength>=(uSampleCount*4)) {
 
 					// Mark the sample sizes (May not be 32 bit aligned!!)
@@ -419,7 +419,7 @@ uint_t BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const uint8_t
 					uInputLength -= uSampleCount * 4;
 
 					// Pointers to pattern
-					uint_t uPatternCount = LittleEndian::Load(&pITHeader->m_uPatternCount);
+					uint_t uPatternCount = LittleEndian::load(&pITHeader->m_uPatternCount);
 					if (uInputLength>=(uPatternCount*4)) {
 						// Mark the pattern offsets
 						const uint32_t *pPatternOffsets = static_cast<const uint32_t *>(static_cast<const void *>(pWork));
@@ -482,13 +482,13 @@ uint_t BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const uint8_t
 						// Use the instrument records or sample record
 						//
 
-						uint_t uHeaderFlags = LittleEndian::Load(&pITHeader->m_uFlags);
+						uint_t uHeaderFlags = LittleEndian::load(&pITHeader->m_uFlags);
 						if (uHeaderFlags & ITHeader_t::FLAG_USEINSTRUMENTS) {
 							if (uInstrumentCount) {
 								i = 0;
 								Sequencer::InstrData_t *pInstrData = pOutput->m_InstrDatas;
 								do {
-									const ITInstrumentFormat_t *pInstrumentFormat = static_cast<const ITInstrumentFormat_t*>(static_cast<const void *>(pInput+LittleEndian::LoadAny(&pInstrumentOffsets[i])));
+									const ITInstrumentFormat_t *pInstrumentFormat = static_cast<const ITInstrumentFormat_t*>(static_cast<const void *>(pInput+LittleEndian::load_unaligned(&pInstrumentOffsets[i])));
 									if (pInstrumentFormat->m_Signature != ITInstrumentFormat_t::cSignature) {
 										uResult = Sequencer::IMPORT_BADFILE;
 										break;
@@ -550,19 +550,19 @@ uint_t BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const uint8_t
 													}
 													pOutput->m_pSampleDescriptions[i*Sequencer::cSampleMaxCount + pInstrData->m_uNumberSamples] = pSampleDescription;
 
-													const ITSampleFormat_t *pSampleFormat = static_cast<const ITSampleFormat_t*>(static_cast<const void *>(pInput+LittleEndian::LoadAny(&pSampleOffsets[prevSamp])));
+													const ITSampleFormat_t *pSampleFormat = static_cast<const ITSampleFormat_t*>(static_cast<const void *>(pInput+LittleEndian::load_unaligned(&pSampleOffsets[prevSamp])));
 
-													pSampleDescription->m_uSampleSize = LittleEndian::LoadAny(&pSampleFormat->m_uSampleCount);
+													pSampleDescription->m_uSampleSize = LittleEndian::load_unaligned(&pSampleFormat->m_uSampleCount);
 													if (pSampleFormat->m_bFlags&ITSampleFormat_t::FLAG_LOOP) {
-														pSampleDescription->m_uLoopStart = LittleEndian::LoadAny(&pSampleFormat->m_uLoopBegin);
-														pSampleDescription->m_uLoopLength = LittleEndian::LoadAny(&pSampleFormat->m_uLoopEnd) - pSampleDescription->m_uLoopStart;
+														pSampleDescription->m_uLoopStart = LittleEndian::load_unaligned(&pSampleFormat->m_uLoopBegin);
+														pSampleDescription->m_uLoopLength = LittleEndian::load_unaligned(&pSampleFormat->m_uLoopEnd) - pSampleDescription->m_uLoopStart;
 													} else {
 														pSampleDescription->m_uLoopStart = 0;
 														pSampleDescription->m_uLoopLength = 0;
 													}
 
 													pSampleDescription->m_uVolume = pSampleFormat->m_bGlobalVolume;
-													pSampleDescription->m_uC2SamplesPerSecond = LittleEndian::LoadAny(&pSampleFormat->m_uC5Speed);
+													pSampleDescription->m_uC2SamplesPerSecond = LittleEndian::load_unaligned(&pSampleFormat->m_uC5Speed);
 													pSampleDescription->m_eLoopType	= Sequencer::LOOP_NORMAL;
 													pSampleDescription->m_uBitsPerSample = 8;
 
@@ -576,7 +576,7 @@ uint_t BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const uint8_t
 													pSampleDescription->m_iRelativeNote	= -12;
 													pSampleDescription->SetName(pSampleFormat->m_Name);
 													if (pSampleDescription->m_uSampleSize) {
-														const void *pDigital = pInput+LittleEndian::LoadAny(&pSampleFormat->m_uSampleOffset);
+														const void *pDigital = pInput+LittleEndian::load_unaligned(&pSampleFormat->m_uSampleOffset);
 														pSampleDescription->m_pSample = alloc_copy(pDigital,pSampleDescription->m_uSampleSize);
 														if (!pSampleDescription->m_pSample) {
 															// Uh oh...
@@ -587,7 +587,7 @@ uint_t BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const uint8_t
 													if (pSampleDescription->m_pSample) {
 														if(!(pSampleFormat->m_bConversionFlags & ITSampleFormat_t::CONVERT_SIGNED) &&
 															(pSampleDescription->m_uBitsPerSample == 8)) {
-															SwapCharsToBytes(pSampleDescription->m_pSample,pSampleDescription->m_uSampleSize);
+															swap_chars_to_bytes(pSampleDescription->m_pSample,pSampleDescription->m_uSampleSize);
 														}
 
 														if( pSampleDescription->m_uBitsPerSample == 16) {
@@ -596,13 +596,13 @@ uint_t BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const uint8_t
 																if (!(pSampleFormat->m_bConversionFlags & ITSampleFormat_t::CONVERT_SIGNED)) {
 																	uint16_t *pSampleTemp = static_cast<uint16_t *>(pSampleDescription->m_pSample);
 																	do {
-																		pSampleTemp[0] = static_cast<uint16_t>(LittleEndian::Load(pSampleTemp)^0x8000U);
+																		pSampleTemp[0] = static_cast<uint16_t>(LittleEndian::load(pSampleTemp)^0x8000U);
 																		++pSampleTemp;
 																	} while (--uLength);
 																}
 #if defined(BURGER_BIGENDIAN)
 																else {
-																	ConvertEndian(static_cast<uint16_t *>(pSampleDescription->m_pSample),uLength);
+																	swap_endian(static_cast<uint16_t *>(pSampleDescription->m_pSample),uLength);
 																}
 #endif
 															}
@@ -623,14 +623,14 @@ uint_t BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const uint8_t
 								i = 0;
 								Sequencer::InstrData_t *pInstrData = pOutput->m_InstrDatas;
 								do {
-									const ITSampleFormat_t *pSampleFormat = static_cast<const ITSampleFormat_t*>(static_cast<const void *>(pInput+LittleEndian::LoadAny(&pSampleOffsets[i])));
+									const ITSampleFormat_t *pSampleFormat = static_cast<const ITSampleFormat_t*>(static_cast<const void *>(pInput+LittleEndian::load_unaligned(&pSampleOffsets[i])));
 									if (pSampleFormat->m_Signature != ITSampleFormat_t::cSignature) {
 										uResult = Sequencer::IMPORT_BADFILE;
 										break;
 									}
-									uint_t uSampCount = LittleEndian::LoadAny(&pSampleFormat->m_uSampleCount);
+									uint_t uSampCount = LittleEndian::load_unaligned(&pSampleFormat->m_uSampleCount);
 									if (uSampCount) {
-										const void *pDigitalSample = pInput+LittleEndian::LoadAny(&pSampleFormat->m_uSampleOffset);
+										const void *pDigitalSample = pInput+LittleEndian::load_unaligned(&pSampleFormat->m_uSampleOffset);
 										pInstrData->m_uNumberSamples = 1;
 										pInstrData->m_uVolumeFadeSpeed = Sequencer::cDefaultVolumeFade;
 
@@ -642,11 +642,11 @@ uint_t BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const uint8_t
 										}
 										pOutput->m_pSampleDescriptions[i*Sequencer::cSampleMaxCount] = pSampleDescription;
 
-										pSampleDescription->m_uSampleSize = LittleEndian::LoadAny(&pSampleFormat->m_uSampleCount);
-										pSampleDescription->m_uLoopStart = LittleEndian::LoadAny(&pSampleFormat->m_uLoopBegin);
-										pSampleDescription->m_uLoopLength = LittleEndian::LoadAny(&pSampleFormat->m_uLoopEnd) - pSampleDescription->m_uLoopStart;
+										pSampleDescription->m_uSampleSize = LittleEndian::load_unaligned(&pSampleFormat->m_uSampleCount);
+										pSampleDescription->m_uLoopStart = LittleEndian::load_unaligned(&pSampleFormat->m_uLoopBegin);
+										pSampleDescription->m_uLoopLength = LittleEndian::load_unaligned(&pSampleFormat->m_uLoopEnd) - pSampleDescription->m_uLoopStart;
 										pSampleDescription->m_uVolume = pSampleFormat->m_bGlobalVolume;
-										pSampleDescription->m_uC2SamplesPerSecond = LittleEndian::LoadAny(&pSampleFormat->m_uC5Speed);
+										pSampleDescription->m_uC2SamplesPerSecond = LittleEndian::load_unaligned(&pSampleFormat->m_uC5Speed);
 										pSampleDescription->m_eLoopType	= Sequencer::LOOP_NORMAL;
 										pSampleDescription->m_uBitsPerSample = 8;
 
@@ -668,7 +668,7 @@ uint_t BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const uint8_t
 
 										if (!(pSampleFormat->m_bConversionFlags & ITSampleFormat_t::CONVERT_SIGNED) &&
 											(pSampleDescription->m_uBitsPerSample==8)) {
-											SwapCharsToBytes(pSampleDescription->m_pSample,pSampleDescription->m_uSampleSize);
+											swap_chars_to_bytes(pSampleDescription->m_pSample,pSampleDescription->m_uSampleSize);
 										}
 
 										if (pSampleDescription->m_uBitsPerSample == 16) {
@@ -677,13 +677,13 @@ uint_t BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const uint8_t
 												if (!(pSampleFormat->m_bConversionFlags & ITSampleFormat_t::CONVERT_SIGNED)) {
 													uint16_t *pSampleTemp = static_cast<uint16_t *>(pSampleDescription->m_pSample);
 													do {
-														pSampleTemp[0] = static_cast<uint16_t>(LittleEndian::Load(pSampleTemp)^0x8000U);
+														pSampleTemp[0] = static_cast<uint16_t>(LittleEndian::load(pSampleTemp)^0x8000U);
 														++pSampleTemp;
 													} while (--uLength);
 												}
 #if defined(BURGER_BIGENDIAN)
 												else {
-													ConvertEndian(static_cast<uint16_t *>(pSampleDescription->m_pSample),uLength);
+													swap_endian(static_cast<uint16_t *>(pSampleDescription->m_pSample),uLength);
 												}
 #endif
 											}
@@ -703,20 +703,20 @@ uint_t BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const uint8_t
 						uint_t uChannelCount = 0;
 
 						for (i = 0; i < uPatternCount ; i++) {
-							uint_t uPatternOffset = LittleEndian::LoadAny(&pPatternOffsets[i]);
+							uint_t uPatternOffset = LittleEndian::load_unaligned(&pPatternOffsets[i]);
 							if (uPatternOffset) {
 								uint8_t PreviousVariables[Sequencer::cTrackMaxCount];
 								MemoryClear(PreviousVariables,sizeof(PreviousVariables));
 
 								const ITPatternFormat_t *pPatternFormat = static_cast<const ITPatternFormat_t*>(static_cast<const void *>(pInput + uPatternOffset));
-								uint_t uPatternLength = LittleEndian::LoadAny(&pPatternFormat->m_uLength);
+								uint_t uPatternLength = LittleEndian::load_unaligned(&pPatternFormat->m_uLength);
 
 								pWork = pPatternFormat->m_Data;
 								uint8_t bMask = 0;
 								uint_t bNeedChannelToRead = TRUE;
 
 								uint_t uRow = 0;
-								uint_t uRows = LittleEndian::LoadAny(&pPatternFormat->m_uRows);
+								uint_t uRows = LittleEndian::load_unaligned(&pPatternFormat->m_uRows);
 								uint_t uChannelTemp = 0;
 								while (uRow < uRows) {
 									uint8_t uTemp = pWork[0];
@@ -770,7 +770,7 @@ uint_t BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const uint8_t
 
 						for( i = 0; i < uPatternCount ; i++) {
 							
-							uint_t uPatternOffset = LittleEndian::LoadAny(&pPatternOffsets[i]);
+							uint_t uPatternOffset = LittleEndian::load_unaligned(&pPatternOffsets[i]);
 							if (!uPatternOffset) {
 								
 								// No Data for this pattern - Clear Pattern
@@ -784,7 +784,7 @@ uint_t BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const uint8_t
 							} else {
 
 								const ITPatternFormat_t *pPatternFormat = static_cast<const ITPatternFormat_t*>(static_cast<const void *>(pInput + uPatternOffset));
-								uint_t uRows = LittleEndian::LoadAny(&pPatternFormat->m_uRows);
+								uint_t uRows = LittleEndian::load_unaligned(&pPatternFormat->m_uRows);
 
 								pOutput->m_pPartitions[i] = Sequencer::PatternData_t::New(uRows,uChannelCount);
 								if (!pOutput->m_pPartitions[i]) {
@@ -799,7 +799,7 @@ uint_t BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const uint8_t
 								uint8_t PreviousCommands[Sequencer::cTrackMaxCount];
 								MemoryClear(PreviousVariables,sizeof(PreviousVariables));
 
-								uint_t uPatternLength = LittleEndian::LoadAny(&pPatternFormat->m_uLength);
+								uint_t uPatternLength = LittleEndian::load_unaligned(&pPatternFormat->m_uLength);
 								pWork = pPatternFormat->m_Data;
 								uint8_t bMask = 0;
 								uint_t bNeedChannelToRead = TRUE;

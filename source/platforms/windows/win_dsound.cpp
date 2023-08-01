@@ -41,10 +41,18 @@
 
 #include "win_windows.h"
 
+#if defined(BURGER_METROWERKS)
+#pragma warn_emptydecl off
+#endif
+
 // Must be included AFTER windows.h
 #include <xaudio2.h>
 
 #include <dsound.h>
+
+#if defined(BURGER_METROWERKS)
+#pragma warn_emptydecl reset
+#endif
 
 typedef HRESULT(WINAPI* DirectSoundCreatePtr)(
 	LPCGUID pcGuidDevice, LPDIRECTSOUND* ppDS, LPUNKNOWN pUnkOuter);

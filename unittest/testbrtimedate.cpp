@@ -348,7 +348,8 @@ static void TestPrintHexes(void) BURGER_NOEXCEPT
 
 		Burger::PrintHex(1);
 		Burger::PrintHex(1U);
-#if !defined(BURGER_LINUX) && !defined(BURGER_SWITCH)
+#if !defined(BURGER_LINUX) && !defined(BURGER_SWITCH) && \
+	!defined(BURGER_PS4) && !defined(BURGER_PS5)
 		Burger::PrintHex(1LL);
 		Burger::PrintHex(1ULL);
 #endif
@@ -371,7 +372,8 @@ static void TestPrintHexes(void) BURGER_NOEXCEPT
 		Burger::PrintHex(static_cast<unsigned long>(1));
 		Burger::PrintHex(static_cast<signed long>(1));
 
-#if !defined(BURGER_LINUX) && !defined(BURGER_SWITCH)
+#if !defined(BURGER_LINUX) && !defined(BURGER_SWITCH) && \
+	!defined(BURGER_PS4) && !defined(BURGER_PS5)
 		Burger::PrintHex(static_cast<long long>(1));
 		Burger::PrintHex(static_cast<unsigned long long>(1));
 		Burger::PrintHex(static_cast<signed long long>(1));

@@ -30,10 +30,18 @@
 
 #include "win_windows.h"
 
+#if defined(BURGER_METROWERKS)
+#pragma warn_emptydecl off
+#endif
+
 #include <WbemCli.h>
 #include <Xinput.h>
 #include <dinput.h>
 #include <dinputd.h>
+
+#if defined(BURGER_METROWERKS)
+#pragma warn_emptydecl reset
+#endif
 
 // Needed for Code Warrior
 #ifndef DIDFT_OPTIONAL

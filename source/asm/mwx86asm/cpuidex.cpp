@@ -9,32 +9,37 @@
 
 #include "brmetrowerks.h"
 
-__declspec(naked) void __cdecl __cpuidex(int*, int, int)
+__declspec(naked) void __fastcall __cpuidex(int*, int, int)
 {
 	asm
 	{
-		// clang-format off
+
+; These registers must be preseved
 	push	esi
 	push	ebx
+
 ; Save the pointer
-	mov		esi, [esp+12]
+	mov		esi, ecx
+
 ; Command byte
-	mov		eax, [esp+16]
+	mov		eax, edx
+
 ; Get the sub command
-	mov		ecx, [esp+20]
+	mov		ecx, [esp+12]
 
 ; Do it (Trashes ebx)
 	cpuid
 
 ; Store the result in the same order as Visual C
-    mov		[esi],eax
-    mov		[esi+4],ebx
-    mov		[esi+8],ecx
-    mov		[esi+12],edx
-    pop		ebx
-    pop		esi
-	ret
+	mov		[esi],eax
+	mov		[esi+4],ebx
+	mov		[esi+8],ecx
+	mov		[esi+12],edx
 
-		// clang-format on
+; Restore the non-volatile registers
+	pop		ebx
+	pop		esi
+	ret		4
+
 	}
 }

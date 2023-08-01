@@ -115,7 +115,7 @@ struct VOCChunk_t {
 	uint8_t m_uChunkType;	// Chunk type
 	uint8_t m_uLengthLo;	// 3 bytes for the length
 	uint16_t m_uLengthHi;	// upper 2 bytes for length
-	BURGER_INLINE uintptr_t GetLength(void) const { return (static_cast<uint32_t>(Burger::LittleEndian::Load(&m_uLengthHi))<<8U)+m_uLengthLo; }
+	BURGER_INLINE uintptr_t GetLength(void) const { return (static_cast<uint32_t>(Burger::LittleEndian::load(&m_uLengthHi))<<8U)+m_uLengthLo; }
 };
 
 struct VOCSoundData1_t : public VOCChunk_t {
@@ -299,8 +299,8 @@ uint_t BURGER_API Burger::SoundManager::BufferDecoder::ParseSoundFileImage(const
 	//
 
 	if ((uLength >= cWAVHeaderSize) &&
-		(BigEndian::Load(static_cast<const uint32_t *>(pInput)) == cRIFFASCII) &&
-		(BigEndian::Load(static_cast<const uint32_t *>(pInput)+2) == cWAVEASCII)) {
+		(BigEndian::load(static_cast<const uint32_t *>(pInput)) == cRIFFASCII) &&
+		(BigEndian::load(static_cast<const uint32_t *>(pInput)+2) == cWAVEASCII)) {
 
 		// setup a pointer to the wave header
 		// set size of the sample and pointer to the sample
@@ -312,13 +312,13 @@ uint_t BURGER_API Burger::SoundManager::BufferDecoder::ParseSoundFileImage(const
 		if (pWavData) {
 			// Get the pointer to the data and its length
 			m_pSoundImage = pWavData->m_Data;
-			m_uCompressedLength = LittleEndian::Load(&pWavData->m_uDataLength);
+			m_uCompressedLength = LittleEndian::load(&pWavData->m_uDataLength);
 
 			// Samples per second
-			m_uSampleRate = LittleEndian::Load(&pHeader->dwSamplesPerSec);
+			m_uSampleRate = LittleEndian::load(&pHeader->dwSamplesPerSec);
 		
-			uint_t uChannels = LittleEndian::Load(&pHeader->wChannels);
-			uint_t uWAVFormat = LittleEndian::Load(&pHeader->wFormatTag);
+			uint_t uChannels = LittleEndian::load(&pHeader->wChannels);
+			uint_t uWAVFormat = LittleEndian::load(&pHeader->wFormatTag);
 
 			// Each data format needs different handling
 
@@ -328,7 +328,7 @@ uint_t BURGER_API Burger::SoundManager::BufferDecoder::ParseSoundFileImage(const
 			default:
 			case 1:
 				// 8 bit data?
-				if (LittleEndian::Load(&pHeader->wBitsPerSample) == 8) {	
+				if (LittleEndian::load(&pHeader->wBitsPerSample) == 8) {	
 					m_eDataType = TYPEBYTE;
 				} else {
 				// Little endian 16 bit samples
@@ -341,11 +341,11 @@ uint_t BURGER_API Burger::SoundManager::BufferDecoder::ParseSoundFileImage(const
 			// ADPCM data
 			case 2:			
 				// Only 4 bit data is supported right now
-				if (LittleEndian::Load(&pHeader->wBitsPerSample) == 4) {
+				if (LittleEndian::load(&pHeader->wBitsPerSample) == 4) {
 
 					m_eDataType = TYPEADPCM;
-					uSamplesPerBlock = LittleEndian::Load(&pHeader->wSamplesPerBlock);
-					uBlockAlign = LittleEndian::Load(&pHeader->wBlockAlign);
+					uSamplesPerBlock = LittleEndian::load(&pHeader->wSamplesPerBlock);
+					uBlockAlign = LittleEndian::load(&pHeader->wBlockAlign);
 
 					// Number of packets in the data
 					uintptr_t uPackets = m_uCompressedLength / uBlockAlign;
@@ -365,7 +365,7 @@ uint_t BURGER_API Burger::SoundManager::BufferDecoder::ParseSoundFileImage(const
 
 			case 3:
 				// Floating point data?
-				if (LittleEndian::Load(&pHeader->wBitsPerSample) == 32) {	
+				if (LittleEndian::load(&pHeader->wBitsPerSample) == 32) {	
 					m_eDataType = TYPELFLOAT;
 					m_uSoundLength = m_uCompressedLength;
 					bResult = FALSE;		// It's ok
@@ -375,7 +375,7 @@ uint_t BURGER_API Burger::SoundManager::BufferDecoder::ParseSoundFileImage(const
 			// ALaw data
 			case 6:
 				// 8 bit data?
-				if (LittleEndian::Load(&pHeader->wBitsPerSample) == 8) {
+				if (LittleEndian::load(&pHeader->wBitsPerSample) == 8) {
 					m_eDataType = TYPEALAW;
 					// Will decompress into shorts from bytes
 					m_uSoundLength = m_uCompressedLength*2;
@@ -386,7 +386,7 @@ uint_t BURGER_API Burger::SoundManager::BufferDecoder::ParseSoundFileImage(const
 			// uLaw data
 			case 7:
 				// 8 bit data?
-				if (LittleEndian::Load(&pHeader->wBitsPerSample) == 8) {
+				if (LittleEndian::load(&pHeader->wBitsPerSample) == 8) {
 					m_eDataType = TYPEULAW;
 					// Will decompress into shorts from bytes
 					m_uSoundLength = m_uCompressedLength*2;
@@ -406,9 +406,9 @@ uint_t BURGER_API Burger::SoundManager::BufferDecoder::ParseSoundFileImage(const
 //
 
 	} else if ((uLength>=12) &&
-		(BigEndian::Load(static_cast<const uint32_t *>(pInput)) == cFORMASCII) &&
-		((BigEndian::Load(static_cast<const uint32_t *>(pInput)+2) == cAIFFASCII) ||
-		(BigEndian::Load(static_cast<const uint32_t *>(pInput)+2) == cAIFCASCII))) {
+		(BigEndian::load(static_cast<const uint32_t *>(pInput)) == cFORMASCII) &&
+		((BigEndian::load(static_cast<const uint32_t *>(pInput)+2) == cAIFFASCII) ||
+		(BigEndian::load(static_cast<const uint32_t *>(pInput)+2) == cAIFCASCII))) {
 
 		// Get the COMM record
 		const AIFFCommon_t *pCommonChunk = static_cast<const AIFFCommon_t *>(FindAIFFChunk(pInput,uLength,cCOMMASCII));
@@ -418,13 +418,13 @@ uint_t BURGER_API Burger::SoundManager::BufferDecoder::ParseSoundFileImage(const
 			if (pSoundChunk) {
 				// Set up data
 				m_pSoundImage = pSoundChunk->m_Data;
-				m_uCompressedLength = BigEndian::Load(&pSoundChunk->m_uChunkLength)-8;
+				m_uCompressedLength = BigEndian::load(&pSoundChunk->m_uChunkLength)-8;
 
 				// Sample rate is stored as a big endian 80 bit float
 				m_uSampleRate = static_cast<uint_t>(static_cast<int>(BigEndianLoadExtended(pCommonChunk->m_fxSampleRate)));
 
 				// 8 bit data?
-				uint_t uSampleSize = BigEndian::Load(&pCommonChunk->m_uSampleSize);
+				uint_t uSampleSize = BigEndian::load(&pCommonChunk->m_uSampleSize);
 				if (uSampleSize == 8) {
 					m_eDataType = TYPECHAR;
 				} else if (uSampleSize == 16) {
@@ -436,9 +436,9 @@ uint_t BURGER_API Burger::SoundManager::BufferDecoder::ParseSoundFileImage(const
 				m_uSoundLength = m_uCompressedLength;
 
 				// Was the data compressed?
-				if (BigEndian::Load(static_cast<const uint32_t *>(pInput)+2) == cAIFCASCII) {
+				if (BigEndian::load(static_cast<const uint32_t *>(pInput)+2) == cAIFCASCII) {
 					// Mace 6?
-					uint32_t uCompressionType = BigEndian::LoadAny(reinterpret_cast<const uint32_t *>(static_cast<const void *>(&pCommonChunk->m_CompressionType)));
+					uint32_t uCompressionType = BigEndian::load_unaligned(reinterpret_cast<const uint32_t *>(static_cast<const void *>(&pCommonChunk->m_CompressionType)));
 					if (uCompressionType==cMAC6ASCII) {
 						m_eDataType = TYPEMACE6;
 						m_uSoundLength = 6*m_uCompressedLength;
@@ -468,7 +468,7 @@ uint_t BURGER_API Burger::SoundManager::BufferDecoder::ParseSoundFileImage(const
 				}
 
 				// Handle stereo
-				if (BigEndian::Load(&pCommonChunk->m_uNumChannels) == 2) {
+				if (BigEndian::load(&pCommonChunk->m_uNumChannels) == 2) {
 					m_eDataType = static_cast<eDataType>(m_eDataType|TYPESTEREO);
 				}
 				bResult = FALSE;
@@ -481,13 +481,13 @@ uint_t BURGER_API Burger::SoundManager::BufferDecoder::ParseSoundFileImage(const
 
 	} else if ((uLength>=(sizeof(VOCChunk_t)+VOCHHEADERSIZE)) &&
 		!MemoryCompare(static_cast<const VOCHeader_t*>(pInput)->m_NameASCII,"Creative Voice File\x1A",20) &&
-		LittleEndian::Load(&static_cast<const VOCHeader_t*>(pInput)->m_uVersion) == static_cast<uint16_t>((~LittleEndian::Load(&static_cast<const VOCHeader_t*>(pInput)->m_uChecksum))+0x1234)) {
+		LittleEndian::load(&static_cast<const VOCHeader_t*>(pInput)->m_uVersion) == static_cast<uint16_t>((~LittleEndian::load(&static_cast<const VOCHeader_t*>(pInput)->m_uChecksum))+0x1234)) {
 
 		//
 		// Passed the validations. It's a VOC file
 		//
 
-		const VOCChunk_t *pVOCChunk = reinterpret_cast<const VOCChunk_t *>(static_cast<const uint8_t *>(pInput)+LittleEndian::Load(&static_cast<const VOCHeader_t*>(pInput)->m_uOffset));
+		const VOCChunk_t *pVOCChunk = reinterpret_cast<const VOCChunk_t *>(static_cast<const uint8_t *>(pInput)+LittleEndian::load(&static_cast<const VOCHeader_t*>(pInput)->m_uOffset));
 
 		uintptr_t uTempLength = uLength-VOCHHEADERSIZE;
 		uint_t bContinue;
@@ -525,7 +525,7 @@ uint_t BURGER_API Burger::SoundManager::BufferDecoder::ParseSoundFileImage(const
 					const VOCSoundData9_t *pVOCData = static_cast<const VOCSoundData9_t *>(pVOCChunk);
 					m_pSoundImage = pVOCData->m_Data;	// Pointer to the wav data
 					m_uCompressedLength = uChunkSize-12;
-					m_uSampleRate = LittleEndian::LoadAny(&pVOCData->m_uSampleRate);
+					m_uSampleRate = LittleEndian::load_unaligned(&pVOCData->m_uSampleRate);
 					m_uSoundLength = m_uCompressedLength;
 					if (pVOCData->m_uCompression==VOCSoundData9_t::TYPEBYTE) {
 						m_eDataType = TYPECHAR;
@@ -561,11 +561,11 @@ uint_t BURGER_API Burger::SoundManager::BufferDecoder::ParseSoundFileImage(const
 //
 
 	} else if ((uLength>=0x2C) &&
-		(BigEndian::Load(static_cast<const uint32_t *>(pInput)) == cOggSASCII)) {
+		(BigEndian::load(static_cast<const uint32_t *>(pInput)) == cOggSASCII)) {
 		m_eDataType = TYPEOGG;
 		m_pSoundImage = static_cast<const uint8_t *>(pInput);
 		m_uSoundLength = UINTPTR_MAX;		// Can't tell unless I scan the whole thing
-		m_uSampleRate = LittleEndian::Load(&static_cast<const uint32_t *>(pInput)[0x28/4]);
+		m_uSampleRate = LittleEndian::load(&static_cast<const uint32_t *>(pInput)[0x28/4]);
 		if (static_cast<const uint8_t *>(pInput)[0x27]==2) {
 			m_eDataType = static_cast<eDataType>(m_eDataType|TYPESTEREO);
 		}
@@ -1662,7 +1662,7 @@ void BURGER_API Burger::CopySoundData(void *pOutput,const void *pInput,uintptr_t
 			MemoryCopy(pOutput,pInput,uLength);
 			break;
 		case SoundManager::TYPECHAR:
-			SwapCharsToBytes(pOutput,pInput,uLength);
+			swap_chars_to_bytes(pOutput,pInput,uLength);
 			break;
 
 		// Endian swapped shorts?
@@ -1671,7 +1671,7 @@ void BURGER_API Burger::CopySoundData(void *pOutput,const void *pInput,uintptr_t
 #else
 		case SoundManager::TYPEBSHORT:
 #endif
-			ConvertEndian(static_cast<uint16_t *>(pOutput),static_cast<const uint16_t *>(pInput),uLength>>1U);
+			swap_endian(static_cast<uint16_t *>(pOutput),static_cast<const uint16_t *>(pInput),uLength>>1U);
 			break;
 
 		// Endian swapped floats?
@@ -1680,7 +1680,7 @@ void BURGER_API Burger::CopySoundData(void *pOutput,const void *pInput,uintptr_t
 #else
 		case SoundManager::TYPEBFLOAT:
 #endif
-			ConvertEndian(static_cast<uint32_t *>(pOutput),static_cast<const uint32_t *>(pInput),uLength>>2U);
+			swap_endian(static_cast<uint32_t *>(pOutput),static_cast<const uint32_t *>(pInput),uLength>>2U);
 			break;
 		}
 	}

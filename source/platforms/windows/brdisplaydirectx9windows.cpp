@@ -28,9 +28,17 @@
 
 #include "win_windows.h"
 
+#if defined(BURGER_METROWERKS)
+#pragma warn_emptydecl off
+#endif
+
 #include <d3d9.h>
 #include <d3dx9math.h>
 #include <ddraw.h>
+
+#if defined(BURGER_METROWERKS)
+#pragma warn_emptydecl reset
+#endif
 
 #ifdef _DEBUG
 #define PRINTHRESULT(hResult) /* m_pGameApp->Poll(); */ \

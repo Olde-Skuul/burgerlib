@@ -573,7 +573,7 @@ void BURGER_API Burger::GOSTHasher_t::process(
 	uint32_t uCarry = 0;
 	uintptr_t i = 0;
 	do {
-		const uint32_t uTemp = LittleEndian::LoadAny(
+		const uint32_t uTemp = LittleEndian::load_unaligned(
 			static_cast<const uint32_t*>(static_cast<const void*>(pBlock)));
 
 		pBlock += sizeof(uint32_t);
@@ -688,7 +688,7 @@ void BURGER_API Burger::GOSTHasher_t::finalize(void) BURGER_NOEXCEPT
 #if defined(BURGER_LITTLEENDIAN)
 	MemoryCopy(&m_Hash, m_uNativeHash, sizeof(m_Hash));
 #else
-	ConvertEndian(static_cast<uint32_t*>(static_cast<void*>(&m_Hash)),
+	swap_endian(static_cast<uint32_t*>(static_cast<void*>(&m_Hash)),
 		m_uNativeHash, BURGER_ARRAYSIZE(m_uNativeHash));
 #endif
 }

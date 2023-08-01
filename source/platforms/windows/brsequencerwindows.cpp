@@ -20,8 +20,16 @@
 
 #include "win_windows.h"
 
+#if defined(BURGER_METROWERKS)
+#pragma warn_emptydecl off
+#endif
+
 #include <mmsystem.h>
 #include <dsound.h>
+
+#if defined(BURGER_METROWERKS)
+#pragma warn_emptydecl reset
+#endif
 
 uint_t BURGER_API Burger::Sequencer::PlatformInit(void)
 {

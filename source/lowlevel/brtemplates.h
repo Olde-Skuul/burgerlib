@@ -34,6 +34,11 @@
 #endif
 
 /* BEGIN */
+// Get rid of a spurious warning about the use of sizeof()
+#if defined(BURGER_GHS)
+#pragma ghs nowarning 1931
+#endif
+
 namespace Burger {
 
 // Differing sized types for return value testing
@@ -1731,6 +1736,9 @@ BURGER_INLINE double Max(double dA, double dB) BURGER_NOEXCEPT
 #endif
 #endif
 }
+#if defined(BURGER_GHS)
+#pragma ghs endnowarning
+#endif
 /* END */
 
 #endif

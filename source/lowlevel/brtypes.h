@@ -878,6 +878,19 @@
 #define BURGER_DECLSPECNAKED __declspec(naked)
 #endif
 
+// Determine BURGER_68K_A0 etc
+#if (defined(BURGER_METROWERKS) && defined(BURGER_68K)) || defined(DOXYGEN)
+#define BURGER_68K_A0 :__A0
+#define BURGER_68K_A1 :__A1
+#define BURGER_68K_D0 :__D0
+#define BURGER_68K_D1 :__D1
+#else
+#define BURGER_68K_A0
+#define BURGER_68K_A1
+#define BURGER_68K_D0
+#define BURGER_68K_D1
+#endif
+
 /***************************************
 
 	Alignment and packing commands

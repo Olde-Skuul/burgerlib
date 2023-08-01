@@ -98,8 +98,8 @@ void BURGER_API Burger::GUID_init(GUID* pOutput) BURGER_NOEXCEPT
 
 	// Store the 16 byte value as big endian
 	int64_t* pWork = reinterpret_cast<int64_t*>(pOutput);
-	BigEndian::StoreAny(pWork, iMostSignificant);
-	BigEndian::StoreAny(pWork + 1, iLeastSignificant);
+	BigEndian::store_unaligned(pWork, iMostSignificant);
+	BigEndian::store_unaligned(pWork + 1, iLeastSignificant);
 }
 
 #endif

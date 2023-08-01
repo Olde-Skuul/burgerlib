@@ -658,7 +658,7 @@ uint16_t BURGER_API Burger::InputMemoryStream::GetShort(void) BURGER_NOEXCEPT
 		if ((pWork+1)>=pEndOfBuffer) {
 			pWork = pEndOfBuffer;
 		} else {
-			uTemp = LittleEndian::LoadAny(reinterpret_cast<const uint16_t *>(pWork));
+			uTemp = LittleEndian::load_unaligned(reinterpret_cast<const uint16_t *>(pWork));
 			pWork+=2;
 		}
 		m_pWork = pWork;
@@ -685,7 +685,7 @@ uint16_t BURGER_API Burger::InputMemoryStream::GetBigShort(void) BURGER_NOEXCEPT
 		if ((pWork+1)>=pEndOfBuffer) {
 			pWork = pEndOfBuffer;
 		} else {
-			uTemp = BigEndian::LoadAny(reinterpret_cast<const uint16_t *>(pWork));
+			uTemp = BigEndian::load_unaligned(reinterpret_cast<const uint16_t *>(pWork));
 			pWork+=2;
 		}
 		m_pWork = pWork;
@@ -712,7 +712,7 @@ uint32_t BURGER_API Burger::InputMemoryStream::GetWord32(void) BURGER_NOEXCEPT
 		if ((pWork+3)>=pEndOfBuffer) {
 			pWork = pEndOfBuffer;
 		} else {
-			uTemp = LittleEndian::LoadAny(reinterpret_cast<const uint32_t *>(pWork));
+			uTemp = LittleEndian::load_unaligned(reinterpret_cast<const uint32_t *>(pWork));
 			pWork+=4;
 		}
 		m_pWork = pWork;
@@ -739,7 +739,7 @@ uint32_t BURGER_API Burger::InputMemoryStream::GetBigWord32(void) BURGER_NOEXCEP
 		if ((pWork+3)>=pEndOfBuffer) {
 			pWork = pEndOfBuffer;
 		} else {
-			uTemp = BigEndian::LoadAny(reinterpret_cast<const uint32_t *>(pWork));
+			uTemp = BigEndian::load_unaligned(reinterpret_cast<const uint32_t *>(pWork));
 			pWork+=4;
 		}
 		m_pWork = pWork;
@@ -766,7 +766,7 @@ uint64_t BURGER_API Burger::InputMemoryStream::GetWord64(void) BURGER_NOEXCEPT
 		if ((pWork+7)>=pEndOfBuffer) {
 			pWork = pEndOfBuffer;
 		} else {
-			uTemp = LittleEndian::LoadAny(reinterpret_cast<const uint64_t *>(pWork));
+			uTemp = LittleEndian::load_unaligned(reinterpret_cast<const uint64_t *>(pWork));
 			pWork+=8;
 		}
 		m_pWork = pWork;
@@ -793,7 +793,7 @@ uint64_t BURGER_API Burger::InputMemoryStream::GetBigWord64(void) BURGER_NOEXCEP
 		if ((pWork+7)>=pEndOfBuffer) {
 			pWork = pEndOfBuffer;
 		} else {
-			uTemp = BigEndian::LoadAny(reinterpret_cast<const uint64_t *>(pWork));
+			uTemp = BigEndian::load_unaligned(reinterpret_cast<const uint64_t *>(pWork));
 			pWork+=8;
 		}
 		m_pWork = pWork;
@@ -820,7 +820,7 @@ float BURGER_API Burger::InputMemoryStream::GetFloat(void) BURGER_NOEXCEPT
 		if ((pWork+3)>=pEndOfBuffer) {
 			pWork = pEndOfBuffer;
 		} else {
-			fTemp = LittleEndian::LoadAny(reinterpret_cast<const float *>(pWork));
+			fTemp = LittleEndian::load_unaligned(reinterpret_cast<const float *>(pWork));
 			pWork+=4;
 		}
 		m_pWork = pWork;
@@ -847,7 +847,7 @@ float BURGER_API Burger::InputMemoryStream::GetBigFloat(void) BURGER_NOEXCEPT
 		if ((pWork+3)>=pEndOfBuffer) {
 			pWork = pEndOfBuffer;
 		} else {
-			fTemp = BigEndian::LoadAny(reinterpret_cast<const float *>(pWork));
+			fTemp = BigEndian::load_unaligned(reinterpret_cast<const float *>(pWork));
 			pWork+=4;
 		}
 		m_pWork = pWork;
@@ -874,7 +874,7 @@ double BURGER_API Burger::InputMemoryStream::GetDouble(void) BURGER_NOEXCEPT
 		if ((pWork+7)>=pEndOfBuffer) {
 			pWork = pEndOfBuffer;
 		} else {
-			dTemp = LittleEndian::LoadAny(reinterpret_cast<const double *>(pWork));
+			dTemp = LittleEndian::load_unaligned(reinterpret_cast<const double *>(pWork));
 			pWork+=8;
 		}
 		m_pWork = pWork;
@@ -901,7 +901,7 @@ double BURGER_API Burger::InputMemoryStream::GetBigDouble(void) BURGER_NOEXCEPT
 		if ((pWork+7)>=pEndOfBuffer) {
 			pWork = pEndOfBuffer;
 		} else {
-			dTemp = BigEndian::LoadAny(reinterpret_cast<const double *>(pWork));
+			dTemp = BigEndian::load_unaligned(reinterpret_cast<const double *>(pWork));
 			pWork+=8;
 		}
 		m_pWork = pWork;
@@ -1039,8 +1039,8 @@ uint_t BURGER_API Burger::InputMemoryStream::Get(Vector2D_t *pOutput) BURGER_NOE
 			pWork = pEndOfBuffer;
 			pOutput->Zero();
 		} else {
-			pOutput->x = LittleEndian::LoadAny(reinterpret_cast<const float *>(pWork));
-			pOutput->y = LittleEndian::LoadAny(reinterpret_cast<const float *>(pWork+4));
+			pOutput->x = LittleEndian::load_unaligned(reinterpret_cast<const float *>(pWork));
+			pOutput->y = LittleEndian::load_unaligned(reinterpret_cast<const float *>(pWork+4));
 			pWork+=8;
 			uResult = FALSE;
 		}
@@ -1074,9 +1074,9 @@ uint_t BURGER_API Burger::InputMemoryStream::Get(Vector3D_t *pOutput) BURGER_NOE
 			pWork = pEndOfBuffer;
 			pOutput->Zero();
 		} else {
-			pOutput->x = LittleEndian::LoadAny(reinterpret_cast<const float *>(pWork));
-			pOutput->y = LittleEndian::LoadAny(reinterpret_cast<const float *>(pWork+4));
-			pOutput->z = LittleEndian::LoadAny(reinterpret_cast<const float *>(pWork+8));
+			pOutput->x = LittleEndian::load_unaligned(reinterpret_cast<const float *>(pWork));
+			pOutput->y = LittleEndian::load_unaligned(reinterpret_cast<const float *>(pWork+4));
+			pOutput->z = LittleEndian::load_unaligned(reinterpret_cast<const float *>(pWork+8));
 			pWork+=12;
 			uResult = FALSE;
 		}
@@ -1111,10 +1111,10 @@ uint_t BURGER_API Burger::InputMemoryStream::Get(Vector4D_t *pOutput) BURGER_NOE
 			pWork = pEndOfBuffer;
 			pOutput->Zero();
 		} else {
-			pOutput->x = LittleEndian::LoadAny(reinterpret_cast<const float *>(pWork));
-			pOutput->y = LittleEndian::LoadAny(reinterpret_cast<const float *>(pWork+4));
-			pOutput->z = LittleEndian::LoadAny(reinterpret_cast<const float *>(pWork+8));
-			pOutput->w = LittleEndian::LoadAny(reinterpret_cast<const float *>(pWork+12));
+			pOutput->x = LittleEndian::load_unaligned(reinterpret_cast<const float *>(pWork));
+			pOutput->y = LittleEndian::load_unaligned(reinterpret_cast<const float *>(pWork+4));
+			pOutput->z = LittleEndian::load_unaligned(reinterpret_cast<const float *>(pWork+8));
+			pOutput->w = LittleEndian::load_unaligned(reinterpret_cast<const float *>(pWork+12));
 			pWork+=16;
 			uResult = FALSE;
 		}

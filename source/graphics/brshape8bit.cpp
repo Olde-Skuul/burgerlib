@@ -30,8 +30,8 @@ Burger::LWShape_t * BURGER_API Burger::LWShape_t::Load(Burger::RezFile *pRezFile
 	uint_t bLoaded;
 	LWShape_t *Result = static_cast<LWShape_t *>(pRezFile->Load(uRezNum,&bLoaded));
 	if (Result && bLoaded) {
-		Result->Width = SwapEndian::Load(Result->Width);
-		Result->Height = SwapEndian::Load(Result->Height);
+		Result->Width = SwapEndian::load(Result->Width);
+		Result->Height = SwapEndian::load(Result->Height);
 	}
 	return Result;
 #else
@@ -54,8 +54,8 @@ void BURGER_API Burger::LWShape_t::Preload(Burger::RezFile *pRezFile,uint_t uRez
 	LWShape_t *pResult = static_cast<LWShape_t *>(pRezFile->Load(uRezNum,&bLoaded));
 	if (pResult) {
 		if (bLoaded) {
-			SwapEndian::Fixup(&pResult->Width);
-			SwapEndian::Fixup(&pResult->Height);
+			SwapEndian::fixup(&pResult->Width);
+			SwapEndian::fixup(&pResult->Height);
 		}
 		pRezFile->Release(uRezNum);
 	}
@@ -78,10 +78,10 @@ Burger::LWXShape_t * BURGER_API Burger::LWXShape_t::Load(Burger::RezFile *pRezFi
 	uint_t bLoaded;
 	LWXShape_t *pResult = static_cast<LWXShape_t *>(pRezFile->Load(uRezNum,&bLoaded));
 	if (pResult && bLoaded) {
-		SwapEndian::Fixup(&pResult->XOffset);
-		SwapEndian::Fixup(&pResult->YOffset);
-		SwapEndian::Fixup(&pResult->Shape.Width);
-		SwapEndian::Fixup(&pResult->Shape.Height);
+		SwapEndian::fixup(&pResult->XOffset);
+		SwapEndian::fixup(&pResult->YOffset);
+		SwapEndian::fixup(&pResult->Shape.Width);
+		SwapEndian::fixup(&pResult->Shape.Height);
 	}
 	return pResult;
 #else
@@ -104,10 +104,10 @@ void BURGER_API Burger::LWXShape_t::Preload(Burger::RezFile *pRezFile,uint_t uRe
 	LWXShape_t *pResult = static_cast<LWXShape_t *>(pRezFile->Load(uRezNum,&bLoaded));
 	if (pResult) {
 		if (bLoaded) {
-			SwapEndian::Fixup(&pResult->XOffset);
-			SwapEndian::Fixup(&pResult->YOffset);
-			SwapEndian::Fixup(&pResult->Shape.Width);
-			SwapEndian::Fixup(&pResult->Shape.Height);
+			SwapEndian::fixup(&pResult->XOffset);
+			SwapEndian::fixup(&pResult->YOffset);
+			SwapEndian::fixup(&pResult->Shape.Width);
+			SwapEndian::fixup(&pResult->Shape.Height);
 		}
 		pRezFile->Release(uRezNum);
 	}
@@ -130,8 +130,8 @@ Burger::Shape8Bit_t * BURGER_API Burger::Shape8Bit_t::Load(Burger::RezFile *pRez
 	uint_t bLoaded;
 	Shape8Bit_t *pShape = static_cast<Shape8Bit_t *>(pRezFile->Load(uRezNum,&bLoaded));
 	if (pShape && bLoaded) {
-		SwapEndian::Fixup(&pShape->m_usWidth);
-		SwapEndian::Fixup(&pShape->m_usHeight);
+		SwapEndian::fixup(&pShape->m_usWidth);
+		SwapEndian::fixup(&pShape->m_usHeight);
 	}
 	return pShape;
 #else
@@ -154,8 +154,8 @@ void BURGER_API Burger::Shape8Bit_t::Preload(Burger::RezFile *pRezFile,uint_t uR
 	Shape8Bit_t *pShape = static_cast<Shape8Bit_t *>(pRezFile->Load(uRezNum,&bLoaded));
 	if (pShape) {
 		if (bLoaded) {
-			SwapEndian::Fixup(&pShape->m_usWidth);
-			SwapEndian::Fixup(&pShape->m_usHeight);
+			SwapEndian::fixup(&pShape->m_usWidth);
+			SwapEndian::fixup(&pShape->m_usHeight);
 		}
 		pRezFile->Release(uRezNum);
 	}
@@ -178,10 +178,10 @@ Burger::Shape8BitOffset_t * BURGER_API Burger::Shape8BitOffset_t::Load(Burger::R
 	uint_t bLoaded;
 	Shape8BitOffset_t *pShape = static_cast<Shape8BitOffset_t *>(pRezFile->Load(uRezNum,&bLoaded));
 	if (pShape && bLoaded) {
-		SwapEndian::Fixup(&pShape->m_sXOffset);
-		SwapEndian::Fixup(&pShape->m_sYOffset);
-		SwapEndian::Fixup(&pShape->m_Shape8Bit.m_usWidth);
-		SwapEndian::Fixup(&pShape->m_Shape8Bit.m_usHeight);
+		SwapEndian::fixup(&pShape->m_sXOffset);
+		SwapEndian::fixup(&pShape->m_sYOffset);
+		SwapEndian::fixup(&pShape->m_Shape8Bit.m_usWidth);
+		SwapEndian::fixup(&pShape->m_Shape8Bit.m_usHeight);
 	}
 	return pShape;
 #else
@@ -204,10 +204,10 @@ void BURGER_API Burger::Shape8BitOffset_t::Preload(Burger::RezFile *pRezFile,uin
 	Shape8BitOffset_t *pShape = static_cast<Shape8BitOffset_t *>(pRezFile->Load(uRezNum,&bLoaded));
 	if (pShape) {
 		if (bLoaded) {
-			SwapEndian::Fixup(&pShape->m_sXOffset);
-			SwapEndian::Fixup(&pShape->m_sYOffset);
-			SwapEndian::Fixup(&pShape->m_Shape8Bit.m_usWidth);
-			SwapEndian::Fixup(&pShape->m_Shape8Bit.m_usHeight);
+			SwapEndian::fixup(&pShape->m_sXOffset);
+			SwapEndian::fixup(&pShape->m_sYOffset);
+			SwapEndian::fixup(&pShape->m_Shape8Bit.m_usWidth);
+			SwapEndian::fixup(&pShape->m_Shape8Bit.m_usHeight);
 		}
 		pRezFile->Release(uRezNum);
 	}
@@ -230,16 +230,16 @@ Burger::Shape8BitArray_t * BURGER_API Burger::Shape8BitArray_t::Load(Burger::Rez
 	uint_t bLoaded;
 	Shape8BitArray_t *pResult = static_cast<Shape8BitArray_t *>(pRezFile->Load(uRezNum,&bLoaded));	/* Load in the resource */
 	if (pResult && bLoaded) {		/* Just loaded in? */
-		uint32_t uCount = SwapEndian::Load(pResult->m_Index);	/* Get the count */
+		uint32_t uCount = SwapEndian::load(pResult->m_Index);	/* Get the count */
 		if (uCount) {		/* Any entries? */
 			uCount >>=2;	/* Get the TRUE count */
 			uint_t i = 0;
 			do {
-				uint32_t uOffset = SwapEndian::Load(&pResult->m_Index[i]);
+				uint32_t uOffset = SwapEndian::load(&pResult->m_Index[i]);
 				pResult->m_Index[i] = uOffset;	/* Save the NEW offset */
 				Shape8Bit_t *TempPtr = reinterpret_cast<Shape8Bit_t *>(reinterpret_cast<uint8_t *>(pResult)+uOffset);
-				SwapEndian::Fixup(&TempPtr->m_usWidth);
-				SwapEndian::Fixup(&TempPtr->m_usHeight);
+				SwapEndian::fixup(&TempPtr->m_usWidth);
+				SwapEndian::fixup(&TempPtr->m_usHeight);
 			} while (++i<uCount);
 		}
 	}
@@ -264,16 +264,16 @@ void BURGER_API Burger::Shape8BitArray_t::Preload(Burger::RezFile *pRezFile,uint
 	Shape8BitArray_t *pResult = static_cast<Shape8BitArray_t *>(pRezFile->Load(uRezNum,&bLoaded));	/* Load in the resource */
 	if (pResult) {
 		if (bLoaded) {		/* Just loaded in? */
-			uint32_t uCount = SwapEndian::Load(pResult->m_Index);	/* Get the count */
+			uint32_t uCount = SwapEndian::load(pResult->m_Index);	/* Get the count */
 			if (uCount) {		/* Any entries? */
 				uCount >>=2;	/* Get the TRUE count */
 				uint_t i = 0;
 				do {
-					uint32_t uOffset = SwapEndian::Load(&pResult->m_Index[i]);
+					uint32_t uOffset = SwapEndian::load(&pResult->m_Index[i]);
 					pResult->m_Index[i] = uOffset;	/* Save the NEW offset */
 					Shape8Bit_t *TempPtr = reinterpret_cast<Shape8Bit_t *>(reinterpret_cast<uint8_t *>(pResult)+uOffset);
-					SwapEndian::Fixup(&TempPtr->m_usWidth);
-					SwapEndian::Fixup(&TempPtr->m_usHeight);
+					SwapEndian::fixup(&TempPtr->m_usWidth);
+					SwapEndian::fixup(&TempPtr->m_usHeight);
 				} while (++i<uCount);
 			}
 		}
@@ -298,18 +298,18 @@ Burger::Shape8BitOffsetArray_t * BURGER_API Burger::Shape8BitOffsetArray_t::Load
 	uint_t bLoaded;
 	Shape8BitOffsetArray_t *pResult = static_cast<Shape8BitOffsetArray_t *>(pRezFile->Load(uRezNum,&bLoaded));	/* Load in the resource */
 	if (pResult && bLoaded) {		/* Just loaded in? */
-		uint32_t uCount = SwapEndian::Load(pResult->m_Index);	/* Get the count */
+		uint32_t uCount = SwapEndian::load(pResult->m_Index);	/* Get the count */
 		if (uCount) {		/* Any entries? */
 			uCount >>=2;	/* Get the TRUE count */
 			uint_t i = 0;
 			do {
-				uint32_t uOffset = SwapEndian::Load(&pResult->m_Index[i]);
+				uint32_t uOffset = SwapEndian::load(&pResult->m_Index[i]);
 				pResult->m_Index[i] = uOffset;	/* Save the NEW offset */
 				Shape8BitOffset_t *TempPtr = reinterpret_cast<Shape8BitOffset_t *>(reinterpret_cast<uint8_t *>(pResult)+uOffset);
-				SwapEndian::Fixup(&TempPtr->m_sXOffset);
-				SwapEndian::Fixup(&TempPtr->m_sYOffset);
-				SwapEndian::Fixup(&TempPtr->m_Shape8Bit.m_usWidth);
-				SwapEndian::Fixup(&TempPtr->m_Shape8Bit.m_usHeight);
+				SwapEndian::fixup(&TempPtr->m_sXOffset);
+				SwapEndian::fixup(&TempPtr->m_sYOffset);
+				SwapEndian::fixup(&TempPtr->m_Shape8Bit.m_usWidth);
+				SwapEndian::fixup(&TempPtr->m_Shape8Bit.m_usHeight);
 			} while (++i<uCount);
 		}
 	}
@@ -334,18 +334,18 @@ void BURGER_API Burger::Shape8BitOffsetArray_t::Preload(Burger::RezFile *pRezFil
 	Shape8BitOffsetArray_t *pResult = static_cast<Shape8BitOffsetArray_t *>(pRezFile->Load(uRezNum,&bLoaded));	/* Load in the resource */
 	if (pResult) {
 		if (bLoaded) {		/* Just loaded in? */
-			uint32_t uCount = SwapEndian::Load(pResult->m_Index);	/* Get the count */
+			uint32_t uCount = SwapEndian::load(pResult->m_Index);	/* Get the count */
 			if (uCount) {		/* Any entries? */
 				uCount >>=2;	/* Get the TRUE count */
 				uint_t i = 0;
 				do {
-					uint32_t uOffset = SwapEndian::Load(&pResult->m_Index[i]);
+					uint32_t uOffset = SwapEndian::load(&pResult->m_Index[i]);
 					pResult->m_Index[i] = uOffset;	/* Save the NEW offset */
 					Shape8BitOffset_t *TempPtr = reinterpret_cast<Shape8BitOffset_t *>(reinterpret_cast<uint8_t *>(pResult)+uOffset);
-					SwapEndian::Fixup(&TempPtr->m_sXOffset);
-					SwapEndian::Fixup(&TempPtr->m_sYOffset);
-					SwapEndian::Fixup(&TempPtr->m_Shape8Bit.m_usWidth);
-					SwapEndian::Fixup(&TempPtr->m_Shape8Bit.m_usHeight);
+					SwapEndian::fixup(&TempPtr->m_sXOffset);
+					SwapEndian::fixup(&TempPtr->m_sYOffset);
+					SwapEndian::fixup(&TempPtr->m_Shape8Bit.m_usWidth);
+					SwapEndian::fixup(&TempPtr->m_Shape8Bit.m_usHeight);
 				} while (++i<uCount);
 			}
 		}
@@ -371,16 +371,16 @@ void * BURGER_API Burger::RezFile::LoadShapeArray(Burger::RezFile *pRezFile,uint
 #if defined(BURGER_BIGENDIAN)
 	void *pResult = Load(uRezNum);	/* Load in the resource */
 	if (pResult && m_bResourceLoaded) {		/* Just loaded in? */
-		uint32_t uCount = SwapEndian::Load(static_cast<const uint32_t *>(pResult));	/* Get the count */
+		uint32_t uCount = SwapEndian::load(static_cast<const uint32_t *>(pResult));	/* Get the count */
 		if (uCount) {		/* Any entries? */
 			uCount >>=2;	/* Get the TRUE count */
 			uint_t i = 0;
 			do {
-				uint32_t uOffset = SwapEndian::Load(&static_cast<uint32_t *>(pResult)[i]);
+				uint32_t uOffset = SwapEndian::load(&static_cast<uint32_t *>(pResult)[i]);
 				static_cast<uint32_t *>(pResult)[i] = uOffset;	/* Save the NEW offset */
 				LWShape_t *TempPtr = reinterpret_cast<LWShape_t *>(static_cast<uint8_t *>(pResult)+uOffset);
-				SwapEndian::Fixup(&TempPtr->Width);
-				SwapEndian::Fixup(&TempPtr->Height);
+				SwapEndian::fixup(&TempPtr->Width);
+				SwapEndian::fixup(&TempPtr->Height);
 			} while (++i<uCount);
 		}
 	}
@@ -404,16 +404,16 @@ void BURGER_API Burger::RezFile::PreloadShapeArray(Burger::RezFile *pRezFile,uin
 	void *pResult = Load(uRezNum);	/* Load in the resource */
 	if (pResult) {
 		if (m_bResourceLoaded) {		/* Just loaded in? */
-			uint_t uCount = SwapEndian::Load(static_cast<uint32_t *>(pResult));	/* Get the count */
+			uint_t uCount = SwapEndian::load(static_cast<uint32_t *>(pResult));	/* Get the count */
 			if (uCount) {		/* Any entries? */
 				uCount >>=2;	/* Get the TRUE count */
 				uint_t i = 0;
 				do {
-					uint32_t uOffset = SwapEndian::Load(&static_cast<uint32_t *>(pResult)[i]);
+					uint32_t uOffset = SwapEndian::load(&static_cast<uint32_t *>(pResult)[i]);
 					static_cast<uint32_t *>(pResult)[i] = uOffset;	/* Save the NEW offset */
 					LWShape_t *TempPtr = reinterpret_cast<LWShape_t *>(static_cast<uint8_t *>(pResult)+uOffset);
-					SwapEndian::Fixup(&TempPtr->Width);
-					SwapEndian::Fixup(&TempPtr->Height);
+					SwapEndian::fixup(&TempPtr->Width);
+					SwapEndian::fixup(&TempPtr->Height);
 				} while (++i<uCount);
 			}
 		}
@@ -437,18 +437,18 @@ void * BURGER_API Burger::RezFile::LoadXShapeArray(Burger::RezFile *pRezFile,uin
 #if defined(BURGER_BIGENDIAN)
 	void *pResult = Load(uRezNum);	/* Load in the resource */
 	if (pResult && m_bResourceLoaded) {		/* Just loaded in? */
-		uint_t uCount = SwapEndian::Load(static_cast<uint32_t *>(pResult));	/* Get the count */
+		uint_t uCount = SwapEndian::load(static_cast<uint32_t *>(pResult));	/* Get the count */
 		if (uCount) {		/* Any entries? */
 			uCount >>=2;	/* Get the TRUE count */
 			uint_t i = 0;
 			do {
-				uint32_t uOffset = SwapEndian::Load(static_cast<uint32_t *>(pResult)[i]);
+				uint32_t uOffset = SwapEndian::load(static_cast<uint32_t *>(pResult)[i]);
 				static_cast<uint32_t *>(pResult)[i] = uOffset;	/* Save the NEW offset */
 				LWXShape_t *TempPtr = reinterpret_cast<LWXShape_t *>(static_cast<uint8_t *>(pResult)+uOffset);
-				SwapEndian::Fixup(&TempPtr->XOffset);
-				SwapEndian::Fixup(&TempPtr->YOffset);
-				SwapEndian::Fixup(&TempPtr->Shape.Width);
-				SwapEndian::Fixup(&TempPtr->Shape.Height);
+				SwapEndian::fixup(&TempPtr->XOffset);
+				SwapEndian::fixup(&TempPtr->YOffset);
+				SwapEndian::fixup(&TempPtr->Shape.Width);
+				SwapEndian::fixup(&TempPtr->Shape.Height);
 			} while (++i<uCount);
 		}
 	}
@@ -472,18 +472,18 @@ void BURGER_API Burger::RezFile::PreloadXShapeArray(Burger::RezFile *pRezFile,ui
 	void *pResult = Load(uRezNum);	/* Load in the resource */
 	if (pResult) {
 		if (m_bResourceLoaded) {		/* Just loaded in? */
-			uint32_t uCount = SwapEndian::Load(static_cast<uint32_t *>(pResult));	/* Get the count */
+			uint32_t uCount = SwapEndian::load(static_cast<uint32_t *>(pResult));	/* Get the count */
 			if (uCount) {		/* Any entries? */
 				uCount >>=2;	/* Get the TRUE count */
 				uint_t i = 0;
 				do {
-					uint32_t uOffset = SwapEndian::Load(static_cast<uint32_t *>(pResult)[i]);
+					uint32_t uOffset = SwapEndian::load(static_cast<uint32_t *>(pResult)[i]);
 					static_cast<uint32_t *>(pResult)[i] = uOffset;	/* Save the NEW offset */
 					LWXShape_t *TempPtr = reinterpret_cast<LWXShape_t *>(static_cast<uint8_t *>(pResult)+uOffset);
-					SwapEndian::Fixup(&TempPtr->XOffset);
-					SwapEndian::Fixup(&TempPtr->YOffset);
-					SwapEndian::Fixup(&TempPtr->Shape.Width);
-					SwapEndian::Fixup(&TempPtr->Shape.Height);
+					SwapEndian::fixup(&TempPtr->XOffset);
+					SwapEndian::fixup(&TempPtr->YOffset);
+					SwapEndian::fixup(&TempPtr->Shape.Width);
+					SwapEndian::fixup(&TempPtr->Shape.Height);
 				} while (++i<uCount);
 			}
 		}
@@ -509,10 +509,10 @@ Burger::GfxShape_t * BURGER_API Burger::GfxShape_t::Load(Burger::RezFile *pRezFi
 	uint_t bLoaded;
 	GfxShape_t *pResult = static_cast<GfxShape_t *>(pRezFile->Load(uRezNum,&bLoaded));
 	if (pResult && bLoaded) {
-		SwapEndian::Fixup(&pResult->XShape.XOffset);
-		SwapEndian::Fixup(&pResult->XShape.YOffset);
-		SwapEndian::Fixup(&pResult->XShape.Shape.Width);
-		SwapEndian::Fixup(&pResult->XShape.Shape.Height);
+		SwapEndian::fixup(&pResult->XShape.XOffset);
+		SwapEndian::fixup(&pResult->XShape.YOffset);
+		SwapEndian::fixup(&pResult->XShape.Shape.Width);
+		SwapEndian::fixup(&pResult->XShape.Shape.Height);
 	}
 	return pResult;
 #else
@@ -535,10 +535,10 @@ void BURGER_API Burger::GfxShape_t::Preload(Burger::RezFile *pRezFile,uint_t uRe
 	GfxShape_t *pResult = static_cast<GfxShape_t *>(pRezFile->Load(uRezNum,&bLoaded));
 	if (pResult) {
 		if (bLoaded) {
-			SwapEndian::Fixup(&pResult->XShape.XOffset);
-			SwapEndian::Fixup(&pResult->XShape.YOffset);
-			SwapEndian::Fixup(&pResult->XShape.Shape.Width);
-			SwapEndian::Fixup(&pResult->XShape.Shape.Height);
+			SwapEndian::fixup(&pResult->XShape.XOffset);
+			SwapEndian::fixup(&pResult->XShape.YOffset);
+			SwapEndian::fixup(&pResult->XShape.Shape.Width);
+			SwapEndian::fixup(&pResult->XShape.Shape.Height);
 		}
 		pRezFile->Release(uRezNum);
 	}

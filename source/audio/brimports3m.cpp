@@ -303,7 +303,7 @@ uint_t BURGER_API Burger::ImportS3M(Sequencer::SongPackage *pOutput,const uint8_
 		uInputLength-=96;
 
 		// Set up the pointer to the orders
-		uint_t uOrderCount = LittleEndian::Load(&pS3MHeader->m_uOrderCount);
+		uint_t uOrderCount = LittleEndian::load(&pS3MHeader->m_uOrderCount);
 		if (uInputLength>=uOrderCount) {
 
 			// Mark the data and consume it
@@ -312,7 +312,7 @@ uint_t BURGER_API Burger::ImportS3M(Sequencer::SongPackage *pOutput,const uint8_
 			uInputLength-=uOrderCount;
 			
 			// Instruments (16 bit aligned)
-			uint_t uInstrumentCount = LittleEndian::Load(&pS3MHeader->m_uInstrumentCount);
+			uint_t uInstrumentCount = LittleEndian::load(&pS3MHeader->m_uInstrumentCount);
 			if (uInputLength>=(uInstrumentCount*2)) {
 
 				// Mark the instrument sizes
@@ -321,7 +321,7 @@ uint_t BURGER_API Burger::ImportS3M(Sequencer::SongPackage *pOutput,const uint8_
 				uInputLength -= uInstrumentCount * 2;
 
 				// Pointers to pattern
-				uint_t uPatternCount = LittleEndian::Load(&pS3MHeader->m_uPatternCount);
+				uint_t uPatternCount = LittleEndian::load(&pS3MHeader->m_uPatternCount);
 				if (uInputLength>=(uPatternCount*2)) {
 					// Mark the pattern offsets
 					const uint16_t *pPatternOffsets = static_cast<const uint16_t *>(static_cast<const void *>(pWork));
@@ -408,7 +408,7 @@ uint_t BURGER_API Burger::ImportS3M(Sequencer::SongPackage *pOutput,const uint8_
 							i = 0;
 							Sequencer::InstrData_t *pInstrData = pOutput->m_InstrDatas;
 							do {
-								const S3MInstrument_t *pS3MInstruments = static_cast<const S3MInstrument_t *>(static_cast<const void *>(pInput+(LittleEndian::Load(&pInstrumentOffsets[i])*16)));
+								const S3MInstrument_t *pS3MInstruments = static_cast<const S3MInstrument_t *>(static_cast<const void *>(pInput+(LittleEndian::load(&pInstrumentOffsets[i])*16)));
 
 								// Get the name
 								pInstrData->SetName(pS3MInstruments->m_Name);
@@ -416,7 +416,7 @@ uint_t BURGER_API Burger::ImportS3M(Sequencer::SongPackage *pOutput,const uint8_
 								if ((pS3MInstruments->m_bInstrumentType == 1) && 
 									(pS3MInstruments->m_bPacked == 0) &&
 									(pS3MInstruments->m_Signature == S3MInstrument_t::cSignature)) {
-										const uint8_t *pSample = pInput + ((static_cast<uint_t>(pS3MInstruments->m_bParapointerHi)<<20U)|(static_cast<uint_t>(LittleEndian::Load(&pS3MInstruments->m_uParapointerLo))<<4U));
+										const uint8_t *pSample = pInput + ((static_cast<uint_t>(pS3MInstruments->m_bParapointerHi)<<20U)|(static_cast<uint_t>(LittleEndian::load(&pS3MInstruments->m_uParapointerLo))<<4U));
 										++uSampleCount;
 										pInstrData->m_uNumberSamples = 1;
 										pInstrData->m_uVolumeFadeSpeed = Sequencer::cDefaultVolumeFade;
@@ -428,16 +428,16 @@ uint_t BURGER_API Burger::ImportS3M(Sequencer::SongPackage *pOutput,const uint8_
 											uResult = Sequencer::IMPORT_OUTOFMEMORY;
 											break;
 										}
-										pSampleDescription->m_uSampleSize = LittleEndian::Load(&pS3MInstruments->m_uSampleLength);
+										pSampleDescription->m_uSampleSize = LittleEndian::load(&pS3MInstruments->m_uSampleLength);
 										if (pS3MInstruments->m_bFlags&1) {
-											pSampleDescription->m_uLoopStart = LittleEndian::Load(&pS3MInstruments->m_uLoopBegin);
-											pSampleDescription->m_uLoopLength = LittleEndian::Load(&pS3MInstruments->m_uLoopEnd) - pSampleDescription->m_uLoopStart;
+											pSampleDescription->m_uLoopStart = LittleEndian::load(&pS3MInstruments->m_uLoopBegin);
+											pSampleDescription->m_uLoopLength = LittleEndian::load(&pS3MInstruments->m_uLoopEnd) - pSampleDescription->m_uLoopStart;
 										} else {
 											pSampleDescription->m_uLoopStart = 0;
 											pSampleDescription->m_uLoopLength = 0;
 										}
 										pSampleDescription->m_uVolume = pS3MInstruments->m_bVolume;
-										pSampleDescription->m_uC2SamplesPerSecond = LittleEndian::Load(&pS3MInstruments->m_uC2Speed);
+										pSampleDescription->m_uC2SamplesPerSecond = LittleEndian::load(&pS3MInstruments->m_uC2Speed);
 										pSampleDescription->m_eLoopType = Sequencer::LOOP_NORMAL;
 										pSampleDescription->m_uBitsPerSample = 8;
 										if (pS3MInstruments->m_bFlags&4) {
@@ -458,27 +458,27 @@ uint_t BURGER_API Burger::ImportS3M(Sequencer::SongPackage *pOutput,const uint8_
 											uResult = Sequencer::IMPORT_OUTOFMEMORY;
 											break;
 										}
-										uint_t uSampleType = LittleEndian::Load(&pS3MHeader->m_uSampleType);
+										uint_t uSampleType = LittleEndian::load(&pS3MHeader->m_uSampleType);
 										if (pSampleDescription->m_uBitsPerSample==16) {
 											uintptr_t uLength = pSampleDescription->m_uSampleSize/2;
 											if (uLength) {
 												if (uSampleType != 1) {
 													uint16_t *pSampleTemp = static_cast<uint16_t *>(pSampleDescription->m_pSample);
 													do {
-														pSampleTemp[0] = static_cast<uint16_t>(LittleEndian::Load(pSampleTemp)^0x8000U);
+														pSampleTemp[0] = static_cast<uint16_t>(LittleEndian::load(pSampleTemp)^0x8000U);
 														++pSampleTemp;
 													} while (--uLength);
 												}
 #if defined(BURGER_BIGENDIAN)
 												else {
-													ConvertEndian(static_cast<uint16_t *>(pSampleDescription->m_pSample),uLength);
+													swap_endian(static_cast<uint16_t *>(pSampleDescription->m_pSample),uLength);
 												}
 #endif
 											}
 										} else {
 											if (uSampleType != 1) {
 												// Convert to signed chars
-												SwapCharsToBytes(pSampleDescription->m_pSample,pSampleDescription->m_uSampleSize);
+												swap_chars_to_bytes(pSampleDescription->m_pSample,pSampleDescription->m_uSampleSize);
 											}
 										}
 								} else {
@@ -501,7 +501,7 @@ uint_t BURGER_API Burger::ImportS3M(Sequencer::SongPackage *pOutput,const uint8_
 									break;
 								}
 								pOutput->m_pPartitions[i] = pPatternData;
-								uint_t uPatternOffset = LittleEndian::Load(&pPatternOffsets[i]);
+								uint_t uPatternOffset = LittleEndian::load(&pPatternOffsets[i]);
 								if (uPatternOffset) {
 									pWork = pInput + (uPatternOffset*16) + 2;
 

@@ -127,7 +127,7 @@ void BURGER_API Burger::FileManager::platform_setup(void) BURGER_NOEXCEPT
 		uVersion = 0x100U;
 		uOEMFlavor = 0;
 	} else {
-		uVersion = BigEndian::Load(uVersion);
+		uVersion = BigEndian::load(uVersion);
 		uOEMFlavor = Regs.bx >> 8U;
 	}
 
@@ -170,7 +170,7 @@ void BURGER_API Burger::FileManager::platform_setup(void) BURGER_NOEXCEPT
 		// hell.
 		if (((Regs.ax & 0xFFU) != 0xFFU) && (Regs.bx < (100U * 256U)) &&
 			((Regs.bx & 0xFFU) >= 5U)) {
-			uTrueVersion = BigEndian::Load(&Regs.bx);
+			uTrueVersion = BigEndian::load(&Regs.bx);
 
 			// This detects a flavor of windows NT, XP, 2000
 			if ((uTrueVersion & 0xFF) == 50U) {
