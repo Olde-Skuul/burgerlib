@@ -57,12 +57,12 @@ void BURGER_API Burger::EdgeIntersectTest(float *pEdge1VSEdge2,float *pEdge2VSEd
 	// as an intersection
 
 	// 1.0f if it doesn't cross, 0 if equal, -1.0f if crossing
-	*pEdge2VSEdge1 = Sign(fDeterminate1)*Sign(fDeterminate2);
+	*pEdge2VSEdge1 = get_sign(fDeterminate1)*get_sign(fDeterminate2);
 
 	// See if Edge1 crosses line of Edge2.
 	fDeterminate1 = pEdge2V1->Determinant(pEdge2V2,pEdge1V1);
 	fDeterminate2 = pEdge2V1->Determinant(pEdge2V2,pEdge1V2);
 
 	// 1.0f if it doesn't cross, 0 if equal, -1.0f if crossing
-	*pEdge1VSEdge2 = Sign(fDeterminate1)*Sign(fDeterminate2);
+	*pEdge1VSEdge2 = get_sign(fDeterminate1)*get_sign(fDeterminate2);
 }

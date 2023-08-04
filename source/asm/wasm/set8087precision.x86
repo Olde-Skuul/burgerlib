@@ -1,0 +1,73 @@
+;
+; X86 assembly for implementing the function
+; Burger::set_8087_precision(e8087Precision) for Open Watcom
+;
+; Build with wasm.exe
+;
+; e8087Precision BURGER_API Burger::get_8087_precision(void) BURGER_NOEXCEPT
+;
+; Note: All integer registers are NON-VOLATILE!
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+;
+
+	.686
+
+_TEXT segment para 'CODE'
+
+	align 16
+public `W?set_8087_precision$:Burger$n($e8087Precision$:1$)$2:1$`
+`W?set_8087_precision$:Burger$n($e8087Precision$:1$)$2:1$` proc
+
+; Space for the status word
+	sub		esp, 12
+
+; ecx/edx must be preserved for Watcom
+	mov		[esp + 4], edx
+	mov		[esp + 8], ecx
+
+; Get the current status word
+	fnstcw	[esp]
+
+; Move input to ecx
+	mov		ecx, eax
+
+; Get the current value for return
+	mov		eax, dword ptr[esp]
+
+; Move to the Pentium bits area
+	shl		ecx, 8
+
+; Get the bits to retain for write
+	mov		edx, eax
+
+; Mask for return value
+	and		eax, 0x0300
+
+; Mask off unused bits
+	and		edx, 0xFCFF
+
+; Convert to enum (eax has return value now)
+	shr		eax, 8
+
+; Blend in the old FPU bits
+	or		edx, ecx
+
+; Store in memory
+	mov		dword ptr[esp], edx
+
+; Restore registers and restore the stack and exit
+	mov		edx, [esp + 4]
+	mov		ecx, [esp + 8]
+
+; Load the new status register to the FPU
+	fldcw	[esp]
+
+	add		esp, 12
+	ret
+
+`W?set_8087_precision$:Burger$n($e8087Precision$:1$)$2:1$` endp
+
+_TEXT ends
+
+	end

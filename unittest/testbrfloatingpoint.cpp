@@ -839,7 +839,7 @@ static uint_t BURGER_API TestAbsDouble(void) BURGER_NOEXCEPT
 }
 
 //
-// Test Sign(float)
+// Test get_sign(float)
 //
 
 static const Burger::uint32_float_t SignFloatArray[][2] = {
@@ -868,13 +868,13 @@ static uint_t BURGER_API TestSignFloat(void) BURGER_NOEXCEPT
 	uint_t uResult = FALSE;
 	do {
 		Burger::uint32_float_t fTest;
-		fTest.f = Burger::Sign(pWork[0]);
+		fTest.f = Burger::get_sign(pWork[0]);
 		const uint_t uFailure = (fTest.w != pWork[1].w);
 		uResult |= uFailure;
 		if (uFailure) {
 			const Burger::NumberStringHex Test(fTest.w);
 			const Burger::NumberStringHex Expected(pWork[1].w);
-			ReportFailure("Burger::Sign(float(%g)) = %g 0x%s / Wanted %g 0x%s",
+			ReportFailure("Burger::get_sign(float(%f)) = %f 0x%s / Wanted %f 0x%s",
 				uFailure, pWork[0].f, fTest.f, Test.c_str(), pWork[1].f,
 				Expected.c_str());
 		}
@@ -884,7 +884,7 @@ static uint_t BURGER_API TestSignFloat(void) BURGER_NOEXCEPT
 }
 
 //
-// Test Sign(double)
+// Test get_sign(double)
 //
 
 static const Burger::uint64_double_t SignDoubleArray[][2] = {
@@ -913,13 +913,13 @@ static uint_t BURGER_API TestSignDouble(void) BURGER_NOEXCEPT
 	uint_t uResult = FALSE;
 	do {
 		Burger::uint64_double_t fTest;
-		fTest = Burger::Sign(pWork[0]);
+		fTest = Burger::get_sign(pWork[0]);
 		const uint_t uFailure = (fTest.w != pWork[1].w);
 		uResult |= uFailure;
 		if (uFailure) {
 			const Burger::NumberStringHex Test(fTest.w);
 			const Burger::NumberStringHex Expected(pWork[1].w);
-			ReportFailure("Burger::Sign(double(%g)) = %g 0x%s / Wanted %g 0x%s",
+			ReportFailure("Burger::get_sign(double(%g)) = %g 0x%s / Wanted %g 0x%s",
 				uFailure, pWork[0].d, fTest.d, Test.c_str(), pWork[1].d,
 				Expected.c_str());
 		}
@@ -2291,13 +2291,6 @@ static uint_t TestCosDouble(void) BURGER_NOEXCEPT
 
 int BURGER_API TestBrfloatingpoint(uint_t uVerbose) BURGER_NOEXCEPT
 {
-#if defined(BURGER_68K)
-	if (uVerbose & VERBOSE_MSG) {
-		Message("FPMath tests not run, not supported on this CPU");
-	}
-	return 0;
-#else
-
 	if (uVerbose & VERBOSE_MSG) {
 		Message("Running Floating Point Math tests");
 	}
@@ -2349,5 +2342,4 @@ int BURGER_API TestBrfloatingpoint(uint_t uVerbose) BURGER_NOEXCEPT
 		Message("Passed all Floating Point Math tests!");
 	}
 	return static_cast<int>(uResult);
-#endif
 }

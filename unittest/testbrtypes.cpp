@@ -574,9 +574,10 @@ static void BURGER_API ShowCPUFeatures(uint_t uVerbose) BURGER_NOEXCEPT
 
 #if defined(BURGER_X86)
 	if (uVerbose & VERBOSE_MSG) {
-		Burger::e8087Precision uPrecision = Burger::Get8087Precision();
-		Message(
-			"Burger::Get8087Precision() = %u", static_cast<uint_t>(uPrecision));
+		Burger::e8087Precision uPrecision = Burger::get_8087_precision();
+		Burger::set_8087_precision(uPrecision);
+		Message("Burger::get_8087_precision() = %u",
+			static_cast<uint_t>(uPrecision));
 		Burger::e8087Rounding uRounding = Burger::Get8087Rounding();
 		Message(
 			"Burger::Get8087Rounding() = %u", static_cast<uint_t>(uRounding));

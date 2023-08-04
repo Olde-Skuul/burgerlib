@@ -1402,7 +1402,7 @@ void BURGER_API Burger::FloatToIntRoundToZero(int32_t *pOutput,float fInput) BUR
 
 /*! ************************************
 
-	\fn int8_t Burger::Sign(int8_t iInput)
+	\fn int8_t Burger::get_sign(int8_t iInput)
 	\brief Get the sign value of an integer.
 	
 	Without branching, calculate the sign value of an integer. If
@@ -1412,13 +1412,13 @@ void BURGER_API Burger::FloatToIntRoundToZero(int32_t *pOutput,float fInput) BUR
 	\param iInput Value to get the sign value of.
 	\return 0, 1 or -1.
 	
-	\sa Sign(int16_t), Sign(int32_t), Sign(int64_t), Sign(float) and Sign(double) 
+	\sa get_sign(int16_t), get_sign(int32_t), get_sign(int64_t), get_sign(float) and get_sign(double) 
 	
 ***************************************/
 
 /*! ************************************
 
-	\fn int16_t Burger::Sign(int16_t iInput)
+	\fn int16_t Burger::get_sign(int16_t iInput)
 	\brief Get the sign value of an integer.
 	
 	Without branching, calculate the sign value of an integer. If
@@ -1428,13 +1428,13 @@ void BURGER_API Burger::FloatToIntRoundToZero(int32_t *pOutput,float fInput) BUR
 	\param iInput Value to get the sign value of.
 	\return 0, 1 or -1.
 	
-	\sa Sign(int8_t), Sign(int32_t), Sign(int64_t), Sign(float) and Sign(double) 
+	\sa get_sign(int8_t), get_sign(int32_t), get_sign(int64_t), get_sign(float) and get_sign(double) 
 	
 ***************************************/
 
 /*! ************************************
 
-	\fn int32_t Burger::Sign(int32_t iInput)
+	\fn int32_t Burger::get_sign(int32_t iInput)
 	\brief Get the sign value of an integer.
 	
 	Without branching, calculate the sign value of an integer. If
@@ -1444,13 +1444,13 @@ void BURGER_API Burger::FloatToIntRoundToZero(int32_t *pOutput,float fInput) BUR
 	\param iInput Value to get the sign value of.
 	\return 0, 1 or -1.
 	
-	\sa Sign(int8_t), Sign(int16_t), Sign(int64_t), Sign(float) and Sign(double) 
+	\sa get_sign(int8_t), get_sign(int16_t), get_sign(int64_t), get_sign(float) and get_sign(double) 
 	
 ***************************************/
 
 /*! ************************************
 
-	\fn int64_t Burger::Sign(int64_t iInput)
+	\fn int64_t Burger::get_sign(int64_t iInput)
 	\brief Get the sign value of a 64 bit integer.
 	
 	Without branching, calculate the sign value of an integer. If
@@ -1460,7 +1460,7 @@ void BURGER_API Burger::FloatToIntRoundToZero(int32_t *pOutput,float fInput) BUR
 	\param iInput Value to get the sign value of.
 	\return 0, 1 or -1.
 	
-	\sa Sign(int8_t), Sign(int16_t), Sign(int32_t), Sign(float) and Sign(double) 
+	\sa get_sign(int8_t), get_sign(int16_t), get_sign(int32_t), get_sign(float) and get_sign(double) 
 	
 ***************************************/
 

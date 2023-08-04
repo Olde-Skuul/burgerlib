@@ -26,7 +26,7 @@ __ZN6Burger18SetPowerPCRoundingENS_16ePowerPCRoundingE:
 	mffs	f0
 
 /* Store it in memory */
-	stfd	f0, -8(r1)    
+	stfd	f0, -8(r1)
 
 /* Load into an integer register */
 	lwz		r4, -4(r1)

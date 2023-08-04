@@ -275,10 +275,10 @@ namespace Burger {
 	BURGER_INLINE BURGER_CONSTEXPR int64_t ClampZero(int64_t iInput) BURGER_NOEXCEPT { return (~(iInput>>63))&iInput; }
 #endif
 
-	BURGER_INLINE BURGER_CONSTEXPR int8_t Sign(int8_t iInput) BURGER_NOEXCEPT { return static_cast<int8_t>((iInput>>7) | static_cast<int8_t>(static_cast<uint8_t>(-iInput)>>7U)); }
-	BURGER_INLINE BURGER_CONSTEXPR int16_t Sign(int16_t iInput) BURGER_NOEXCEPT { return static_cast<int16_t>((iInput>>15) | static_cast<int16_t>(static_cast<uint16_t>(-iInput)>>15U)); }
-	BURGER_INLINE BURGER_CONSTEXPR int32_t Sign(int32_t iInput) BURGER_NOEXCEPT { return (iInput>>31) | static_cast<int32_t>(static_cast<uint32_t>(-iInput)>>31U); }
-	BURGER_INLINE BURGER_CONSTEXPR int64_t Sign(int64_t iInput) BURGER_NOEXCEPT { return (iInput>>63) | static_cast<int64_t>(static_cast<uint64_t>(-iInput)>>63U); }
+	BURGER_INLINE BURGER_CONSTEXPR int8_t get_sign(int8_t iInput) BURGER_NOEXCEPT { return static_cast<int8_t>((iInput>>7) | static_cast<int8_t>(static_cast<uint8_t>(-iInput)>>7U)); }
+	BURGER_INLINE BURGER_CONSTEXPR int16_t get_sign(int16_t iInput) BURGER_NOEXCEPT { return static_cast<int16_t>((iInput>>15) | static_cast<int16_t>(static_cast<uint16_t>(-iInput)>>15U)); }
+	BURGER_INLINE BURGER_CONSTEXPR int32_t get_sign(int32_t iInput) BURGER_NOEXCEPT { return (iInput>>31) | static_cast<int32_t>(static_cast<uint32_t>(-iInput)>>31U); }
+	BURGER_INLINE BURGER_CONSTEXPR int64_t get_sign(int64_t iInput) BURGER_NOEXCEPT { return (iInput>>63) | static_cast<int64_t>(static_cast<uint64_t>(-iInput)>>63U); }
 
 	BURGER_INLINE int32_t Clamp(int32_t iInput,int32_t iMin,int32_t iMax) BURGER_NOEXCEPT { iInput = Max(iInput,iMin); return Min(iInput,iMax); }
 	BURGER_INLINE int64_t Clamp(int64_t iInput,int64_t iMin,int64_t iMax) BURGER_NOEXCEPT { iInput = Max(iInput,iMin); return Min(iInput,iMax); }

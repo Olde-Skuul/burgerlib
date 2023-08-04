@@ -36,20 +36,9 @@
 
 #if defined(BURGER_X86)
 #if defined(BURGER_MSVC)
-#pragma warning(disable : 4725) // Disable Intel instruction not accurate on
-								// some CPUs (FPREM1)
+// Disable Intel instruction not accurate on some CPUs (FPREM1)
+#pragma warning(disable : 4725)
 #endif
-
-struct Word80ToLongDouble {
-	union {
-		uint8_t w[10]; ///< Value in binary
-		long double l; ///< Value as a 80 bit float
-	};
-	BURGER_INLINE operator long double() const
-	{
-		return l;
-	}
-};
 
 // Pi * 2 in 80 bit format
 extern const Burger::Float80Bit Pi280bit = {
@@ -58,8 +47,10 @@ extern const Burger::Float80Bit Pi280bit = {
 
 #if defined(BURGER_X86) || defined(DOXYGEN)
 
-const uint16_t Burger::g_X86RoundDownFlag =
-	0x0F7F; // 8087 control word to round down with 64 bit precision
+// 8087 control word to round down with 64 bit precision
+const uint16_t Burger::g_X86RoundDownFlag = 0x0F7F;
+
+// 1 and -1.0 for some x86 assembly
 const Burger::uint32_float_t Burger::g_X86OneAndNegOne[2] = {
 	{0x3F000000U}, {0xBF000000U}};
 
@@ -75,13 +66,13 @@ const Burger::uint32_float_t Burger::g_X86OneAndNegOne[2] = {
 
 	\note This enumeration only exists on 32 bit Intel compatible CPU targets
 
-	\sa Set8087Precision(e8087Precision)
+	\sa set_8087_precision(e8087Precision), get_8087_precision()
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::e8087Precision Burger::Set8087Precision(e8087Precision eInput)
+	\fn Burger::e8087Precision Burger::set_8087_precision(e8087Precision eInput)
 
 	\brief Change the floating point precision
 
@@ -98,16 +89,16 @@ const Burger::uint32_float_t Burger::g_X86OneAndNegOne[2] = {
 
 	\param eInput New enumeration state
 	\return Previous precision state
-	\sa e8087Precision or Get8087Precision(void)
+	\sa e8087Precision or get_8087_precision(void)
 
 ***************************************/
 
 #if defined(BURGER_X86) && \
-	(defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || \
+	(defined(BURGER_METROWERKS) || \
 		defined(BURGER_MSVC))
 
-BURGER_DECLSPECNAKED Burger::e8087Precision BURGER_API Burger::Set8087Precision(
-	e8087Precision /* eInput */)
+BURGER_DECLSPECNAKED Burger::e8087Precision BURGER_API
+Burger::set_8087_precision(e8087Precision /* eInput */) BURGER_NOEXCEPT
 {
 	// clang-format off
     BURGER_ASM {
@@ -144,16 +135,17 @@ BURGER_DECLSPECNAKED Burger::e8087Precision BURGER_API Burger::Set8087Precision(
 
 #elif defined(BURGER_X86) && defined(BURGER_MACOSX)
 
-// __ZN6Burger16Set8087PrecisionENS_14e8087PrecisionE = Burger::e8087Precision
-// BURGER_API Burger::Set8087Precision(e8087Precision /* eInput */)
+// __ZN6Burger18set_8087_precisionENS_14e8087PrecisionE = Burger::e8087Precision
+// BURGER_API Burger::set_8087_precision(e8087Precision /* eInput */)
+// BURGER_NOEXCEPT
 __asm__(
 	"	.align	4,0x90\n"
-	"	.globl __ZN6Burger16Set8087PrecisionENS_14e8087PrecisionE\n"
-	"__ZN6Burger16Set8087PrecisionENS_14e8087PrecisionE:\n"
+	"	.globl __ZN6Burger18set_8087_precisionENS_14e8087PrecisionE\n"
+	"__ZN6Burger18set_8087_precisionENS_14e8087PrecisionE:\n"
 	"	subl	%esp,12\n"      // Space for the status word
 	"	movl	%ecx,8(%esp)\n" // ecx must be preserved for Watcom
 	"	movl	%eax,%ecx\n"
-	"	fnstcw	(%esp)\n" // Get the current status word
+	"	fnstcw	(%esp)\n"       // Get the current status word
 	"	movl	%edx,4(%esp)\n"
 	"	movl	(%esp),%eax\n"  // Get the current value for return
 	"	shll	$8,%ecx\n"      // Move to the Pentium bits area
@@ -173,7 +165,7 @@ __asm__(
 
 /*! ************************************
 
-	\fn Burger::e8087Precision BURGER_API Burger::Get8087Precision(void)
+	\fn Burger::e8087Precision BURGER_API Burger::get_8087_precision(void)
 	\brief Get the floating point precision
 
 	On Intel 32 bit processors, there's a special floating point register to
@@ -184,16 +176,16 @@ __asm__(
 		CPU targets.
 
 	\return Current precision state
-	\sa e8087Precision or Set8087Precision(e8087Precision)
+	\sa e8087Precision or set_8087_precision(e8087Precision)
 
 ***************************************/
 
 #if defined(BURGER_X86) && \
-	(defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || \
+	(defined(BURGER_METROWERKS) || \
 		defined(BURGER_MSVC) || defined(BURGER_INTEL_COMPILER))
 
-BURGER_DECLSPECNAKED Burger::e8087Precision BURGER_API Burger::Get8087Precision(
-	void)
+BURGER_DECLSPECNAKED Burger::e8087Precision BURGER_API
+Burger::get_8087_precision(void) BURGER_NOEXCEPT
 {
 	// clang-format off
     BURGER_ASM
@@ -210,12 +202,12 @@ BURGER_DECLSPECNAKED Burger::e8087Precision BURGER_API Burger::Get8087Precision(
 
 #elif defined(BURGER_X86) && defined(BURGER_MACOSX)
 
-// __ZN6Burger16Get8087PrecisionEv = Burger::e8087Precision BURGER_API
-// Burger::Get8087Precision(void)
+// __ZN6Burger18get_8087_precisionEv = Burger::e8087Precision BURGER_API
+// Burger::get_8087_precision(void) BURGER_NOEXCEPT
 __asm__(
 	"	.align	4,0x90\n"
-	"	.globl __ZN6Burger16Get8087PrecisionEv\n"
-	"__ZN6Burger16Get8087PrecisionEv:\n"
+	"	.globl __ZN6Burger18get_8087_precisionEv\n"
+	"__ZN6Burger18get_8087_precisionEv:\n"
 	"	pushl	%eax\n"         // Space for the status word
 	"	fnstcw	(%esp)\n"       // Get the current status word
 	"	popl	%eax\n"         // Get the current value for return
@@ -308,7 +300,7 @@ __asm__(
 	"	subl	%esp,12\n"      // Space for the status word
 	"	movl	%ecx,8(%esp)\n" // ecx must be preserved for Watcom
 	"	movl	%eax,%ecx\n"
-	"	fnstcw	(%esp)\n" // Get the current status word
+	"	fnstcw	(%esp)\n"       // Get the current status word
 	"	movl	%edx,4(%esp)\n"
 	"	movl	(%esp),%eax\n"  // Get the current value for return
 	"	shll	$10,%ecx\n"     // Move to the Pentium bits area
@@ -414,16 +406,46 @@ __asm__(
 
 /*! ************************************
 
-    \fn Burger::ePowerPCRounding BURGER_API Burger::GetPowerPCRounding(void)
-    \brief Get the floating point rounding setting
+	\fn Burger::ePowerPCRounding BURGER_API Burger::GetPowerPCRounding(void)
+	\brief Get the floating point rounding setting
 
-    On PowerPC processors, there's a special floating point register to control
-    the rounding behavior. This function returns the current setting.
+	On PowerPC processors, there's a special floating point register to control
+	the rounding behavior. This function returns the current setting.
 
-    \note This function only exists on PowerPC compatible CPU targets.
+	\note This function only exists on PowerPC compatible CPU targets.
 
-    \return Current precision state
-    \sa ePowerPCRounding or SetPowerPCRounding(ePowerPCRounding)
+	\return Current precision state
+	\sa ePowerPCRounding or SetPowerPCRounding(ePowerPCRounding)
+
+***************************************/
+
+/*! ************************************
+
+	\fn float Burger::get_sign(float fInput)
+	\brief Return sign constant
+
+	If the input is less than zero, return negative one, if the input is greater
+	than zero, return one, otherwise return zero.
+
+	\param fInput Value to test
+	\return The sign constant of 1, -1 or 0
+
+	\sa get_sign(double)
+
+***************************************/
+
+/*! ************************************
+
+	\fn double Burger::get_sign(double dInput)
+	\brief Return sign constant
+
+	If the input is less than zero, return negative one, if the input is greater
+	than zero, return one, otherwise return zero.
+
+	\param dInput Value to test
+	\return The sign constant of 1, -1 or 0
+
+	\sa get_sign(float)
 
 ***************************************/
 
@@ -1565,36 +1587,6 @@ double BURGER_API Burger::Sqrt(double dInput) BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\fn float Burger::Sign(float fInput)
-	\brief Return sign constant
-
-	If the input is less than zero, return negative one, if the input is greater
-	than zero, return one, otherwise return zero.
-
-	\param fInput Value to test
-	\return The sign constant of 1, -1 or 0
-
-	\sa Sign(double)
-
-***************************************/
-
-/*! ************************************
-
-	\fn double Burger::Sign(double dInput)
-	\brief Return sign constant
-
-	If the input is less than zero, return negative one, if the input is greater
-	than zero, return one, otherwise return zero.
-
-	\param dInput Value to test
-	\return The sign constant of 1, -1 or 0
-
-	\sa Sign(float)
-
-***************************************/
-
-/*! ************************************
-
 	\fn float Burger::Clamp(float fInput,float fMin,float fMax)
 	\brief Clamp the input between a bounds
 
@@ -2428,8 +2420,8 @@ __asm__(
 	"	fcmpu	cr0,f0,f2\n" // Compare if already floored
 	"	bgelr\n"             // Exit with the value untouched if larger
 
-	"	mffs	f4\n"     // Save the rounding register
-	"	mtfsfi	7,0x03\n" // Set bits 30 and 31 to Round toward -infinity
+	"	mffs	f4\n"        // Save the rounding register
+	"	mtfsfi	7,0x03\n"    // Set bits 30 and 31 to Round toward -infinity
 
 	"	fadds	f3,f1,f2\n" // Push the positive number to highest value without
 							// fraction (Removes fraction)
@@ -2508,10 +2500,10 @@ float BURGER_API Burger::Floor(float fInput) BURGER_NOEXCEPT
 		const int iVar =
 			static_cast<int>(fInput); // Convert to int but rounded!
 		float fVar = static_cast<float>(iVar);
-		if (fVar > fInput) { // Did I round up?
-			--fVar;          // Fix it
+		if (fVar > fInput) {          // Did I round up?
+			--fVar;                   // Fix it
 		}
-		fInput = fVar; // Return floored value
+		fInput = fVar;                // Return floored value
 	}
 	return fInput;
 }
@@ -2602,8 +2594,8 @@ __asm__(
 	"	fcmpu	cr0,f0,f2\n" // Compare if already floored
 	"	bgelr\n"             // Exit with the value untouched if larger
 
-	"	mffs	f4\n"     // Save the rounding register
-	"	mtfsfi	7,0x03\n" // Set bits 30 and 31 to Round toward -infinity
+	"	mffs	f4\n"        // Save the rounding register
+	"	mtfsfi	7,0x03\n"    // Set bits 30 and 31 to Round toward -infinity
 
 	"	fadd	f3,f1,f2\n" // Push the positive number to highest value without
 							// fraction (Removes fraction)
@@ -2678,14 +2670,14 @@ double BURGER_API Burger::Floor(double dInput) BURGER_NOEXCEPT
 	// convert the double to an int and it's possible to have a double out
 	// of bounds. This is a bad thing.
 	if (dInput < 4503599627370496.0 &&
-		dInput > -4503599627370496.0) { // Within bounds?
+		dInput > -4503599627370496.0) {   // Within bounds?
 		const int64_t iVar =
 			static_cast<int64_t>(dInput); // Convert to int but rounded!
 		double dVar = static_cast<double>(iVar);
-		if (dVar > dInput) { // Did I round up?
-			--dVar;          // Fix it
+		if (dVar > dInput) {              // Did I round up?
+			--dVar;                       // Fix it
 		}
-		dInput = dVar; // Return floored value
+		dInput = dVar;                    // Return floored value
 	}
 	return dInput;
 }
@@ -2777,8 +2769,8 @@ __asm__(
 	"	fcmpu	cr0,f0,f2\n" // Compare if already floored
 	"	bgelr\n"             // Exit with the value untouched if larger
 
-	"	mffs	f4\n"     // Save the rounding register
-	"	mtfsfi	7,0x02\n" // Set bits 30 and 31 to Round toward +infinity
+	"	mffs	f4\n"        // Save the rounding register
+	"	mtfsfi	7,0x02\n"    // Set bits 30 and 31 to Round toward +infinity
 
 	"	fadds	f3,f1,f2\n" // Push the positive number to highest value without
 							// fraction (Removes fraction)
@@ -2832,9 +2824,9 @@ __asm__(
 	"	andl	$0x7FFFFFFF,%eax\n" // Mask off the sign
 	"	cmpl	$0x4B000000,%eax\n" // Compare to 8388608.0f
 	"	jae		1f\n"               // Out of range, return original value
-	"	frndint\n"           // Convert the integer to float (It's in range)
-	"	xorl	%eax,%eax\n" // Clear ax for flags
-	"	fcoms	4(%esp)\n"   // Compare values for difference (Pop stack)
+	"	frndint\n"             // Convert the integer to float (It's in range)
+	"	xorl	%eax,%eax\n"   // Clear ax for flags
+	"	fcoms	4(%esp)\n"     // Compare values for difference (Pop stack)
 	"	fnstsw	%ax\n"
 	"	andl	$0x100,%eax\n" // Was the new less than the original?
 	"	jz		1f\n"
@@ -2857,9 +2849,9 @@ float BURGER_API Burger::Ceil(float fInput) BURGER_NOEXCEPT
 		if (fVar < fInput) { // Was there a change?
 			++fVar;          // Round up
 		}
-		fInput = fVar; // Return the result
+		fInput = fVar;       // Return the result
 	}
-	return fInput; // Return the input (Can't change it)
+	return fInput;           // Return the input (Can't change it)
 }
 #endif
 
@@ -2948,8 +2940,8 @@ __asm__(
 	"	fcmpu	cr0,f0,f2\n" // Compare if already floored
 	"	bgelr\n"             // Exit with the value untouched if larger
 
-	"	mffs	f4\n"     // Save the rounding register
-	"	mtfsfi	7,0x02\n" // Set bits 30 and 31 to Round toward +infinity
+	"	mffs	f4\n"        // Save the rounding register
+	"	mtfsfi	7,0x02\n"    // Set bits 30 and 31 to Round toward +infinity
 
 	"	fadd	f3,f1,f2\n" // Push the positive number to highest value without
 							// fraction (Removes fraction)
@@ -3003,9 +2995,9 @@ __asm__(
 	"	andl	$0x7FFFFFFF,%eax\n" // Mask off the sign
 	"	cmpl	$0x43300000,%eax\n" // Compare to 4503599627370496.0
 	"	jae		1f\n"               // Out of range, return original value
-	"	frndint\n"           // Convert the integer to float (It's in range)
-	"	xorl	%eax,%eax\n" // Clear ax for flags
-	"	fcoml	4(%esp)\n"   // Compare values for difference (Pop stack)
+	"	frndint\n"             // Convert the integer to float (It's in range)
+	"	xorl	%eax,%eax\n"   // Clear ax for flags
+	"	fcoml	4(%esp)\n"     // Compare values for difference (Pop stack)
 	"	fnstsw	%ax\n"
 	"	andl	$0x100,%eax\n" // Was the new less than the original?
 	"	jz		1f\n"
@@ -3029,9 +3021,9 @@ double BURGER_API Burger::Ceil(double dInput) BURGER_NOEXCEPT
 		if (dVar < dInput) { // Was there a change?
 			++dVar;          // Round up
 		}
-		dInput = dVar; // Return the result
+		dInput = dVar;       // Return the result
 	}
-	return dInput; // Return the input (Can't change it)
+	return dInput;           // Return the input (Can't change it)
 }
 #endif
 

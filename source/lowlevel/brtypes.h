@@ -434,7 +434,7 @@
 #define BURGER_NEON
 #endif
 
-#if defined(mc68881) || defined(__MC68881__) || defined(DOXYGEN)
+#if defined(mc68881) || __MC68881__ || defined(DOXYGEN)
 #define BURGER_68881
 #endif
 

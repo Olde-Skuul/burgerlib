@@ -1,0 +1,42 @@
+;
+; X86 assembly for implementing the function
+; Burger::get_8087_precision(void) for Open Watcom
+;
+; Build with wasm.exe
+;
+; e8087Precision BURGER_API Burger::get_8087_precision(void) BURGER_NOEXCEPT
+;
+; Note: All integer registers are NON-VOLATILE!
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+;
+
+	.686
+
+_TEXT segment para 'CODE'
+
+	align 16
+public `W?get_8087_precision$:Burger$n()$e8087Precision$:1$`
+`W?get_8087_precision$:Burger$n()$e8087Precision$:1$` proc
+
+; Space for the status word
+	push	eax    
+
+; Get the current status word
+	fnstcw	[esp]
+
+; Get the current value for return
+	pop		eax
+
+; Shift the bits of interest down
+	shr		eax, 8
+
+; Mask to enumeration
+	and		eax, 3
+	ret
+
+`W?get_8087_precision$:Burger$n()$e8087Precision$:1$` endp
+
+_TEXT	ends
+
+	end

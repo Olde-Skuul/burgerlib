@@ -1129,7 +1129,7 @@ static uint_t BURGER_API TestAbs64(void) BURGER_NOEXCEPT
 }
 
 //
-// Test Sign(int8_t)
+// Test get_sign(int8_t)
 //
 
 static const IntTest8_t SignTestTable8[] = {{0x00, 0}, {0x01, 1}, {0x40, 1},
@@ -1141,10 +1141,10 @@ static uint_t BURGER_API TestSign8(void) BURGER_NOEXCEPT
 	const IntTest8_t* pWork = SignTestTable8;
 	uintptr_t uCount = BURGER_ARRAYSIZE(SignTestTable8);
 	do {
-		const int8_t iReturn = Burger::Sign(pWork->m_iInput);
+		const int8_t iReturn = Burger::get_sign(pWork->m_iInput);
 		const uint_t uTest = iReturn != pWork->m_iOutput;
 		uFailure |= uTest;
-		ReportFailure("Burger::Sign((int8_t)0x%08X) = 0x%08X, expected 0x%08X",
+		ReportFailure("Burger::get_sign((int8_t)0x%08X) = 0x%08X, expected 0x%08X",
 			uTest, pWork->m_iInput, iReturn, pWork->m_iOutput);
 		++pWork;
 	} while (--uCount);
@@ -1152,7 +1152,7 @@ static uint_t BURGER_API TestSign8(void) BURGER_NOEXCEPT
 }
 
 //
-// Test Sign(int16_t)
+// Test get_sign(int16_t)
 //
 
 static const IntTest16_t SignTestTable16[] = {{0x0000, 0}, {0x0001, 1},
@@ -1165,10 +1165,10 @@ static uint_t BURGER_API TestSign16(void) BURGER_NOEXCEPT
 	const IntTest16_t* pWork = SignTestTable16;
 	uintptr_t uCount = BURGER_ARRAYSIZE(SignTestTable16);
 	do {
-		const int16_t iReturn = Burger::Sign(pWork->m_iInput);
+		const int16_t iReturn = Burger::get_sign(pWork->m_iInput);
 		const uint_t uTest = iReturn != pWork->m_iOutput;
 		uFailure |= uTest;
-		ReportFailure("Burger::Sign((int16_t)0x%08X) = 0x%08X, expected 0x%08X",
+		ReportFailure("Burger::get_sign((int16_t)0x%08X) = 0x%08X, expected 0x%08X",
 			uTest, pWork->m_iInput, iReturn, pWork->m_iOutput);
 		++pWork;
 	} while (--uCount);
@@ -1176,7 +1176,7 @@ static uint_t BURGER_API TestSign16(void) BURGER_NOEXCEPT
 }
 
 //
-// Test Sign(int32_t)
+// Test get_sign(int32_t)
 //
 
 static const IntTest32_t SignTestTable32[] = {{0x00000000, 0}, {0x00000001, 1},
@@ -1191,10 +1191,10 @@ static uint_t BURGER_API TestSign32(void) BURGER_NOEXCEPT
 	const IntTest32_t* pWork = SignTestTable32;
 	uintptr_t uCount = BURGER_ARRAYSIZE(SignTestTable32);
 	do {
-		const int32_t iReturn = Burger::Sign(pWork->m_iInput);
+		const int32_t iReturn = Burger::get_sign(pWork->m_iInput);
 		const uint_t uTest = iReturn != pWork->m_iOutput;
 		uFailure |= uTest;
-		ReportFailure("Burger::Sign((int32_t)0x%08X) = 0x%08X, expected 0x%08X",
+		ReportFailure("Burger::get_sign((int32_t)0x%08X) = 0x%08X, expected 0x%08X",
 			uTest, pWork->m_iInput, iReturn, pWork->m_iOutput);
 		++pWork;
 	} while (--uCount);
@@ -1202,7 +1202,7 @@ static uint_t BURGER_API TestSign32(void) BURGER_NOEXCEPT
 }
 
 //
-// Test Sign(int64_t)
+// Test get_sign(int64_t)
 //
 
 static const IntTest64_t SignTestTable64[] = {{0x0000000000000000LL, 0},
@@ -1218,14 +1218,14 @@ static uint_t BURGER_API TestSign64(void) BURGER_NOEXCEPT
 	const IntTest64_t* pWork = SignTestTable64;
 	uintptr_t uCount = BURGER_ARRAYSIZE(SignTestTable64);
 	do {
-		const int64_t iReturn = Burger::Sign(pWork->m_iInput);
+		const int64_t iReturn = Burger::get_sign(pWork->m_iInput);
 		const uint_t uTest = iReturn != pWork->m_iOutput;
 		uFailure |= uTest;
 		if (uTest) {
 			const Burger::NumberStringHex Text1(pWork->m_iInput);
 			const Burger::NumberStringHex Text2(iReturn);
 			const Burger::NumberStringHex Text3(pWork->m_iOutput);
-			ReportFailure("Burger::Sign((int64_t)0x%s) = 0x%s, expected 0x%s",
+			ReportFailure("Burger::get_sign((int64_t)0x%s) = 0x%s, expected 0x%s",
 				uTest, Text1.c_str(), Text2.c_str(), Text3.c_str());
 		}
 		++pWork;

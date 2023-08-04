@@ -522,13 +522,7 @@ def watcom_rules(project):
         platform = project.platform
 
         # Asm functions for all platforms
-        project.source_files_list.extend(
-            ("../source/asm/wasm/cpuid.x86",
-             "../source/asm/wasm/cpuidex.x86",
-             "../source/asm/wasm/swapendianfloat.x86",
-             "../source/asm/wasm/swapendiandouble.x86",
-             "../source/asm/wasm/swapendianfloatptr.x86",
-             "../source/asm/wasm/swapendiandoubleptr.x86"))
+        project.source_folders_list.append("../source/asm/wasm")
 
         if platform.is_windows():
 
@@ -567,10 +561,7 @@ def watcom_rules(project):
         if platform.is_msdos():
 
             # Add the assembly functions for gluing to the dos extender
-            project.source_files_list.extend(
-                ("../source/asm/wasm/x32_zero_base.x86",
-                 "../source/asm/wasm/call_int.x86",
-                 "../source/asm/wasm/msdos_interrupt_asm.x86"))
+            project.source_folders_list.append("../source/asm/wasm/msdos")
 
 ########################################
 
