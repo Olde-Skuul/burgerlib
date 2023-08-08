@@ -1,0 +1,68 @@
+/*
+	Set the X86 floating point rounding value
+
+	X86 assembly for XCode
+
+	Build with XCode tool chain
+
+	XCode uses a C++ parser and will try to assemble this file on all
+	CPU types, so test for the proper CPU type before invoking any cpu
+	instructions.
+
+	Burger::e8087Rounding Burger::set_8087_rounding(e8087Rounding uInput)
+
+	X86 version.
+*/
+
+#if defined(__i386__)
+	.align 4,0x90
+	.text
+
+	.globl __ZN6Burger17set_8087_roundingENS_13e8087RoundingE
+__ZN6Burger17set_8087_roundingENS_13e8087RoundingE:
+
+/* Space for the status word */
+	subl	$12, %esp
+
+/* ecx/edx must be preserved */
+	movl	%ecx, 8(%esp)
+	movl	%eax, %ecx
+
+/* Get the current status word */
+	fnstcw	(%esp)
+	movl	%edx, 4(%esp)
+
+/* Get the current value for return */
+	movl	(%esp), %eax
+
+/* Move to the Pentium bits area */
+	shll	$10, %ecx
+
+/* Get the bits to retain for write */
+	movl	%eax, %edx
+
+/* Mask for return value */
+	andl	$0x0C00, %eax
+
+/* Mask off unused bits */
+	andl	$0xF3FF, %edx
+
+/* Convert to enum */
+	shrl	$10, %eax
+
+/* Blend in the bits */
+	orl		%ecx, %edx
+
+/* Store in memory */
+	movl	%edx, (%esp)
+
+/* Save the new status register */
+	fldcw	(%esp)
+	movl	4(%esp), %edx
+	movl	8(%esp), %ecx
+
+/* Fix stack */
+	addl	$12, %esp
+	ret
+
+#endif

@@ -1,10 +1,10 @@
 ;
 ; X86 assembly for implementing the function
-; Burger::set_8087_precision(e8087Precision) for Open Watcom
+; Burger::set_8087_rounding(e8087Precision) for Open Watcom
 ;
 ; Build with wasm.exe
 ;
-; e8087Precision BURGER_API Burger::set_8087_precision(e8087Precision) BURGER_NOEXCEPT
+; e8087Rounding BURGER_API Burger::set_8087_rounding(e8087Rounding) BURGER_NOEXCEPT
 ;
 ; Note: All integer registers are NON-VOLATILE!
 ;
@@ -16,8 +16,8 @@
 _TEXT segment para 'CODE'
 
 	align 16
-public `W?set_8087_precision$:Burger$n($e8087Precision$:1$)$2:1$`
-`W?set_8087_precision$:Burger$n($e8087Precision$:1$)$2:1$` proc
+public `W?set_8087_rounding$:Burger$n($e8087Rounding$:1$)$2:1$`
+`W?set_8087_rounding$:Burger$n($e8087Rounding$:1$)$2:1$` proc
 
 ; Space for the status word
 	sub		esp, 12
@@ -36,19 +36,19 @@ public `W?set_8087_precision$:Burger$n($e8087Precision$:1$)$2:1$`
 	mov		eax, dword ptr[esp]
 
 ; Move to the Pentium bits area
-	shl		ecx, 8
+	shl		ecx, 10
 
 ; Get the bits to retain for write
 	mov		edx, eax
 
 ; Mask for return value
-	and		eax, 0x0300
+	and		eax, 0x0C00
 
 ; Mask off unused bits
-	and		edx, 0xFCFF
+	and		edx, 0xF3FF
 
 ; Convert to enum (eax has return value now)
-	shr		eax, 8
+	shr		eax, 10
 
 ; Blend in the old FPU bits
 	or		edx, ecx
@@ -66,7 +66,7 @@ public `W?set_8087_precision$:Burger$n($e8087Precision$:1$)$2:1$`
 	add		esp, 12
 	ret
 
-`W?set_8087_precision$:Burger$n($e8087Precision$:1$)$2:1$` endp
+`W?set_8087_rounding$:Burger$n($e8087Rounding$:1$)$2:1$` endp
 
 _TEXT ends
 

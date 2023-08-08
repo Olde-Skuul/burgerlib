@@ -158,7 +158,7 @@
 
    The panning formula:
 
-   FinalPan=Pan+(EnvelopePan-32)*(128-Abs(Pan-128))/32;
+   FinalPan=Pan+(EnvelopePan-32)*(128-absolute(Pan-128))/32;
 
       Envelope:
       ---------

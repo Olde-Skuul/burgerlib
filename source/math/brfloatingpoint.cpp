@@ -72,99 +72,6 @@ const Burger::uint32_float_t Burger::g_X86OneAndNegOne[2] = {
 
 /*! ************************************
 
-	\fn Burger::e8087Precision Burger::set_8087_precision(e8087Precision eInput)
-
-	\brief Change the floating point precision
-
-	On Intel 32 bit processors, there's a special floating point register to
-	control the precision of the 80387 compatible FPU. This function allows the
-	modification of this register for FPU precision. Lower precision yields more
-	speed.
-
-	\note This function only exists on 32 bit Intel compatible
-		CPU targets.
-	\note If Direct3D is enabled, Windows sets the precision to 24 bit
-		on 32 bit platforms. This function will undo the change if
-		that's not desired.
-
-	\param eInput New enumeration state
-	\return Previous precision state
-	\sa e8087Precision or get_8087_precision(void)
-
-***************************************/
-
-#if defined(BURGER_X86) && \
-	(defined(BURGER_METROWERKS) || \
-		defined(BURGER_MSVC))
-
-BURGER_DECLSPECNAKED Burger::e8087Precision BURGER_API
-Burger::set_8087_precision(e8087Precision /* eInput */) BURGER_NOEXCEPT
-{
-	// clang-format off
-    BURGER_ASM {
-
-#if defined(BURGER_WATCOM)
-        sub esp, 12             // Space for the status word
-        mov[esp + 8], ecx       // ecx must be preserved for Watcom
-        mov ecx, eax
-#else
-        sub esp, 8              // Space for the status word
-#endif
-        fnstcw[esp]             // Get the current status word
-        mov[esp + 4], edx
-        mov eax, dword ptr[esp] // Get the current value for return
-        shl ecx, 8              // Move to the Pentium bits area
-        mov edx, eax            // Get the bits to retain for write
-        and eax, 0x0300         // Mask for return value
-        and edx, 0xFCFF         // Mask off unused bits
-        shr eax, 8              // Convert to enum
-        or edx, ecx             // Blend in the bits
-        mov dword ptr[esp], edx // Store in memory
-        fldcw[esp]              // Save the new status register
-        mov edx, [esp + 4]
-#if defined(BURGER_WATCOM)
-        mov ecx, [esp + 8]
-        add esp, 12             // Fix stack
-#else
-        add esp, 8              // Fix stack
-#endif
-        ret
-    }
-	// clang-format on
-}
-
-#elif defined(BURGER_X86) && defined(BURGER_MACOSX)
-
-// __ZN6Burger18set_8087_precisionENS_14e8087PrecisionE = Burger::e8087Precision
-// BURGER_API Burger::set_8087_precision(e8087Precision /* eInput */)
-// BURGER_NOEXCEPT
-__asm__(
-	"	.align	4,0x90\n"
-	"	.globl __ZN6Burger18set_8087_precisionENS_14e8087PrecisionE\n"
-	"__ZN6Burger18set_8087_precisionENS_14e8087PrecisionE:\n"
-	"	subl	%esp,12\n"      // Space for the status word
-	"	movl	%ecx,8(%esp)\n" // ecx must be preserved for Watcom
-	"	movl	%eax,%ecx\n"
-	"	fnstcw	(%esp)\n"       // Get the current status word
-	"	movl	%edx,4(%esp)\n"
-	"	movl	(%esp),%eax\n"  // Get the current value for return
-	"	shll	$8,%ecx\n"      // Move to the Pentium bits area
-	"	movl	%eax,%edx\n"    // Get the bits to retain for write
-	"	andl	$0x0300,%eax\n" // Mask for return value
-	"	andl	$0xFCFF,%edx\n" // Mask off unused bits
-	"	shrl	$8,%eax\n"      // Convert to enum
-	"	orl		%ecx,%edx\n"    // Blend in the bits
-	"	movl	%edx,(%esp)\n"  // Store in memory
-	"	fldcw	(%esp)\n"       // Save the new status register
-	"	movl	4(%esp),%edx\n"
-	"	movl	8(%esp),%ecx\n"
-	"	addl	%esp,12\n" // Fix stack
-	"	ret\n");
-
-#endif
-
-/*! ************************************
-
 	\fn Burger::e8087Precision BURGER_API Burger::get_8087_precision(void)
 	\brief Get the floating point precision
 
@@ -180,41 +87,30 @@ __asm__(
 
 ***************************************/
 
-#if defined(BURGER_X86) && \
-	(defined(BURGER_METROWERKS) || \
-		defined(BURGER_MSVC) || defined(BURGER_INTEL_COMPILER))
+/*! ************************************
 
-BURGER_DECLSPECNAKED Burger::e8087Precision BURGER_API
-Burger::get_8087_precision(void) BURGER_NOEXCEPT
-{
-	// clang-format off
-    BURGER_ASM
-    {
-        push eax    // Space for the status word
-        fnstcw[esp] // Get the current status word
-        pop eax     // Get the current value for return
-        shr eax, 8  // Shift the bits of interest down
-        and eax, 3  // Mask to enumeration
-        ret
-    }
-	// clang-format on
-}
+	\fn Burger::e8087Precision Burger::set_8087_precision(e8087Precision uInput)
 
-#elif defined(BURGER_X86) && defined(BURGER_MACOSX)
+	\brief Change the floating point precision
 
-// __ZN6Burger18get_8087_precisionEv = Burger::e8087Precision BURGER_API
-// Burger::get_8087_precision(void) BURGER_NOEXCEPT
-__asm__(
-	"	.align	4,0x90\n"
-	"	.globl __ZN6Burger18get_8087_precisionEv\n"
-	"__ZN6Burger18get_8087_precisionEv:\n"
-	"	pushl	%eax\n"         // Space for the status word
-	"	fnstcw	(%esp)\n"       // Get the current status word
-	"	popl	%eax\n"         // Get the current value for return
-	"	shrl	$8,%eax\n"      // Shift the bits of interest down
-	"	andl	$0x0003,%eax\n" // Mask to enumeration
-	"	ret\n");
-#endif
+	On Intel 32 bit processors, there's a special floating point register to
+	control the precision of the 80387 compatible FPU. This function allows the
+	modification of this register for FPU precision. Lower precision yields more
+	speed.
+
+	\note This function only exists on 32 bit Intel compatible
+		CPU targets.
+	\note If Direct3D is enabled, Windows sets the precision to 24 bit
+		on 32 bit platforms. This function will undo the change if
+		that's not desired.
+
+	\param uInput New enumeration state
+
+	\return Previous precision state
+
+	\sa e8087Precision or get_8087_precision(void)
+
+***************************************/
 
 /*! ************************************
 
@@ -227,100 +123,13 @@ __asm__(
 
 	\note This enumeration only exists on 32 bit Intel compatible CPU targets
 
-	\sa Set8087Rounding(e8087Rounding)
+	\sa set_8087_rounding(e8087Rounding)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::e8087Rounding Burger::Set8087Rounding(e8087Rounding eInput)
-	\brief Change the floating point precision
-
-	On Intel 32 bit processors, there's a special floating point register to
-	control the rounding of the 80387 compatible FPU. This function allows the
-	modification of this register for FPU rounding.
-
-	\note This function only exists on 32 bit Intel compatible
-		CPU targets.
-
-	\param eInput New enumeration state
-	\return Previous rounding state
-	\sa e8087Rounding or Get8087Rounding(void)
-
-***************************************/
-
-#if defined(BURGER_X86) && \
-	(defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || \
-		defined(BURGER_MSVC) || defined(BURGER_INTEL_COMPILER))
-
-BURGER_DECLSPECNAKED Burger::e8087Rounding BURGER_API Burger::Set8087Rounding(
-	e8087Rounding /* eInput */)
-{
-	// clang-format off
-    BURGER_ASM
-    {
-#if defined(BURGER_WATCOM)
-        sub esp, 12         // Space for the status word
-        mov[esp + 8], ecx   // ecx must be preserved for Watcom
-        mov ecx, eax
-#else
-        sub esp, 8          // Space for the status word
-#endif
-        fnstcw[esp]         // Get the current status word
-        mov[esp + 4], edx
-        mov eax, dword ptr[esp] // Get the current value for return
-        shl ecx, 10         // Move to the Pentium bits area
-        mov edx, eax        // Get the bits to retain for write
-        and eax, 0x0C00     // Mask for return value
-        and edx, 0xF3FF     // Mask off unused bits
-        shr eax, 10         // Convert to enum
-        or edx, ecx         // Blend in the bits
-        mov dword ptr[esp], edx // Store in memory
-        fldcw [esp]         // Save the new status register
-        mov edx, [esp + 4]
-#if defined(BURGER_WATCOM)
-        mov ecx, [esp + 8]
-        add esp, 12         // Fix stack
-#else
-        add esp, 8      // Fix stack
-#endif
-        ret
-    }
-	// clang-format on
-}
-
-#elif defined(BURGER_X86) && defined(BURGER_MACOSX)
-
-// __ZN6Burger15Set8087RoundingENS_13e8087RoundingE = Burger::e8087Rounding
-// BURGER_API Burger::Set8087Rounding(e8087Rounding /* eInput */)
-__asm__(
-	"	.align	4,0x90\n"
-	"	.globl __ZN6Burger15Set8087RoundingENS_13e8087RoundingE\n"
-	"__ZN6Burger15Set8087RoundingENS_13e8087RoundingE:\n"
-	"	subl	%esp,12\n"      // Space for the status word
-	"	movl	%ecx,8(%esp)\n" // ecx must be preserved for Watcom
-	"	movl	%eax,%ecx\n"
-	"	fnstcw	(%esp)\n"       // Get the current status word
-	"	movl	%edx,4(%esp)\n"
-	"	movl	(%esp),%eax\n"  // Get the current value for return
-	"	shll	$10,%ecx\n"     // Move to the Pentium bits area
-	"	movl	%eax,%edx\n"    // Get the bits to retain for write
-	"	andl	$0x0C00,%eax\n" // Mask for return value
-	"	andl	$0xF3FF,%edx\n" // Mask off unused bits
-	"	shrl	$10,%eax\n"     // Convert to enum
-	"	orl		%ecx,%edx\n"    // Blend in the bits
-	"	movl	%edx,(%esp)\n"  // Store in memory
-	"	fldcw	(%esp)\n"       // Save the new status register
-	"	movl	4(%esp),%edx\n"
-	"	movl	8(%esp),%ecx\n"
-	"	addl	%esp,12\n" // Fix stack
-	"	ret\n");
-
-#endif
-
-/*! ************************************
-
-	\fn Burger::e8087Rounding BURGER_API Burger::Get8087Rounding(void)
+	\fn Burger::e8087Rounding BURGER_API Burger::get_8087_rounding(void)
 	\brief Get the floating point rounding setting
 
 	On Intel 32 bit processors, there's a special floating point register to
@@ -331,44 +140,70 @@ __asm__(
 		CPU targets.
 
 	\return Current precision state
-	\sa e8087Rounding or Set8087Rounding(e8087Rounding)
+	\sa e8087Rounding or set_8087_rounding(e8087Rounding)
 
 ***************************************/
 
-#if defined(BURGER_X86) && \
-	(defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || \
-		defined(BURGER_MSVC) || defined(BURGER_INTEL_COMPILER))
+/*! ************************************
 
-BURGER_DECLSPECNAKED Burger::e8087Rounding BURGER_API Burger::Get8087Rounding(
-	void)
+	\fn Burger::e8087Rounding Burger::set_8087_rounding(e8087Rounding uInput)
+	\brief Change the floating point precision
+
+	On Intel 32 bit processors, there's a special floating point register to
+	control the rounding of the 80387 compatible FPU. This function allows the
+	modification of this register for FPU rounding.
+
+	\note This function only exists on 32 bit Intel compatible
+		CPU targets.
+
+	\param uInput New enumeration state
+
+	\return Previous rounding state
+
+	\sa e8087Rounding or get_8087_rounding(void)
+
+***************************************/
+
+/*! ************************************
+
+	\brief Change the SSE floating point precision
+
+	On Intel processors with SSE, there's a special floating point register to
+	control the rounding of the SSE FPU. This function allows the modification
+	of this register for FPU rounding, denormal zeroing, and other exceptions.
+
+	[Examples of flags to set or
+	clear](https://help.totalview.io/previous_releases/2019/html/index.html#page/Reference_Guide/Intelx86MXSCRRegister.html)
+
+	\note This function only exists on Intel compatible CPU targets with SSE. Do
+		not call this function if SSE is not available.
+
+	\param uOrFlags Flags to set in the MXCSR
+	\param uAndFlags Flags to clear in the MXCSR
+
+	\return Previous rounding state
+
+	\sa get_8087_rounding(void), or get_8087_precision(void)
+
+***************************************/
+
+#if defined(BURGER_INTEL) || defined(DOXYGEN)
+uint32_t BURGER_API Burger::set_mxcsr_flags(
+	uint32_t uOrFlags, uint32_t uAndFlags) BURGER_NOEXCEPT
 {
-	// clang-format off
-    BURGER_ASM
-    {
-        push eax        // Space for the status word
-        fnstcw [esp]    // Get the current status word
-        pop eax         // Get the current value for return
-        shr eax, 10     // Shift the bits of interest down
-        and eax, 3      // Mask to enumeration
-        ret
-    }
-	// clang-format on
+	// Get the flags
+	uint32_t uResult = static_cast<uint32_t>(_mm_getcsr());
+
+	// Modify the flags as needed
+	uint32_t uNew = uResult | uOrFlags;
+	uNew = uNew & (~uAndFlags);
+
+	// Update the flags
+	_mm_setcsr(uNew);
+
+	// Return the old value
+	return uResult;
 }
-
-#elif defined(BURGER_X86) && defined(BURGER_MACOSX)
-
-// __ZN6Burger15Get8087RoundingEv = Burger::e8087Rounding BURGER_API
-// Burger::Get8087Rounding(void)
-__asm__(
-	"	.align	4,0x90\n"
-	"	.globl __ZN6Burger15Get8087RoundingEv\n"
-	"__ZN6Burger15Get8087RoundingEv:\n"
-	"	pushl	%eax\n"         // Space for the status word
-	"	fnstcw	(%esp)\n"       // Get the current status word
-	"	popl	%eax\n"         // Get the current value for return
-	"	shrl	$10,%eax\n"     // Shift the bits of interest down
-	"	andl	$0x0003,%eax\n" // Mask to enumeration
-	"	ret\n");
 #endif
 
 /*! ************************************
@@ -382,31 +217,13 @@ __asm__(
 	\note This enumeration only exists on PowerPC compatible
 		CPU targets
 
-	\sa SetPowerPCRounding(ePowerPCRounding)
+	\sa set_PowerPC_rounding(ePowerPCRounding)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::ePowerPCRounding Burger::SetPowerPCRounding(
-		ePowerPCRounding eInput)
-	\brief Change the floating point precision
-
-	On PowerPC processors, there's a special floating point register to control
-	the rounding. This function allows the modification of this register for FPU
-	rounding.
-
-	\note This function only exists on PowerPC compatible CPU targets.
-
-	\param eInput New enumeration state
-	\return Previous rounding state
-	\sa ePowerPCRounding or GetPowerPCRounding(void)
-
-***************************************/
-
-/*! ************************************
-
-	\fn Burger::ePowerPCRounding BURGER_API Burger::GetPowerPCRounding(void)
+	\fn Burger::ePowerPCRounding BURGER_API Burger::get_PowerPC_rounding(void)
 	\brief Get the floating point rounding setting
 
 	On PowerPC processors, there's a special floating point register to control
@@ -415,7 +232,28 @@ __asm__(
 	\note This function only exists on PowerPC compatible CPU targets.
 
 	\return Current precision state
-	\sa ePowerPCRounding or SetPowerPCRounding(ePowerPCRounding)
+
+	\sa ePowerPCRounding or set_PowerPC_rounding(ePowerPCRounding)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::ePowerPCRounding Burger::set_PowerPC_rounding(
+		ePowerPCRounding uInput)
+	\brief Change the floating point precision
+
+	On PowerPC processors, there's a special floating point register to control
+	the rounding. This function allows the modification of this register for FPU
+	rounding.
+
+	\note This function only exists on PowerPC compatible CPU targets.
+
+	\param uInput New enumeration state
+
+	\return Previous rounding state
+
+	\sa ePowerPCRounding or get_PowerPC_rounding(void)
 
 ***************************************/
 
@@ -451,37 +289,36 @@ __asm__(
 
 /*! ************************************
 
-	\fn Burger::Sqr(float fInput);
-	\brief Get the square value of a float
+	\fn float Burger::square(float fInput)
+	\brief Return the square of the input
 
-	Return the squared value of the floating point input.
+	Square the number and return the result.
 
-	\note -Inf will return +Inf. NaN is undefined
+	\param fInput Value to square
+	\return The square of the input
 
-	\param fInput A valid single precision floating point number.
-	\return The squared value of the input.
-	\sa Sqr(double)
-
-***************************************/
-
-/*! ************************************
-
-	\fn Burger::Sqr(double dInput);
-	\brief Get the square value of a double
-
-	Return the squared value of the 64 bit floating point input.
-
-	\note -Inf will return +Inf. NaN is undefined
-
-	\param dInput A valid double precision floating point number.
-	\return The squared value of the input.
-	\sa Sqr(float)
+	\sa square(double)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::Abs(float fInput);
+	\fn double Burger::square(double dInput)
+	\brief Return the square of the input
+
+	Square the number and return the result.
+
+	\param dInput Value to square
+
+	\return The square of the input
+
+	\sa square(float)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::absolute(float fInput);
 	\brief Get the absolute value of a float
 
 	Return the absolute value of the floating point input.
@@ -491,19 +328,22 @@ __asm__(
 
 	\param fInput A valid single precision floating point number.
 	\return The absolute value of the input.
-	\sa Abs(int32_t), Abs(int64_t) and Abs(double)
+	\sa absolute(int32_t), absolute(int64_t) and absolute(double)
 
 ***************************************/
 
-#if defined(BURGER_WATCOM) || defined(BURGER_INTEL_COMPILER)
-#elif defined(BURGER_METROWERKS) && defined(BURGER_PPC)
-#elif defined(BURGER_METROWERKS) && defined(BURGER_X86)
-#elif defined(BURGER_XBOX360) && !defined(DOXYGEN)
-#elif defined(BURGER_PS3) || defined(BURGER_PS4) || defined(BURGER_VITA)
-#elif defined(BURGER_MSVC) && (defined(BURGER_INTEL) || defined(BURGER_ARM))
-#elif defined(BURGER_MACOSX) || defined(BURGER_IOS) || defined(BURGER_LINUX)
+#if ((defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
+	((defined(BURGER_METROWERKS) || defined(BURGER_GHS)) && \
+		defined(BURGER_PPC)) || \
+	((defined(BURGER_METROWERKS) && defined(BURGER_X86)) || \
+		defined(BURGER_GNUC) || defined(BURGER_CLANG) || \
+		defined(BURGER_SNSYSTEMS)) || \
+	(defined(BURGER_MSVC) || defined(BURGER_INTEL_COMPILER)) || \
+	(defined(BURGER_METROWERKS) && defined(BURGER_68K))) && \
+	!defined(DOXYGEN)
+
 #else
-float BURGER_API Burger::Abs(float fInput) BURGER_NOEXCEPT
+float BURGER_API Burger::absolute(float fInput) BURGER_NOEXCEPT
 {
 	return fInput >= 0 ? fInput : -fInput;
 }
@@ -511,7 +351,7 @@ float BURGER_API Burger::Abs(float fInput) BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\fn Burger::Abs(double dInput);
+	\fn Burger::absolute(double dInput);
 	\brief Get the absolute value of a double
 
 	Return the absolute value of the floating point input.
@@ -521,19 +361,21 @@ float BURGER_API Burger::Abs(float fInput) BURGER_NOEXCEPT
 
 	\param dInput A valid double precision floating point number.
 	\return The absolute value of the input.
-	\sa Abs(int32_t), Abs(int64_t) and Abs(float)
+	\sa absolute(int32_t), absolute(int64_t) and absolute(float)
 
 ***************************************/
 
-#if defined(BURGER_WATCOM) || defined(BURGER_INTEL_COMPILER)
-#elif defined(BURGER_METROWERKS) && defined(BURGER_PPC)
-#elif defined(BURGER_METROWERKS) && defined(BURGER_X86)
-#elif defined(BURGER_XBOX360) && !defined(DOXYGEN)
-#elif defined(BURGER_PS3) || defined(BURGER_PS4) || defined(BURGER_VITA)
-#elif defined(BURGER_MSVC) && (defined(BURGER_INTEL) || defined(BURGER_ARM))
-#elif defined(BURGER_MACOSX) || defined(BURGER_IOS) || defined(BURGER_LINUX)
+#if ((defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
+	((defined(BURGER_METROWERKS) || defined(BURGER_GHS)) && \
+		defined(BURGER_PPC)) || \
+	((defined(BURGER_METROWERKS) && defined(BURGER_X86)) || \
+		defined(BURGER_GNUC) || defined(BURGER_CLANG) || \
+		defined(BURGER_SNSYSTEMS)) || \
+	(defined(BURGER_MSVC) || defined(BURGER_INTEL_COMPILER)) || \
+	(defined(BURGER_METROWERKS) && defined(BURGER_68K))) && \
+	!defined(DOXYGEN)
 #else
-double BURGER_API Burger::Abs(double dInput) BURGER_NOEXCEPT
+double BURGER_API Burger::absolute(double dInput) BURGER_NOEXCEPT
 {
 	return dInput >= 0 ? dInput : -dInput;
 }
@@ -541,20 +383,30 @@ double BURGER_API Burger::Abs(double dInput) BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\fn Burger::Sqrt(float fInput);
+	\fn Burger::square_root(float fInput)
 	\brief Get the square root value of a float
 
 	Return the square root of the floating point input.
+
 	This is usually done by inline assembly.
 
 	\param fInput A valid single precision floating point number.
+
 	\return The square root of the input.
-	\sa Sqrt(double), Sqrt(uint32_t), and Sqrt(Fixed32)
+
+	\sa square_root(double), square_root(uint32_t), and square_root(Fixed32)
 
 ***************************************/
 
-#if defined(BURGER_WATCOM) || defined(BURGER_INTEL_COMPILER)
-#elif defined(BURGER_METROWERKS) && defined(BURGER_PPC)
+#if (defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
+	defined(BURGER_XBOX360) || defined(BURGER_PS3) || \
+	(defined(BURGER_METROWERKS) && defined(BURGER_X86)) || \
+	defined(BURGER_GNUC) || defined(BURGER_CLANG) || \
+	defined(BURGER_SNSYSTEMS) || \
+	(defined(BURGER_MSVC) || defined(BURGER_INTEL_COMPILER)) && \
+		(defined(BURGER_INTEL) || defined(BURGER_ARM))
+
+#elif (defined(BURGER_METROWERKS) || defined(BURGER_GHS)) && defined(BURGER_PPC)
 
 //
 // Lookup table for sqrt initial guess and iteration slope
@@ -831,9 +683,8 @@ static const Burger::uint32_float_t g_PPCSqrtGuess[2][256][2] = {
 // http://www.sosmath.com/calculus/diff/der07/der07.html
 //
 
-float BURGER_API Burger::Sqrt(float fInput) BURGER_NOEXCEPT
+float BURGER_API Burger::square_root(float fInput) BURGER_NOEXCEPT
 {
-
 	// 0.5f + epsilon
 	const float g_fHalfPlusEpsilon = 0.50000006f;
 
@@ -875,8 +726,8 @@ float BURGER_API Burger::Sqrt(float fInput) BURGER_NOEXCEPT
 			uint32_t uInputNormalized = (uInput & 0x00FFFFFFU) | 0x3F000000U;
 
 			// Convert it back into a float
-			float fInputNormalized =
-				reinterpret_cast<const float*>(&uInputNormalized)[0];
+			float fInputNormalized = static_cast<const float*>(
+				static_cast<void*>(&uInputNormalized))[0];
 
 			// Look up in a table to generate the initial guess
 			// 23 bits mantissa, 1 for even/odd, 8 bits for 256 entries
@@ -954,14 +805,9 @@ float BURGER_API Burger::Sqrt(float fInput) BURGER_NOEXCEPT
 	return fInput;
 }
 
-#elif defined(BURGER_METROWERKS) && defined(BURGER_X86)
-#elif defined(BURGER_XBOX360) && !defined(DOXYGEN)
-#elif defined(BURGER_PS3) || defined(BURGER_PS4) || defined(BURGER_VITA)
-#elif defined(BURGER_MSVC) && (defined(BURGER_INTEL) || defined(BURGER_ARM))
-#elif defined(BURGER_MACOSX) || defined(BURGER_IOS) || defined(BURGER_LINUX)
 #else
 
-float BURGER_API Burger::Sqrt(float fInput) BURGER_NOEXCEPT
+float BURGER_API Burger::square_root(float fInput) BURGER_NOEXCEPT
 {
 	// Convert to binary
 	uint32_float_t Convert;
@@ -1071,7 +917,7 @@ float BURGER_API Burger::Sqrt(float fInput) BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\fn Burger::Sqrt(double dInput);
+	\fn Burger::square_root(double dInput)
 	\brief Get the square root value of a double
 
 	Return the square root of the floating point input.
@@ -1079,12 +925,19 @@ float BURGER_API Burger::Sqrt(float fInput) BURGER_NOEXCEPT
 
 	\param dInput A valid double precision floating point number.
 	\return The square root of the input.
-	\sa Sqrt(float), Sqrt(uint32_t), and Sqrt(Fixed32)
+	\sa square_root(float), square_root(uint32_t), and square_root(Fixed32)
 
 ***************************************/
 
-#if defined(BURGER_WATCOM) || defined(BURGER_INTEL_COMPILER)
-#elif defined(BURGER_METROWERKS) && defined(BURGER_PPC)
+#if (defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
+	defined(BURGER_XBOX360) || defined(BURGER_PS3) || \
+	(defined(BURGER_METROWERKS) && defined(BURGER_X86)) || \
+	defined(BURGER_GNUC) || defined(BURGER_CLANG) || \
+	defined(BURGER_SNSYSTEMS) || \
+	(defined(BURGER_MSVC) || defined(BURGER_INTEL_COMPILER)) && \
+		(defined(BURGER_INTEL) || defined(BURGER_ARM))
+
+#elif (defined(BURGER_METROWERKS) || defined(BURGER_GHS)) && defined(BURGER_PPC)
 
 //
 // Computer sqrt optimized for the PowerPC, lovingly based on
@@ -1096,7 +949,7 @@ float BURGER_API Burger::Sqrt(float fInput) BURGER_NOEXCEPT
 // http://www.sosmath.com/calculus/diff/der07/der07.html
 //
 
-double BURGER_API Burger::Sqrt(double dInput) BURGER_NOEXCEPT
+double BURGER_API Burger::square_root(double dInput) BURGER_NOEXCEPT
 {
 	// 0.5 + epsilon
 	const double g_dHalfPlusEpsilon = 0.5000000000000001;
@@ -1229,14 +1082,9 @@ double BURGER_API Burger::Sqrt(double dInput) BURGER_NOEXCEPT
 	return dInput;
 }
 
-#elif defined(BURGER_METROWERKS) && defined(BURGER_X86)
-#elif defined(BURGER_XBOX360) && !defined(DOXYGEN)
-#elif defined(BURGER_PS3) || defined(BURGER_PS4) || defined(BURGER_VITA)
-#elif defined(BURGER_MSVC) && (defined(BURGER_INTEL) || defined(BURGER_ARM))
-#elif defined(BURGER_MACOSX) || defined(BURGER_IOS) || defined(BURGER_LINUX)
 #else
 
-double BURGER_API Burger::Sqrt(double dInput) BURGER_NOEXCEPT
+double BURGER_API Burger::square_root(double dInput) BURGER_NOEXCEPT
 {
 	// Convert to binary
 	uint64_double_t Converter;
@@ -1409,46 +1257,46 @@ double BURGER_API Burger::Sqrt(double dInput) BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\fn Burger::IntToFloat(int32_t iInput)
+	\fn Burger::int_to_float(int32_t iInput)
 	\brief 32 bit integer to floating point conversion
 
 	\param iInput 32 bit integer to convert
 	\return Floating point representation of the integer input
 
-	\sa IntToFloat(const int32_t *), IntToFloat(float *,int32_t) or
-		IntToFloat(float*,const int32_t *)
+	\sa int_to_float(const int32_t *), int_to_float(float *,int32_t) or
+		int_to_float(float*,const int32_t *)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::IntToFloat(const int32_t *pInput)
+	\fn Burger::int_to_float(const int32_t *pInput)
 	\brief 32 bit integer to floating point conversion
 
 	\param pInput Pointer to a 32 bit integer to convert
 	\return Floating point representation of the integer input
 
-	\sa IntToFloat(int32_t), IntToFloat(float *,int32_t) or
-		IntToFloat(float*,const int32_t *)
+	\sa int_to_float(int32_t), int_to_float(float *,int32_t) or
+		int_to_float(float*,const int32_t *)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::IntToFloat(float *pOutput,int32_t iInput)
+	\fn Burger::int_to_float(float *pOutput,int32_t iInput)
 	\brief 32 bit integer to floating point conversion
 
 	\param iInput 32 bit integer to convert
 	\param pOutput Pointer to a 32 bit float to receive the converted integer
 
-	\sa IntToFloat(int32_t), IntToFloat(const int32_t *) or
-		IntToFloat(float *,const int32_t *)
+	\sa int_to_float(int32_t), int_to_float(const int32_t *) or
+		int_to_float(float *,const int32_t *)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::IntToFloat(float *pOutput,const int32_t *pInput)
+	\fn Burger::int_to_float(float *pOutput,const int32_t *pInput)
 	\brief 32 bit integer to floating point conversion
 
 	\note This function is fast on the Xbox 360 due to direct use of VMX128
@@ -1457,53 +1305,53 @@ double BURGER_API Burger::Sqrt(double dInput) BURGER_NOEXCEPT
 	\param pInput Pointer to a 32 bit integer to convert
 	\param pOutput Pointer to a 32 bit float to receive the converted integer
 
-	\sa IntToFloat(int32_t), IntToFloat(const int32_t *) or
-		IntToFloat(float*,int32_t)
+	\sa int_to_float(int32_t), int_to_float(const int32_t *) or
+		int_to_float(float*,int32_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::FixedToFloat(Fixed32 iInput)
+	\fn Burger::fixed_to_float(Fixed32 iInput)
 	\brief 32 bit 16.16 fixed point integer to floating point conversion
 
 	\param iInput 32 bit 16.16 fixed point integer to convert
 	\return Floating point representation of the integer input
 
-	\sa FixedToFloat(const Fixed32 *), FixedToFloat(float *,Fixed32) or
-		FixedToFloat(float *,const Fixed32 *)
+	\sa fixed_to_float(const Fixed32 *), fixed_to_float(float *,Fixed32) or
+		fixed_to_float(float *,const Fixed32 *)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::FixedToFloat(const Fixed32 *pInput)
+	\fn Burger::fixed_to_float(const Fixed32 *pInput)
 	\brief 32 bit 16.16 fixed point integer to floating point conversion
 
 	\param pInput Pointer to a 32 bit 16.16 fixed point integer to convert
 	\return Floating point representation of the integer input
 
-	\sa FixedToFloat(Fixed32), FixedToFloat(float *,Fixed32) or
-		FixedToFloat(float *,const Fixed32 *)
+	\sa fixed_to_float(Fixed32), fixed_to_float(float *,Fixed32) or
+		fixed_to_float(float *,const Fixed32 *)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::FixedToFloat(float *pOutput,Fixed32 iInput)
+	\fn Burger::fixed_to_float(float *pOutput,Fixed32 iInput)
 	\brief 32 bit 16.16 fixed point integer to floating point conversion
 
 	\param iInput 32 bit 16.16 fixed point integer to convert
 	\param pOutput Pointer to a 32 bit float to receive the converted integer
 
-	\sa FixedToFloat(Fixed32), FixedToFloat(const Fixed32 *) or
-		FixedToFloat(float *,const Fixed32 *)
+	\sa fixed_to_float(Fixed32), fixed_to_float(const Fixed32 *) or
+		fixed_to_float(float *,const Fixed32 *)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::FixedToFloat(float *pOutput,const Fixed32 *pInput)
+	\fn Burger::fixed_to_float(float *pOutput,const Fixed32 *pInput)
 	\brief 32 bit 16.16 fixed point integer to floating point conversion
 
 	\note This function is fast on the Xbox 360 due to direct use of VMX128
@@ -1512,8 +1360,8 @@ double BURGER_API Burger::Sqrt(double dInput) BURGER_NOEXCEPT
 	\param pInput Pointer to a 32 bit 16.16 fixed point integer to convert
 	\param pOutput Pointer to a 32 bit float to receive the converted integer
 
-	\sa FixedToFloat(Fixed32), FixedToFloat(const Fixed32 *) or
-		FixedToFloat(float *,Fixed32)
+	\sa fixed_to_float(Fixed32), fixed_to_float(const Fixed32 *) or
+		fixed_to_float(float *,Fixed32)
 
 ***************************************/
 
@@ -1554,34 +1402,6 @@ double BURGER_API Burger::Sqrt(double dInput) BURGER_NOEXCEPT
 	\return Value between dFrom and dTo
 
 	\sa Interpolate(float,float,float)
-
-***************************************/
-
-/*! ************************************
-
-	\fn float Burger::Square(float fInput)
-	\brief Return the square of the input
-
-	Square the number and return the result.
-
-	\param fInput Value to square
-	\return The square of the input
-
-	\sa Square(double)
-
-***************************************/
-
-/*! ************************************
-
-	\fn double Burger::Square(double dInput)
-	\brief Return the square of the input
-
-	Square the number and return the result.
-
-	\param dInput Value to square
-	\return The square of the input
-
-	\sa Square(float)
 
 ***************************************/
 
@@ -1642,7 +1462,7 @@ double BURGER_API Burger::Sqrt(double dInput) BURGER_NOEXCEPT
 BURGER_DECLSPECNAKED uint_t BURGER_API Burger::IsNan(
 	float /* fInput */) BURGER_NOEXCEPT
 {
-	// clang-format off
+// clang-format off
 #if defined(BURGER_XBOX360)
     BURGER_ASM
     {
@@ -1705,7 +1525,7 @@ uint_t BURGER_API Burger::IsNan(float fInput) BURGER_NOEXCEPT
 BURGER_DECLSPECNAKED uint_t BURGER_API Burger::IsNan(
 	double /* dInput */) BURGER_NOEXCEPT
 {
-	// clang-format off
+// clang-format off
 #if defined(BURGER_XBOX360)
     BURGER_ASM
     {
@@ -2192,9 +2012,9 @@ uint_t BURGER_API Burger::SignBit(double dInput) BURGER_NOEXCEPT
 	\code
 
 	// Example
-	float fDelta = Abs(fInput1-fInput2);
-	fInput1 = Abs(fInput1);
-	fInput2 = Abs(fInput2);
+	float fDelta = absolute(fInput1-fInput2);
+	fInput1 = absolute(fInput1);
+	fInput2 = absolute(fInput2);
 	return (fInput1 > fInput2) ? (fDelta <= (fInput1 * 1e-6f)) : (fDelta <=
 		(fInput2 * 1e-6f));
 
@@ -2211,9 +2031,9 @@ uint_t BURGER_API Burger::SignBit(double dInput) BURGER_NOEXCEPT
 uint_t BURGER_API Burger::EqualWithEpsilon(
 	float fInput1, float fInput2) BURGER_NOEXCEPT
 {
-	const float fDelta = Abs(fInput1 - fInput2);
-	fInput1 = Abs(fInput1);
-	fInput2 = Abs(fInput2);
+	const float fDelta = absolute(fInput1 - fInput2);
+	fInput1 = absolute(fInput1);
+	fInput2 = absolute(fInput2);
 	return (fInput1 > fInput2) ? (fDelta <= (fInput1 * 1e-6f)) :
 								 (fDelta <= (fInput2 * 1e-6f));
 }
@@ -2231,9 +2051,9 @@ uint_t BURGER_API Burger::EqualWithEpsilon(
 	\code
 
 	// Example
-	double dDelta = Abs(dInput1-dInput2);
-	dInput1 = Abs(dInput1);
-	dInput2 = Abs(dInput2);
+	double dDelta = absolute(dInput1-dInput2);
+	dInput1 = absolute(dInput1);
+	dInput2 = absolute(dInput2);
 	return (dInput1 > dInput2) ? (dDelta <= (dInput1 * 1e-6)) : (dDelta <=
 		(dInput2 * 1e-6));
 
@@ -2250,9 +2070,9 @@ uint_t BURGER_API Burger::EqualWithEpsilon(
 uint_t BURGER_API Burger::EqualWithEpsilon(
 	double dInput1, double dInput2) BURGER_NOEXCEPT
 {
-	const double dDelta = Abs(dInput1 - dInput2);
-	dInput1 = Abs(dInput1);
-	dInput2 = Abs(dInput2);
+	const double dDelta = absolute(dInput1 - dInput2);
+	dInput1 = absolute(dInput1);
+	dInput2 = absolute(dInput2);
 	return (dInput1 > dInput2) ? (dDelta <= (dInput1 * 1e-6)) :
 								 (dDelta <= (dInput2 * 1e-6));
 }
@@ -2269,9 +2089,9 @@ uint_t BURGER_API Burger::EqualWithEpsilon(
 
 	\code
 	// Example
-	float fDelta = Abs(fInput1-fInput2);
-	fInput1 = Abs(fInput1);
-	fInput2 = Abs(fInput2);
+	float fDelta = absolute(fInput1-fInput2);
+	fInput1 = absolute(fInput1);
+	fInput2 = absolute(fInput2);
 	return (fInput1 > fInput2) ? (fDelta <= (fInput1 * fEpsilon)) : (fDelta <=
 		(fInput2 * fEpsilon));
 
@@ -2289,9 +2109,9 @@ uint_t BURGER_API Burger::EqualWithEpsilon(
 uint_t BURGER_API Burger::EqualWithEpsilon(
 	float fInput1, float fInput2, float fEpsilon) BURGER_NOEXCEPT
 {
-	const float fDelta = Abs(fInput1 - fInput2);
-	fInput1 = Abs(fInput1);
-	fInput2 = Abs(fInput2);
+	const float fDelta = absolute(fInput1 - fInput2);
+	fInput1 = absolute(fInput1);
+	fInput2 = absolute(fInput2);
 	return (fInput1 > fInput2) ? (fDelta <= (fInput1 * fEpsilon)) :
 								 (fDelta <= (fInput2 * fEpsilon));
 }
@@ -2308,9 +2128,9 @@ uint_t BURGER_API Burger::EqualWithEpsilon(
 
 	\code
 	// Example
-	double dDelta = Abs(dInput1-dInput2);
-	dInput1 = Abs(dInput1);
-	dInput2 = Abs(dInput2);
+	double dDelta = absolute(dInput1-dInput2);
+	dInput1 = absolute(dInput1);
+	dInput2 = absolute(dInput2);
 	return (dInput1 > dInput2) ? (dDelta <= (dInput1 * dEpsilon)) : (dDelta <=
 		(dInput2 * dEpsilon));
 
@@ -2328,9 +2148,9 @@ uint_t BURGER_API Burger::EqualWithEpsilon(
 uint_t BURGER_API Burger::EqualWithEpsilon(
 	double dInput1, double dInput2, double dEpsilon) BURGER_NOEXCEPT
 {
-	const double dDelta = Abs(dInput1 - dInput2);
-	dInput1 = Abs(dInput1);
-	dInput2 = Abs(dInput2);
+	const double dDelta = absolute(dInput1 - dInput2);
+	dInput1 = absolute(dInput1);
+	dInput2 = absolute(dInput2);
 	return (dInput1 > dInput2) ? (dDelta <= (dInput1 * dEpsilon)) :
 								 (dDelta <= (dInput2 * dEpsilon));
 }
@@ -3952,7 +3772,7 @@ long BURGER_API Burger::ConvertToDirectSoundPan(uint_t uInput) BURGER_NOEXCEPT
 			static_cast<float>(static_cast<int32_t>(uInput - 0x8000U)) *
 			(1.0f / 32767.0f);
 		lResult =
-			static_cast<long>(Log(1.0f / (1.0f - Abs(fValue))) * -1000.0f);
+			static_cast<long>(Log(1.0f / (1.0f - absolute(fValue))) * -1000.0f);
 		if (uInput >= 0x8000U) {
 			lResult = -lResult;
 		}
@@ -3980,7 +3800,7 @@ long BURGER_API Burger::ConvertToDirectSoundPan(uint_t uInput) BURGER_NOEXCEPT
 long BURGER_API Burger::ConvertToDirectSoundPan(float fInput) BURGER_NOEXCEPT
 {
 	// Get the absolute value
-	const float fAbs = Abs(fInput);
+	const float fAbs = absolute(fInput);
 
 	// Close to the center?
 	long lResult;

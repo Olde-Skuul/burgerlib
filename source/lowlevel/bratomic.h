@@ -90,7 +90,7 @@ struct CPUID_t {
 
 	/** Result from XGETBV(0) */
 	uint64_t m_uXGETBV;
-	
+
 	/** Highest allowed CPUID input (0 if CPUID is not present) */
 	uint32_t m_uHighestCPUID;
 	/** Highest allowed extended CPUID (0x80000000 and up or zero) */
@@ -118,6 +118,9 @@ struct CPUID_t {
 	uint32_t m_uCPUID7ECX;
 	/** Feature bits CPUID(7) -> EDX */
 	uint32_t m_uCPUID7EDX;
+
+	/** MXCSR */
+	uint32_t m_uMXCSR;
 
 	/** Enumeration of the manufacturer of the CPU */
 	eCPU m_uCPUType;

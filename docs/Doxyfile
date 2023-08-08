@@ -2407,7 +2407,11 @@ INCLUDE_FILE_PATTERNS  =
 
 PREDEFINED             = DOXYGEN \
                          __cplusplus \
-                         "BURGER_ALIGN(a,b,c)=alignas(c) a b"
+                         "BURGER_ALIGN(a,b,c)=alignas(c) a b" \
+                         BURGER_68K_A0= \
+                         BURGER_68K_A1= \
+                         BURGER_68K_D0= \
+                         BURGER_68K_D1=
 
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then this
 # tag can be used to specify a list of macro names that should be expanded. The

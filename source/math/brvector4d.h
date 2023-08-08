@@ -78,8 +78,8 @@ struct Vector4D_t {
 	BURGER_INLINE void Mul(const Vector4D_t *pInput1,const Vector4D_t *pInput2) { x = pInput1->x*pInput2->x; y = pInput1->y*pInput2->y; z = pInput1->z*pInput2->z; w = pInput1->w*pInput2->w; }
 	BURGER_INLINE void Mul(const Vector4D_t *pInput,float fInput) { x = pInput->x*fInput; y = pInput->y*fInput; z = pInput->z*fInput; w = pInput->w*fInput; }
 	BURGER_INLINE float GetLengthSquared(void) const { return (x*x) + (y*y) + (z*z) + (w*w); }
-	BURGER_INLINE float GetLength(void) const { return Sqrt((x*x) + (y*y) + (z*z) + (w*w)); }
-	BURGER_INLINE float GetLengthFast(void) const { return Sqrt((x*x) + (y*y) + (z*z) + (w*w)); }
+	BURGER_INLINE float GetLength(void) const { return square_root((x*x) + (y*y) + (z*z) + (w*w)); }
+	BURGER_INLINE float GetLengthFast(void) const { return square_root((x*x) + (y*y) + (z*z) + (w*w)); }
 	void BURGER_API SetLength(float fInput);
 	void BURGER_API SetLengthFast(float fInput);
 	float BURGER_API GetDistanceSquared(float fX,float fY,float fZ,float fW) const;

@@ -375,9 +375,9 @@ uint_t BURGER_API Burger::FilePNG::Load(Image *pOutput,InputMemoryStream *pInput
 								int32_t p = b - c;
 								int32_t pc = a - c;
 
-								int32_t pa = Abs(p);
-								int32_t pb = Abs(pc);
-								pc = Abs(p + pc);
+								int32_t pa = absolute(p);
+								int32_t pb = absolute(pc);
+								pc = absolute(p + pc);
 
 								// Find the best predictor, the least of pa, pb, pc favoring the earlier
 								// ones in the case of a tie.

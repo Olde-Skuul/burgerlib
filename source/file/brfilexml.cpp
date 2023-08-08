@@ -1827,7 +1827,7 @@ uint_t Burger::FileXML::Declaration::Parse(InputMemoryStream *pInput)
 		// Special case, test for known attributes
 		const char *pKey = TempAttribute.GetKey();
 		if (!StringCaseCompare(pKey,"version")) {
-			m_fVersion = Abs(AsciiToFloat(TempAttribute.GetValue()));
+			m_fVersion = absolute(AsciiToFloat(TempAttribute.GetValue()));
 		} else if (!StringCaseCompare(pKey,"encoding")) {
 			m_Encoding = TempAttribute.GetValue();
 		} else if (!StringCaseCompare(pKey,"standalone")) {
@@ -1912,7 +1912,7 @@ uint_t Burger::FileXML::Declaration::Save(OutputMemoryStream *pOutput,uint_t uDe
 
 void BURGER_API Burger::FileXML::Declaration::SetVersion(float fInput)
 {
-	m_fVersion = Abs(fInput);
+	m_fVersion = absolute(fInput);
 }
 
 /*! ************************************

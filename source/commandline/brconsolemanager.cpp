@@ -16,6 +16,7 @@
 #include "brfilemanager.h"
 #include "brglobals.h"
 #include "brtick.h"
+#include "bratomic.h"
 
 #if !defined(DOXYGEN)
 BURGER_CREATE_STATICRTTI_PARENT(Burger::ConsoleApp, Burger::Base);
@@ -45,14 +46,25 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::ConsoleApp, Burger::Base);
 ***************************************/
 
 #if (!defined(BURGER_WINDOWS) && !defined(BURGER_MAC)) || defined(DOXYGEN)
-Burger::ConsoleApp::ConsoleApp(int iArgc, const char** ppArgv, uint_t uFlags) BURGER_NOEXCEPT:
-	m_ANSIMemoryManager(), m_bLaunchedFromDesktop(FALSE)
+Burger::ConsoleApp::ConsoleApp(int iArgc, const char** ppArgv,
+	uint_t uFlags) BURGER_NOEXCEPT: m_ANSIMemoryManager(),
+									m_bLaunchedFromDesktop(FALSE)
 {
 	BURGER_UNUSED(uFlags);
 
 	// Assume the input is UTF8 for all other platforms
 	m_ppArgv = ppArgv;
 	m_iArgc = iArgc;
+
+	// Allow denormals on SSE registers
+#if defined(BURGER_INTEL)
+#if defined(BURGER_X86)
+	CPUID_t ID;
+	CPUID(&ID);
+	if (ID.has_SSE())
+#endif
+		set_mxcsr_flags(0, 0x8040U);
+#endif
 
 	Tick::init();
 	// Init the file system
@@ -226,13 +238,13 @@ int BURGER_API Burger::ConsoleApp::InputAndOutput(
 	Burger::ConsoleApp::CallbackProc pCallback,
 	Burger::ConsoleApp::UsageProc pUsage)
 {
-	const int iArgc = GetArgc(); // Get the number of arguments remaining
+	const int iArgc = GetArgc();    // Get the number of arguments remaining
 	int iResult;
 	if (iArgc != 2 && iArgc != 3) { // Only 2 or 3 parameters are valid
 		if (pUsage) {
-			pUsage(this); // Print the docs.
+			pUsage(this);           // Print the docs.
 		}
-		iResult = 10; // Set the error code
+		iResult = 10;               // Set the error code
 	} else {
 		Filename FirstName;
 		Filename SecondName;

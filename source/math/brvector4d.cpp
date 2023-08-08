@@ -227,10 +227,10 @@
 
 void BURGER_API Burger::Vector4D_t::Set(const FixedVector4D_t *pInput)
 {
-	FixedToFloat(&x,&pInput->x);
-	FixedToFloat(&y,&pInput->y);
-	FixedToFloat(&z,&pInput->z);
-	FixedToFloat(&w,&pInput->w);
+	fixed_to_float(&x,&pInput->x);
+	fixed_to_float(&y,&pInput->y);
+	fixed_to_float(&z,&pInput->z);
+	fixed_to_float(&w,&pInput->w);
 }
 
 /*! ************************************
@@ -564,7 +564,7 @@ void BURGER_API Burger::Vector4D_t::Interpolate(const Vector4D_t *pFrom,const Ve
 void BURGER_API Burger::Vector4D_t::SetLength(float fInput)
 {
 	if (fInput>0.0f) {		// Handles NaN
-		float fLength = Sqrt((x*x) + (y*y) + (z*z) + (w*w));
+		float fLength = square_root((x*x) + (y*y) + (z*z) + (w*w));
 		if (fLength>0.0f) {	// Handles NaN
 			fInput = fInput/fLength;		// Scale to the new length
 			x *= fInput;
@@ -605,7 +605,7 @@ void BURGER_API Burger::Vector4D_t::SetLength(float fInput)
 void BURGER_API Burger::Vector4D_t::SetLengthFast(float fInput)
 {
 	if (fInput>0.0f) {			// Handles NaN
-		float fLength = Sqrt((x*x) + (y*y) + (z*z) + (w*w));
+		float fLength = square_root((x*x) + (y*y) + (z*z) + (w*w));
 		if (fLength>0.0f) {			// Handles NaN
 			fInput = fInput/fLength;		// Scale to the new length
 			x *= fInput;
@@ -698,7 +698,7 @@ float BURGER_API Burger::Vector4D_t::GetDistance(float fX,float fY,float fZ,floa
 	fY = y-fY;
 	fZ = z-fZ;
 	fW = w-fW;
-	return Sqrt((fX*fX)+(fY*fY)+(fZ*fZ)+(fW*fW));
+	return square_root((fX*fX)+(fY*fY)+(fZ*fZ)+(fW*fW));
 }
 
 /*! ************************************
@@ -720,7 +720,7 @@ float BURGER_API Burger::Vector4D_t::GetDistance(const Vector4D_t *pInput) const
 	float fY = y-pInput->y;
 	float fZ = z-pInput->z;
 	float fW = w-pInput->w;
-	return Sqrt((fX*fX)+(fY*fY)+(fZ*fZ)+(fW*fW));
+	return square_root((fX*fX)+(fY*fY)+(fZ*fZ)+(fW*fW));
 }
 
 /*! ************************************
@@ -749,7 +749,7 @@ float BURGER_API Burger::Vector4D_t::GetDistanceFast(float fX,float fY,float fZ,
 	fY = y-fY;
 	fZ = z-fZ;
 	fW = w-fW;
-	return Sqrt((fX*fX)+(fY*fY)+(fZ*fZ)+(fW*fW));
+	return square_root((fX*fX)+(fY*fY)+(fZ*fZ)+(fW*fW));
 }
 
 /*! ************************************
@@ -775,7 +775,7 @@ float BURGER_API Burger::Vector4D_t::GetDistanceFast(const Vector4D_t *pInput) c
 	float fY = y-pInput->y;
 	float fZ = z-pInput->z;
 	float fW = w-pInput->w;
-	return Sqrt((fX*fX)+(fY*fY)+(fZ*fZ)+(fW*fW));
+	return square_root((fX*fX)+(fY*fY)+(fZ*fZ)+(fW*fW));
 }
 
 
@@ -793,7 +793,7 @@ void BURGER_API Burger::Vector4D_t::Normalize(void)
 {
 	float fLengthSquared = (x*x) + (y*y) + (z*z) + (w*w);
 	if (fLengthSquared>0.0f) {		// Handles NaN
-		fLengthSquared = 1.0f / Sqrt(fLengthSquared);	// Reciprocal
+		fLengthSquared = 1.0f / square_root(fLengthSquared);	// Reciprocal
 		x *= fLengthSquared;	// Divide by 1.0f
 		y *= fLengthSquared;
 		z *= fLengthSquared;
@@ -820,7 +820,7 @@ void BURGER_API Burger::Vector4D_t::Normalize(float fX,float fY,float fZ,float f
 {
 	float fLengthSquared = (fX*fX) + (fY*fY) + (fZ*fZ) + (fW*fW);
 	if (fLengthSquared>0.0f) {	// Handles NaN
-		fLengthSquared = 1.0f / Sqrt(fLengthSquared);	// Reciprocal
+		fLengthSquared = 1.0f / square_root(fLengthSquared);	// Reciprocal
 		fX = fX*fLengthSquared;			// Divide by 1.0f
 		fY = fY*fLengthSquared;
 		fZ = fZ*fLengthSquared;
@@ -857,7 +857,7 @@ void BURGER_API Burger::Vector4D_t::Normalize(const Vector4D_t *pInput)
 	float fW = pInput->w;
 	float fLengthSquared = (fX*fX) + (fY*fY) + (fZ*fZ) + (fW*fW);
 	if (fLengthSquared>0.0f) {	// Handles NaN
-		fLengthSquared = 1.0f / Sqrt(fLengthSquared);	// Reciprocal
+		fLengthSquared = 1.0f / square_root(fLengthSquared);	// Reciprocal
 		fX = fX*fLengthSquared;			// Divide by 1.0f
 		fY = fY*fLengthSquared;
 		fZ = fZ*fLengthSquared;
@@ -892,7 +892,7 @@ void BURGER_API Burger::Vector4D_t::NormalizeFast(void)
 {
 	float fLengthSquared = (x*x) + (y*y) + (z*z) + (w*w);
 	if (fLengthSquared>0.0f) {	// Handles NaN
-		fLengthSquared = 1.0f / Sqrt(fLengthSquared);	// Reciprocal
+		fLengthSquared = 1.0f / square_root(fLengthSquared);	// Reciprocal
 		x *= fLengthSquared;	// Divide by 1.0f
 		y *= fLengthSquared;
 		z *= fLengthSquared;
@@ -923,7 +923,7 @@ void BURGER_API Burger::Vector4D_t::NormalizeFast(float fX,float fY,float fZ,flo
 {
 	float fLengthSquared = (fX*fX) + (fY*fY) + (fZ*fZ) + (fW*fW);
 	if (fLengthSquared>0.0f) {	// Handles NaN
-		fLengthSquared = 1.0f / Sqrt(fLengthSquared);	// Reciprocal
+		fLengthSquared = 1.0f / square_root(fLengthSquared);	// Reciprocal
 		fX = fX*fLengthSquared;			// Divide by 1.0f
 		fY = fY*fLengthSquared;
 		fZ = fZ*fLengthSquared;
@@ -964,7 +964,7 @@ void BURGER_API Burger::Vector4D_t::NormalizeFast(const Vector4D_t *pInput)
 	float fW = pInput->w;
 	float fLengthSquared = (fX*fX) + (fY*fY) + (fZ*fZ) + (fW*fW);
 	if (fLengthSquared>0.0f) {	// Handles NaN
-		fLengthSquared = 1.0f / Sqrt(fLengthSquared);	// Reciprocal
+		fLengthSquared = 1.0f / square_root(fLengthSquared);	// Reciprocal
 		fX = fX*fLengthSquared;			// Divide by 1.0f
 		fY = fY*fLengthSquared;
 		fZ = fZ*fLengthSquared;

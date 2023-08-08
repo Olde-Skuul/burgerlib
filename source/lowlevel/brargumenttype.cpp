@@ -1041,17 +1041,17 @@ uint32_t BURGER_API Burger::ArgumentType::GetUInt32(void) const BURGER_NOEXCEPT
 
 	case kArgumentTypeInt8:
 		uResult =
-			static_cast<uint32_t>(Abs(static_cast<int32_t>(m_Data.m_iInt8)));
+			static_cast<uint32_t>(absolute(static_cast<int32_t>(m_Data.m_iInt8)));
 		break;
 	case kArgumentTypeInt16:
 		uResult =
-			static_cast<uint32_t>(Abs(static_cast<int32_t>(m_Data.m_iInt16)));
+			static_cast<uint32_t>(absolute(static_cast<int32_t>(m_Data.m_iInt16)));
 		break;
 	case kArgumentTypeInt32:
-		uResult = static_cast<uint32_t>(Abs(m_Data.m_iInt32));
+		uResult = static_cast<uint32_t>(absolute(m_Data.m_iInt32));
 		break;
 	case kArgumentTypeInt64:
-		uResult = static_cast<uint32_t>(Abs(m_Data.m_iInt64));
+		uResult = static_cast<uint32_t>(absolute(m_Data.m_iInt64));
 		break;
 
 	case kArgumentTypeFloat16:
@@ -1059,10 +1059,10 @@ uint32_t BURGER_API Burger::ArgumentType::GetUInt32(void) const BURGER_NOEXCEPT
 			Unpack16ToFloat(static_cast<int16_t>(m_Data.m_fHalf & 0x7FFFU)));
 		break;
 	case kArgumentTypeFloat32:
-		uResult = static_cast<uint32_t>(Abs(m_Data.m_fFloat));
+		uResult = static_cast<uint32_t>(absolute(m_Data.m_fFloat));
 		break;
 	case kArgumentTypeFloat64:
-		uResult = static_cast<uint32_t>(Abs(m_Data.m_dDouble));
+		uResult = static_cast<uint32_t>(absolute(m_Data.m_dDouble));
 		break;
 
 	case kArgumentTypeBool:
@@ -1173,17 +1173,17 @@ uint64_t BURGER_API Burger::ArgumentType::GetUInt64(void) const BURGER_NOEXCEPT
 
 	case kArgumentTypeInt8:
 		uResult =
-			static_cast<uint64_t>(Abs(static_cast<int32_t>(m_Data.m_iInt8)));
+			static_cast<uint64_t>(absolute(static_cast<int32_t>(m_Data.m_iInt8)));
 		break;
 	case kArgumentTypeInt16:
 		uResult =
-			static_cast<uint64_t>(Abs(static_cast<int32_t>(m_Data.m_iInt16)));
+			static_cast<uint64_t>(absolute(static_cast<int32_t>(m_Data.m_iInt16)));
 		break;
 	case kArgumentTypeInt32:
-		uResult = static_cast<uint64_t>(Abs(m_Data.m_iInt32));
+		uResult = static_cast<uint64_t>(absolute(m_Data.m_iInt32));
 		break;
 	case kArgumentTypeInt64:
-		uResult = static_cast<uint64_t>(Abs(m_Data.m_iInt64));
+		uResult = static_cast<uint64_t>(absolute(m_Data.m_iInt64));
 		break;
 
 	case kArgumentTypeFloat16:
@@ -1191,10 +1191,10 @@ uint64_t BURGER_API Burger::ArgumentType::GetUInt64(void) const BURGER_NOEXCEPT
 			Unpack16ToFloat(static_cast<int16_t>(m_Data.m_fHalf & 0x7FFFU)));
 		break;
 	case kArgumentTypeFloat32:
-		uResult = static_cast<uint64_t>(Abs(m_Data.m_fFloat));
+		uResult = static_cast<uint64_t>(absolute(m_Data.m_fFloat));
 		break;
 	case kArgumentTypeFloat64:
-		uResult = static_cast<uint64_t>(Abs(m_Data.m_dDouble));
+		uResult = static_cast<uint64_t>(absolute(m_Data.m_dDouble));
 		break;
 
 	case kArgumentTypeBool:

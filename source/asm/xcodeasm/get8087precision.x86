@@ -1,0 +1,40 @@
+/*
+	Get the X86 floating point rounding value
+
+	X86 assembly for XCode
+
+	Build with XCode tool chain
+
+	XCode uses a C++ parser and will try to assemble this file on all
+	CPU types, so test for the proper CPU type before invoking any cpu
+	instructions.
+
+	Burger::e8087Precision BURGER_API Burger::get_8087_precision(void)
+
+	X86 version.
+*/
+
+#if defined(__i386__)
+	.align 4,0x90
+	.text
+
+	.globl __ZN6Burger18get_8087_precisionEv
+__ZN6Burger18get_8087_precisionEv:
+
+/* Space for the status word */
+	pushl	%eax
+
+/* Get the current status word */
+	fnstcw	(%esp)
+
+/* Get the current value for return */
+	popl	%eax
+
+/* Shift the bits of interest down */
+	shrl	$8,%eax
+
+/* Mask to enumeration */
+	andl	$0x0003, %eax
+	ret
+
+#endif

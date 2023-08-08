@@ -1,0 +1,47 @@
+;
+; X64 assembly for Visual Studio 2008+ compilers
+;
+; Build with ml64.exe
+;
+; double Burger::get_sign(double)
+;
+
+_TEXT segment para 'CODE'
+
+	align 16
+public ?get_sign@Burger@@YANN@Z
+?get_sign@Burger@@YANN@Z proc
+
+; rax, rcx, rdx, r8-11 are volatile
+
+; Move to an integer register
+	movd	rax, xmm0
+
+; Load 1.0, shifted up by one bit
+	mov		rcx, 07FE0000000000000H
+
+; Obtain the sign bit in carry
+	shl		rax, 1
+
+; Convert 1.0 to 1.0 or -1.0 depending on sign
+	rcr		rcx, 1
+
+; Set carry if not zero
+	neg		rax
+
+; EAX is mask, zero or 0xFFFFFFFF
+	sbb		rax, rax
+
+; Mask 1.0/-1.0f to zero if zero
+	and		rcx, rax
+
+; Move result to float
+	movd	xmm0, rcx
+
+	ret
+
+?get_sign@Burger@@YANN@Z endp
+
+_TEXT ends
+
+    end

@@ -237,11 +237,11 @@ struct Vector3D_t {
     }
     BURGER_INLINE float GetLength(void) const BURGER_NOEXCEPT
     {
-        return Sqrt((x * x) + (y * y) + (z * z));
+        return square_root((x * x) + (y * y) + (z * z));
     }
     BURGER_INLINE float GetLengthFast(void) const BURGER_NOEXCEPT
     {
-        return Sqrt((x * x) + (y * y) + (z * z));
+        return square_root((x * x) + (y * y) + (z * z));
     }
     void BURGER_API SetLength(float fInput) BURGER_NOEXCEPT;
     void BURGER_API SetLengthFast(float fInput) BURGER_NOEXCEPT;

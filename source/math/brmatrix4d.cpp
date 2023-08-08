@@ -145,33 +145,33 @@ void BURGER_API Burger::Matrix4D_t::Set(
 
     \brief Convert a fixed point matrix into a floating point matrix
 
-    Using FixedToFloat(float *,Fixed32), convert all of the entries from a
+    Using fixed_to_float(float *,Fixed32), convert all of the entries from a
     4x4 16.16 fixed point matrix into a floating point matrix
 
     \param pInput Pointer to a valid FixedMatrix4D_t for conversion
-    \sa FixedToFloat(float *,Fixed32)
+    \sa fixed_to_float(float *,Fixed32)
 
 ***************************************/
 
 void BURGER_API Burger::Matrix4D_t::Set(
     const FixedMatrix4D_t* pInput) BURGER_NOEXCEPT
 {
-    FixedToFloat(&x.x, &pInput->x.x);
-    FixedToFloat(&x.y, &pInput->x.y);
-    FixedToFloat(&x.z, &pInput->x.z);
-    FixedToFloat(&x.w, &pInput->x.w);
-    FixedToFloat(&y.x, &pInput->y.x);
-    FixedToFloat(&y.y, &pInput->y.y);
-    FixedToFloat(&y.z, &pInput->y.z);
-    FixedToFloat(&y.w, &pInput->y.w);
-    FixedToFloat(&z.x, &pInput->z.x);
-    FixedToFloat(&z.y, &pInput->z.y);
-    FixedToFloat(&z.z, &pInput->z.z);
-    FixedToFloat(&z.w, &pInput->z.w);
-    FixedToFloat(&w.x, &pInput->w.x);
-    FixedToFloat(&w.y, &pInput->w.y);
-    FixedToFloat(&w.z, &pInput->w.z);
-    FixedToFloat(&w.w, &pInput->w.w);
+    fixed_to_float(&x.x, &pInput->x.x);
+    fixed_to_float(&x.y, &pInput->x.y);
+    fixed_to_float(&x.z, &pInput->x.z);
+    fixed_to_float(&x.w, &pInput->x.w);
+    fixed_to_float(&y.x, &pInput->y.x);
+    fixed_to_float(&y.y, &pInput->y.y);
+    fixed_to_float(&y.z, &pInput->y.z);
+    fixed_to_float(&y.w, &pInput->y.w);
+    fixed_to_float(&z.x, &pInput->z.x);
+    fixed_to_float(&z.y, &pInput->z.y);
+    fixed_to_float(&z.z, &pInput->z.z);
+    fixed_to_float(&z.w, &pInput->z.w);
+    fixed_to_float(&w.x, &pInput->w.x);
+    fixed_to_float(&w.y, &pInput->w.y);
+    fixed_to_float(&w.z, &pInput->w.z);
+    fixed_to_float(&w.w, &pInput->w.w);
 }
 
 /*! ************************************
@@ -4085,7 +4085,7 @@ void BURGER_API Burger::Matrix4D_t::Rotate(
         const float fCos = Cos(fRadians);
 
         // Get the length of the vector
-        const float fLength = Sqrt((fX * fX) + (fY * fY) + (fZ * fZ));
+        const float fLength = square_root((fX * fX) + (fY * fY) + (fZ * fZ));
 
         const float fReciprocalLength = 1.0f / fLength;
         const float fOneLessCosine = 1.0f - fCos;
@@ -4288,7 +4288,7 @@ uint_t BURGER_API Burger::Matrix4D_t::AffineInverse(
 
     uint_t bResult;
     if ((fDeterminant == 0.0f) ||
-        (Abs(fDeterminant / (fPositive - fNegative)) < fPrecisionLimit)) {
+        (absolute(fDeterminant / (fPositive - fNegative)) < fPrecisionLimit)) {
         Set(pInput);
         bResult = FALSE;
     } else {

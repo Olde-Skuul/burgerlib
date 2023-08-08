@@ -5,16 +5,16 @@
 ;
 ; Build with WiiU tool chain
 ;
-; ePowerPCRounding BURGER_API Burger::GetPowerPCRounding(void) BURGER_NOEXCEPT;
+; ePowerPCRounding BURGER_API Burger::get_PowerPC_rounding(void) BURGER_NOEXCEPT;
 ;
 
 	.align 2
 
 	.text
 
-	.global GetPowerPCRounding__6BurgerFv
-GetPowerPCRounding__6BurgerFv:
-	.type GetPowerPCRounding__6BurgerFv, @function
+	.global get_PowerPC_rounding__6BurgerFv
+get_PowerPC_rounding__6BurgerFv:
+	.type get_PowerPC_rounding__6BurgerFv, @function
 
 ; Get the floating point control register
 	mffs	f0
@@ -31,4 +31,4 @@ GetPowerPCRounding__6BurgerFv:
 ; Exit
 	blr
 
-	.size	GetPowerPCRounding__6BurgerFv,$-GetPowerPCRounding__6BurgerFv
+	.size	get_PowerPC_rounding__6BurgerFv,$-get_PowerPC_rounding__6BurgerFv

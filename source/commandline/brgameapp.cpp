@@ -13,6 +13,7 @@
 ***************************************/
 
 #include "brgameapp.h"
+#include "bratomic.h"
 #include "brdisplay.h"
 #include "brjoypad.h"
 #include "brkeyboard.h"
@@ -242,13 +243,22 @@ void BURGER_API Burger::GameApp::ShutdownDefaults(void) BURGER_NOEXCEPT
 ***************************************/
 
 #if !(defined(BURGER_XBOX360) || defined(BURGER_WINDOWS) || \
-	defined(BURGER_MACOSX) || defined(BURGER_IOS)) || \
+	defined(BURGER_DARWIN)) || \
 	defined(DOXYGEN)
 Burger::GameApp::GameApp(uintptr_t uDefaultMemorySize,
 	uint_t uDefaultHandleCount, uintptr_t uMinReserveSize) BURGER_NOEXCEPT
 	: m_MemoryManagerHandle(
 		  uDefaultMemorySize, uDefaultHandleCount, uMinReserveSize)
 {
+	// Allow denormals on SSE registers
+#if defined(BURGER_INTEL)
+#if defined(BURGER_X86)
+	CPUID_t ID;
+	CPUID(&ID);
+	if (ID.has_SSE())
+#endif
+		set_mxcsr_flags(0, 0x8040U);
+#endif
 	Tick::init();
 	InitDefaults();
 }

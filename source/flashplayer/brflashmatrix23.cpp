@@ -439,7 +439,7 @@ float BURGER_API Burger::Flash::Matrix23::GetMaxScale(void) const
 	float fBasisX = (m_fScaleX * m_fScaleX) + (m_fRotateSkew0 * m_fRotateSkew0);
 	float fBasisY = (m_fScaleY * m_fScaleY) + (m_fRotateSkew1 * m_fRotateSkew1);
 	float fLengthSquared = Max(fBasisX,fBasisY);
-	return Sqrt(fLengthSquared);
+	return square_root(fLengthSquared);
 }
 
 /*! ************************************
@@ -455,7 +455,7 @@ float BURGER_API Burger::Flash::Matrix23::GetMaxScale(void) const
 
 float BURGER_API Burger::Flash::Matrix23::GetXScale(void) const
 {
-	float fScale = Sqrt(m_fScaleX * m_fScaleX + m_fRotateSkew1 * m_fRotateSkew1);
+	float fScale = square_root(m_fScaleX * m_fScaleX + m_fRotateSkew1 * m_fRotateSkew1);
 	// Are we turned inside out?
 	if (GetDeterminant() < 0.f) {
 		fScale = -fScale;		// Flip
@@ -476,7 +476,7 @@ float BURGER_API Burger::Flash::Matrix23::GetXScale(void) const
 
 float BURGER_API Burger::Flash::Matrix23::GetYScale(void) const
 {
-	return Sqrt(m_fScaleY * m_fScaleY + m_fRotateSkew0 * m_fRotateSkew0);
+	return square_root(m_fScaleY * m_fScaleY + m_fRotateSkew0 * m_fRotateSkew0);
 }
 
 /*! ************************************

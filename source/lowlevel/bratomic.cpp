@@ -695,6 +695,11 @@ void BURGER_API Burger::CPUID(CPUID_t* pOutput) BURGER_NOEXCEPT
 		pWork[0] = Results[0];
 		pOutput->m_HypervisorSignature[4] = 0;
 	}
+
+	// Get the MXCSR if SSE is detected
+	if (pOutput->has_SSE()) {
+		pOutput->m_uMXCSR = static_cast<uint32_t>(_mm_getcsr());
+	}
 }
 
 #endif

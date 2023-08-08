@@ -143,8 +143,8 @@
 void BURGER_API Burger::Vector2D_t::Set(
     const FixedVector2D_t* pInput) BURGER_NOEXCEPT
 {
-    FixedToFloat(&x, &pInput->x);
-    FixedToFloat(&y, &pInput->y);
+    fixed_to_float(&x, &pInput->x);
+    fixed_to_float(&y, &pInput->y);
 }
 
 /*! ************************************
@@ -472,7 +472,7 @@ void BURGER_API Burger::Vector2D_t::Interpolate(const Vector2D_t* pFrom,
 void BURGER_API Burger::Vector2D_t::SetLength(float fInput) BURGER_NOEXCEPT
 {
     if (fInput > 0.0f) { // Handles NaN
-        const float fLength = Sqrt((x * x) + (y * y));
+        const float fLength = square_root((x * x) + (y * y));
         if (fLength > 0.0f) {          // Handles NaN
             fInput = fInput / fLength; // Scale to the new length
             x *= fInput;
@@ -508,7 +508,7 @@ void BURGER_API Burger::Vector2D_t::SetLength(float fInput) BURGER_NOEXCEPT
 void BURGER_API Burger::Vector2D_t::SetLengthFast(float fInput) BURGER_NOEXCEPT
 {
     if (fInput > 0.0f) { // Handles NaN
-        const float fLength = Sqrt((x * x) + (y * y));
+        const float fLength = square_root((x * x) + (y * y));
         if (fLength > 0.0f) {          // Handles NaN
             fInput = fInput / fLength; // Scale to the new length
             x *= fInput;
@@ -591,7 +591,7 @@ float BURGER_API Burger::Vector2D_t::GetDistance(
 {
     fX = x - fX;
     fY = y - fY;
-    return Sqrt((fX * fX) + (fY * fY));
+    return square_root((fX * fX) + (fY * fY));
 }
 
 /*! ************************************
@@ -614,7 +614,7 @@ float BURGER_API Burger::Vector2D_t::GetDistance(
 {
     const float fX = x - pInput->x;
     const float fY = y - pInput->y;
-    return Sqrt((fX * fX) + (fY * fY));
+    return square_root((fX * fX) + (fY * fY));
 }
 
 /*! ************************************
@@ -642,7 +642,7 @@ float BURGER_API Burger::Vector2D_t::GetDistanceFast(
 {
     fX = x - fX;
     fY = y - fY;
-    return Sqrt((fX * fX) + (fY * fY));
+    return square_root((fX * fX) + (fY * fY));
 }
 
 /*! ************************************
@@ -670,7 +670,7 @@ float BURGER_API Burger::Vector2D_t::GetDistanceFast(
 {
     const float fX = x - pInput->x;
     const float fY = y - pInput->y;
-    return Sqrt((fX * fX) + (fY * fY));
+    return square_root((fX * fX) + (fY * fY));
 }
 
 /*! ************************************
@@ -688,7 +688,7 @@ void BURGER_API Burger::Vector2D_t::Normalize(void) BURGER_NOEXCEPT
 {
     float fLengthSquared = (x * x) + (y * y);
     if (fLengthSquared > 0.0f) {                      // Handles NaN
-        fLengthSquared = 1.0f / Sqrt(fLengthSquared); // Reciprocal
+        fLengthSquared = 1.0f / square_root(fLengthSquared); // Reciprocal
         x *= fLengthSquared;                          // Divide by 1.0f
         y *= fLengthSquared;
     }
@@ -712,7 +712,7 @@ void BURGER_API Burger::Vector2D_t::Normalize(
 {
     float fLengthSquared = (fX * fX) + (fY * fY);
     if (fLengthSquared > 0.0f) {                      // Handles NaN
-        fLengthSquared = 1.0f / Sqrt(fLengthSquared); // Reciprocal
+        fLengthSquared = 1.0f / square_root(fLengthSquared); // Reciprocal
         fX = fX * fLengthSquared;                     // Divide by 1.0f
         fY = fY * fLengthSquared;
     } else {
@@ -743,7 +743,7 @@ void BURGER_API Burger::Vector2D_t::Normalize(
     float fY = pInput->y;
     float fLengthSquared = (fX * fX) + (fY * fY);
     if (fLengthSquared > 0.0f) {                      // Handles NaN
-        fLengthSquared = 1.0f / Sqrt(fLengthSquared); // Reciprocal
+        fLengthSquared = 1.0f / square_root(fLengthSquared); // Reciprocal
         fX = fX * fLengthSquared;                     // Divide by 1.0f
         fY = fY * fLengthSquared;
     } else {
@@ -773,7 +773,7 @@ void BURGER_API Burger::Vector2D_t::NormalizeFast(void) BURGER_NOEXCEPT
 {
     float fLengthSquared = (x * x) + (y * y);
     if (fLengthSquared > 0.0f) {                      // Handles NaN
-        fLengthSquared = 1.0f / Sqrt(fLengthSquared); // Reciprocal
+        fLengthSquared = 1.0f / square_root(fLengthSquared); // Reciprocal
         x *= fLengthSquared;                          // Divide by 1.0f
         y *= fLengthSquared;
     }
@@ -801,7 +801,7 @@ void BURGER_API Burger::Vector2D_t::NormalizeFast(
 {
     float fLengthSquared = (fX * fX) + (fY * fY);
     if (fLengthSquared > 0.0f) {                      // Handles NaN
-        fLengthSquared = 1.0f / Sqrt(fLengthSquared); // Reciprocal
+        fLengthSquared = 1.0f / square_root(fLengthSquared); // Reciprocal
         fX = fX * fLengthSquared;                     // Divide by 1.0f
         fY = fY * fLengthSquared;
     } else {
@@ -836,7 +836,7 @@ void BURGER_API Burger::Vector2D_t::NormalizeFast(
     float fY = pInput->y;
     float fLengthSquared = (fX * fX) + (fY * fY);
     if (fLengthSquared > 0.0f) {                      // Handles NaN
-        fLengthSquared = 1.0f / Sqrt(fLengthSquared); // Reciprocal
+        fLengthSquared = 1.0f / square_root(fLengthSquared); // Reciprocal
         fX = fX * fLengthSquared;                     // Divide by 1.0f
         fY = fY * fLengthSquared;
     } else {

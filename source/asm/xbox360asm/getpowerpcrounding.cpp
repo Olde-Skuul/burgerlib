@@ -10,13 +10,13 @@
     \note This function only exists on PowerPC compatible CPU targets.
 
     \return Current precision state
-    \sa ePowerPCRounding or SetPowerPCRounding(ePowerPCRounding)
+    \sa ePowerPCRounding or set_PowerPC_rounding(ePowerPCRounding)
 
 ***************************************/
 
 #if defined(BURGER_XBOX360)
 
-__declspec(naked) Burger::ePowerPCRounding BURGER_API Burger::GetPowerPCRounding(void)
+__declspec(naked) Burger::ePowerPCRounding BURGER_API Burger::get_PowerPC_rounding(void)
 {
 __asm {
 

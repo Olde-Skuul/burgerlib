@@ -124,25 +124,25 @@ void BURGER_API Burger::Matrix3D_t::Set(const Matrix3D_t *pInput)
 
 	\brief Convert a fixed point matrix into a floating point matrix
 
-	Using FixedToFloat(float *,Fixed32), convert all of the entries
+	Using fixed_to_float(float *,Fixed32), convert all of the entries
 	from a 3x3 16.16 fixed point matrix into a floating point matrix
 
 	\param pInput Pointer to a valid FixedMatrix3D_t for conversion
-	\sa FixedToFloat(float *,Fixed32)
+	\sa fixed_to_float(float *,Fixed32)
 
 ***************************************/
 
 void BURGER_API Burger::Matrix3D_t::Set(const FixedMatrix3D_t *pInput)
 {
-	FixedToFloat(&x.x,&pInput->x.x);
-	FixedToFloat(&x.y,&pInput->x.y);
-	FixedToFloat(&x.z,&pInput->x.z);
-	FixedToFloat(&y.x,&pInput->y.x);
-	FixedToFloat(&y.y,&pInput->y.y);
-	FixedToFloat(&y.z,&pInput->y.z);
-	FixedToFloat(&z.x,&pInput->z.x);
-	FixedToFloat(&z.y,&pInput->z.y);
-	FixedToFloat(&z.z,&pInput->z.z);
+	fixed_to_float(&x.x,&pInput->x.x);
+	fixed_to_float(&x.y,&pInput->x.y);
+	fixed_to_float(&x.z,&pInput->x.z);
+	fixed_to_float(&y.x,&pInput->y.x);
+	fixed_to_float(&y.y,&pInput->y.y);
+	fixed_to_float(&y.z,&pInput->y.z);
+	fixed_to_float(&z.x,&pInput->z.x);
+	fixed_to_float(&z.y,&pInput->z.y);
+	fixed_to_float(&z.z,&pInput->z.z);
 }
 
 /*! ************************************
@@ -3052,7 +3052,7 @@ uint_t BURGER_API Burger::Matrix3D_t::AffineInverse(const Matrix3D_t *pInput)
 
 	// Is the matrix singular?
 
-	if((fDeterminate == 0.0f) || (Abs(fDeterminate / (fPositive - fNegative)) < (1.0e-15f))) {
+	if((fDeterminate == 0.0f) || (absolute(fDeterminate / (fPositive - fNegative)) < (1.0e-15f))) {
 		// There is no scale, not possible to convert
 		Identity();
 		// Matrix4 M has no inverse

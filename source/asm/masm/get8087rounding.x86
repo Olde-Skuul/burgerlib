@@ -1,0 +1,39 @@
+;
+; X86 assembly for x86 Visual Studio compilers
+;
+; Build with ml.exe
+;
+; Burger::e8087Rounding __fastcall Burger::get_8087_rounding(void)
+;
+
+	.686
+
+_TEXT segment para 'CODE'
+
+	align 16
+public ?get_8087_rounding@Burger@@YI?AW4e8087Rounding@1@XZ
+?get_8087_rounding@Burger@@YI?AW4e8087Rounding@1@XZ proc
+
+; eax, ecx, and edx are volatile
+
+; Space for the status word
+	push	eax
+
+; Get the current status word
+	fnstcw	[esp]
+
+; Get the current value for return
+	pop		eax
+
+; Shift the bits of interest down
+	shr eax, 10
+
+; Mask to enumeration
+	and eax, 3
+	ret
+
+?get_8087_rounding@Burger@@YI?AW4e8087Rounding@1@XZ endp
+
+_TEXT ends
+
+	end

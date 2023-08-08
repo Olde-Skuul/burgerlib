@@ -949,7 +949,7 @@ uint_t BURGER_API Burger::NumberStringLength(int32_t iInput) BURGER_NOEXCEPT
 {
 	const uint_t uSign =
 		static_cast<uint32_t>(iInput) >> 31U; // 1 if negative, 0 positive
-	return uSign + NumberStringLength(static_cast<uint32_t>(Abs(iInput)));
+	return uSign + NumberStringLength(static_cast<uint32_t>(absolute(iInput)));
 }
 
 /*! ************************************
@@ -1017,7 +1017,7 @@ uint_t BURGER_API Burger::NumberStringLength(int64_t iInput) BURGER_NOEXCEPT
 	// 1 if negative, 0 positive
 	const uint_t uSign =
 		static_cast<uint_t>(static_cast<uint64_t>(iInput) >> 63U);
-	return uSign + NumberStringLength(static_cast<uint64_t>(Abs(iInput)));
+	return uSign + NumberStringLength(static_cast<uint64_t>(absolute(iInput)));
 }
 
 /*! ************************************

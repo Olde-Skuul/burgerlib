@@ -54,7 +54,7 @@ void BURGER_API Burger::ChooseGridSize(uint_t* pXCellCount,uint_t* pYCellCount,c
 		if (fArea > 0) {
 			// Scale the area to the grid (Convert to reciprocal)
 			fArea = 1.0f / (fArea * fGridScale);
-			float fSqrt = Sqrt(fEstimate);
+			float fSqrt = square_root(fEstimate);
 			fWidth = (fWidth * fWidth) * fArea;
 			fHeight = (fHeight * fHeight) * fArea;
 			uXCellCount = static_cast<uint_t>(static_cast<int>(fWidth * fSqrt));

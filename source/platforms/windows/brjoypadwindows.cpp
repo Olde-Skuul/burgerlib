@@ -941,31 +941,31 @@ uint_t BURGER_API Burger::XInputGetGamepadState(uint_t uWhich,
 				switch (uDeadZoneType) {
 				case XINPUTDEADZONE_CARDINAL:
 					// If the values are in the dead zone, set to zero
-					if (Abs(iThumbLX) < XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) {
+					if (absolute(iThumbLX) < XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) {
 						iThumbLX = 0;
 					}
-					if (Abs(iThumbLY) < XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) {
+					if (absolute(iThumbLY) < XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) {
 						iThumbLY = 0;
 					}
 					// Note: The constant is different for the right thumbstick
 					// vs the left
-					if (Abs(iThumbRX) < XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE) {
+					if (absolute(iThumbRX) < XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE) {
 						iThumbRX = 0;
 					}
-					if (Abs(iThumbRY) < XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE) {
+					if (absolute(iThumbRY) < XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE) {
 						iThumbRY = 0;
 					}
 					break;
 				case XINPUTDEADZONE_CENTER:
 					// Handle dead zones on a center region basis
-					if ((Abs(iThumbLX) < XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) &&
-						(Abs(iThumbLY) < XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)) {
+					if ((absolute(iThumbLX) < XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) &&
+						(absolute(iThumbLY) < XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)) {
 						iThumbLX = 0;
 						iThumbLY = 0;
 					}
 
-					if ((Abs(iThumbRX) < XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE) &&
-						(Abs(iThumbRY) < XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE)) {
+					if ((absolute(iThumbRX) < XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE) &&
+						(absolute(iThumbRY) < XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE)) {
 						iThumbRX = 0;
 						iThumbRY = 0;
 					}

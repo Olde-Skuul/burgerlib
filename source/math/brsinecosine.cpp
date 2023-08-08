@@ -848,7 +848,7 @@ static const Burger::uint32_float_t g_fCos3DigitsValues[9] = {
 float BURGER_API Burger::Cos3Digits(float fInput) BURGER_NOEXCEPT
 {
     // Cosine uses absolute value
-    fInput = Abs(fInput);
+    fInput = absolute(fInput);
 
     // Get the modulo of PI*2
     float fFractional = fInput * g_fCos3DigitsValues[4].f;
@@ -925,7 +925,7 @@ static const Burger::uint32_float_t g_fCos5DigitsValues[10] = {
 float BURGER_API Burger::Cos5Digits(float fInput) BURGER_NOEXCEPT
 {
     // Cosine uses absolute value
-    fInput = Abs(fInput);
+    fInput = absolute(fInput);
 
     // Get the modulo of PI*2
     float fFractional = fInput * g_fCos5DigitsValues[4].f;
@@ -1015,7 +1015,7 @@ float BURGER_API Burger::Sin6Digits(float fInput) BURGER_NOEXCEPT
 #endif
 
     // Get the modulo of PI/4
-    float fFractional = Abs(fInput) * g_fSinefCosfValues[0].f;
+    float fFractional = absolute(fInput) * g_fSinefCosfValues[0].f;
 
     // The integer denotes the quadrant
     const int iQuadrant = static_cast<int>(fFractional);
@@ -1073,7 +1073,7 @@ float BURGER_API Burger::Sin6Digits(float fInput) BURGER_NOEXCEPT
 float BURGER_API Burger::Cos6Digits(float fInput) BURGER_NOEXCEPT
 {
     // Cosine uses absolute value
-    fInput = Abs(fInput);
+    fInput = absolute(fInput);
 
     // Get the modulo of PI/4
     float fFractional = fInput * g_fSinefCosfValues[0].f;
@@ -1608,7 +1608,7 @@ static const Burger::uint64_double_t g_fxcosf7Values[11] = {
 double BURGER_API Burger::Cos7Digits(double dInput) BURGER_NOEXCEPT
 {
     // Cosine uses absolute value
-    dInput = Abs(dInput);
+    dInput = absolute(dInput);
 
     // Get the modulo of PI*2
     double dFractional = dInput * g_fxcosf7Values[4].d;
@@ -1691,7 +1691,7 @@ static const Burger::uint64_double_t g_fxcosf12Values[13] = {
 double BURGER_API Burger::Cos12Digits(double dInput) BURGER_NOEXCEPT
 {
     // Cosine uses absolute value
-    dInput = Abs(dInput);
+    dInput = absolute(dInput);
 
     // Get the modulo of PI*2
     double dFractional = dInput * g_fxcosf12Values[4].d;
@@ -2102,7 +2102,7 @@ static const Burger::uint64_double_t g_fxcosf20Values[16] = {
 double BURGER_API Burger::Cos(double dInput) BURGER_NOEXCEPT
 {
     // Cosine uses absolute value
-    dInput = Abs(dInput);
+    dInput = absolute(dInput);
 
     // Get the modulo of PI*2
     double dFractional = dInput * g_fxcosf20Values[4].d;

@@ -46,9 +46,9 @@ extern unsigned __int64 __cdecl _byteswap_uint64(unsigned __int64);
 extern unsigned short __cdecl _load_be_u16(void const*);
 extern unsigned int __cdecl _load_be_u32(void const*);
 extern unsigned __int64 __cdecl _load_be_u64(void const*);
-extern void __cdecl _store_be_u16(void *, unsigned short);
-extern void __cdecl _store_be_u32(void *, unsigned int);
-extern void __cdecl _store_be_u64(void *, unsigned __int64);
+extern void __cdecl _store_be_u16(void*, unsigned short);
+extern void __cdecl _store_be_u32(void*, unsigned int);
+extern void __cdecl _store_be_u64(void*, unsigned __int64);
 #endif
 
 // Visual Studio 2008 and earlier doesn't have this intrinsic
@@ -60,6 +60,18 @@ extern "C" uint64_t BURGER_API _xgetbv(unsigned int uInput);
 extern uint64_t _xgetbv(unsigned int uInput);
 #pragma aux _xgetbv = "db 0x0F, 0x01, 0xD0" parm[ecx] value[eax edx] modify \
 	exact[eax edx] nomemory;
+
+extern unsigned int _mm_getcsr(void);
+#pragma aux _mm_getcsr = \
+	"push eax" \
+	"stmxcsr [esp]" \
+	"pop eax" value[eax] modify exact[eax] nomemory;
+
+extern void _mm_setcsr(unsigned int);
+#pragma aux _mm_setcsr = \
+	"push eax" \
+	"ldmxcsr [esp]" \
+	"pop eax" parm[eax] modify exact[eax] nomemory;
 
 #elif defined(BURGER_METROWERKS) && defined(BURGER_X86)
 BURGER_INLINE uint64_t _xgetbv(register uint_t xcr) BURGER_NOEXCEPT

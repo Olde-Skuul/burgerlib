@@ -9,13 +9,13 @@
 
 ;
 ; Unmangled function prototype
-; ePowerPCRounding BURGER_API Burger::GetPowerPCRounding(void) BURGER_NOEXCEPT;
+; ePowerPCRounding BURGER_API Burger::get_PowerPC_rounding(void) BURGER_NOEXCEPT;
 ;
 
-	EXPORT GetPowerPCRounding__6BurgerFv[DS]
-	EXPORT GetPowerPCRounding__6BurgerFv[PR]
+	EXPORT get_PowerPC_rounding__6BurgerFv[DS]
+	EXPORT get_PowerPC_rounding__6BurgerFv[PR]
 
-	DeclareProc GetPowerPCRounding__6BurgerFv
+	DeclareProc get_PowerPC_rounding__6BurgerFv
 
 ; Get the floating point control register
 	mffs	fp0

@@ -256,19 +256,19 @@ namespace Burger {
 #endif
 
 #if defined(BURGER_ARM) || defined(BURGER_AMD64) || (defined(BURGER_X86) && !defined(BURGER_WINDOWS)) || defined(DOXYGEN)
-	BURGER_INLINE int8_t Abs(int8_t iInput) { if (iInput<0) { iInput=-iInput; } return iInput; }
-	BURGER_INLINE int16_t Abs(int16_t iInput) BURGER_NOEXCEPT { if (iInput<0) { iInput=-iInput; } return iInput; }
-	BURGER_INLINE int32_t Abs(int32_t iInput) BURGER_NOEXCEPT { if (iInput<0) { iInput=-iInput; } return iInput; }
-	BURGER_INLINE int64_t Abs(int64_t iInput) BURGER_NOEXCEPT { if (iInput<0) { iInput=-iInput; } return iInput; }
+	BURGER_INLINE int8_t absolute(int8_t iInput) { if (iInput<0) { iInput=-iInput; } return iInput; }
+	BURGER_INLINE int16_t absolute(int16_t iInput) BURGER_NOEXCEPT { if (iInput<0) { iInput=-iInput; } return iInput; }
+	BURGER_INLINE int32_t absolute(int32_t iInput) BURGER_NOEXCEPT { if (iInput<0) { iInput=-iInput; } return iInput; }
+	BURGER_INLINE int64_t absolute(int64_t iInput) BURGER_NOEXCEPT { if (iInput<0) { iInput=-iInput; } return iInput; }
 	BURGER_INLINE int8_t ClampZero(int8_t iInput) BURGER_NOEXCEPT { if (iInput<0) { iInput=0; } return iInput; }
 	BURGER_INLINE int16_t ClampZero(int16_t iInput) BURGER_NOEXCEPT { if (iInput<0) { iInput=0; } return iInput; }
 	BURGER_INLINE int32_t ClampZero(int32_t iInput) BURGER_NOEXCEPT { if (iInput<0) { iInput=0; } return iInput; }
 	BURGER_INLINE int64_t ClampZero(int64_t iInput) BURGER_NOEXCEPT { if (iInput<0) { iInput=0; } return iInput; }
 #else
-	BURGER_INLINE int8_t Abs(int8_t iInput) BURGER_NOEXCEPT { const int8_t iMask = static_cast<int8_t>(iInput>>7); return static_cast<int8_t>((iInput^iMask)-iMask); }
-	BURGER_INLINE int16_t Abs(int16_t iInput) BURGER_NOEXCEPT { int16_t iMask = static_cast<int16_t>(iInput>>15); return static_cast<int16_t>((iInput^iMask)-iMask); }
-	BURGER_INLINE int32_t Abs(int32_t iInput) BURGER_NOEXCEPT { int32_t iMask = (iInput>>31); return (iInput^iMask)-iMask; }
-	BURGER_INLINE int64_t Abs(int64_t iInput) BURGER_NOEXCEPT { int64_t iMask = (iInput>>63); return (iInput^iMask)-iMask; }
+	BURGER_INLINE int8_t absolute(int8_t iInput) BURGER_NOEXCEPT { const int8_t iMask = static_cast<int8_t>(iInput>>7); return static_cast<int8_t>((iInput^iMask)-iMask); }
+	BURGER_INLINE int16_t absolute(int16_t iInput) BURGER_NOEXCEPT { int16_t iMask = static_cast<int16_t>(iInput>>15); return static_cast<int16_t>((iInput^iMask)-iMask); }
+	BURGER_INLINE int32_t absolute(int32_t iInput) BURGER_NOEXCEPT { int32_t iMask = (iInput>>31); return (iInput^iMask)-iMask; }
+	BURGER_INLINE int64_t absolute(int64_t iInput) BURGER_NOEXCEPT { int64_t iMask = (iInput>>63); return (iInput^iMask)-iMask; }
 	BURGER_INLINE BURGER_CONSTEXPR int8_t ClampZero(int8_t iInput) BURGER_NOEXCEPT { return static_cast<int8_t>((~(iInput>>7))&iInput); }
 	BURGER_INLINE BURGER_CONSTEXPR int16_t ClampZero(int16_t iInput) BURGER_NOEXCEPT { return static_cast<int16_t>((~(iInput>>15))&iInput); }
 	BURGER_INLINE BURGER_CONSTEXPR int32_t ClampZero(int32_t iInput) BURGER_NOEXCEPT { return (~(iInput>>31))&iInput; }
@@ -363,9 +363,9 @@ namespace Burger {
 	extern Fixed32 BURGER_API FixedReciprocal(Fixed32 fInput);
 #endif
 
-	extern uint32_t BURGER_API Sqrt(uint32_t uInput);
+	extern uint32_t BURGER_API square_root(uint32_t uInput);
 	extern uint32_t BURGER_API SqrtFixedToWord32(Fixed32 fInput);
-	extern Fixed32 BURGER_API Sqrt(Fixed32 uInput);
+	extern Fixed32 BURGER_API square_root(Fixed32 uInput);
 
 #if defined(BURGER_MSVC) || defined(BURGER_WATCOM)
 	BURGER_INLINE uint32_t RotateLeft(uint32_t uInput,uint_t uShiftCount) BURGER_NOEXCEPT { return static_cast<uint32_t>(_rotl(uInput,uShiftCount)); }

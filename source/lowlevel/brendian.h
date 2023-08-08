@@ -1560,7 +1560,7 @@ struct fixup_dispatch<T, 2, true> {
 	BURGER_INLINE void operator()(T* pOutput) BURGER_NOEXCEPT
 	{
 #if defined(BURGER_METROWERKS) && defined(BURGER_PPC)
-		uint16_t uTemp = __lhbrx(pOutput, 0);
+		uint16_t uTemp = static_cast<uint16_t>(__lhbrx(pOutput, 0));
 		reinterpret_cast<uint16_t*>(pOutput)[0] = uTemp;
 #else
 		*pOutput =
@@ -1610,7 +1610,7 @@ struct fixup_dispatch<float, sizeof(float), true> {
 		uint32_t uTemp = __lwbrx(pOutput, 0);
 		reinterpret_cast<uint32_t*>(pOutput)[0] = uTemp;
 #else
-		uint32_t* p32 = reinterpret_cast<uint32_t*>(pOutput);
+		uint32_t* p32 = static_cast<uint32_t*>(static_cast<void*>(pOutput));
 		*p32 =
 			Swap::load_dispatch<uint32_t*, sizeof(void*), false, true>()(p32);
 #endif
@@ -1628,7 +1628,7 @@ struct fixup_dispatch<double, sizeof(double), true> {
 		reinterpret_cast<uint32_t*>(pOutput)[0] = uHigh;
 		reinterpret_cast<uint32_t*>(pOutput)[1] = uLow;
 #else
-		uint64_t* p64 = reinterpret_cast<uint64_t*>(pOutput);
+		uint64_t* p64 = static_cast<uint64_t*>(static_cast<void*>(pOutput));
 		*p64 =
 			Swap::load_dispatch<uint64_t*, sizeof(void*), false, true>()(p64);
 #endif
@@ -1691,7 +1691,7 @@ template<>
 struct fixup_unaligned_dispatch<float, sizeof(float), true> {
 	BURGER_INLINE void operator()(float* pOutput) BURGER_NOEXCEPT
 	{
-		uint32_t* p32 = reinterpret_cast<uint32_t*>(pOutput);
+		uint32_t* p32 = static_cast<uint32_t*>(static_cast<void*>(pOutput));
 		_store_unaligned(p32, _load_unaligned_swap(p32));
 	}
 };
@@ -1701,7 +1701,7 @@ template<>
 struct fixup_unaligned_dispatch<double, sizeof(double), true> {
 	BURGER_INLINE void operator()(double* pOutput) BURGER_NOEXCEPT
 	{
-		uint64_t* p64 = reinterpret_cast<uint64_t*>(pOutput);
+		uint64_t* p64 = static_cast<uint64_t*>(static_cast<void*>(pOutput));
 		_store_unaligned(p64, _load_unaligned_swap(p64));
 	}
 };

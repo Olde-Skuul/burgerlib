@@ -142,7 +142,7 @@ extern void* __alloca(unsigned x);
 #elif defined(BURGER_PPC)
 
 // Most PowerPC CPUs don't have fsqrt or fsqrts in hardware.
-// Use Burgerlib's Sqrt() which is optimized PPC code
+// Use Burgerlib's square_root() which is optimized PPC code
 
 extern double sqrt(double);
 

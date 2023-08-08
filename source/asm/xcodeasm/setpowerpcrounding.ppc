@@ -9,7 +9,7 @@
 	CPU types, so test for the proper CPU type before invoking any cpu
 	instructions.
 
-	ePowerPCRounding BURGER_API Burger::SetPowerPCRounding(
+	ePowerPCRounding BURGER_API Burger::set_PowerPC_rounding(
 		ePowerPCRounding uInput) BURGER_NOEXCEPT;
 
 	Power PC 32 and 64 bit version.
@@ -19,8 +19,8 @@
 	.align 2
 	.text
 
-	.globl __ZN6Burger18SetPowerPCRoundingENS_16ePowerPCRoundingE
-__ZN6Burger18SetPowerPCRoundingENS_16ePowerPCRoundingE:
+	.globl __ZN6Burger20set_PowerPC_roundingENS_16ePowerPCRoundingE
+__ZN6Burger20set_PowerPC_roundingENS_16ePowerPCRoundingE:
 
 /* Get the floating point control register */
 	mffs	f0

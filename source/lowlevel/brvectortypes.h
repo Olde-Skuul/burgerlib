@@ -87,6 +87,8 @@ typedef float32x4_t Vector_128;
 #define __fsel __FSEL
 #define __lwarx __LWARX
 #define __stwcx __STWCX
+#define __builtin_fmaf __FMADDS
+#define __builtin_fma __FMADD
 struct Vector_128 {
 	/** Opaque contents to the 128 bit vector register */
 	BURGER_ALIGN(float, m128_f32[4], 16);

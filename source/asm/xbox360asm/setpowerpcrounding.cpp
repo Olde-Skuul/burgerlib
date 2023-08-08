@@ -12,14 +12,14 @@
 
 	\param eInput New enumeration state
 	\return Previous rounding state
-	\sa ePowerPCRounding or GetPowerPCRounding(void)
+	\sa ePowerPCRounding or get_PowerPC_rounding(void)
 
 ***************************************/
 
 #if defined(BURGER_XBOX360)
 
 __declspec(naked) Burger::ePowerPCRounding BURGER_API
-	Burger::SetPowerPCRounding(ePowerPCRounding /* uInput */)
+	Burger::set_PowerPC_rounding(ePowerPCRounding /* uInput */)
 {
 	__asm {
 // Get the floating point control register

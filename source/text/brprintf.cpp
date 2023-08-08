@@ -894,7 +894,7 @@ void BURGER_API Burger::SafePrint::ParamInfo_t::GetFormattedOutputLength(
 
 				// How many digits for the exponent?
 				uint_t uExpDigits =
-					NumberStringLength(static_cast<uint32_t>(Abs(iExponent)));
+					NumberStringLength(static_cast<uint32_t>(absolute(iExponent)));
 
 				// we support a configurable minimum number of exponent digits
 				if (uExpDigits < kMIN_FLOAT_EXPONENT_DIGITS) {

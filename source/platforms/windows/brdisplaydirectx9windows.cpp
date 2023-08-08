@@ -1186,7 +1186,7 @@ float BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::RankDevice(
 		fCurRanking += 1.0f;
 	} else {
 		// Score based by the bit depths
-		int iDelta = Abs(static_cast<int32_t>(
+		int iDelta = absolute(static_cast<int32_t>(
 			GetD3DFORMATColorChannelBits(m_uAdapterFormat) -
 			GetD3DFORMATColorChannelBits(
 				pOptimalDeviceSettings->m_uAdapterFormat)));
@@ -1247,9 +1247,9 @@ float BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::RankDevice(
 				}
 
 				int iCurrent =
-					Abs(static_cast<int32_t>(pModes->m_uWidth -
+					absolute(static_cast<int32_t>(pModes->m_uWidth -
 						pOptimalDeviceSettings->m_uBackBufferWidth)) +
-					Abs(static_cast<int32_t>(pModes->m_uHeight -
+					absolute(static_cast<int32_t>(pModes->m_uHeight -
 						pOptimalDeviceSettings->m_uBackBufferHeight));
 				if (static_cast<uint_t>(iCurrent) < uBest) {
 					uBest = static_cast<uint_t>(iCurrent);
@@ -1271,7 +1271,7 @@ float BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::RankDevice(
 	if (m_uBackBufferFormat == pOptimalDeviceSettings->m_uBackBufferFormat) {
 		fCurRanking += 1.0f;
 	} else {
-		int iDelta = Abs(static_cast<int32_t>(
+		int iDelta = absolute(static_cast<int32_t>(
 			GetD3DFORMATColorChannelBits(m_uBackBufferFormat) -
 			GetD3DFORMATColorChannelBits(
 				pOptimalDeviceSettings->m_uBackBufferFormat)));

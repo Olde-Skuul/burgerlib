@@ -5,7 +5,7 @@
 #
 # Build with PS3 tool chain
 #
-# ePowerPCRounding BURGER_API Burger::SetPowerPCRounding(
+# ePowerPCRounding BURGER_API Burger::set_PowerPC_rounding(
 #	ePowerPCRounding uInput) BURGER_NOEXCEPT;
 #
 
@@ -13,9 +13,9 @@
 
 	.text
 
-	.type	._ZN6Burger18SetPowerPCRoundingENS_16ePowerPCRoundingE,@function
-	.globl	._ZN6Burger18SetPowerPCRoundingENS_16ePowerPCRoundingE
-._ZN6Burger18SetPowerPCRoundingENS_16ePowerPCRoundingE:
+	.type	._ZN6Burger20set_PowerPC_roundingENS_16ePowerPCRoundingE,@function
+	.globl	._ZN6Burger20set_PowerPC_roundingENS_16ePowerPCRoundingE
+._ZN6Burger20set_PowerPC_roundingENS_16ePowerPCRoundingE:
 
 # Get the floating point control register
 	mffs	0
@@ -47,4 +47,4 @@
 # Exit
 	blr
 
-	.size	._ZN6Burger18SetPowerPCRoundingENS_16ePowerPCRoundingE,.-._ZN6Burger18SetPowerPCRoundingENS_16ePowerPCRoundingE
+	.size	._ZN6Burger20set_PowerPC_roundingENS_16ePowerPCRoundingE,.-._ZN6Burger20set_PowerPC_roundingENS_16ePowerPCRoundingE

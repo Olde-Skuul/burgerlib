@@ -181,9 +181,9 @@
 void BURGER_API Burger::Vector3D_t::Set(
     const FixedVector3D_t* pInput) BURGER_NOEXCEPT
 {
-    FixedToFloat(&x, &pInput->x);
-    FixedToFloat(&y, &pInput->y);
-    FixedToFloat(&z, &pInput->z);
+    fixed_to_float(&x, &pInput->x);
+    fixed_to_float(&y, &pInput->y);
+    fixed_to_float(&z, &pInput->z);
 }
 
 /*! ************************************
@@ -721,7 +721,7 @@ float BURGER_API Burger::Vector3D_t::GetLengthFast(void) const
 void BURGER_API Burger::Vector3D_t::SetLength(float fInput) BURGER_NOEXCEPT
 {
     if (fInput > 0.0f) { // Handles NaN
-        const float fLength = Sqrt((x * x) + (y * y) + (z * z));
+        const float fLength = square_root((x * x) + (y * y) + (z * z));
         if (fLength > 0.0f) {          // Handles NaN
             fInput = fInput / fLength; // Scale to the new length
             x *= fInput;
@@ -760,7 +760,7 @@ void BURGER_API Burger::Vector3D_t::SetLength(float fInput) BURGER_NOEXCEPT
 void BURGER_API Burger::Vector3D_t::SetLengthFast(float fInput) BURGER_NOEXCEPT
 {
     if (fInput > 0.0f) { // Handles NaN
-        const float fLength = Sqrt((x * x) + (y * y) + (z * z));
+        const float fLength = square_root((x * x) + (y * y) + (z * z));
         if (fLength > 0.0f) {          // Handles NaN
             fInput = fInput / fLength; // Scale to the new length
             x *= fInput;
@@ -853,7 +853,7 @@ float BURGER_API Burger::Vector3D_t::GetDistance(
     fX = x - fX;
     fY = y - fY;
     fZ = z - fZ;
-    return Sqrt((fX * fX) + (fY * fY) + (fZ * fZ));
+    return square_root((fX * fX) + (fY * fY) + (fZ * fZ));
 }
 
 /*! ************************************
@@ -877,7 +877,7 @@ float BURGER_API Burger::Vector3D_t::GetDistance(
     const float fX = x - pInput->x;
     const float fY = y - pInput->y;
     const float fZ = z - pInput->z;
-    return Sqrt((fX * fX) + (fY * fY) + (fZ * fZ));
+    return square_root((fX * fX) + (fY * fY) + (fZ * fZ));
 }
 
 /*! ************************************
@@ -908,7 +908,7 @@ float BURGER_API Burger::Vector3D_t::GetDistanceFast(
     fX = x - fX;
     fY = y - fY;
     fZ = z - fZ;
-    return Sqrt((fX * fX) + (fY * fY) + (fZ * fZ));
+    return square_root((fX * fX) + (fY * fY) + (fZ * fZ));
 }
 
 /*! ************************************
@@ -938,7 +938,7 @@ float BURGER_API Burger::Vector3D_t::GetDistanceFast(
     const float fX = x - pInput->x;
     const float fY = y - pInput->y;
     const float fZ = z - pInput->z;
-    return Sqrt((fX * fX) + (fY * fY) + (fZ * fZ));
+    return square_root((fX * fX) + (fY * fY) + (fZ * fZ));
 }
 
 #if 0
@@ -976,7 +976,7 @@ void BURGER_API Burger::Vector3D_t::Normalize(void) BURGER_NOEXCEPT
 {
     float fLengthSquared = (x * x) + (y * y) + (z * z);
     if (fLengthSquared > 0.0f) {                      // Handles NaN
-        fLengthSquared = 1.0f / Sqrt(fLengthSquared); // Reciprocal
+        fLengthSquared = 1.0f / square_root(fLengthSquared); // Reciprocal
         x *= fLengthSquared;                          // Divide by 1.0f
         y *= fLengthSquared;
         z *= fLengthSquared;
@@ -1046,7 +1046,7 @@ void BURGER_API Burger::Vector3D_t::Normalize(
 {
     float fLengthSquared = (fX * fX) + (fY * fY) + (fZ * fZ);
     if (fLengthSquared > 0.0f) {                      // Handles NaN
-        fLengthSquared = 1.0f / Sqrt(fLengthSquared); // Reciprocal
+        fLengthSquared = 1.0f / square_root(fLengthSquared); // Reciprocal
         fX = fX * fLengthSquared;                     // Divide by 1.0f
         fY = fY * fLengthSquared;
         fZ = fZ * fLengthSquared;
@@ -1082,7 +1082,7 @@ void BURGER_API Burger::Vector3D_t::Normalize(
     float fZ = pInput->z;
     float fLengthSquared = (fX * fX) + (fY * fY) + (fZ * fZ);
     if (fLengthSquared > 0.0f) {                      // Handles NaN
-        fLengthSquared = 1.0f / Sqrt(fLengthSquared); // Reciprocal
+        fLengthSquared = 1.0f / square_root(fLengthSquared); // Reciprocal
         fX = fX * fLengthSquared;                     // Divide by 1.0f
         fY = fY * fLengthSquared;
         fZ = fZ * fLengthSquared;
@@ -1203,7 +1203,7 @@ void BURGER_API Burger::Vector3D_t::NormalizeFast(void) BURGER_NOEXCEPT
 {
     float fLengthSquared = (x * x) + (y * y) + (z * z);
     if (fLengthSquared > 0.0f) {                      // Handles NaN
-        fLengthSquared = 1.0f / Sqrt(fLengthSquared); // Reciprocal
+        fLengthSquared = 1.0f / square_root(fLengthSquared); // Reciprocal
         x *= fLengthSquared;                          // Divide by 1.0f
         y *= fLengthSquared;
         z *= fLengthSquared;
@@ -1255,7 +1255,7 @@ void BURGER_API Burger::Vector3D_t::NormalizeFast(
 {
     float fLengthSquared = (fX * fX) + (fY * fY) + (fZ * fZ);
     if (fLengthSquared > 0.0f) {                      // Handles NaN
-        fLengthSquared = 1.0f / Sqrt(fLengthSquared); // Reciprocal
+        fLengthSquared = 1.0f / square_root(fLengthSquared); // Reciprocal
         fX = fX * fLengthSquared;                     // Divide by 1.0f
         fY = fY * fLengthSquared;
         fZ = fZ * fLengthSquared;
@@ -1320,7 +1320,7 @@ void BURGER_API Burger::Vector3D_t::NormalizeFast(
     float fZ = pInput->z;
     float fLengthSquared = (fX * fX) + (fY * fY) + (fZ * fZ);
     if (fLengthSquared > 0.0f) {                      // Handles NaN
-        fLengthSquared = 1.0f / Sqrt(fLengthSquared); // Reciprocal
+        fLengthSquared = 1.0f / square_root(fLengthSquared); // Reciprocal
         fX = fX * fLengthSquared;                     // Divide by 1.0f
         fY = fY * fLengthSquared;
         fZ = fZ * fLengthSquared;
@@ -1410,9 +1410,9 @@ uint_t BURGER_API Burger::Vector3D_t::Equal(
 uint_t BURGER_API Burger::Vector3D_t::Equal(
     const Vector3D_t* pInput, float fRange) const BURGER_NOEXCEPT
 {
-    const float fX = Abs(x - pInput->x);
-    const float fY = Abs(y - pInput->y);
-    const float fZ = Abs(z - pInput->z);
+    const float fX = absolute(x - pInput->x);
+    const float fY = absolute(y - pInput->y);
+    const float fZ = absolute(z - pInput->z);
     if ((fX < fRange) && (fY < fRange) && (fZ < fRange)) {
         return TRUE;
     }
