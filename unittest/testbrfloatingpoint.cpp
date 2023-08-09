@@ -16,6 +16,7 @@
 #include "brfloatingpoint.h"
 #include "brfpinfo.h"
 #include "brnumberstringhex.h"
+#include "brmemoryfunctions.h"
 #include "common.h"
 #include <math.h>
 
@@ -336,7 +337,7 @@ static uint_t BURGER_API TestSNANToQNAN(void) BURGER_NOEXCEPT
 }
 
 //
-// Test IsNan(float)
+// Test is_NaN(float)
 //
 
 #define NANTEST 0x01    // NaN
@@ -386,10 +387,10 @@ static uint_t BURGER_API TestIsNanFloat(void) BURGER_NOEXCEPT
 			static_cast<const float*>(static_cast<const void*>(pWork))[0];
 		const uint_t uExpected = (pWork[1] & NANTEST) != 0;
 		pWork += 2;
-		uint_t uTest = Burger::IsNan(fOriginal);
+		uint_t uTest = Burger::is_NaN(fOriginal);
 		uint_t uFailure = (uTest != uExpected);
 		uResult |= uFailure;
-		ReportFailure("Burger::IsNan((float)%.16g) = %u / Wanted %u", uFailure,
+		ReportFailure("Burger::is_NaN((float)%.16g) = %u / Wanted %u", uFailure,
 			fOriginal, uTest, uExpected);
 
 		// Test FPInfo
@@ -405,7 +406,7 @@ static uint_t BURGER_API TestIsNanFloat(void) BURGER_NOEXCEPT
 }
 
 //
-// Test IsNan(double)
+// Test is_NaN(double)
 //
 
 static const NanTest_t IsNanTestDouble[] = {
@@ -453,10 +454,10 @@ static uint_t BURGER_API TestIsNanDouble(void) BURGER_NOEXCEPT
 		const double dOriginal = val64.d;
 		const uint_t uExpected = (pWork->uFlags & NANTEST) != 0;
 		++pWork;
-		uint_t uTest = Burger::IsNan(dOriginal);
+		uint_t uTest = Burger::is_NaN(dOriginal);
 		uint_t uFailure = (uTest != uExpected);
 		uResult |= uFailure;
-		ReportFailure("Burger::IsNan((double)%.16g) = %u / Wanted %u", uFailure,
+		ReportFailure("Burger::is_NaN((double)%.16g) = %u / Wanted %u", uFailure,
 			dOriginal, uTest, uExpected);
 
 		// Test FPInfo
@@ -730,7 +731,7 @@ static uint_t BURGER_API TestSignBitDouble(void) BURGER_NOEXCEPT
 }
 
 //
-// Test Abs(float)
+// Test absolute(float)
 //
 
 static const Burger::uint32_float_t AbsFloatArray[][2] = {
@@ -764,13 +765,13 @@ static uint_t BURGER_API TestAbsFloat(void) BURGER_NOEXCEPT
 	uint_t uResult = FALSE;
 	do {
 		Burger::uint32_float_t fTest;
-		fTest.f = Burger::Abs(pWork[0]);
+		fTest.f = Burger::absolute(pWork[0]);
 		const uint_t uFailure = (fTest.w != pWork[1].w);
 		uResult |= uFailure;
 		if (uFailure) {
 			const Burger::NumberStringHex Test(fTest.w);
 			const Burger::NumberStringHex Expected(pWork[1].w);
-			ReportFailure("Burger::Abs(float) = %g 0x%s / Wanted %g 0x%s",
+			ReportFailure("Burger::absolute(float) = %g 0x%s / Wanted %g 0x%s",
 				uFailure, fTest.f, Test.c_str(), pWork[1].f, Expected.c_str());
 		}
 		pWork += 2;
@@ -779,7 +780,7 @@ static uint_t BURGER_API TestAbsFloat(void) BURGER_NOEXCEPT
 }
 
 //
-// Test Abs(double)
+// Test absolute(double)
 //
 
 static const Burger::uint64_double_t AbsDoubleArray[][2] = {
@@ -829,11 +830,11 @@ static uint_t BURGER_API TestAbsDouble(void) BURGER_NOEXCEPT
 		double dTest = pWork[0];
 		const double dExpected = pWork[1];
 		pWork += 2;
-		dTest = Burger::Abs(dTest);
+		dTest = Burger::absolute(dTest);
 		const uint_t uFailure = (dTest != dExpected);
 		uResult |= uFailure;
-		ReportFailure(
-			"Burger::Abs(double) = %g / Wanted %g", uFailure, dTest, dExpected);
+		ReportFailure("Burger::absolute(double) = %g / Wanted %g", uFailure,
+			dTest, dExpected);
 	} while (--i);
 	return uResult;
 }
@@ -874,7 +875,8 @@ static uint_t BURGER_API TestSignFloat(void) BURGER_NOEXCEPT
 		if (uFailure) {
 			const Burger::NumberStringHex Test(fTest.w);
 			const Burger::NumberStringHex Expected(pWork[1].w);
-			ReportFailure("Burger::get_sign(float(%f)) = %f 0x%s / Wanted %f 0x%s",
+			ReportFailure(
+				"Burger::get_sign(float(%f)) = %f 0x%s / Wanted %f 0x%s",
 				uFailure, pWork[0].f, fTest.f, Test.c_str(), pWork[1].f,
 				Expected.c_str());
 		}
@@ -919,7 +921,8 @@ static uint_t BURGER_API TestSignDouble(void) BURGER_NOEXCEPT
 		if (uFailure) {
 			const Burger::NumberStringHex Test(fTest.w);
 			const Burger::NumberStringHex Expected(pWork[1].w);
-			ReportFailure("Burger::get_sign(double(%g)) = %g 0x%s / Wanted %g 0x%s",
+			ReportFailure(
+				"Burger::get_sign(double(%g)) = %g 0x%s / Wanted %g 0x%s",
 				uFailure, pWork[0].d, fTest.d, Test.c_str(), pWork[1].d,
 				Expected.c_str());
 		}
@@ -929,7 +932,7 @@ static uint_t BURGER_API TestSignDouble(void) BURGER_NOEXCEPT
 }
 
 //
-// Test Clamp(float,float,float)
+// Test clamp(float,float,float)
 //
 
 static const Burger::uint32_float_t ClampFloatArray[][4] = {
@@ -959,14 +962,14 @@ static uint_t BURGER_API TestClampFloat(void) BURGER_NOEXCEPT
 	uint_t uResult = FALSE;
 	do {
 		Burger::uint32_float_t fTest;
-		fTest.f = Burger::Clamp(pWork[0], pWork[1], pWork[2]);
+		fTest.f = Burger::clamp(pWork[0], pWork[1], pWork[2]);
 		const uint_t uFailure = (fTest.w != pWork[3].w);
 		uResult |= uFailure;
 		if (uFailure) {
 			const Burger::NumberStringHex Test(fTest.w);
 			const Burger::NumberStringHex Expected(pWork[3].w);
 			ReportFailure(
-				"Burger::Clamp(float(%g),float(%g),float(%g)) = %g 0x%s / Wanted %g 0x%s",
+				"Burger::clamp(float(%g),float(%g),float(%g)) = %g 0x%s / Wanted %g 0x%s",
 				uFailure, pWork[0].f, pWork[1].f, pWork[2].f, fTest.f,
 				Test.c_str(), pWork[3].f, Expected.c_str());
 		}
@@ -976,7 +979,7 @@ static uint_t BURGER_API TestClampFloat(void) BURGER_NOEXCEPT
 }
 
 //
-// Test Clamp(double,double,double)
+// Test clamp(double,double,double)
 //
 
 static const Burger::uint64_double_t ClampDoubleArray[][4] = {
@@ -1015,14 +1018,14 @@ static uint_t BURGER_API TestClampDouble(void) BURGER_NOEXCEPT
 	uint_t uResult = FALSE;
 	do {
 		Burger::uint64_double_t fTest;
-		fTest = Burger::Clamp(pWork[0], pWork[1], pWork[2]);
+		fTest = Burger::clamp(pWork[0], pWork[1], pWork[2]);
 		const uint_t uFailure = (fTest.w != pWork[3].w);
 		uResult |= uFailure;
 		if (uFailure) {
 			const Burger::NumberStringHex Test(fTest.w);
 			const Burger::NumberStringHex Expected(pWork[3].w);
 			ReportFailure(
-				"Burger::Clamp(float(%g),float(%g),float(%g)) = %g 0x%s / Wanted %g 0x%s",
+				"Burger::clamp(float(%g),float(%g),float(%g)) = %g 0x%s / Wanted %g 0x%s",
 				uFailure, pWork[0].d, pWork[1].d, pWork[2].d, fTest.d,
 				Test.c_str(), pWork[3].d, Expected.c_str());
 		}
@@ -1032,7 +1035,7 @@ static uint_t BURGER_API TestClampDouble(void) BURGER_NOEXCEPT
 }
 
 //
-// Test Sqrt(float)
+// Test square_root(float)
 //
 
 static const Burger::uint32_float_t SqrtFloatArray[][2] = {
@@ -1088,12 +1091,13 @@ static uint_t BURGER_API TestSqrtFloat(void) BURGER_NOEXCEPT
 
 		// Note: Use volatile to force the compiler to use 32 bit float
 		// precision
-		volatile float fTest = Burger::Sqrt(fOriginal);
+		volatile float fTest = Burger::square_root(fOriginal);
 
 		const float fExpected = pWork[1];
 		const uint_t uFailure = (fTest != fExpected);
 		uResult |= uFailure;
-		ReportFailure("Burger::Sqrt((float)%.16g) = %.16g / Wanted %.16g",
+		ReportFailure(
+			"Burger::square_root((float)%.16g) = %.16g / Wanted %.16g",
 			uFailure, fOriginal, fTest, fExpected);
 		pWork += 2;
 	} while (--i);
@@ -1101,7 +1105,7 @@ static uint_t BURGER_API TestSqrtFloat(void) BURGER_NOEXCEPT
 }
 
 //
-// Test Sqrt(double)
+// Test square_root(double)
 //
 
 static const Burger::uint64_double_t SqrtDoubleArray[][2] = {
@@ -1152,11 +1156,12 @@ static uint_t BURGER_API TestSqrtDouble(void) BURGER_NOEXCEPT
 		const double dOriginal = pWork[0];
 		// Note: Use volatile to force the compiler to use 64 bit float
 		// precision
-		volatile double dTest = Burger::Sqrt(dOriginal);
+		volatile double dTest = Burger::square_root(dOriginal);
 		const double dExpected = pWork[1];
 		const uint_t uFailure = (dTest != dExpected);
 		uResult |= uFailure;
-		ReportFailure("Burger::Sqrt((double)%.16g) = %.16g / Wanted %.16g",
+		ReportFailure(
+			"Burger::square_root((double)%.16g) = %.16g / Wanted %.16g",
 			uFailure, dOriginal, dTest, dExpected);
 		pWork += 2;
 	} while (--i);
@@ -1164,7 +1169,7 @@ static uint_t BURGER_API TestSqrtDouble(void) BURGER_NOEXCEPT
 }
 
 //
-// Test IntToFloat(float *,const int32_t *)
+// Test int_to_float(float *,const int32_t *)
 //
 
 static const Burger::uint32_float_t IntToFloatArray[][2] = {
@@ -1214,42 +1219,49 @@ static uint_t BURGER_API TestIntToFloat(void) BURGER_NOEXCEPT
 		const int32_t iOriginal = static_cast<int_t>(pWork[0].get_uint32());
 		const float fExpected = pWork[1];
 
-		volatile float fTest = Burger::IntToFloat(iOriginal);
+		volatile float fTest = Burger::int_to_float(iOriginal);
 		uint_t uFailure = (fTest != fExpected);
 		uResult |= uFailure;
-		ReportFailure("Burger::IntToFloat((int32_t)%d) = %.16g / Wanted %.16g",
+		ReportFailure(
+			"Burger::int_to_float((int32_t)%d) = %.16g / Wanted %.16g",
 			uFailure, iOriginal, fTest, fExpected);
 
-		fTest = Burger::IntToFloat(&iOriginal);
+		fTest = Burger::int_to_float(&iOriginal);
 		uFailure = (fTest != fExpected);
 		uResult |= uFailure;
 		ReportFailure(
-			"Burger::IntToFloat((const int32_t *)%d) = %.16g / Wanted %.16g",
+			"Burger::int_to_float((const int32_t *)%d) = %.16g / Wanted %.16g",
 			uFailure, iOriginal, fTest, fExpected);
 
 		float fTemp;
-		Burger::IntToFloat(&fTemp, iOriginal);
+		Burger::int_to_float(&fTemp, iOriginal);
 		fTest = fTemp;
 		uFailure = (fTest != fExpected);
 		uResult |= uFailure;
 		ReportFailure(
-			"Burger::IntToFloat((float *),(int_t)%d) = %.16g / Wanted %.16g",
+			"Burger::int_to_float((float *),(int_t)%d) = %.16g / Wanted %.16g",
 			uFailure, iOriginal, fTest, fExpected);
 
-		Burger::IntToFloat(&fTemp, &iOriginal);
-		fTest = fTemp;
-		uFailure = (fTest != fExpected);
-		uResult |= uFailure;
-		ReportFailure(
-			"Burger::IntToFloat((float *),(int_t *)%d) = %.16g / Wanted %.16g",
-			uFailure, iOriginal, fTest, fExpected);
+		uintptr_t index = 0;
+		float fTempArray[4];
+		do {
+			Burger::MemoryFill(fTempArray, 0x55, sizeof(fTempArray));
+			Burger::int_to_float(&fTempArray[index], &iOriginal);
+			fTest = fTempArray[index];
+			uFailure = (fTest != fExpected);
+			uResult |= uFailure;
+			ReportFailure(
+				"Burger::int_to_float((float *) + %u,(int_t *)%d) = %.16g / Wanted %.16g",
+				uFailure, static_cast<uint_t>(index), iOriginal, fTest, fExpected);
+		} while (++index < BURGER_ARRAYSIZE(fTempArray));
+
 		pWork += 2;
 	} while (--i);
 	return uResult;
 }
 
 //
-// Test FixedToFloat(float *,const Fixed32 *)
+// Test fixed_to_float(float *,const Fixed32 *)
 //
 
 static const Burger::uint32_float_t FixedToFloatArray[][2] = {
@@ -1299,36 +1311,41 @@ static uint_t BURGER_API TestFixedToFloat(void) BURGER_NOEXCEPT
 		const int32_t iOriginal = static_cast<int_t>(pWork[0].get_uint32());
 		const float fExpected = pWork[1];
 
-		volatile float fTest = Burger::FixedToFloat(iOriginal);
+		volatile float fTest = Burger::fixed_to_float(iOriginal);
 		uint_t uFailure = (fTest != fExpected);
 		uResult |= uFailure;
 		ReportFailure(
-			"Burger::FixedToFloat((Fixed)0x%08X) = %.16g / Wanted %.16g",
+			"Burger::fixed_to_float((Fixed)0x%08X) = %.16g / Wanted %.16g",
 			uFailure, iOriginal, fTest, fExpected);
 
-		fTest = Burger::FixedToFloat(&iOriginal);
+		fTest = Burger::fixed_to_float(&iOriginal);
 		uFailure = (fTest != fExpected);
 		uResult |= uFailure;
 		ReportFailure(
-			"Burger::FixedToFloat((const Fixed *)0x%08X) = %.16g / Wanted %.16g",
+			"Burger::fixed_to_float((const Fixed *)0x%08X) = %.16g / Wanted %.16g",
 			uFailure, iOriginal, fTest, fExpected);
 
 		float fTemp;
-		Burger::FixedToFloat(&fTemp, iOriginal);
+		Burger::fixed_to_float(&fTemp, iOriginal);
 		fTest = fTemp;
 		uFailure = (fTest != fExpected);
 		uResult |= uFailure;
 		ReportFailure(
-			"Burger::FixedToFloat((float *),(Fixed)0x%08X) = %.16g / Wanted %.16g",
+			"Burger::fixed_to_float((float *),(Fixed)0x%08X) = %.16g / Wanted %.16g",
 			uFailure, iOriginal, fTest, fExpected);
 
-		Burger::FixedToFloat(&fTemp, &iOriginal);
-		fTest = fTemp;
-		uFailure = (fTest != fExpected);
-		uResult |= uFailure;
-		ReportFailure(
-			"Burger::FixedToFloat((float *),(Fixed *)0x%08X) = %.16g / Wanted %.16g",
-			uFailure, iOriginal, fTest, fExpected);
+		uintptr_t index = 0;
+		float fTempArray[4];
+		do {
+			Burger::MemoryFill(fTempArray, 0x55, sizeof(fTempArray));
+			Burger::fixed_to_float(&fTempArray[index], &iOriginal);
+			fTest = fTempArray[index];
+			uFailure = (fTest != fExpected);
+			uResult |= uFailure;
+			ReportFailure(
+				"Burger::fixed_to_float((float *) + %u,(Fixed *)0x%08X) = %.16g / Wanted %.16g",
+				uFailure, static_cast<uint_t>(index), iOriginal, fTest, fExpected);
+		} while (++index < BURGER_ARRAYSIZE(fTempArray));
 		pWork += 2;
 	} while (--i);
 	return uResult;
@@ -2206,7 +2223,7 @@ static uint_t TestSinFloat(void) BURGER_NOEXCEPT
 			(static_cast<float>(320 - x) / 320.0f) * Burger::g_fPi * 4.0f);
 		const float fSin = static_cast<float>(sin(fRadians));
 		const float fXSin = Burger::Sin(fRadians);
-		const float fError = Burger::Abs(fSin - fXSin);
+		const float fError = Burger::absolute(fSin - fXSin);
 		const uint_t uFailure = (9.5e-07f < fError);
 		uResult |= uFailure;
 		ReportFailure("Burger::Sin(%.16gf) = %.16gf / Difference %.16gf",
@@ -2229,7 +2246,7 @@ static uint_t TestSinDouble(void) BURGER_NOEXCEPT
 			(static_cast<double>(320 - x) / 320.0) * Burger::g_dPi * 4.0;
 		const double fSin = sin(fRadians);
 		const double fXSin = Burger::Sin(fRadians);
-		const double fError = Burger::Abs(fSin - fXSin);
+		const double fError = Burger::absolute(fSin - fXSin);
 		const uint_t uFailure = (1.2e-15 < fError);
 		uResult |= uFailure;
 		ReportFailure("Burger::Sin(%.16g) = %.16g / Difference %.16g", uFailure,
@@ -2252,7 +2269,7 @@ static uint_t TestCosFloat(void) BURGER_NOEXCEPT
 			(static_cast<float>(320 - x) / 320.0f) * Burger::g_fPi * 4.0f);
 		const float fCos = static_cast<float>(cos(fRadians));
 		const float fXCos = Burger::Cos(fRadians);
-		const float fError = Burger::Abs(fCos - fXCos);
+		const float fError = Burger::absolute(fCos - fXCos);
 		const uint_t uFailure = (7.6e-07 < fError);
 		uResult |= uFailure;
 		ReportFailure("Burger::Cos(%.16gf) = %.16gf / Difference %.16gf",
@@ -2275,7 +2292,7 @@ static uint_t TestCosDouble(void) BURGER_NOEXCEPT
 			(static_cast<double>(320 - x) / 320.0) * Burger::g_dPi * 4.0;
 		const double fCos = cos(fRadians);
 		const double fXCos = Burger::Cos(fRadians);
-		const double fError = Burger::Abs(fCos - fXCos);
+		const double fError = Burger::absolute(fCos - fXCos);
 		const uint_t uFailure = (1.2e-15 < fError);
 		uResult |= uFailure;
 		ReportFailure("Burger::Cos(%.16g) = %.16g / Difference %.16g", uFailure,

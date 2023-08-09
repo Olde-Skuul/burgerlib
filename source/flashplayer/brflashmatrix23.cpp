@@ -154,12 +154,12 @@ void BURGER_API Burger::Flash::Matrix23::ConcatenateScale(float fScale)
 
 void BURGER_API Burger::Flash::Matrix23::Interpolate(const Matrix23 *pInput1,const Matrix23 *pInput2,float fFactor)
 {
-	m_fScaleX = Burger::Interpolate(pInput1->m_fScaleX,pInput2->m_fScaleX,fFactor);
-	m_fRotateSkew1 = Burger::Interpolate(pInput1->m_fRotateSkew1,pInput2->m_fRotateSkew1,fFactor);
-	m_fRotateSkew0 = Burger::Interpolate(pInput1->m_fRotateSkew0,pInput2->m_fRotateSkew0,fFactor);
-	m_fScaleY = Burger::Interpolate(pInput1->m_fScaleY,pInput2->m_fScaleY,fFactor);
-	m_fTranslateX = Burger::Interpolate(pInput1->m_fTranslateX,pInput2->m_fTranslateX,fFactor);
-	m_fTranslateY = Burger::Interpolate(pInput1->m_fTranslateY,pInput2->m_fTranslateY,fFactor);
+	m_fScaleX = Burger::interpolate(pInput1->m_fScaleX,pInput2->m_fScaleX,fFactor);
+	m_fRotateSkew1 = Burger::interpolate(pInput1->m_fRotateSkew1,pInput2->m_fRotateSkew1,fFactor);
+	m_fRotateSkew0 = Burger::interpolate(pInput1->m_fRotateSkew0,pInput2->m_fRotateSkew0,fFactor);
+	m_fScaleY = Burger::interpolate(pInput1->m_fScaleY,pInput2->m_fScaleY,fFactor);
+	m_fTranslateX = Burger::interpolate(pInput1->m_fTranslateX,pInput2->m_fTranslateX,fFactor);
+	m_fTranslateY = Burger::interpolate(pInput1->m_fTranslateY,pInput2->m_fTranslateY,fFactor);
 }
 
 /*! ************************************
@@ -438,7 +438,7 @@ float BURGER_API Burger::Flash::Matrix23::GetMaxScale(void) const
 {
 	float fBasisX = (m_fScaleX * m_fScaleX) + (m_fRotateSkew0 * m_fRotateSkew0);
 	float fBasisY = (m_fScaleY * m_fScaleY) + (m_fRotateSkew1 * m_fRotateSkew1);
-	float fLengthSquared = Max(fBasisX,fBasisY);
+	float fLengthSquared = maximum(fBasisX,fBasisY);
 	return square_root(fLengthSquared);
 }
 

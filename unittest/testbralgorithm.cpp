@@ -133,7 +133,7 @@ struct DoubleTest_t {
 };
 
 //
-// Test Min(int32_t)
+// Test minimum(int32_t)
 //
 
 static const IntTest32x32_t MinTestTableInt32[] = {
@@ -154,11 +154,11 @@ static uint_t BURGER_API TestMinInt32(void) BURGER_NOEXCEPT
 	const IntTest32x32_t* pWork = MinTestTableInt32;
 	uintptr_t uCount = BURGER_ARRAYSIZE(MinTestTableInt32);
 	do {
-		const int32_t iReturn = Burger::Min(pWork->m_iInput1, pWork->m_iInput2);
+		const int32_t iReturn = Burger::minimum(pWork->m_iInput1, pWork->m_iInput2);
 		const uint_t uTest = iReturn != pWork->m_iOutput;
 		uFailure |= uTest;
 		ReportFailure(
-			"Burger::Min((int32_t)0x%08X,(int32_t)0x%08X) = 0x%08X, expected 0x%08X",
+			"Burger::minimumMin((int32_t)0x%08X,(int32_t)0x%08X) = 0x%08X, expected 0x%08X",
 			uTest, pWork->m_iInput1, pWork->m_iInput2, iReturn,
 			pWork->m_iOutput);
 		++pWork;
@@ -167,7 +167,7 @@ static uint_t BURGER_API TestMinInt32(void) BURGER_NOEXCEPT
 }
 
 //
-// Test Min(int64_t)
+// Test minimum(int64_t)
 //
 
 static const IntTest64x64_t MinTestTableInt64[] = {
@@ -190,12 +190,12 @@ static uint_t BURGER_API TestMinInt64(void) BURGER_NOEXCEPT
 	const IntTest64x64_t* pWork = MinTestTableInt64;
 	uintptr_t uCount = BURGER_ARRAYSIZE(MinTestTableInt64);
 	do {
-		const int64_t iReturn = Burger::Min(pWork->m_iInput1, pWork->m_iInput2);
+		const int64_t iReturn = Burger::minimum(pWork->m_iInput1, pWork->m_iInput2);
 		const uint_t uTest = iReturn != pWork->m_iOutput;
 		uFailure |= uTest;
 		if (uTest) {
 			Burger::String Text(
-				"Burger::Min((int64_t)0x%016llX,(int64_t)0x%016llX) = 0x%016llX, expected 0x%016llX",
+				"Burger::minimum((int64_t)0x%016llX,(int64_t)0x%016llX) = 0x%016llX, expected 0x%016llX",
 				pWork->m_iInput1, pWork->m_iInput2, iReturn, pWork->m_iOutput);
 			ReportFailure(Text.c_str(), uTest);
 		}
@@ -205,7 +205,7 @@ static uint_t BURGER_API TestMinInt64(void) BURGER_NOEXCEPT
 }
 
 //
-// Test Min(uint32_t)
+// Test minimum(uint32_t)
 //
 
 static const UIntTest32x32_t MinTestTableUInt32[] = {
@@ -229,11 +229,11 @@ static uint_t BURGER_API TestMinUInt32(void) BURGER_NOEXCEPT
 	uintptr_t uCount = BURGER_ARRAYSIZE(MinTestTableUInt32);
 	do {
 		const uint32_t uReturn =
-			Burger::Min(pWork->m_uInput1, pWork->m_uInput2);
+			Burger::minimum(pWork->m_uInput1, pWork->m_uInput2);
 		const uint_t uTest = uReturn != pWork->m_uOutput;
 		uFailure |= uTest;
 		ReportFailure(
-			"Burger::Min((uint32_t)0x%08X,(uint32_t)0x%08X) = 0x%08X, expected 0x%08X",
+			"Burger::minimum((uint32_t)0x%08X,(uint32_t)0x%08X) = 0x%08X, expected 0x%08X",
 			uTest, pWork->m_uInput1, pWork->m_uInput2, uReturn,
 			pWork->m_uOutput);
 		++pWork;
@@ -242,7 +242,7 @@ static uint_t BURGER_API TestMinUInt32(void) BURGER_NOEXCEPT
 }
 
 //
-// Test Min(uint64_t)
+// Test minimum(uint64_t)
 //
 
 static const UIntTest64x64_t MinTestTableUInt64[] = {
@@ -266,12 +266,12 @@ static uint_t BURGER_API TestMinUInt64(void) BURGER_NOEXCEPT
 	uintptr_t uCount = BURGER_ARRAYSIZE(MinTestTableUInt64);
 	do {
 		const uint64_t uReturn =
-			Burger::Min(pWork->m_uInput1, pWork->m_uInput2);
+			Burger::minimum(pWork->m_uInput1, pWork->m_uInput2);
 		const uint_t uTest = uReturn != pWork->m_uOutput;
 		uFailure |= uTest;
 		if (uTest) {
 			Burger::String Text(
-				"Burger::Min((int64_t)0x%016llX,(int64_t)0x%016llX) = 0x%016llX, expected 0x%016llX",
+				"Burger::minimum((int64_t)0x%016llX,(int64_t)0x%016llX) = 0x%016llX, expected 0x%016llX",
 				pWork->m_uInput1, pWork->m_uInput2, uReturn, pWork->m_uOutput);
 			ReportFailure(Text.c_str(), uTest);
 		}
@@ -281,7 +281,7 @@ static uint_t BURGER_API TestMinUInt64(void) BURGER_NOEXCEPT
 }
 
 //
-// Test Min(float)
+// Test minimum(float)
 //
 
 static const FloatTest_t MinTestTableFloat[] = {
@@ -306,11 +306,11 @@ static uint_t BURGER_API TestMinFloat(void) BURGER_NOEXCEPT
 	uintptr_t uCount = BURGER_ARRAYSIZE(MinTestTableFloat);
 	do {
 		Burger::uint32_float_t Return;
-		Return.f = Burger::Min(pWork->m_Input1.f, pWork->m_Input2.f);
+		Return.f = Burger::minimum(pWork->m_Input1.f, pWork->m_Input2.f);
 		const uint_t uTest = Return.w != pWork->m_Output.w;
 		uFailure |= uTest;
 		ReportFailure(
-			"Burger::Min((float)0x%08X,(float)0x%08X) = 0x%08X, expected 0x%08X",
+			"Burger::minimum((float)0x%08X,(float)0x%08X) = 0x%08X, expected 0x%08X",
 			uTest, pWork->m_Input1.w, pWork->m_Input2.w, Return.w,
 			pWork->m_Output.w);
 		++pWork;
@@ -319,7 +319,7 @@ static uint_t BURGER_API TestMinFloat(void) BURGER_NOEXCEPT
 }
 
 //
-// Test Max(int32_t)
+// Test maximum(int32_t)
 //
 
 static const IntTest32x32_t MaxTestTableInt32[] = {
@@ -340,11 +340,11 @@ static uint_t BURGER_API TestMaxInt32(void) BURGER_NOEXCEPT
 	const IntTest32x32_t* pWork = MaxTestTableInt32;
 	uintptr_t uCount = BURGER_ARRAYSIZE(MaxTestTableInt32);
 	do {
-		const int32_t iReturn = Burger::Max(pWork->m_iInput1, pWork->m_iInput2);
+		const int32_t iReturn = Burger::maximum(pWork->m_iInput1, pWork->m_iInput2);
 		const uint_t uTest = iReturn != pWork->m_iOutput;
 		uFailure |= uTest;
 		ReportFailure(
-			"Burger::Max((int32_t)0x%08X,(int32_t)0x%08X) = 0x%08X, expected 0x%08X",
+			"Burger::maximum((int32_t)0x%08X,(int32_t)0x%08X) = 0x%08X, expected 0x%08X",
 			uTest, pWork->m_iInput1, pWork->m_iInput2, iReturn,
 			pWork->m_iOutput);
 		++pWork;
@@ -353,7 +353,7 @@ static uint_t BURGER_API TestMaxInt32(void) BURGER_NOEXCEPT
 }
 
 //
-// Test Max(int64_t)
+// Test maximum(int64_t)
 //
 
 static const IntTest64x64_t MaxTestTableInt64[] = {
@@ -376,12 +376,12 @@ static uint_t BURGER_API TestMaxInt64(void) BURGER_NOEXCEPT
 	const IntTest64x64_t* pWork = MaxTestTableInt64;
 	uintptr_t uCount = BURGER_ARRAYSIZE(MaxTestTableInt64);
 	do {
-		const int64_t iReturn = Burger::Max(pWork->m_iInput1, pWork->m_iInput2);
+		const int64_t iReturn = Burger::maximum(pWork->m_iInput1, pWork->m_iInput2);
 		const uint_t uTest = iReturn != pWork->m_iOutput;
 		uFailure |= uTest;
 		if (uTest) {
 			Burger::String Text(
-				"Burger::Max((int64_t)0x%016llX,(int64_t)0x%016llX) = 0x%016llX, expected 0x%016llX",
+				"Burger::maximum((int64_t)0x%016llX,(int64_t)0x%016llX) = 0x%016llX, expected 0x%016llX",
 				pWork->m_iInput1, pWork->m_iInput2, iReturn, pWork->m_iOutput);
 			ReportFailure(Text.c_str(), uTest);
 		}

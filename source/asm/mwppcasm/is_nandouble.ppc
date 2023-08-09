@@ -1,0 +1,30 @@
+;
+; Test if a double is a NaN
+;
+; Done in assembly, because that's how you know it's done right
+; PowerPC PEF version
+;
+
+	INCLUDE 'macros.ppc'
+
+;
+; Unmangled function prototype
+; uint_t Burger::is_NaN(double) BURGER_NOEXCEPT
+;
+
+	EXPORT is_NaN__6BurgerFd[DS]
+	EXPORT is_NaN__6BurgerFd[PR]
+
+	DeclareProc is_NaN__6BurgerFd
+
+; Perform a NaN test
+	fcmpu	cr0, fp1, fp1
+
+; Move cr0 into r0
+	mfcr	r0
+
+; (Flags>>28)&1 Grab the "Unordered" flag
+	extrwi	r3, r0, 1, 3
+	blr
+
+	END

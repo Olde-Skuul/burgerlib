@@ -21,7 +21,7 @@
 	mffs	0
 
 # Store it in memory
-	stfd	0, -8(1)    
+	stfd	0, -8(1)
 
 # Load into an integer register
 	lwz		4, -4(1)

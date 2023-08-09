@@ -70,8 +70,8 @@ void BURGER_API Burger::ChooseGridSize(uint_t* pXCellCount,uint_t* pYCellCount,c
 			}
 		}
 		// Force bounds to 1 through 256
-		uXCellCount = Clamp(static_cast<uint32_t>(uXCellCount),1U,256U);
-		uYCellCount = Clamp(static_cast<uint32_t>(uYCellCount),1U,256U);
+		uXCellCount = clamp(static_cast<uint32_t>(uXCellCount),1U,256U);
+		uYCellCount = clamp(static_cast<uint32_t>(uYCellCount),1U,256U);
 	}
 	pXCellCount[0] = uXCellCount;
 	pYCellCount[0] = uYCellCount;
@@ -148,8 +148,8 @@ void BURGER_API Burger::GridIndexPoints::GetContainingCellClamped(Vector2D_t *pO
 {
 	float fX = ((pInput->x - m_BoundsRect.GetTopLeft()->x) * m_fXCells) / m_BoundsRect.GetWidth();
 	float fY = ((pInput->y - m_BoundsRect.GetTopLeft()->y) * m_fYCells) / m_BoundsRect.GetHeight();
-	fX = Clamp(fX,0.0f,m_fXCells-1);
-	fY = Clamp(fY,0.0f,m_fYCells-1);
+	fX = clamp(fX,0.0f,m_fXCells-1);
+	fY = clamp(fY,0.0f,m_fYCells-1);
 	pOutput->x = fX;
 	pOutput->y = fY;
 }
@@ -600,8 +600,8 @@ void BURGER_API Burger::GridIndexBox::GetContainingCellClamped(Vector2D_t *pOutp
 {
 	float fX = ((pInput->x - m_BoundsRect.GetTopLeft()->x) * m_fXCells) / m_BoundsRect.GetWidth();
 	float fY = ((pInput->y - m_BoundsRect.GetTopLeft()->y) * m_fYCells) / m_BoundsRect.GetHeight();
-	fX = Clamp(fX,0.0f,m_fXCells-1);
-	fY = Clamp(fY,0.0f,m_fYCells-1);
+	fX = clamp(fX,0.0f,m_fXCells-1);
+	fY = clamp(fY,0.0f,m_fYCells-1);
 	pOutput->x = fX;
 	pOutput->y = fY;
 }

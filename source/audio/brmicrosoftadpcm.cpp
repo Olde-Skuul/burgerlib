@@ -466,9 +466,9 @@ Burger::eError Burger::DecompressMicrosoftADPCM::Process(void *pOutput, uintptr_
 				//
 
 				// Clamp to input
-				uint_t uCounter = static_cast<uint_t>(Min(static_cast<uintptr_t>(uSamplesRemaining>>1U),uInputChunkLength));
+				uint_t uCounter = static_cast<uint_t>(minimum(static_cast<uintptr_t>(uSamplesRemaining>>1U),uInputChunkLength));
 				// Clamp to output
-				uCounter = static_cast<uint_t>(Min(static_cast<uintptr_t>(uCounter),uOutputChunkLength>>2U));
+				uCounter = static_cast<uint_t>(minimum(static_cast<uintptr_t>(uCounter),uOutputChunkLength>>2U));
 
 				// Write out the fast chunks
 				if (uCounter) {
@@ -617,9 +617,9 @@ Burger::eError Burger::DecompressMicrosoftADPCM::Process(void *pOutput, uintptr_
 				//
 
 				// Clamp to input
-				uint_t uCounter = static_cast<uint_t>(Min(static_cast<uintptr_t>(uSamplesRemaining),uInputChunkLength));
+				uint_t uCounter = static_cast<uint_t>(minimum(static_cast<uintptr_t>(uSamplesRemaining),uInputChunkLength));
 				// Clamp to output
-				uCounter = static_cast<uint_t>(Min(static_cast<uintptr_t>(uCounter),uOutputChunkLength>>2U));
+				uCounter = static_cast<uint_t>(minimum(static_cast<uintptr_t>(uCounter),uOutputChunkLength>>2U));
 
 				// Write out the fast chunks
 				if (uCounter) {
@@ -704,7 +704,7 @@ Burger::eError Burger::DecompressMicrosoftADPCM::Process(void *pOutput, uintptr_
 				uintptr_t uRemaining = m_uCacheSize-uCacheSize;
 
 				// Number of bytes to process
-				uintptr_t uChunk = Min(uRemaining,uInputChunkLength);
+				uintptr_t uChunk = minimum(uRemaining,uInputChunkLength);
 
 				// Fill in the cache
 				MemoryCopy(&m_Cache[uCacheSize],pInput,uChunk);
@@ -737,7 +737,7 @@ Burger::eError Burger::DecompressMicrosoftADPCM::Process(void *pOutput, uintptr_
 				// Output data from the cache
 
 				uintptr_t uCacheCount = m_uCacheCount;
-				uintptr_t uSteps = Min(uOutputChunkLength,static_cast<uintptr_t>(uCacheCount));
+				uintptr_t uSteps = minimum(uOutputChunkLength,static_cast<uintptr_t>(uCacheCount));
 
 				// Mark the byte(s) as consumed
 				uOutputChunkLength -= uSteps;

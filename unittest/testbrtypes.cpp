@@ -475,6 +475,7 @@ static void BURGER_API ShowCPUFeatures(uint_t uVerbose) BURGER_NOEXCEPT
 			Message("CPUID_t.m_uCPUID7EBX = 0x%08X", MyID.m_uCPUID7EBX);
 			Message("CPUID_t.m_uCPUID7ECX = 0x%08X", MyID.m_uCPUID7ECX);
 			Message("CPUID_t.m_uCPUID7EDX = 0x%08X", MyID.m_uCPUID7EDX);
+			Message("CPUID_t.m_uMXCSR = 0x%08X", MyID.m_uMXCSR);
 			Message("CPUID_t.m_uXGETBV = 0x%08X%08X",
 				static_cast<uint32_t>(MyID.m_uXGETBV >> 32U),
 				static_cast<uint32_t>(MyID.m_uXGETBV));
@@ -578,9 +579,10 @@ static void BURGER_API ShowCPUFeatures(uint_t uVerbose) BURGER_NOEXCEPT
 		Burger::set_8087_precision(uPrecision);
 		Message("Burger::get_8087_precision() = %u",
 			static_cast<uint_t>(uPrecision));
-		Burger::e8087Rounding uRounding = Burger::Get8087Rounding();
+		Burger::e8087Rounding uRounding = Burger::get_8087_rounding();
 		Message(
-			"Burger::Get8087Rounding() = %u", static_cast<uint_t>(uRounding));
+			"Burger::get_8087_rounding() = %u", static_cast<uint_t>(uRounding));
+		Burger::set_8087_rounding(uRounding);
 	}
 #endif
 
@@ -600,20 +602,20 @@ static void BURGER_API ShowCPUFeatures(uint_t uVerbose) BURGER_NOEXCEPT
 #if defined(BURGER_PPC)
 	if (uVerbose & VERBOSE_MSG) {
 
-		Burger::ePowerPCRounding uRounding = Burger::GetPowerPCRounding();
-		Message("Burger::GetPowerPCRounding() = %u",
+		Burger::ePowerPCRounding uRounding = Burger::get_PowerPC_rounding();
+		Message("Burger::get_PowerPC_rounding() = %u",
 			static_cast<uint_t>(uRounding));
 
 		Burger::ePowerPCRounding uRounding2 =
-			Burger::SetPowerPCRounding(Burger::ROUNDDOWN);
-		uRounding2 = Burger::GetPowerPCRounding();
-		Message("Burger::GetPowerPCRounding() = %u",
+			Burger::set_PowerPC_rounding(Burger::kPPCRoundingDown);
+		uRounding2 = Burger::get_PowerPC_rounding();
+		Message("Burger::get_PowerPC_rounding() = %u",
 			static_cast<uint_t>(uRounding2));
-		Burger::SetPowerPCRounding(Burger::ROUNDUP);
-		uRounding2 = Burger::GetPowerPCRounding();
-		Message("Burger::GetPowerPCRounding() = %u",
+		Burger::set_PowerPC_rounding(Burger::kPPCRoundingUp);
+		uRounding2 = Burger::get_PowerPC_rounding();
+		Message("Burger::get_PowerPC_rounding() = %u",
 			static_cast<uint_t>(uRounding2));
-		Burger::SetPowerPCRounding(uRounding);
+		Burger::set_PowerPC_rounding(uRounding);
 	}
 #endif
 }

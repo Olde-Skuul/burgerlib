@@ -1,18 +1,18 @@
-#include "brfloatingpoint.h"
-
 /***************************************
 
-    \brief Get the floating point rounding setting
+	\brief Get the floating point rounding setting
 
-    On PowerPC processors, there's a special floating point register to control
-    the rounding behavior. This function returns the current setting.
+	On PowerPC processors, there's a special floating point register to control
+	the rounding behavior. This function returns the current setting.
 
-    \note This function only exists on PowerPC compatible CPU targets.
+	\note This function only exists on PowerPC compatible CPU targets.
 
-    \return Current precision state
-    \sa ePowerPCRounding or set_PowerPC_rounding(ePowerPCRounding)
+	\return Current precision state
+	\sa ePowerPCRounding or set_PowerPC_rounding(ePowerPCRounding)
 
 ***************************************/
+
+#include "brfloatingpoint.h"
 
 #if defined(BURGER_XBOX360)
 

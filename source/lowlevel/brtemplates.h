@@ -1671,14 +1671,14 @@ BURGER_INLINE void SwapVariables(T* pA, T* pB)
 
 // Return the minimum value
 template<typename T>
-BURGER_INLINE BURGER_CONSTEXPR T Min(T A, T B) BURGER_NOEXCEPT
+BURGER_INLINE BURGER_CONSTEXPR T minimum(T A, T B) BURGER_NOEXCEPT
 {
 	return ((A < B) ? A : B);
 }
 
 // Return the maximum value
 template<typename T>
-BURGER_INLINE BURGER_CONSTEXPR T Max(T A, T B) BURGER_NOEXCEPT
+BURGER_INLINE BURGER_CONSTEXPR T maximum(T A, T B) BURGER_NOEXCEPT
 {
 	return ((A > B) ? A : B);
 }
@@ -1686,55 +1686,56 @@ BURGER_INLINE BURGER_CONSTEXPR T Max(T A, T B) BURGER_NOEXCEPT
 #if !defined(DOXYGEN)
 #if defined(BURGER_PPC)
 template<>
-BURGER_INLINE float Min(float fA, float fB)
+BURGER_INLINE float minimum(float fA, float fB)
 {
 	return static_cast<float>(__fsel((fA - fB), fB, fA));
 }
 
 template<>
-BURGER_INLINE double Min(double dA, double dB)
+BURGER_INLINE double minimum(double dA, double dB)
 {
 	return __fsel((dA - dB), dB, dA);
 }
 
 template<>
-BURGER_INLINE float Max(float fA, float fB)
+BURGER_INLINE float maximum(float fA, float fB)
 {
 	return static_cast<float>(__fsel((fA - fB), fA, fB));
 }
 
 template<>
-BURGER_INLINE double Max(double dA, double dB)
+BURGER_INLINE double maximum(double dA, double dB)
 {
 	return __fsel((dA - dB), dA, dB);
 }
 
 #elif defined(BURGER_SSE2)
 template<>
-BURGER_INLINE float Min(float fA, float fB) BURGER_NOEXCEPT
+BURGER_INLINE float minimum(float fA, float fB) BURGER_NOEXCEPT
 {
 	return _mm_cvtss_f32(_mm_min_ss(_mm_set_ss(fA), _mm_set_ss(fB)));
 }
 
 template<>
-BURGER_INLINE double Min(double dA, double dB) BURGER_NOEXCEPT
+BURGER_INLINE double minimum(double dA, double dB) BURGER_NOEXCEPT
 {
 	return _mm_cvtsd_f64(_mm_min_sd(_mm_set_sd(dA), _mm_set_sd(dB)));
 }
 
 template<>
-BURGER_INLINE float Max(float fA, float fB) BURGER_NOEXCEPT
+BURGER_INLINE float maximum(float fA, float fB) BURGER_NOEXCEPT
 {
 	return _mm_cvtss_f32(_mm_max_ss(_mm_set_ss(fA), _mm_set_ss(fB)));
 }
 
 template<>
-BURGER_INLINE double Max(double dA, double dB) BURGER_NOEXCEPT
+BURGER_INLINE double maximum(double dA, double dB) BURGER_NOEXCEPT
 {
 	return _mm_cvtsd_f64(_mm_max_sd(_mm_set_sd(dA), _mm_set_sd(dB)));
 }
 #endif
 #endif
+
 }
 #if defined(BURGER_GHS)
 #pragma ghs endnowarning

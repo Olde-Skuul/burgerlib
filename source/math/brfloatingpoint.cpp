@@ -1299,8 +1299,8 @@ double BURGER_API Burger::square_root(double dInput) BURGER_NOEXCEPT
 	\fn Burger::int_to_float(float *pOutput,const int32_t *pInput)
 	\brief 32 bit integer to floating point conversion
 
-	\note This function is fast on the Xbox 360 due to direct use of VMX128
-		instructions
+	\note This function is fast on the Xbox 360, PS3 and PowerPC64 MacOSX due to
+		direct use of VMX128 instructions
 
 	\param pInput Pointer to a 32 bit integer to convert
 	\param pOutput Pointer to a 32 bit float to receive the converted integer
@@ -1354,8 +1354,8 @@ double BURGER_API Burger::square_root(double dInput) BURGER_NOEXCEPT
 	\fn Burger::fixed_to_float(float *pOutput,const Fixed32 *pInput)
 	\brief 32 bit 16.16 fixed point integer to floating point conversion
 
-	\note This function is fast on the Xbox 360 due to direct use of VMX128
-		instructions
+	\note This function is fast on the Xbox 360, PS3 and PowerPC64 MacOSX due to
+		direct use of VMX128 instructions
 
 	\param pInput Pointer to a 32 bit 16.16 fixed point integer to convert
 	\param pOutput Pointer to a 32 bit float to receive the converted integer
@@ -1367,7 +1367,7 @@ double BURGER_API Burger::square_root(double dInput) BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\fn Burger::Interpolate(float fFrom,float fTo,float fFactor)
+	\fn Burger::interpolate(float fFrom,float fTo,float fFactor)
 	\brief Interpolate between two floating point values
 
 	Using a factor that's clamped from 0.0f to 1.0f, return the value between
@@ -1379,15 +1379,16 @@ double BURGER_API Burger::square_root(double dInput) BURGER_NOEXCEPT
 	\param fFrom Value to return if the interpolation factor is 0.0f
 	\param fTo Value to return if the interpolation factor is 1.0f
 	\param fFactor Interpolation between 0.0f and 1.0f inclusive
+
 	\return Value between fFrom and fTo
 
-	\sa Interpolate(double,double,double)
+	\sa interpolate(double,double,double)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::Interpolate(double dFrom,double dTo,double dFactor)
+	\fn Burger::interpolate(double dFrom,double dTo,double dFactor)
 	\brief Interpolate between two floating point values
 
 	Using a factor that's clamped from 0.0 to 1.0, return the value between
@@ -1399,15 +1400,16 @@ double BURGER_API Burger::square_root(double dInput) BURGER_NOEXCEPT
 	\param dFrom Value to return if the interpolation factor is 0.0
 	\param dTo Value to return if the interpolation factor is 1.0
 	\param dFactor Interpolation between 0.0 and 1.0 inclusive
+
 	\return Value between dFrom and dTo
 
-	\sa Interpolate(float,float,float)
+	\sa interpolate(float,float,float)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn float Burger::Clamp(float fInput,float fMin,float fMax)
+	\fn float Burger::clamp(float fInput,float fMin,float fMax)
 	\brief Clamp the input between a bounds
 
 	If the input value is less than the minimum, return the minimum or if the
@@ -1418,15 +1420,16 @@ double BURGER_API Burger::square_root(double dInput) BURGER_NOEXCEPT
 	\param fInput First value to test
 	\param fMin Minimum allowed value
 	\param fMax Maximum allowed value
+
 	\return The value clamped between the bounds
 
-	\sa Clamp(double,double,double)
+	\sa clamp(double,double,double)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn double Burger::Clamp(double dInput,double dMin,double dMax)
+	\fn double Burger::clamp(double dInput,double dMin,double dMax)
 	\brief Clamp the input between a bounds
 
 	If the input value is less than the minimum, return the minimum or if the
@@ -1437,9 +1440,10 @@ double BURGER_API Burger::square_root(double dInput) BURGER_NOEXCEPT
 	\param dInput First value to test
 	\param dMin Minimum allowed value
 	\param dMax Maximum allowed value
+
 	\return The value clamped between the bounds
 
-	\sa Clamp(float,float,float)
+	\sa clamp(float,float,float)
 
 ***************************************/
 
@@ -1451,55 +1455,32 @@ double BURGER_API Burger::square_root(double dInput) BURGER_NOEXCEPT
 
 	\param fInput A 32 bit floating point number.
 	\return \ref TRUE if Nan, \ref FALSE if not.
-	\sa IsNan(double), IsInf(float), IsFinite(float), IsNormal(float) and
+	\sa is_NaN(double), IsInf(float), IsFinite(float), IsNormal(float) and
 		SignBit(float)
 
 ***************************************/
 
-#if defined(BURGER_XBOX360) || \
-	(defined(BURGER_PPC) && defined(BURGER_METROWERKS))
-
-BURGER_DECLSPECNAKED uint_t BURGER_API Burger::IsNan(
-	float /* fInput */) BURGER_NOEXCEPT
-{
-// clang-format off
-#if defined(BURGER_XBOX360)
-    BURGER_ASM
-    {
-#endif
-        fcmpu cr0, fp1, fp1 // Perform a NaN test
-        mfcr r0             // Move cr0 into r0
-        extrwi r3, r0, 1, 3 // (Flags>>28)&1 Grab the "Unordered" flag
-        blr                 // Exit
-#if defined(BURGER_XBOX360)
-    }
-#endif
-	// clang-format on
-}
-
-#elif defined(BURGER_PPC) && defined(BURGER_MACOSX)
-
-__asm__(
-	"	.align	2,0\n"
-	"	.globl	__ZN6Burger5IsNanEf\n"
-	"__ZN6Burger5IsNanEf:\n"
-	"	fcmpu	cr0,f1,f1\n" // Perform a NaN test
-	"	mfcr	r0\n"        // Move cr0 into r0
-	"	extrwi	r3,r0,1,3\n" // (Flags>>28)&1 Grab the "Unordered" flag
-	"	blr\n"               // Exit
-);
+#if (defined(BURGER_METROWERKS) && \
+	(defined(BURGER_PPC) || defined(BURGER_68K))) || \
+	((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
+		defined(BURGER_PPC)) || \
+	defined(BURGER_XBOX360) || defined(BURGER_PS3) || defined(BURGER_WIIU)
 
 #else
 
-uint_t BURGER_API Burger::IsNan(float fInput) BURGER_NOEXCEPT
+uint_t BURGER_API Burger::is_NaN(float fInput) BURGER_NOEXCEPT
 {
-	uint32_t uInput =
-		static_cast<const uint32_float_t*>(static_cast<const void*>(&fInput))
-			->w;
+	// Convert float to binary
+	uint32_float_t Binary;
+	Binary.f = fInput;
+	uint32_t uInput = Binary.w;
+
 	// Kill off the high bit
-	uInput &= 0x7FFFFFFF;
+	uInput &= 0x7FFFFFFFU;
+
 	// Set the high bit if 0x7F800001-0x7FFFFFFF
-	uInput = 0x7F800000 - uInput;
+	uInput = 0x7F800000U - uInput;
+
 	// Return TRUE or FALSE depending on the test
 	return (uInput >> 31U);
 }
@@ -1514,47 +1495,20 @@ uint_t BURGER_API Burger::IsNan(float fInput) BURGER_NOEXCEPT
 
 	\param dInput A 64 bit floating point number.
 	\return \ref TRUE if Nan, \ref FALSE if not.
-	\sa IsNan(float), IsInf(double), IsFinite(double), IsNormal(double) and
+	\sa is_NaN(float), IsInf(double), IsFinite(double), IsNormal(double) and
 		SignBit(double)
 
 ***************************************/
 
-#if defined(BURGER_XBOX360) || \
-	(defined(BURGER_PPC) && defined(BURGER_METROWERKS))
-
-BURGER_DECLSPECNAKED uint_t BURGER_API Burger::IsNan(
-	double /* dInput */) BURGER_NOEXCEPT
-{
-// clang-format off
-#if defined(BURGER_XBOX360)
-    BURGER_ASM
-    {
-#endif
-        fcmpu cr0, fp1, fp1 // Perform a NaN test
-        mfcr r0             // Move cr0 into r0
-        extrwi r3, r0, 1, 3 // (Flags>>28)&1 Grab the "Unordered" flag
-        blr                 // Exit
-#if defined(BURGER_XBOX360)
-    }
-#endif
-	// clang-format on
-}
-
-#elif defined(BURGER_PPC) && defined(BURGER_MACOSX)
-
-__asm__(
-	"	.align	2,0\n"
-	"	.globl	__ZN6Burger5IsNanEd\n"
-	"__ZN6Burger5IsNanEd:\n"
-	"	fcmpu	cr0,f1,f1\n" // Perform a NaN test
-	"	mfcr	r0\n"        // Move cr0 into r0
-	"	extrwi	r3,r0,1,3\n" // (Flags>>28)&1 Grab the "Unordered" flag
-	"	blr\n"               // Exit
-);
+#if (defined(BURGER_METROWERKS) && \
+	(defined(BURGER_PPC) || defined(BURGER_68K))) || \
+	((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
+		defined(BURGER_PPC)) || \
+	defined(BURGER_XBOX360) || defined(BURGER_PS3) || defined(BURGER_WIIU)
 
 #else
 
-uint_t BURGER_API Burger::IsNan(double dInput) BURGER_NOEXCEPT
+uint_t BURGER_API Burger::is_NaN(double dInput) BURGER_NOEXCEPT
 {
 #if defined(BURGER_64BITCPU)
 	uint64_t uInput =
@@ -1583,7 +1537,7 @@ uint_t BURGER_API Burger::IsNan(double dInput) BURGER_NOEXCEPT
 
 	\param fInput A 32 bit floating point number.
 	\return \ref TRUE if Infinity, \ref FALSE if not.
-	\sa IsInf(double), IsNan(float), IsFinite(float), IsNormal(float) and
+	\sa IsInf(double), is_NaN(float), IsFinite(float), IsNormal(float) and
 		SignBit(float)
 
 ***************************************/
@@ -1646,7 +1600,7 @@ uint_t BURGER_API Burger::IsInf(float fInput) BURGER_NOEXCEPT
 
 	\param dInput A 64 bit floating point number.
 	\return \ref TRUE if Infinity, \ref FALSE if not.
-	\sa IsInf(float), IsNan(double), IsFinite(double), IsNormal(double) and
+	\sa IsInf(float), is_NaN(double), IsFinite(double), IsNormal(double) and
 		SignBit(double)
 
 ***************************************/
@@ -1708,7 +1662,7 @@ uint_t BURGER_API Burger::IsInf(double dInput) BURGER_NOEXCEPT
 
 	\param fInput A 32 bit floating point number.
 	\return \ref TRUE if finite, \ref FALSE if not.
-	\sa IsFinite(double), IsNan(float), IsInf(float), IsNormal(float) and
+	\sa IsFinite(double), is_NaN(float), IsInf(float), IsNormal(float) and
 		SignBit(float)
 
 ***************************************/
@@ -1784,7 +1738,7 @@ uint_t BURGER_API Burger::IsFinite(float fInput) BURGER_NOEXCEPT
 
 	\param dInput A 64 bit floating point number.
 	\return \ref TRUE if finite, \ref FALSE if not.
-	\sa IsFinite(float), IsNan(double), IsInf(double), IsNormal(double) and
+	\sa IsFinite(float), is_NaN(double), IsInf(double), IsNormal(double) and
 		SignBit(double)
 
 ***************************************/
@@ -1867,7 +1821,7 @@ uint_t BURGER_API Burger::IsFinite(double dInput) BURGER_NOEXCEPT
 
 	\param fInput A 32 bit floating point number.
 	\return \ref TRUE if normal, \ref FALSE if not.
-	\sa IsNormal(double), IsNan(float), IsInf(float), IsFinite(float) and
+	\sa IsNormal(double), is_NaN(float), IsInf(float), IsFinite(float) and
 		SignBit(float)
 
 ***************************************/
@@ -1882,7 +1836,7 @@ uint_t BURGER_API Burger::IsNormal(float fInput) BURGER_NOEXCEPT
 	// If the number is subnormal, set to infinity (2*Max)
 	fInputNew = __fsel(static_cast<double>(fInputNew - g_fMin), fInputNew,
 		static_cast<double>(g_fMax + g_fMax));
-	// If above max, set to Min, if it was set to max, return max
+	// If above max, set to minimum, if it was set to max, return max
 	// which returns true
 	return __fsel(g_fMax - fInputNew, static_cast<double>(g_fMax),
 			   static_cast<double>(g_fMin)) == g_fMax;
@@ -1916,7 +1870,7 @@ uint_t BURGER_API Burger::IsNormal(float fInput) BURGER_NOEXCEPT
 
 	\param dInput A 64 bit floating point number.
 	\return \ref TRUE if normal, \ref FALSE if not.
-	\sa IsNormal(float), IsNan(double), IsInf(double), IsFinite(double) and
+	\sa IsNormal(float), is_NaN(double), IsInf(double), IsFinite(double) and
 		SignBit(double)
 
 ***************************************/
@@ -1930,7 +1884,7 @@ uint_t BURGER_API Burger::IsNormal(double dInput) BURGER_NOEXCEPT
 	dInput = fabs(dInput);
 	// If the number is subnormal, set to infinity (2*Max)
 	dInput = __fsel(dInput - g_dMin, dInput, g_dMax + g_dMax);
-	// If above max, set to Min, if it was set to max, return max
+	// If above max, set to minimum, if it was set to max, return max
 	// which returns true
 	return __fsel(g_dMax - dInput, g_dMax, g_dMin) == g_dMax;
 }
@@ -1963,7 +1917,7 @@ uint_t BURGER_API Burger::IsNormal(double dInput) BURGER_NOEXCEPT
 
 	\param fInput A 32 bit floating point number.
 	\return \ref TRUE if negative, \ref FALSE if not.
-	\sa SignBit(double), IsNan(float), IsInf(float), IsFinite(float) and
+	\sa SignBit(double), is_NaN(float), IsInf(float), IsFinite(float) and
 		IsNormal(float)
 
 ***************************************/
@@ -1983,7 +1937,7 @@ uint_t BURGER_API Burger::SignBit(float fInput) BURGER_NOEXCEPT
 
 	\param dInput A 64 bit floating point number.
 	\return \ref TRUE if negative, \ref FALSE if not.
-	\sa SignBit(float), IsNan(double), IsInf(double), IsFinite(double) and
+	\sa SignBit(float), is_NaN(double), IsInf(double), IsFinite(double) and
 		IsNormal(double)
 
 ***************************************/
@@ -2240,8 +2194,8 @@ __asm__(
 	"	fcmpu	cr0,f0,f2\n" // Compare if already floored
 	"	bgelr\n"             // Exit with the value untouched if larger
 
-	"	mffs	f4\n"        // Save the rounding register
-	"	mtfsfi	7,0x03\n"    // Set bits 30 and 31 to Round toward -infinity
+	"	mffs	f4\n"     // Save the rounding register
+	"	mtfsfi	7,0x03\n" // Set bits 30 and 31 to Round toward -infinity
 
 	"	fadds	f3,f1,f2\n" // Push the positive number to highest value without
 							// fraction (Removes fraction)
@@ -2320,10 +2274,10 @@ float BURGER_API Burger::Floor(float fInput) BURGER_NOEXCEPT
 		const int iVar =
 			static_cast<int>(fInput); // Convert to int but rounded!
 		float fVar = static_cast<float>(iVar);
-		if (fVar > fInput) {          // Did I round up?
-			--fVar;                   // Fix it
+		if (fVar > fInput) { // Did I round up?
+			--fVar;          // Fix it
 		}
-		fInput = fVar;                // Return floored value
+		fInput = fVar; // Return floored value
 	}
 	return fInput;
 }
@@ -2414,8 +2368,8 @@ __asm__(
 	"	fcmpu	cr0,f0,f2\n" // Compare if already floored
 	"	bgelr\n"             // Exit with the value untouched if larger
 
-	"	mffs	f4\n"        // Save the rounding register
-	"	mtfsfi	7,0x03\n"    // Set bits 30 and 31 to Round toward -infinity
+	"	mffs	f4\n"     // Save the rounding register
+	"	mtfsfi	7,0x03\n" // Set bits 30 and 31 to Round toward -infinity
 
 	"	fadd	f3,f1,f2\n" // Push the positive number to highest value without
 							// fraction (Removes fraction)
@@ -2490,14 +2444,14 @@ double BURGER_API Burger::Floor(double dInput) BURGER_NOEXCEPT
 	// convert the double to an int and it's possible to have a double out
 	// of bounds. This is a bad thing.
 	if (dInput < 4503599627370496.0 &&
-		dInput > -4503599627370496.0) {   // Within bounds?
+		dInput > -4503599627370496.0) { // Within bounds?
 		const int64_t iVar =
 			static_cast<int64_t>(dInput); // Convert to int but rounded!
 		double dVar = static_cast<double>(iVar);
-		if (dVar > dInput) {              // Did I round up?
-			--dVar;                       // Fix it
+		if (dVar > dInput) { // Did I round up?
+			--dVar;          // Fix it
 		}
-		dInput = dVar;                    // Return floored value
+		dInput = dVar; // Return floored value
 	}
 	return dInput;
 }
@@ -2589,8 +2543,8 @@ __asm__(
 	"	fcmpu	cr0,f0,f2\n" // Compare if already floored
 	"	bgelr\n"             // Exit with the value untouched if larger
 
-	"	mffs	f4\n"        // Save the rounding register
-	"	mtfsfi	7,0x02\n"    // Set bits 30 and 31 to Round toward +infinity
+	"	mffs	f4\n"     // Save the rounding register
+	"	mtfsfi	7,0x02\n" // Set bits 30 and 31 to Round toward +infinity
 
 	"	fadds	f3,f1,f2\n" // Push the positive number to highest value without
 							// fraction (Removes fraction)
@@ -2644,9 +2598,9 @@ __asm__(
 	"	andl	$0x7FFFFFFF,%eax\n" // Mask off the sign
 	"	cmpl	$0x4B000000,%eax\n" // Compare to 8388608.0f
 	"	jae		1f\n"               // Out of range, return original value
-	"	frndint\n"             // Convert the integer to float (It's in range)
-	"	xorl	%eax,%eax\n"   // Clear ax for flags
-	"	fcoms	4(%esp)\n"     // Compare values for difference (Pop stack)
+	"	frndint\n"           // Convert the integer to float (It's in range)
+	"	xorl	%eax,%eax\n" // Clear ax for flags
+	"	fcoms	4(%esp)\n"   // Compare values for difference (Pop stack)
 	"	fnstsw	%ax\n"
 	"	andl	$0x100,%eax\n" // Was the new less than the original?
 	"	jz		1f\n"
@@ -2669,9 +2623,9 @@ float BURGER_API Burger::Ceil(float fInput) BURGER_NOEXCEPT
 		if (fVar < fInput) { // Was there a change?
 			++fVar;          // Round up
 		}
-		fInput = fVar;       // Return the result
+		fInput = fVar; // Return the result
 	}
-	return fInput;           // Return the input (Can't change it)
+	return fInput; // Return the input (Can't change it)
 }
 #endif
 
@@ -2760,8 +2714,8 @@ __asm__(
 	"	fcmpu	cr0,f0,f2\n" // Compare if already floored
 	"	bgelr\n"             // Exit with the value untouched if larger
 
-	"	mffs	f4\n"        // Save the rounding register
-	"	mtfsfi	7,0x02\n"    // Set bits 30 and 31 to Round toward +infinity
+	"	mffs	f4\n"     // Save the rounding register
+	"	mtfsfi	7,0x02\n" // Set bits 30 and 31 to Round toward +infinity
 
 	"	fadd	f3,f1,f2\n" // Push the positive number to highest value without
 							// fraction (Removes fraction)
@@ -2815,9 +2769,9 @@ __asm__(
 	"	andl	$0x7FFFFFFF,%eax\n" // Mask off the sign
 	"	cmpl	$0x43300000,%eax\n" // Compare to 4503599627370496.0
 	"	jae		1f\n"               // Out of range, return original value
-	"	frndint\n"             // Convert the integer to float (It's in range)
-	"	xorl	%eax,%eax\n"   // Clear ax for flags
-	"	fcoml	4(%esp)\n"     // Compare values for difference (Pop stack)
+	"	frndint\n"           // Convert the integer to float (It's in range)
+	"	xorl	%eax,%eax\n" // Clear ax for flags
+	"	fcoml	4(%esp)\n"   // Compare values for difference (Pop stack)
 	"	fnstsw	%ax\n"
 	"	andl	$0x100,%eax\n" // Was the new less than the original?
 	"	jz		1f\n"
@@ -2841,9 +2795,9 @@ double BURGER_API Burger::Ceil(double dInput) BURGER_NOEXCEPT
 		if (dVar < dInput) { // Was there a change?
 			++dVar;          // Round up
 		}
-		dInput = dVar;       // Return the result
+		dInput = dVar; // Return the result
 	}
-	return dInput;           // Return the input (Can't change it)
+	return dInput; // Return the input (Can't change it)
 }
 #endif
 

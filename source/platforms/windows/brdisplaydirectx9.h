@@ -222,7 +222,7 @@ public:
 			m_uRefreshMax = uMax;
 		}
 		BURGER_INLINE void SetMultisampleQualityMax(uint_t uMax) {
-			m_uMultisampleQualityMax = Min(uMax,65535U);
+			m_uMultisampleQualityMax = minimum(uMax,65535U);
 		}
 
 		BURGER_INLINE void SetSoftwareVertexProcessingFlag(uint_t bSoftwareVP) { m_bSoftwareVP = (bSoftwareVP!=0); }

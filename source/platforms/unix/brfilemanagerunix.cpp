@@ -535,7 +535,7 @@ Burger::eError BURGER_API Burger::FileManager::get_volume_name(
 
 							// Failsafe
 							uIndex =
-								Min(uIndex, static_cast<uintptr_t>(PATH_MAX));
+								minimum(uIndex, static_cast<uintptr_t>(PATH_MAX));
 
 							MemoryCopy(TempBuffer + 1, pName, uIndex);
 							TempBuffer[uIndex + 1] = ':';

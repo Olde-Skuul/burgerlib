@@ -20,7 +20,7 @@ public `W?get_8087_precision$:Burger$n()$e8087Precision$:1$`
 `W?get_8087_precision$:Burger$n()$e8087Precision$:1$` proc
 
 ; Space for the status word
-	push	eax    
+	push	eax
 
 ; Get the current status word
 	fnstcw	[esp]

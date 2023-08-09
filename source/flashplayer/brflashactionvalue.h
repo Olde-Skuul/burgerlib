@@ -146,7 +146,7 @@ public:
 	uint_t IsFunction(void) const;
 	BURGER_INLINE uint_t IsBool(void) const { return m_eType == BOOLEAN; }
 	BURGER_INLINE uint_t IsString(void) const { return m_eType == STRING; }
-	BURGER_INLINE uint_t IsNumber(void) const { return m_eType == NUMBER && IsNan(m_dNumber) == false; }
+	BURGER_INLINE uint_t IsNumber(void) const { return m_eType == NUMBER && is_NaN(m_dNumber) == false; }
 	BURGER_INLINE uint_t IsObject(void) const { return m_eType == OBJECT; }
 	BURGER_INLINE uint_t IsProperty(void) const { return m_eType == PROPERTY; }
 	BURGER_INLINE uint_t IsNULL(void) const { return m_eType == OBJECT && m_pObject == NULL; }

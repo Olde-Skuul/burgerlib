@@ -15,7 +15,7 @@ asm double BURGER_API Burger::_swapendiandouble(
 	const double* pInput BURGER_68K_A0)
 {
 	// The input pointer is a0
-	move.l  (a0), d0
+	move.l	(a0), d0
 	move.l	4(a0), d1
 
 	// Swap endian of the low 16 bits

@@ -1809,7 +1809,7 @@ void BURGER_API Burger::ComputeReverb(uint8_t *pOutput,const uint8_t *pInput,uin
 			// Underflow?
 			iTemp = ClampZero(iTemp);
 			// Overflow?
-			iTemp = Min(iTemp,static_cast<int32_t>(255));
+			iTemp = minimum(iTemp,static_cast<int32_t>(255));
 
 			// Store in the reverb buffer
 			pOutput[0] = static_cast<uint8_t>(iTemp);
@@ -1846,9 +1846,9 @@ void BURGER_API Burger::ComputeReverb(int16_t *pOutput,const int16_t *pInput,uin
 			++pInput;
 
 			// Underflow?
-			iTemp = Max(iTemp,static_cast<int32_t>(-32767));
+			iTemp = maximum(iTemp,static_cast<int32_t>(-32767));
 			// Overflow?
-			iTemp = Min(iTemp,static_cast<int32_t>(32767));
+			iTemp = minimum(iTemp,static_cast<int32_t>(32767));
 
 			// Store in the reverb buffer
 			pOutput[0] = static_cast<int16_t>(iTemp);

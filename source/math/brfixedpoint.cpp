@@ -1575,7 +1575,7 @@ void BURGER_API Burger::FloatToIntRoundToZero(
 
 /*! ************************************
 
-	\fn int32_t Burger::Clamp(int32_t iInput,int32_t iMin,int32_t iMax)
+	\fn int32_t Burger::clamp(int32_t iInput,int32_t iMin,int32_t iMax)
 	\brief Clamp the input between a bounds
 
 	If the input value is less than the minimum, return the minimum
@@ -1589,14 +1589,14 @@ void BURGER_API Burger::FloatToIntRoundToZero(
 	\param iMax Maximum allowed value
 	\return The value clamped between the bounds
 
-	\sa Clamp(uint64_t,uint64_t,uint64_t), Clamp(int64_t,int64_t,int64_t), or
-		Clamp(uint32_t,uint32_t,uint32_t)
+	\sa clamp(uint64_t,uint64_t,uint64_t), clamp(int64_t,int64_t,int64_t), or
+		clamp(uint32_t,uint32_t,uint32_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn int64_t Burger::Clamp(int64_t iInput,int64_t iMin,int64_t iMax)
+	\fn int64_t Burger::clamp(int64_t iInput,int64_t iMin,int64_t iMax)
 	\brief Clamp the input between a bounds
 
 	If the input value is less than the minimum, return the minimum
@@ -1610,14 +1610,14 @@ void BURGER_API Burger::FloatToIntRoundToZero(
 	\param iMax Maximum allowed value
 	\return The value clamped between the bounds
 
-	\sa Clamp(uint32_t,uint32_t,uint32_t), Clamp(int32_t,int32_t,int32_t), or
-		Clamp(uint64_t,uint64_t,uint64_t)
+	\sa clamp(uint32_t,uint32_t,uint32_t), clamp(int32_t,int32_t,int32_t), or
+		clamp(uint64_t,uint64_t,uint64_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn uint32_t Burger::Clamp(uint32_t uInput,uint32_t uMin,uint32_t uMax)
+	\fn uint32_t Burger::clamp(uint32_t uInput,uint32_t uMin,uint32_t uMax)
 	\brief Clamp the input between a bounds
 
 	If the input value is less than the minimum, return the minimum
@@ -1631,14 +1631,14 @@ void BURGER_API Burger::FloatToIntRoundToZero(
 	\param uMax Maximum allowed value
 	\return The value clamped between the bounds
 
-	\sa Clamp(int64_t,int64_t,int64_t), Clamp(uint64_t,uint64_t,uint64_t), or
-		Clamp(int32_t,int32_t,int32_t)
+	\sa clamp(int64_t,int64_t,int64_t), clamp(uint64_t,uint64_t,uint64_t), or
+		clamp(int32_t,int32_t,int32_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn uint64_t Burger::Clamp(uint64_t uInput,uint64_t uMin,uint64_t uMax)
+	\fn uint64_t Burger::clamp(uint64_t uInput,uint64_t uMin,uint64_t uMax)
 	\brief Clamp the input between a bounds
 
 	If the input value is less than the minimum, return the minimum
@@ -1652,8 +1652,8 @@ void BURGER_API Burger::FloatToIntRoundToZero(
 	\param uMax Maximum allowed value
 	\return The value clamped between the bounds
 
-	\sa Clamp(int32_t,int32_t,int32_t), Clamp(uint32_t,uint32_t,uint32_t), or
-		Clamp(int64_t,int64_t,int64_t)
+	\sa clamp(int32_t,int32_t,int32_t), clamp(uint32_t,uint32_t,uint32_t), or
+		clamp(int64_t,int64_t,int64_t)
 
 ***************************************/
 

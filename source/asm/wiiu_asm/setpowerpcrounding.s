@@ -21,7 +21,7 @@ set_PowerPC_rounding__6BurgerFQ2_6Burger16ePowerPCRounding:
 	mffs	f0
 
 ; Store it in memory
-	stfd	f0, -8(r1)    
+	stfd	f0, -8(r1)
 
 ; Load into an integer register
 	lwz		r4, -4(r1)

@@ -35,21 +35,21 @@ __cpuidex_ proc
 	cpuid
 
 ; Store the result in the same order as Visual C's intrinsic
-    mov		[esi],eax
-    mov		[esi+4],ebx
-    mov		[esi+8],ecx
-    mov		[esi+12],edx
+	mov		[esi], eax
+	mov		[esi+4], ebx
+	mov		[esi+8], ecx
+	mov		[esi+12], edx
 
 ; Restore registers and exit
 	pop		edx
 	pop		ecx
-    pop		ebx
+	pop		ebx
 	pop		eax
-    pop		esi
+	pop		esi
 	ret
 
 __cpuidex_ endp
 
 _TEXT ends
 
-    end
+	end

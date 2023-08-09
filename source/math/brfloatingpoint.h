@@ -418,8 +418,9 @@ BURGER_INLINE void int_to_float(
 	__vector int vTemp = __builtin_altivec_lvewx(0, pInput);
 
 	// Determine where to slide the result
-	__vector unsigned char vPermute =
-		__builtin_altivec_lvsl(reinterpret_cast<uintptr_t>(pOutput), pInput);
+	__vector unsigned char vPermute = __builtin_altivec_lvsl(0,
+		reinterpret_cast<const char*>(pInput) -
+			reinterpret_cast<uintptr_t>(pOutput));
 
 	// Next, convert the value into a float
 	vTemp = (__vector int)__builtin_altivec_vcfsx(vTemp, 0);
@@ -439,8 +440,9 @@ BURGER_INLINE void fixed_to_float(
 	__vector int vTemp = __builtin_altivec_lvewx(0, pInput);
 
 	// Determine where to slide the result
-	__vector unsigned char vPermute =
-		__builtin_altivec_lvsl(reinterpret_cast<uintptr_t>(pOutput), pInput);
+	__vector unsigned char vPermute = __builtin_altivec_lvsl(0,
+		reinterpret_cast<const char*>(pInput) -
+			reinterpret_cast<uintptr_t>(pOutput));
 
 	// Next, convert the fixed point 16.16 into a float
 	vTemp = (__vector int)__builtin_altivec_vcfsx(vTemp, 16);
@@ -465,28 +467,30 @@ BURGER_INLINE void fixed_to_float(
 }
 #endif
 
-BURGER_INLINE BURGER_CONSTEXPR float Interpolate(
+BURGER_INLINE BURGER_CONSTEXPR float interpolate(
 	float fFrom, float fTo, float fFactor) BURGER_NOEXCEPT
 {
 	return ((fTo - fFrom) * fFactor) + fFrom;
 }
-BURGER_INLINE BURGER_CONSTEXPR double Interpolate(
+
+BURGER_INLINE BURGER_CONSTEXPR double interpolate(
 	double dFrom, double dTo, double dFactor) BURGER_NOEXCEPT
 {
 	return ((dTo - dFrom) * dFactor) + dFrom;
 }
 
-BURGER_INLINE float Clamp(float fIn, float fMin, float fMax) BURGER_NOEXCEPT
+BURGER_INLINE float clamp(float fIn, float fMin, float fMax) BURGER_NOEXCEPT
 {
-	return Min(Max(fIn, fMin), fMax);
-}
-BURGER_INLINE double Clamp(double dIn, double dMin, double dMax) BURGER_NOEXCEPT
-{
-	return Min(Max(dIn, dMin), dMax);
+	return minimum(maximum(fIn, fMin), fMax);
 }
 
-extern uint_t BURGER_API IsNan(float fInput) BURGER_NOEXCEPT;
-extern uint_t BURGER_API IsNan(double dInput) BURGER_NOEXCEPT;
+BURGER_INLINE double clamp(double dIn, double dMin, double dMax) BURGER_NOEXCEPT
+{
+	return minimum(maximum(dIn, dMin), dMax);
+}
+
+extern uint_t BURGER_API is_NaN(float fInput) BURGER_NOEXCEPT;
+extern uint_t BURGER_API is_NaN(double dInput) BURGER_NOEXCEPT;
 extern uint_t BURGER_API IsInf(float fInput) BURGER_NOEXCEPT;
 extern uint_t BURGER_API IsInf(double dInput) BURGER_NOEXCEPT;
 extern uint_t BURGER_API IsFinite(float fInput) BURGER_NOEXCEPT;

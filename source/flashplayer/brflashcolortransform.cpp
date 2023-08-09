@@ -118,10 +118,10 @@ void BURGER_API Burger::Flash::ColorTransform::Concatenate(const ColorTransform 
 
 void BURGER_API Burger::Flash::ColorTransform::Transform(RGBAWord8_t *pOutput,const RGBAWord8_t *pInput) const
 {
-	pOutput->m_uRed = static_cast<uint8_t>(static_cast<int>(Burger::Clamp(static_cast<float>(pInput->m_uRed) * m_fRedMultTerm + m_fRedAddTerm,0.0f,255.0f)));
-	pOutput->m_uGreen = static_cast<uint8_t>(static_cast<int>(Burger::Clamp(static_cast<float>(pInput->m_uGreen) * m_fGreenMultTerm + m_fGreenAddTerm,0.0f,255.0f)));
-	pOutput->m_uBlue = static_cast<uint8_t>(static_cast<int>(Burger::Clamp(static_cast<float>(pInput->m_uBlue) * m_fBlueMultTerm + m_fBlueAddTerm,0.0f,255.0f)));
-	pOutput->m_uAlpha = static_cast<uint8_t>(static_cast<int>(Burger::Clamp(static_cast<float>(pInput->m_uAlpha) * m_fAlphaMultTerm + m_fAlphaAddTerm,0.0f,255.0f)));
+	pOutput->m_uRed = static_cast<uint8_t>(static_cast<int>(Burger::clamp(static_cast<float>(pInput->m_uRed) * m_fRedMultTerm + m_fRedAddTerm,0.0f,255.0f)));
+	pOutput->m_uGreen = static_cast<uint8_t>(static_cast<int>(Burger::clamp(static_cast<float>(pInput->m_uGreen) * m_fGreenMultTerm + m_fGreenAddTerm,0.0f,255.0f)));
+	pOutput->m_uBlue = static_cast<uint8_t>(static_cast<int>(Burger::clamp(static_cast<float>(pInput->m_uBlue) * m_fBlueMultTerm + m_fBlueAddTerm,0.0f,255.0f)));
+	pOutput->m_uAlpha = static_cast<uint8_t>(static_cast<int>(Burger::clamp(static_cast<float>(pInput->m_uAlpha) * m_fAlphaMultTerm + m_fAlphaAddTerm,0.0f,255.0f)));
 }
 
 /*! ************************************
@@ -227,15 +227,15 @@ void BURGER_API Burger::Flash::ColorTransform::ReadRGBA(Stream* pStream)
 
 void BURGER_API Burger::Flash::ColorTransform::Clamp(void)
 {
-	m_fRedMultTerm = Burger::Clamp(m_fRedMultTerm,0.0f,1.0f);
-	m_fGreenMultTerm = Burger::Clamp(m_fGreenMultTerm,0.0f,1.0f);
-	m_fBlueMultTerm = Burger::Clamp(m_fBlueMultTerm,0.0f,1.0f);
-	m_fAlphaMultTerm = Burger::Clamp(m_fAlphaMultTerm,0.0f,1.0f);
+	m_fRedMultTerm = Burger::clamp(m_fRedMultTerm,0.0f,1.0f);
+	m_fGreenMultTerm = Burger::clamp(m_fGreenMultTerm,0.0f,1.0f);
+	m_fBlueMultTerm = Burger::clamp(m_fBlueMultTerm,0.0f,1.0f);
+	m_fAlphaMultTerm = Burger::clamp(m_fAlphaMultTerm,0.0f,1.0f);
 
-	m_fRedAddTerm = Burger::Clamp(m_fRedAddTerm,-255.0f,255.0f);
-	m_fGreenAddTerm = Burger::Clamp(m_fGreenAddTerm,-255.0f,255.0f);
-	m_fBlueAddTerm = Burger::Clamp(m_fBlueAddTerm,-255.0f,255.0f);
-	m_fAlphaAddTerm = Burger::Clamp(m_fAlphaAddTerm,-255.0f,255.0f);
+	m_fRedAddTerm = Burger::clamp(m_fRedAddTerm,-255.0f,255.0f);
+	m_fGreenAddTerm = Burger::clamp(m_fGreenAddTerm,-255.0f,255.0f);
+	m_fBlueAddTerm = Burger::clamp(m_fBlueAddTerm,-255.0f,255.0f);
+	m_fAlphaAddTerm = Burger::clamp(m_fAlphaAddTerm,-255.0f,255.0f);
 }
 
 /*! ************************************

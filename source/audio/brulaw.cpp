@@ -159,7 +159,7 @@ Burger::eError Burger::DecompressULaw::Process(void *pOutput, uintptr_t uOutputC
 		case STATE_INIT:
 			{
 				// Copy the data while converting the endian
-				uintptr_t uPacketCount = Min(uInputChunkLength,uOutputChunkLength/2);
+				uintptr_t uPacketCount = minimum(uInputChunkLength,uOutputChunkLength/2);
 				uInputChunkLength -= uPacketCount;
 				uOutputChunkLength -= uPacketCount*2;
 
@@ -212,7 +212,7 @@ Burger::eError Burger::DecompressULaw::Process(void *pOutput, uintptr_t uOutputC
 				// Output 1 or 2 bytes
 
 				uintptr_t uCacheSize = m_uCacheSize;
-				uintptr_t uSteps = Min(uOutputChunkLength,static_cast<uintptr_t>(uCacheSize));
+				uintptr_t uSteps = minimum(uOutputChunkLength,static_cast<uintptr_t>(uCacheSize));
 
 				// Mark the byte(s) as consumed
 				uOutputChunkLength -= uSteps;

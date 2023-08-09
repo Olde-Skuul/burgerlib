@@ -1086,7 +1086,7 @@ Burger::DisplayDirectX9::BufferFormatGroup::CreateMultiSampleTypeList(
 				MSQuality_t Temp;
 				Temp.m_uMSType = uSampleType;
 				Temp.m_uMaxQuality =
-					Min(static_cast<uint_t>(uQuality), uMaxQuality + 1);
+					minimum(static_cast<uint_t>(uQuality), uMaxQuality + 1);
 				m_MultiSampleQualityList.push_back(Temp);
 			}
 			++pMultis;
@@ -1190,7 +1190,7 @@ float BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::RankDevice(
 			GetD3DFORMATColorChannelBits(m_uAdapterFormat) -
 			GetD3DFORMATColorChannelBits(
 				pOptimalDeviceSettings->m_uAdapterFormat)));
-		float fScale = Max(0.9f - static_cast<float>(iDelta) * 0.2f, 0.0f);
+		float fScale = maximum(0.9f - static_cast<float>(iDelta) * 0.2f, 0.0f);
 		fCurRanking += fScale;
 	}
 
@@ -1275,7 +1275,7 @@ float BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::RankDevice(
 			GetD3DFORMATColorChannelBits(m_uBackBufferFormat) -
 			GetD3DFORMATColorChannelBits(
 				pOptimalDeviceSettings->m_uBackBufferFormat)));
-		float fScale = Max(0.9f - static_cast<float>(iDelta) * 0.2f, 0.0f);
+		float fScale = maximum(0.9f - static_cast<float>(iDelta) * 0.2f, 0.0f);
 		fCurRanking += fScale;
 	}
 

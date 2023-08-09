@@ -243,7 +243,7 @@ void BURGER_API Burger::Flash::Manager::SetLODBias(float fTextureLODBias)
 
 void BURGER_API Burger::Flash::Manager::SetCurvePixelError(float fCurvePixelError)
 {
-	m_fCurvePixelError = Clamp(fCurvePixelError,1e-6f,1e6f);
+	m_fCurvePixelError = clamp(fCurvePixelError,1e-6f,1e6f);
 }
 
 /*! ************************************

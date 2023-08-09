@@ -707,7 +707,7 @@ uint_t BURGER_API Burger::SoundManager::Voice::SetVolume(uint_t uVolume)
 	// Ensure it's bounds checked
 	//
 
-	uVolume = Min(static_cast<uint32_t>(uVolume), static_cast<uint32_t>(255));
+	uVolume = minimum(static_cast<uint32_t>(uVolume), static_cast<uint32_t>(255));
 
 	if (m_uVolume != uVolume) {
 		m_uVolume = uVolume;
@@ -745,7 +745,7 @@ uint_t BURGER_API Burger::SoundManager::Voice::SetPan(uint_t uPan)
 	// Ensure it's bounds checked
 	//
 
-	uPan = Min(static_cast<uint32_t>(uPan), static_cast<uint32_t>(65535));
+	uPan = minimum(static_cast<uint32_t>(uPan), static_cast<uint32_t>(65535));
 
 	if (m_uPan != uPan) {
 		m_uPan = uPan;
@@ -1309,8 +1309,8 @@ uint_t BURGER_API Burger::SoundManager::GetAudioModes(
 							Float64 fMin = g_dInf;
 							Float64 fMax = 0.0;
 							do {
-								fMin = Min(pRange->mMinimum, fMin);
-								fMax = Max(pRange->mMaximum, fMax);
+								fMin = minimum(pRange->mMinimum, fMin);
+								fMax = maximum(pRange->mMaximum, fMax);
 								++pRange;
 							} while (--uCountRange);
 							Entry.m_uMinimumSampleRate =

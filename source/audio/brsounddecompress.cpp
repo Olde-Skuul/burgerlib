@@ -207,7 +207,7 @@ Burger::eError Burger::DecompressUnsigned8BitAudio::Reset(void)
 Burger::eError Burger::DecompressUnsigned8BitAudio::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
 {
     // Which is smaller? Input or output?
-    uintptr_t uCount = Min(uInputChunkLength, uOutputChunkLength);
+    uintptr_t uCount = minimum(uInputChunkLength, uOutputChunkLength);
 
 	// Copy the data
 	MemoryCopy(pOutput,pInput,uCount);
@@ -316,7 +316,7 @@ Burger::eError Burger::DecompressSigned8BitAudio::Reset(void)
 Burger::eError Burger::DecompressSigned8BitAudio::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
 {
 	// Which is smaller? Input or output?
-	uintptr_t uCount = Min(uInputChunkLength,uOutputChunkLength);
+	uintptr_t uCount = minimum(uInputChunkLength,uOutputChunkLength);
 	swap_chars_to_bytes(static_cast<uint8_t *>(pOutput),static_cast<const uint8_t *>(pInput),uCount);
 
 	// Store the amount of data that was processed
@@ -430,7 +430,7 @@ Burger::eError Burger::Decompress16BitBEAudio::Process(void *pOutput, uintptr_t 
 #if defined(BURGER_BIGENDIAN)
 
 	// Which is smaller? Input or output?
-	uintptr_t uCount = Min(uInputChunkLength,uOutputChunkLength);
+	uintptr_t uCount = minimum(uInputChunkLength,uOutputChunkLength);
 
 	//
 	// If there is no conversion, just upload the data as is.
@@ -465,7 +465,7 @@ Burger::eError Burger::Decompress16BitBEAudio::Process(void *pOutput, uintptr_t 
 		case STATE_INIT:
 			{
 				// Copy the data while converting the endian
-				uintptr_t uCount = Min(uInputChunkLength,uOutputChunkLength);
+				uintptr_t uCount = minimum(uInputChunkLength,uOutputChunkLength);
 				uInputChunkLength -= uCount;
 				uOutputChunkLength -= uCount&(~static_cast<uintptr_t>(1));
 
@@ -514,7 +514,7 @@ Burger::eError Burger::Decompress16BitBEAudio::Process(void *pOutput, uintptr_t 
 				// Output 1 or 2 bytes
 
 				uintptr_t uCacheSize = m_uCacheSize;
-				uintptr_t uSteps = Min(uOutputChunkLength,static_cast<uintptr_t>(uCacheSize));
+				uintptr_t uSteps = minimum(uOutputChunkLength,static_cast<uintptr_t>(uCacheSize));
 
 				// Mark the byte(s) as consumed
 				uOutputChunkLength -= uSteps;
@@ -688,7 +688,7 @@ Burger::eError Burger::Decompress16BitLEAudio::Process(void *pOutput, uintptr_t 
 #if !defined(BURGER_BIGENDIAN)
 
 	// Which is smaller? Input or output?
-	uintptr_t uCount = Min(uInputChunkLength,uOutputChunkLength);
+	uintptr_t uCount = minimum(uInputChunkLength,uOutputChunkLength);
 
 	//
 	// If there is no conversion, just upload the data as is.
@@ -723,7 +723,7 @@ Burger::eError Burger::Decompress16BitLEAudio::Process(void *pOutput, uintptr_t 
 		case STATE_INIT:
 			{
 				// Copy the data while converting the endian
-				uintptr_t uCount = Min(uInputChunkLength,uOutputChunkLength);
+				uintptr_t uCount = minimum(uInputChunkLength,uOutputChunkLength);
 				uInputChunkLength -= uCount;
 				uOutputChunkLength -= uCount&(~static_cast<uintptr_t>(1));
 
@@ -774,7 +774,7 @@ Burger::eError Burger::Decompress16BitLEAudio::Process(void *pOutput, uintptr_t 
 				// Output 1 or 2 bytes
 
 				uintptr_t uCacheSize = m_uCacheSize;
-				uintptr_t uSteps = Min(uOutputChunkLength,static_cast<uintptr_t>(uCacheSize));
+				uintptr_t uSteps = minimum(uOutputChunkLength,static_cast<uintptr_t>(uCacheSize));
 
 				// Mark the byte(s) as consumed
 				uOutputChunkLength -= uSteps;
@@ -947,7 +947,7 @@ Burger::eError Burger::Decompress32BitBEAudio::Process(void *pOutput, uintptr_t 
 #if defined(BURGER_BIGENDIAN)
 
 	// Which is smaller? Input or output?
-	uintptr_t uCount = Min(uInputChunkLength,uOutputChunkLength);
+	uintptr_t uCount = minimum(uInputChunkLength,uOutputChunkLength);
 
 	//
 	// If there is no conversion, just upload the data as is.
@@ -982,7 +982,7 @@ Burger::eError Burger::Decompress32BitBEAudio::Process(void *pOutput, uintptr_t 
 		case STATE_INIT:
 			{
 				// Copy the data while converting the endian
-				uintptr_t uCount = Min(uInputChunkLength,uOutputChunkLength);
+				uintptr_t uCount = minimum(uInputChunkLength,uOutputChunkLength);
 				uintptr_t uLength = uCount&(~(3));
 				if (uLength) {
 
@@ -1036,7 +1036,7 @@ Burger::eError Burger::Decompress32BitBEAudio::Process(void *pOutput, uintptr_t 
 				uintptr_t uRemaining = sizeof(m_Cache)-uCacheSize;
 
 				// Number of bytes to process
-				uintptr_t uChunk = Min(uRemaining,uInputChunkLength);
+				uintptr_t uChunk = minimum(uRemaining,uInputChunkLength);
 
 				// Fill in the cache
 				MemoryCopy(&m_Cache[uCacheSize],pInput,uChunk);
@@ -1070,7 +1070,7 @@ Burger::eError Burger::Decompress32BitBEAudio::Process(void *pOutput, uintptr_t 
 				// Output data from the cache
 
 				uintptr_t uCacheCount = m_uCacheCount;
-				uintptr_t uSteps = Min(uOutputChunkLength,static_cast<uintptr_t>(uCacheCount));
+				uintptr_t uSteps = minimum(uOutputChunkLength,static_cast<uintptr_t>(uCacheCount));
 
 				// Mark the byte(s) as consumed
 				uOutputChunkLength -= uSteps;
@@ -1225,7 +1225,7 @@ Burger::eError Burger::Decompress32BitLEAudio::Process(void *pOutput, uintptr_t 
 #if !defined(BURGER_BIGENDIAN)
 
 	// Which is smaller? Input or output?
-	uintptr_t uCount = Min(uInputChunkLength,uOutputChunkLength);
+	uintptr_t uCount = minimum(uInputChunkLength,uOutputChunkLength);
 
 	//
 	// If there is no conversion, just upload the data as is.
@@ -1260,7 +1260,7 @@ Burger::eError Burger::Decompress32BitLEAudio::Process(void *pOutput, uintptr_t 
 		case STATE_INIT:
 			{
 				// Copy the data while converting the endian
-				uintptr_t uCount = Min(uInputChunkLength,uOutputChunkLength);
+				uintptr_t uCount = minimum(uInputChunkLength,uOutputChunkLength);
 				uintptr_t uLength = uCount&(~(3));
 				if (uLength) {
 
@@ -1314,7 +1314,7 @@ Burger::eError Burger::Decompress32BitLEAudio::Process(void *pOutput, uintptr_t 
 				uintptr_t uRemaining = sizeof(m_Cache)-uCacheSize;
 
 				// Number of bytes to process
-				uintptr_t uChunk = Min(uRemaining,uInputChunkLength);
+				uintptr_t uChunk = minimum(uRemaining,uInputChunkLength);
 
 				// Fill in the cache
 				MemoryCopy(&m_Cache[uCacheSize],pInput,uChunk);
@@ -1348,7 +1348,7 @@ Burger::eError Burger::Decompress32BitLEAudio::Process(void *pOutput, uintptr_t 
 				// Output data from the cache
 
 				uintptr_t uCacheCount = m_uCacheCount;
-				uintptr_t uSteps = Min(uOutputChunkLength,static_cast<uintptr_t>(uCacheCount));
+				uintptr_t uSteps = minimum(uOutputChunkLength,static_cast<uintptr_t>(uCacheCount));
 
 				// Mark the byte(s) as consumed
 				uOutputChunkLength -= uSteps;

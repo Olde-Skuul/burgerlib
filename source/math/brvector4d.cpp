@@ -1519,10 +1519,10 @@ void BURGER_API Burger::Vector4D_t::ExpandRect(float fX, float fY)
 	_mm_store_ss(&z,_mm_max_ss(_mm_load_ss(&z),vX));
 	_mm_store_ss(&w,_mm_max_ss(_mm_load_ss(&w),vY));
 #else
-	x = Min(x,fX);
-	y = Min(y,fY);
-	z = Max(z,fX);
-	w = Max(w,fY);
+	x = minimum(x,fX);
+	y = minimum(y,fY);
+	z = maximum(z,fX);
+	w = maximum(w,fY);
 #endif
 }
 
@@ -1551,10 +1551,10 @@ void BURGER_API Burger::Vector4D_t::ExpandRect(const Vector2D_t *pInput)
 #else
 	float fX = pInput->x;
 	float fY = pInput->y;
-	x = Min(x,fX);
-	y = Min(y,fY);
-	z = Max(z,fX);
-	w = Max(w,fY);
+	x = minimum(x,fX);
+	y = minimum(y,fY);
+	z = maximum(z,fX);
+	w = maximum(w,fY);
 #endif
 }
 
@@ -1587,10 +1587,10 @@ void BURGER_API Burger::Vector4D_t::ExpandRect(const Vector4D_t *pInput)
 	float fY1 = pInput->y;
 	float fX2 = pInput->z;
 	float fY2 = pInput->w;
-	x = Min(Min(x,fX1),fX2);
-	y = Min(Min(y,fY1),fY2);
-	z = Max(Max(z,fX1),fX2);
-	w = Max(Max(w,fY1),fY2);
+	x = minimum(minimum(x,fX1),fX2);
+	y = minimum(minimum(y,fY1),fY2);
+	z = maximum(maximum(z,fX1),fX2);
+	w = maximum(maximum(w,fY1),fY2);
 #endif
 }
 

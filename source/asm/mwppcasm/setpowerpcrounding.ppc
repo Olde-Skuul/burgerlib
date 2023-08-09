@@ -21,7 +21,7 @@
 	mffs	fp0
 
 ; Store it in memory
-	stfd	fp0, -8(r1)    
+	stfd	fp0, -8(r1)
 
 ; Load into an integer register
 	lwz		r4, -4(r1)

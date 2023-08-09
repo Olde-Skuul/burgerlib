@@ -820,7 +820,7 @@ Burger::eError Burger::DecompressMace3::Process(void *pOutput, uintptr_t uOutput
 			{
 
 				// Determine the number of packets to process
-				uintptr_t uPacketCount = Min(uInputChunkLength/uInputGranularity,uOutputChunkLength/uOutputGranularity);
+				uintptr_t uPacketCount = minimum(uInputChunkLength/uInputGranularity,uOutputChunkLength/uOutputGranularity);
 
 				// Any intact packets?
 				if (uPacketCount) {
@@ -842,7 +842,7 @@ Burger::eError Burger::DecompressMace3::Process(void *pOutput, uintptr_t uOutput
 						uint8_t LeftBuffer[512*6];
 						uint8_t RightBuffer[512*6];
 						do {
-							uintptr_t uChunkCount = Max(uPacketCount,static_cast<uintptr_t>(512));
+							uintptr_t uChunkCount = maximum(uPacketCount,static_cast<uintptr_t>(512));
 							MACEExp1to3(static_cast<const uint8_t *>(pInput),LeftBuffer,uChunkCount,&MaceStateLeft,&MaceStateLeft,2,1);
 							MACEExp1to3(static_cast<const uint8_t *>(pInput),RightBuffer,uChunkCount,&MaceStateRight,&MaceStateRight,2,2);
 							CopyStereoInterleaved(pOutput,LeftBuffer,RightBuffer,(uChunkCount*uOutputGranularity)>>1U);
@@ -878,7 +878,7 @@ Burger::eError Burger::DecompressMace3::Process(void *pOutput, uintptr_t uOutput
 				// Output 1 or 12 bytes
 
 				uintptr_t uCacheSize = m_uCacheSize;
-				uintptr_t uSteps = Min(uOutputChunkLength,static_cast<uintptr_t>(uCacheSize));
+				uintptr_t uSteps = minimum(uOutputChunkLength,static_cast<uintptr_t>(uCacheSize));
 
 				// Mark the byte(s) as consumed
 				uOutputChunkLength -= uSteps;
@@ -922,7 +922,7 @@ Burger::eError Burger::DecompressMace3::Process(void *pOutput, uintptr_t uOutput
 				uintptr_t uRemaining = uInputGranularity-uCacheSize;
 
 				// Number of bytes to process
-				uintptr_t uChunk = Min(uRemaining,uInputChunkLength);
+				uintptr_t uChunk = minimum(uRemaining,uInputChunkLength);
 
 				// Fill in the cache
 				MemoryCopy(&m_Cache[uCacheSize],pInput,uChunk);
@@ -1122,7 +1122,7 @@ Burger::eError Burger::DecompressMace6::Process(void *pOutput, uintptr_t uOutput
 			{
 
 				// Determine the number of packets to process
-				uintptr_t uPacketCount = Min(uInputChunkLength/uInputGranularity,uOutputChunkLength/uOutputGranularity);
+				uintptr_t uPacketCount = minimum(uInputChunkLength/uInputGranularity,uOutputChunkLength/uOutputGranularity);
 
 				// Any intact packets?
 				if (uPacketCount) {
@@ -1144,7 +1144,7 @@ Burger::eError Burger::DecompressMace6::Process(void *pOutput, uintptr_t uOutput
 						uint8_t LeftBuffer[512*6];
 						uint8_t RightBuffer[512*6];
 						do {
-							uintptr_t uChunkCount = Max(uPacketCount,static_cast<uintptr_t>(512));
+							uintptr_t uChunkCount = maximum(uPacketCount,static_cast<uintptr_t>(512));
 							MACEExp1to6(static_cast<const uint8_t *>(pInput),LeftBuffer,uChunkCount,&MaceStateLeft,&MaceStateLeft,2,1);
 							MACEExp1to6(static_cast<const uint8_t *>(pInput),RightBuffer,uChunkCount,&MaceStateRight,&MaceStateRight,2,2);
 							CopyStereoInterleaved(pOutput,LeftBuffer,RightBuffer,(uChunkCount*uOutputGranularity)>>1U);
@@ -1180,7 +1180,7 @@ Burger::eError Burger::DecompressMace6::Process(void *pOutput, uintptr_t uOutput
 				// Output 1 or 12 bytes
 
 				uintptr_t uCacheSize = m_uCacheSize;
-				uintptr_t uSteps = Min(uOutputChunkLength,static_cast<uintptr_t>(uCacheSize));
+				uintptr_t uSteps = minimum(uOutputChunkLength,static_cast<uintptr_t>(uCacheSize));
 
 				// Mark the byte(s) as consumed
 				uOutputChunkLength -= uSteps;
@@ -1224,7 +1224,7 @@ Burger::eError Burger::DecompressMace6::Process(void *pOutput, uintptr_t uOutput
 				uintptr_t uRemaining = uInputGranularity-uCacheSize;
 
 				// Number of bytes to process
-				uintptr_t uChunk = Min(uRemaining,uInputChunkLength);
+				uintptr_t uChunk = minimum(uRemaining,uInputChunkLength);
 
 				// Fill in the cache
 				MemoryCopy(&m_Cache[uCacheSize],pInput,uChunk);

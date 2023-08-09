@@ -77,7 +77,7 @@ Burger::GameApp* Burger::GameApp::g_piOSApp;
 	// Get the size of the screen
 	CGSize ScreenSize = [UIScreen mainScreen].bounds.size;
 	// Use the larger to get the portrait height
-	float fPortraitHeight = Burger::Max(ScreenSize.width, ScreenSize.height);
+	float fPortraitHeight = Burger::maximum(ScreenSize.width, ScreenSize.height);
 
 	// Get the larger size portrait image if available
 	UIImage* pPortraitImage =

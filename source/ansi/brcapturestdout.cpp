@@ -156,7 +156,7 @@ Burger::eError BURGER_API Burger::CaptureStdout::Init(
 		// Since the parameter is only 32 bit, handle the rare overflow case.
 
 #if defined(BURGER_64BITCPU)
-		uBufferSize = Min(uBufferSize, static_cast<uintptr_t>(UINT_MAX));
+		uBufferSize = minimum(uBufferSize, static_cast<uintptr_t>(UINT_MAX));
 #endif
 
 		if (_pipe(Pipes, static_cast<unsigned int>(uBufferSize), O_BINARY) !=

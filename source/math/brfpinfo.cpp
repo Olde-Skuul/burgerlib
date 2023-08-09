@@ -26,7 +26,7 @@
 
 	It's useful for printing functions or number analysis functions.
 
-	For lightweight tests, use the explicit calls such at IsNan(float),
+	For lightweight tests, use the explicit calls such at is_NaN(float),
 	IsInf(double), etc
 
 	When a floating point number is assigned to this class, it is broken down to
@@ -34,7 +34,7 @@
 	the sign. The values can be accessed with the calls get_mantissa(),
 	get_exponent(), get_mantissa_bit_count(), etc.
 
-	\sa IsNan(float), is_NaN(), get_mantissa(), get_exponent()
+	\sa is_NaN(float), is_NaN(), get_mantissa(), get_exponent()
 
 ***************************************/
 
@@ -440,7 +440,7 @@ void BURGER_API Burger::FPInfo::init_double(double dValue) BURGER_NOEXCEPT
 	\return \ref TRUE if the number is Not a Number, \ref FALSE if it's a valid
 		number
 
-	\sa IsNan(float) or IsNan(double)
+	\sa is_NaN(float) or is_NaN(double)
 
 ***************************************/
 

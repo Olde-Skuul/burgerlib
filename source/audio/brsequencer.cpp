@@ -499,7 +499,7 @@ void BURGER_API Burger::Sequencer::Channel_t::VolumeCommand(uint_t uCall)
 		//
 
 		case 0x6:
-			m_uVolume = Min(static_cast<uint32_t>(
+			m_uVolume = minimum(static_cast<uint32_t>(
 				ClampZero(static_cast<int32_t>(m_uVolume-uVolumeArgument))),static_cast<uint32_t>(cMaxVolume));
 			break;
 
@@ -507,7 +507,7 @@ void BURGER_API Burger::Sequencer::Channel_t::VolumeCommand(uint_t uCall)
 		// Volume slide up
 		//
 		case 0x7:
-			m_uVolume = Min(static_cast<uint32_t>(
+			m_uVolume = minimum(static_cast<uint32_t>(
 				ClampZero(static_cast<int32_t>(m_uVolume+uVolumeArgument))),static_cast<uint32_t>(cMaxVolume));
 			break;
 
@@ -518,7 +518,7 @@ void BURGER_API Burger::Sequencer::Channel_t::VolumeCommand(uint_t uCall)
 		case 0x8:
 			// Only sub call 1 is supported
 			if (uCall == 1) {
-				m_uVolume = Min(static_cast<uint32_t>(ClampZero(static_cast<int32_t>(m_uVolume-uVolumeArgument))),static_cast<uint32_t>(cMaxVolume));
+				m_uVolume = minimum(static_cast<uint32_t>(ClampZero(static_cast<int32_t>(m_uVolume-uVolumeArgument))),static_cast<uint32_t>(cMaxVolume));
 			}
 			break;
 
@@ -528,7 +528,7 @@ void BURGER_API Burger::Sequencer::Channel_t::VolumeCommand(uint_t uCall)
 		case 0x9:
 			// Only sub call 1 is supported
 			if (uCall == 1) {
-				m_uVolume = Min(static_cast<uint32_t>(ClampZero(static_cast<int32_t>(m_uVolume+uVolumeArgument))),static_cast<uint32_t>(cMaxVolume));
+				m_uVolume = minimum(static_cast<uint32_t>(ClampZero(static_cast<int32_t>(m_uVolume+uVolumeArgument))),static_cast<uint32_t>(cMaxVolume));
 			}
 			break;
 
@@ -544,7 +544,7 @@ void BURGER_API Burger::Sequencer::Channel_t::VolumeCommand(uint_t uCall)
 		//
 		case 0xd:
 			if (uVolumeCommand & 0xFU) {
-				m_iPan = static_cast<int32_t>(Min(
+				m_iPan = static_cast<int32_t>(minimum(
 					static_cast<uint32_t>(ClampZero(static_cast<int32_t>(m_iPan-(uVolumeArgument/4)))),
 					static_cast<uint32_t>(cMaxPan)));
 			}
@@ -555,7 +555,7 @@ void BURGER_API Burger::Sequencer::Channel_t::VolumeCommand(uint_t uCall)
 		//
 		case 0xe:
 			if (uVolumeCommand & 0xFU) {
-				m_iPan = static_cast<int32_t>(Min(
+				m_iPan = static_cast<int32_t>(minimum(
 					static_cast<uint32_t>(ClampZero(static_cast<int32_t>(m_iPan+(uVolumeArgument/4)))),
 					static_cast<uint32_t>(cMaxPan)));
 			}
@@ -2620,7 +2620,7 @@ void BURGER_API Burger::Sequencer::MixTo16(void)
 				pAccumBuffer[0] = 0;
 				++pAccumBuffer;
 				iTemp = ClampZero(iTemp);
-				iTemp = Min(iTemp,static_cast<int32_t>(255));
+				iTemp = minimum(iTemp,static_cast<int32_t>(255));
 				pBuffer[0] = static_cast<uint8_t>(iTemp);
 				++pBuffer;
 			} while (--uAccumBufferSize);

@@ -1019,7 +1019,7 @@ static uint_t BURGER_API TestFloatToFixedNearest(void) BURGER_NOEXCEPT
 }
 
 //
-// Test Abs(int8_t)
+// Test absolute(int8_t)
 //
 
 static const IntTest8_t AbsTestTable8[] = {{0x00, 0x00}, {0x01, 0x01},
@@ -1032,10 +1032,10 @@ static uint_t BURGER_API TestAbs8(void) BURGER_NOEXCEPT
 	const IntTest8_t* pWork = AbsTestTable8;
 	uintptr_t uCount = BURGER_ARRAYSIZE(AbsTestTable8);
 	do {
-		const int8_t iReturn = Burger::Abs(pWork->m_iInput);
+		const int8_t iReturn = Burger::absolute(pWork->m_iInput);
 		const uint_t uTest = iReturn != pWork->m_iOutput;
 		uFailure |= uTest;
-		ReportFailure("Burger::Abs((int8_t)0x%08X) = 0x%08X, expected 0x%08X",
+		ReportFailure("Burger::absolute((int8_t)0x%08X) = 0x%08X, expected 0x%08X",
 			uTest, pWork->m_iInput, iReturn, pWork->m_iOutput);
 		++pWork;
 	} while (--uCount);
@@ -1043,7 +1043,7 @@ static uint_t BURGER_API TestAbs8(void) BURGER_NOEXCEPT
 }
 
 //
-// Test Abs(int16_t)
+// Test absolute(int16_t)
 //
 
 static const IntTest16_t AbsTestTable16[] = {{0x0000, 0x0000}, {0x0001, 0x0001},
@@ -1056,10 +1056,10 @@ static uint_t BURGER_API TestAbs16(void) BURGER_NOEXCEPT
 	const IntTest16_t* pWork = AbsTestTable16;
 	uintptr_t uCount = BURGER_ARRAYSIZE(AbsTestTable16);
 	do {
-		const int16_t iReturn = Burger::Abs(pWork->m_iInput);
+		const int16_t iReturn = Burger::absolute(pWork->m_iInput);
 		const uint_t uTest = iReturn != pWork->m_iOutput;
 		uFailure |= uTest;
-		ReportFailure("Burger::Abs((int16_t)0x%08X) = 0x%08X, expected 0x%08X",
+		ReportFailure("Burger::absolute((int16_t)0x%08X) = 0x%08X, expected 0x%08X",
 			uTest, pWork->m_iInput, iReturn, pWork->m_iOutput);
 		++pWork;
 	} while (--uCount);
@@ -1067,7 +1067,7 @@ static uint_t BURGER_API TestAbs16(void) BURGER_NOEXCEPT
 }
 
 //
-// Test Abs(int32_t)
+// Test absolute(int32_t)
 //
 
 static const IntTest32_t AbsTestTable32[] = {{0x00000000, 0x00000000},
@@ -1083,10 +1083,10 @@ static uint_t BURGER_API TestAbs32(void) BURGER_NOEXCEPT
 	const IntTest32_t* pWork = AbsTestTable32;
 	uintptr_t uCount = BURGER_ARRAYSIZE(AbsTestTable32);
 	do {
-		const int32_t iReturn = Burger::Abs(pWork->m_iInput);
+		const int32_t iReturn = Burger::absolute(pWork->m_iInput);
 		const uint_t uTest = iReturn != pWork->m_iOutput;
 		uFailure |= uTest;
-		ReportFailure("Burger::Abs((int32_t)0x%08X) = 0x%08X, expected 0x%08X",
+		ReportFailure("Burger::absolute((int32_t)0x%08X) = 0x%08X, expected 0x%08X",
 			uTest, pWork->m_iInput, iReturn, pWork->m_iOutput);
 		++pWork;
 	} while (--uCount);
@@ -1094,7 +1094,7 @@ static uint_t BURGER_API TestAbs32(void) BURGER_NOEXCEPT
 }
 
 //
-// Test Abs(int64_t)
+// Test absolute(int64_t)
 //
 
 static const IntTest64_t AbsTestTable64[] = {
@@ -1113,14 +1113,14 @@ static uint_t BURGER_API TestAbs64(void) BURGER_NOEXCEPT
 	const IntTest64_t* pWork = AbsTestTable64;
 	uintptr_t uCount = BURGER_ARRAYSIZE(AbsTestTable64);
 	do {
-		const int64_t iReturn = Burger::Abs(pWork->m_iInput);
+		const int64_t iReturn = Burger::absolute(pWork->m_iInput);
 		const uint_t uTest = iReturn != pWork->m_iOutput;
 		uFailure |= uTest;
 		if (uTest) {
 			const Burger::NumberStringHex Text1(pWork->m_iInput);
 			const Burger::NumberStringHex Text2(iReturn);
 			const Burger::NumberStringHex Text3(pWork->m_iOutput);
-			ReportFailure("Burger::Abs((int64_t)0x%s) = 0x%s, expected 0x%s",
+			ReportFailure("Burger::absolute((int64_t)0x%s) = 0x%s, expected 0x%s",
 				uTest, Text1.c_str(), Text2.c_str(), Text3.c_str());
 		}
 		++pWork;
@@ -1234,7 +1234,7 @@ static uint_t BURGER_API TestSign64(void) BURGER_NOEXCEPT
 }
 
 //
-// Test Sqrt(int32_t)
+// Test square_root(int32_t)
 //
 
 static const WordTest32_t Sqrt32TestTable[] = {{0x00000000, 0x00000000},
@@ -1254,11 +1254,11 @@ static uint_t BURGER_API TestSqrt32(void) BURGER_NOEXCEPT
 	const WordTest32_t* pWork = Sqrt32TestTable;
 	uintptr_t uCount = BURGER_ARRAYSIZE(Sqrt32TestTable);
 	do {
-		const uint32_t uReturn = Burger::Sqrt(pWork->m_uInput);
+		const uint32_t uReturn = Burger::square_root(pWork->m_uInput);
 		const uint_t uTest = uReturn != pWork->m_uOutput;
 		uFailure |= uTest;
 		ReportFailure(
-			"Burger::Sqrt((uint32_t)0x%08X) = 0x%08X, expected 0x%08X", uTest,
+			"Burger::square_root((uint32_t)0x%08X) = 0x%08X, expected 0x%08X", uTest,
 			pWork->m_uInput, uReturn, pWork->m_uOutput);
 		++pWork;
 	} while (--uCount);
@@ -1302,7 +1302,7 @@ static uint_t BURGER_API TestSqrtFixedToWord32(void) BURGER_NOEXCEPT
 }
 
 //
-// Test Sqrt(Fixed32)
+// Test square_root(Fixed32)
 //
 
 static const FixedTest32_t SqrtFixed32TestTable[] = {{0x00000000, 0x00000000},
@@ -1329,10 +1329,10 @@ static uint_t BURGER_API TestSqrtFixed32(void) BURGER_NOEXCEPT
 	const FixedTest32_t* pWork = SqrtFixed32TestTable;
 	uintptr_t uCount = BURGER_ARRAYSIZE(SqrtFixed32TestTable);
 	do {
-		const Fixed32 iReturn = Burger::Sqrt(pWork->m_iInput);
+		const Fixed32 iReturn = Burger::square_root(pWork->m_iInput);
 		const uint_t uTest = iReturn != pWork->m_iOutput;
 		uFailure |= uTest;
-		ReportFailure("Burger::Sqrt((Fixed32)0x%08X) = 0x%08X, expected 0x%08X",
+		ReportFailure("Burger::square_root((Fixed32)0x%08X) = 0x%08X, expected 0x%08X",
 			uTest, pWork->m_iInput, iReturn, pWork->m_iOutput);
 		++pWork;
 	} while (--uCount);

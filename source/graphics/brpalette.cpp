@@ -717,10 +717,10 @@ void BURGER_API Burger::HSL_t::Interpolate(const HSL_t *pInput1,const HSL_t *pIn
 	m_fHue = fHue1;
 
 	// Interpolate saturation
-	m_fSaturation = Burger::Interpolate(pInput1->m_fSaturation,pInput2->m_fSaturation,fFactor);
+	m_fSaturation = Burger::interpolate(pInput1->m_fSaturation,pInput2->m_fSaturation,fFactor);
 
 	// Interpolate luminosity
-	m_fLuminance = Burger::Interpolate(pInput1->m_fLuminance,pInput2->m_fLuminance,fFactor);
+	m_fLuminance = Burger::interpolate(pInput1->m_fLuminance,pInput2->m_fLuminance,fFactor);
 }
 
 

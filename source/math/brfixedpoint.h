@@ -280,10 +280,10 @@ namespace Burger {
 	BURGER_INLINE BURGER_CONSTEXPR int32_t get_sign(int32_t iInput) BURGER_NOEXCEPT { return (iInput>>31) | static_cast<int32_t>(static_cast<uint32_t>(-iInput)>>31U); }
 	BURGER_INLINE BURGER_CONSTEXPR int64_t get_sign(int64_t iInput) BURGER_NOEXCEPT { return (iInput>>63) | static_cast<int64_t>(static_cast<uint64_t>(-iInput)>>63U); }
 
-	BURGER_INLINE int32_t Clamp(int32_t iInput,int32_t iMin,int32_t iMax) BURGER_NOEXCEPT { iInput = Max(iInput,iMin); return Min(iInput,iMax); }
-	BURGER_INLINE int64_t Clamp(int64_t iInput,int64_t iMin,int64_t iMax) BURGER_NOEXCEPT { iInput = Max(iInput,iMin); return Min(iInput,iMax); }
-	BURGER_INLINE uint32_t Clamp(uint32_t uInput,uint32_t uMin,uint32_t uMax) BURGER_NOEXCEPT { uInput = Max(uInput,uMin); return Min(uInput,uMax); }
-	BURGER_INLINE uint64_t Clamp(uint64_t uInput,uint64_t uMin,uint64_t uMax) BURGER_NOEXCEPT { uInput = Max(uInput,uMin); return Min(uInput,uMax); }
+	BURGER_INLINE int32_t clamp(int32_t iInput,int32_t iMin,int32_t iMax) BURGER_NOEXCEPT { iInput = maximum(iInput,iMin); return minimum(iInput,iMax); }
+	BURGER_INLINE int64_t clamp(int64_t iInput,int64_t iMin,int64_t iMax) BURGER_NOEXCEPT { iInput = maximum(iInput,iMin); return minimum(iInput,iMax); }
+	BURGER_INLINE uint32_t clamp(uint32_t uInput,uint32_t uMin,uint32_t uMax) BURGER_NOEXCEPT { uInput = maximum(uInput,uMin); return minimum(uInput,uMax); }
+	BURGER_INLINE uint64_t clamp(uint64_t uInput,uint64_t uMin,uint64_t uMax) BURGER_NOEXCEPT { uInput = maximum(uInput,uMin); return minimum(uInput,uMax); }
 
 #if defined(BURGER_WATCOM)
 	BURGER_INLINE Fixed32 FixedMultiply(Fixed32 fInput1,Fixed32 fInput2) { return BurgerFixedMathMultiply(fInput1,fInput2); }

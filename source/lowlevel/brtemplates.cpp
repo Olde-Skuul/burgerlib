@@ -899,7 +899,7 @@
 
 /*! ************************************
 
-	\fn T Burger::Min(T A,T B)
+	\fn T Burger::minimum(T A,T B)
 	\brief Return the lesser of two objects
 
 	A template to compare the two input values and return the lesser of the two.
@@ -909,13 +909,13 @@
 	\param B Second value to test
 	\return The lesser of the two inputs
 
-	\sa Max(T,T)
+	\sa maximum(T,T)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn T Burger::Max(T A,T B)
+	\fn T Burger::maximum(T A,T B)
 	\brief Return the greater of two objects
 
 	A template to compare the two input values and return the greater of the
@@ -926,6 +926,6 @@
 	\param B Second value to test
 	\return The greater of the two inputs
 
-	\sa Min(T,T)
+	\sa minimum(T,T)
 
 ***************************************/

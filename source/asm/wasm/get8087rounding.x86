@@ -20,7 +20,7 @@ public `W?get_8087_rounding$:Burger$n()$e8087Rounding$:1$`
 `W?get_8087_rounding$:Burger$n()$e8087Rounding$:1$` proc
 
 ; Space for the status word
-	push	eax    
+	push	eax
 
 ; Get the current status word
 	fnstcw	[esp]
