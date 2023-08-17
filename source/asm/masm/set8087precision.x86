@@ -1,9 +1,14 @@
 ;
-; X86 assembly for x86 Visual Studio compilers
+; X86 assembly for Visual Studio
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
 ;
 ; Build with ml.exe
 ;
-; Burger::e8087Precision __fastcall Burger::set_8087_precision(e8087Precision)
+; Burger::e8087Precision __fastcall Burger::set_8087_precision(e8087Precision uPrecision)
+; eax, ecx and edx are volatile
+; uPrecision = ecx
+; Result in eax
 ;
 
 	.686
@@ -13,8 +18,6 @@ _TEXT segment para 'CODE'
 	align 16
 public ?set_8087_precision@Burger@@YI?AW4e8087Precision@1@W421@@Z
 ?set_8087_precision@Burger@@YI?AW4e8087Precision@1@W421@@Z proc
-
-; eax, ecx, and edx are volatile
 
 ; Space for the status word
 	sub		esp, 4

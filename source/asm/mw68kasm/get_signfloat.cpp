@@ -1,11 +1,20 @@
 /***************************************
 
-	68000 assembly for implementing the function
-	Burger::get_sign(float) for Metrowerks Codewarrior
-
-	Build with the C compiler
+	68000 assembly for Metrowerks Codewarrior
 
 	Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+
+	Build with the Metrowerks 6.0 Pro C compiler
+
+	float BURGER_API Burger::get_sign(float fInput) BURGER_NOEXCEPT
+	d0-d2, a0-a1 are volatile
+	CFM
+	Result in d0
+	fInput = 4(a7)
+
+	Classic
+	pResult in 4(a7)
+	fInput = 8(a7)
 
 ***************************************/
 
@@ -19,7 +28,7 @@ asm float BURGER_API Burger::get_sign(float fInput) BURGER_NOEXCEPT
 	move.l	4(a7), d1
 
 	// 1.0f shifted one bit up
-	move.l #0x7F000000, d0
+	move.l	#0x7F000000, d0
 
 	// Take the floating point number and move the sign to carry
 	add.l	d1, d1
@@ -42,7 +51,7 @@ L0:	rtd		#4
 	move.l	8(a7), d1
 
 	// 1.0f shifted one bit up
-	move.l #0x7F000000, d0
+	move.l	#0x7F000000, d0
 
 	// Take the floating point number and move the sign to carry
 	add.l	d1, d1

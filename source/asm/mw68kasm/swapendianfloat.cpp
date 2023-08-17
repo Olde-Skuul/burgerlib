@@ -1,9 +1,20 @@
 /***************************************
 
-	68000 assembly for implementing the function
-	Burger::_swapendianfloat(float) for Metrowerks Codewarrior
+	68000 assembly for Metrowerks Codewarrior
 
 	Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+
+	Build with the Metrowerks 6.0 Pro C compiler
+
+	float BURGER_API Burger::_swapendianfloat(float fInput) BURGER_NOEXCEPT
+	d0-d2, a0-a1 are volatile
+	CFM
+	Result in d0
+	fInput = 4(a7)
+
+	Classic
+	pResult in 4(a7)
+	fInput = 8(a7)
 
 ***************************************/
 

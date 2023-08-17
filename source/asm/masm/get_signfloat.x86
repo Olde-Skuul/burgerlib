@@ -1,0 +1,48 @@
+;
+; X86 assembly for Visual Studio
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+;
+; Build with ml.exe
+;
+; float BURGER_API Burger::get_sign(float fInput)
+; eax, ecx and edx are volatile
+; fInput = [esp+4]
+; Result in 8087 FPU
+;
+
+	.686
+
+_TEXT segment para 'CODE'
+
+	align 16
+public ?get_sign@Burger@@YIMM@Z
+?get_sign@Burger@@YIMM@Z proc
+
+; Get the sign (eax, ip, float)
+	mov		eax, [esp+4]
+
+; Save the sign in the carry flag
+	add		eax, eax
+
+; If zero edge case, branch
+	jz		itszero
+
+; Load 1.0f
+	fld1
+	jnc		exit
+
+; Convert to -1.0f
+	fchs
+exit:
+	ret		4
+
+; It is the zero case
+itszero:
+	fldz
+	ret		4
+?get_sign@Burger@@YIMM@Z endp
+
+_TEXT ends
+
+	end

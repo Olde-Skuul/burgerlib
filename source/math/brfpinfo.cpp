@@ -27,7 +27,7 @@
 	It's useful for printing functions or number analysis functions.
 
 	For lightweight tests, use the explicit calls such at is_NaN(float),
-	IsInf(double), etc
+	is_infinite(double), etc
 
 	When a floating point number is assigned to this class, it is broken down to
 	the type of value (Infinity, NaN, Subnormal), the mantissa, the exponent and
@@ -471,7 +471,7 @@ void BURGER_API Burger::FPInfo::init_double(double dValue) BURGER_NOEXCEPT
 
 	\return \ref TRUE if the number is infinity, \ref FALSE if it's not
 
-	\sa IsInf(float) or IsInf(double)
+	\sa is_infinite(float) or is_infinite(double)
 
 ***************************************/
 
@@ -494,7 +494,7 @@ void BURGER_API Burger::FPInfo::init_double(double dValue) BURGER_NOEXCEPT
 
 	\return \ref TRUE if the number is finite, \ref FALSE if it is.
 
-	\sa IsFinite(float) or IsFinite(double)
+	\sa is_finite(float) or is_finite(double)
 
 ***************************************/
 

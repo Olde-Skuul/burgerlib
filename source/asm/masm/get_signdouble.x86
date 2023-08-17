@@ -1,0 +1,57 @@
+;
+; X86 assembly for Visual Studio
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+;
+; Build with ml.exe
+;
+; double BURGER_API Burger::get_sign(double dInput)
+; eax, ecx and edx are volatile
+; dInput = [esp+4]
+; Result in 8087 FPU
+;
+
+	.686
+
+_TEXT segment para 'CODE'
+
+	align 16
+public ?get_sign@Burger@@YINN@Z
+?get_sign@Burger@@YINN@Z proc
+
+; Get the sign (High word) (eax, ip, low, high)
+	mov		eax, [esp+8]
+
+; Save the sign in the carry flag
+	add		eax, eax
+
+; Save the carry flag
+	pushfd
+
+; Check if actually zero (64 bit) (flags, eax, ip, low)
+	or		eax, [esp+8]
+	jz		itszero
+
+; Restore the carry to return 1 or -1
+	popfd
+
+; Load 1.0
+	fld1
+	jnc		exit
+
+; Convert to -1.0
+	fchs
+exit:
+	ret		8
+
+; It is the zero case
+itszero:
+	popfd
+	fldz
+	ret		8
+
+?get_sign@Burger@@YINN@Z endp
+
+_TEXT ends
+
+	end

@@ -1,0 +1,55 @@
+;
+; X64 assembly for Visual Studio
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+;
+; Build with ml64.exe
+;
+; extern "C" void __cpuidex(int a[4], int b, int c)
+; rax, rcx, rdx, r8-11 are volatile
+; a = rcx
+; b = rdx
+; c = r8
+;
+; __cpuindex is available on Visual Studio 2008 and later,
+; but was missing on Visual Studio 2005. This will bring
+; this intrinsic to the Visual Studio 2005 tool set for
+; 64 bit AMD64 instruction set targets.
+;
+
+_TEXT segment para 'CODE'
+
+	align 16
+public __cpuidex
+__cpuidex proc
+
+; Save non-volatile register
+	push	rbx
+
+; Save the pointer
+	mov		r9, rcx
+
+; Command byte
+	mov		rax, rdx
+
+; Get the sub command
+	mov		rcx, r8
+
+; Do it (Trashes rbx)
+	cpuid
+
+; Store the result in the same order as Visual C
+	mov		[r9], eax
+	mov		[r9+4], ebx
+	mov		[r9+8], ecx
+	mov		[r9+12], edx
+
+; Restore rbx and exit
+    pop		rbx
+	ret
+
+__cpuidex endp
+
+_TEXT ends
+
+	end

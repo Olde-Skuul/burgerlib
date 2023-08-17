@@ -1,0 +1,42 @@
+;
+; X86 assembly for Visual Studio
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+;
+; Build with ml.exe
+;
+; double Burger::_swapendiandouble(double dInput)
+; eax, ecx and edx are volatile
+; dInput = [esp+4]
+; Result in 8087 FPU
+;
+
+	.686
+
+_TEXT segment para 'CODE'
+
+	align 16
+public ?_swapendiandouble@Burger@@YINN@Z
+?_swapendiandouble@Burger@@YINN@Z proc
+
+; Fetch the double
+	mov		eax, dword ptr[esp + 4]
+	mov		edx, dword ptr[esp + 8]
+
+; Swap the 64 bits
+	bswap	eax
+	bswap	edx
+
+; Store double, swapped
+	mov		dword ptr[esp + 8], eax
+	mov		dword ptr[esp + 4], edx
+
+; Load the double into the FPU
+	fld		qword ptr[esp + 4]
+	ret		8
+
+?_swapendiandouble@Burger@@YINN@Z endp
+
+_TEXT ends
+
+	end

@@ -1,0 +1,86 @@
+;
+; X64 assembly for Visual Studio
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+;
+; Build with ml64.exe
+;
+; float Burger::get_sign(float fInput)
+; rax, rcx, rdx, r8-11 are volatile
+; fInput = xmm0
+; Result in xmm0
+;
+
+;	extrn ?g_fOne@Burger@@3Tuint32_float_t@1@B:dword
+
+_TEXT segment para 'CODE'
+
+	align 16
+public ?get_sign@Burger@@YAMM@Z
+?get_sign@Burger@@YAMM@Z proc
+
+; Move to an integer register
+	movd	eax, xmm0
+
+; Load 1.0, shifted up by one bit
+	mov		ecx, 07F000000H
+
+; Obtain the sign bit in carry
+	shl		eax, 1
+
+; Convert 1.0 to 1.0 or -1.0 depending on sign
+	rcr		ecx, 1
+
+; Set carry if not zero
+	neg		eax
+
+; EAX is mask, zero or 0xFFFFFFFF
+	sbb		eax, eax
+
+; Mask 1.0/-1.0f to zero if zero
+	and		ecx, eax
+
+; Move result to float
+	movd	xmm0, ecx
+
+; Exit
+	ret
+
+;
+; The code below used SSE only and was not as fast as the code above
+; Keeping it as a reference in case ideas are needed
+;
+
+; Copy to generate the sign mask
+;	movss	xmm2, xmm0
+
+; Need a zero for a comparison
+;	xorps	xmm3, xmm3
+
+; Load 1.0f from Burgerlib constants
+;	movss	xmm1, dword ptr [?g_fOne@Burger@@3Tuint32_float_t@1@B]
+
+; Chop off the sign from the input for 0.0f and -0.0f test
+;	pslld	xmm0, 1
+
+; Get rid of all bit but the sign
+;	psrld	xmm2, 31
+
+; Convert to 0xFFFFFFFF if zero, 0 if not
+;	pcmpeqd	xmm0, xmm3
+
+; Move the sign back to the highest bit
+;	pslld	xmm2, 31
+
+; Or in the sign to 1.0/-1.0f
+;	por		xmm1, xmm2
+
+; Mask with 1.0f/-1.0f
+;	pandn	xmm0, xmm1
+;	ret
+
+?get_sign@Burger@@YAMM@Z endp
+
+_TEXT ends
+
+	end

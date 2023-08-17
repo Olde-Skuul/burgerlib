@@ -152,7 +152,7 @@ MYEDX	DD	0	;EDX register contents
 	mov		[edx].reg_ax,ax		;Save AX
 
 	pushfd						;Get returned flags into eax
-	pop		eax		
+	pop		eax
 
 	mov		[edx].reg_flags,AX
 	mov		[edx].reg_bx,bx		;Save the result in result array

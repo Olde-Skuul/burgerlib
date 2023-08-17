@@ -250,7 +250,7 @@ Fixed32 BURGER_API Burger::IntToFixedSaturate(int32_t iInput) BURGER_NOEXCEPT
 	iResult = Burger::FixedToIntFloor(FLOATTOFIXED(-0.95f));	//-1
 	\endcode
 
-	\sa Floor(float), Floor(double), FixedToInt(Fixed32),
+	\sa get_floor(float), get_floor(double), FixedToInt(Fixed32),
 		FixedToIntCeil(Fixed32), or FixedToIntNearest(Fixed32)
 
 ***************************************/
@@ -489,9 +489,8 @@ void Burger::FloatToIntFloor(int32_t* pOutput, float fInput) BURGER_NOEXCEPT
 #elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
 
 BURGER_ASM int32_t BURGER_API Burger::FloatToIntFloor(
-	float /* fInput */) BURGER_NOEXCEPT 
-{
-	
+	float /* fInput */) BURGER_NOEXCEPT{
+
 	// clang-format off
 	lwz r3, g_fMinNoInteger
 	mffs fp4 // Save the rounding register
@@ -515,8 +514,7 @@ BURGER_ASM int32_t BURGER_API Burger::FloatToIntFloor(
 }
 
 BURGER_ASM void BURGER_API Burger::FloatToIntFloor(
-	int32_t* /* pOutput */, float /* fInput */) BURGER_NOEXCEPT
-{
+	int32_t* /* pOutput */, float /* fInput */) BURGER_NOEXCEPT{
 	// clang-format off
 	lwz r4, g_fMinNoInteger
 	mffs fp4 // Save the rounding register
@@ -740,8 +738,7 @@ void Burger::FloatToIntCeil(int32_t* pOutput, float fInput) BURGER_NOEXCEPT
 #elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
 
 BURGER_ASM int32_t BURGER_API Burger::FloatToIntCeil(
-	float /* fInput */) BURGER_NOEXCEPT
-{
+	float /* fInput */) BURGER_NOEXCEPT{
 	// clang-format off
 	lwz r3, g_fMinNoInteger
 	mffs fp4 // Save the rounding register
@@ -766,8 +763,7 @@ BURGER_ASM int32_t BURGER_API Burger::FloatToIntCeil(
 }
 
 BURGER_ASM void BURGER_API Burger::FloatToIntCeil(
-	int32_t* /* pOutput */, float /* fInput */) BURGER_NOEXCEPT
-{
+	int32_t* /* pOutput */, float /* fInput */) BURGER_NOEXCEPT{
 	// clang-format off
 	lwz r4, g_fMinNoInteger
 	mffs fp4 // Save the rounding register
@@ -795,8 +791,8 @@ int32_t BURGER_API Burger::FloatToIntCeil(float fInput) BURGER_NOEXCEPT
 {
 	int iVar = static_cast<int>(fInput); // Convert to an int
 	float fVar = static_cast<float>(iVar);
-	if (fVar < fInput) {                 // Was there a change?
-		++iVar;                          // Round up
+	if (fVar < fInput) { // Was there a change?
+		++iVar;          // Round up
 	}
 	return iVar;
 }
@@ -833,8 +829,8 @@ void BURGER_API Burger::FloatToIntCeil(
 {
 	int iVar = static_cast<int>(fInput); // Convert to an int
 	float fVar = static_cast<float>(iVar);
-	if (fVar < fInput) {                 // Was there a change?
-		++iVar;                          // Round up
+	if (fVar < fInput) { // Was there a change?
+		++iVar;          // Round up
 	}
 	pOutput[0] = iVar;
 }
@@ -1069,8 +1065,7 @@ void BURGER_API Burger::FloatToIntRound(
 #elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
 
 BURGER_ASM int32_t BURGER_API Burger::FloatToIntRound(
-	float /* fInput */) BURGER_NOEXCEPT
-{
+	float /* fInput */) BURGER_NOEXCEPT{
 	// clang-format off
 	lwz r3, g_fMinNoInteger
 	fabs fp0, fp1   // Get the abs value to test
@@ -1098,9 +1093,8 @@ BURGER_ASM int32_t BURGER_API Burger::FloatToIntRound(
 	// clang-format on
 }
 
-BURGER_ASM void BURGER_API Burger::FloatToIntRound(int32_t* /* pOutput */,
-	float /* fInput */) BURGER_NOEXCEPT
-{
+BURGER_ASM void BURGER_API Burger::FloatToIntRound(
+	int32_t* /* pOutput */, float /* fInput */) BURGER_NOEXCEPT{
 	// clang-format off
 	lwz r4, g_fMinNoInteger
 	fabs fp0, fp1   // Get the abs value to test

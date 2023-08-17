@@ -1,14 +1,14 @@
 ;
-; X86 assembly for implementing the function
-; Burger::set_8087_precision(e8087Precision) for Open Watcom
+; X86 assembly for Open Watcom
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
 ;
 ; Build with wasm.exe
 ;
-; e8087Precision BURGER_API Burger::set_8087_precision(e8087Precision) BURGER_NOEXCEPT
-;
-; Note: All integer registers are NON-VOLATILE!
-;
-; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+; e8087Precision BURGER_API Burger::set_8087_precision(e8087Precision uInput) BURGER_NOEXCEPT
+; all registers are non-volatile
+; Result in eax
+; uInput = eax
 ;
 
 	.686
@@ -62,7 +62,6 @@ public `W?set_8087_precision$:Burger$n($e8087Precision$:1$)$2:1$`
 
 ; Load the new status register to the FPU
 	fldcw	[esp]
-
 	add		esp, 12
 	ret
 

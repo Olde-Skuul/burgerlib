@@ -1,21 +1,20 @@
-#include "brendian.h"
-
 /***************************************
 
-	\brief Fetch a 64 bit unsigned value from memory with byte alignment.
+	PowerPC 64 assembly for Xbox 360
 
-	Assuming the data is unaligned, it will grab data a byte at a time
-	and reconstruct it into a 64 bit value in native endian.
+	Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
 
-	\param pInput Pointer to a 64 bit value.
+	Build with the masm.exe for PowerPC
 
-	\return The 64 bit unsigned value.
-
-	\sa _load_unaligned_swap(const uint64_t*)
+	uint64_t BURGER_API _load_unaligned(const uint64_t* pInput)
+	r0, r3-12, fp0-fp13 are volatile
+	Result in r3
+	pInput = r3
 
 ***************************************/
 
-#if defined(BURGER_XBOX360)
+#include "brendian.h"
+
 __declspec(naked) uint64_t BURGER_API Burger::_load_unaligned(
 	const uint64_t* /* pInput */) BURGER_NOEXCEPT
 {
@@ -48,5 +47,3 @@ __asm {
 	blr
 	}
 }
-
-#endif

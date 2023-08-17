@@ -1,13 +1,15 @@
 /***************************************
 
-	X86 assembly for implementing the function
-	Burger::_swapendianfloat(float) for Metrowerks Codewarrior
-
-	Build with the C compiler
-
-	EAX, ECX and EDX are scratch registers
+	X86 assembly for Metrowerks Codewarrior
 
 	Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+
+	Build with the Metrowerks 9.0 Pro C compiler
+
+	float __fastcall _swapendianfloat(float fInput)
+	eax, ecx and edx are volatile
+	Result in 8087 FPU
+	fInput = [esp+4]
 
 ***************************************/
 
@@ -21,7 +23,7 @@ __declspec(naked) float BURGER_API Burger::_swapendianfloat(
 ; Get the float
 	mov		edx, dword ptr[esp + 4]
 
-; Swap the float	
+; Swap the float
 	bswap	edx
 
 ; Store the float
@@ -29,8 +31,6 @@ __declspec(naked) float BURGER_API Burger::_swapendianfloat(
 
 ; Load into the x87 FPU
 	fld		dword ptr[esp + 4]
-
-; Exit
 	ret		4
 
 	}

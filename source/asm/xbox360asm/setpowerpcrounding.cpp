@@ -1,22 +1,19 @@
-#include "brfloatingpoint.h"
-
 /***************************************
 
-	\brief Change the floating point precision
+	PowerPC 64 assembly for Xbox 360
 
-	On PowerPC processors, there's a special floating point register to control
-	the rounding. This function allows the modification of this register for FPU
-	rounding.
+	Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
 
-	\note This function only exists on PowerPC compatible CPU targets.
+	Build with the masm.exe for PowerPC
 
-	\param eInput New enumeration state
-	\return Previous rounding state
-	\sa ePowerPCRounding or get_PowerPC_rounding(void)
+	Burger::ePowerPCRounding BURGER_API Burger::set_PowerPC_rounding(ePowerPCRounding uInput)
+	r0, r3-12, fp0-fp13 are volatile
+	Result in r3
+	uInput = r3
 
 ***************************************/
 
-#if defined(BURGER_XBOX360)
+#include "brfloatingpoint.h"
 
 __declspec(naked) Burger::ePowerPCRounding BURGER_API
 	Burger::set_PowerPC_rounding(ePowerPCRounding /* uInput */)
@@ -53,5 +50,3 @@ __declspec(naked) Burger::ePowerPCRounding BURGER_API
 	blr
 	}
 }
-
-#endif

@@ -1,7 +1,8 @@
-/*
-	Set the X86 floating point rounding value
+/***************************************
 
-	X86 assembly for XCode
+	Assembly for MacOSX Darwin
+
+	Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
 
 	Build with XCode tool chain
 
@@ -9,10 +10,19 @@
 	CPU types, so test for the proper CPU type before invoking any cpu
 	instructions.
 
-	Burger::e8087Rounding Burger::set_8087_rounding(e8087Rounding uInput)
+	e8087Rounding BURGER_API Burger::set_8087_rounding(e8087Rounding uInput) BURGER_NOEXCEPT
 
-	X86 version.
-*/
+***************************************/
+
+/***************************************
+
+	Intel 32 bit version
+
+	eax, ecx and edx are volatile
+	Result in eax
+	uInput = eax
+
+***************************************/
 
 #if defined(__i386__)
 	.align 4,0x90

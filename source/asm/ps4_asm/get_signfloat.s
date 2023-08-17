@@ -1,9 +1,14 @@
 #
 # Sony AMD64 assembly for the Playstation 4 / 5
 #
+# Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+#
 # Build with PS4 or PS5 tool chain
 #
-# float Burger::get_sign(float) BURGER_NOEXCEPT
+# float Burger::get_sign(float fInput) BURGER_NOEXCEPT
+# rax, rcx, rdx, r8-11 are volatile
+# fInput = xmm0
+# Result in xmm0
 #
 
 	.text

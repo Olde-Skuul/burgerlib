@@ -1,0 +1,58 @@
+;
+; X86 assembly for Visual Studio
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+;
+; Build with ml.exe
+;
+; extern "C" void __cdecl __cpuidex(int a[4], int b, int c)
+; eax, ecx and edx are volatile
+; a = [esp+4]
+; b = [esp+8]
+; c = [esp+12]
+;
+; This is a direct implementation for the missing intrinsic from
+; Visual Studio 2003 and 2005. Visual Studio 2008 or higher has
+; this intrinsic built into the compiler
+;
+
+	.686
+
+_TEXT segment para 'CODE'
+
+	align 16
+public ___cpuidex
+___cpuidex proc
+
+; Save the non-volatile registers
+	push	esi
+	push	ebx
+
+; Save the pointer (ebx, esi, eip, a)
+	mov		esi, [esp+12]
+
+; Command byte (ebx, esi, eip, a, b)
+	mov		eax, [esp+16]
+
+; Get the sub command (ebx, esi, eip, a, b, c)
+	mov		ecx, [esp+20]
+
+; Do it (Trashes ebx)
+	cpuid
+
+; Store the result in the same order as Visual C
+	mov		[esi], eax
+	mov		[esi+4], ebx
+	mov		[esi+8], ecx
+	mov		[esi+12], edx
+
+; Restore non-volatile registers
+	pop		ebx
+	pop		esi
+	ret
+
+___cpuidex endp
+
+_TEXT ends
+
+	end

@@ -1,0 +1,59 @@
+;
+; X86 assembly for Visual Studio
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+;
+; Build with ml.exe
+;
+; uint_t BURGER_API Burger::has_CPUID(void) BURGER_NOEXCEPT
+; eax, ecx and edx are volatile
+; Result in eax
+;
+
+	.686
+
+_TEXT segment para 'CODE'
+
+	align 16
+public ?has_CPUID@Burger@@YIIXZ
+?has_CPUID@Burger@@YIIXZ proc
+
+; See of flags bit 21 can be changed.
+; If it can, it's higher than 486, which
+; implies that CPUID is available
+
+; Save flags on the stack
+	pushfd
+
+; Get in register and leave on stack
+	mov		eax, dword ptr[esp]
+
+; Switch bit 21 for the test
+	xor		eax, 000200000H
+
+; Set the flags with the new value
+	push	eax
+	popfd
+
+; Read in the flags into a register
+	pushfd
+	pop		eax
+
+; Did the change "take"
+	xor		eax, dword ptr[esp]
+
+; Move to the lowest bit
+	shr		eax, 21
+
+; Set to TRUE or FALSE
+	and		eax, 1
+
+; Restore the flags to the original state
+	popfd
+	ret
+
+?has_CPUID@Burger@@YIIXZ endp
+
+_TEXT ends
+
+	end

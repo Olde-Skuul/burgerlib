@@ -1,10 +1,18 @@
 ;
-; X86 assembly for implementing the intrinsic _xgetbv for
-; the Visual Studio 2003, 2005 and 2008 compilers
+; X86 assembly for Visual Studio
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
 ;
 ; Build with ml.exe
 ;
 ; uint64_t __fastcall _xgetbv(unsigned int uInput)
+; eax, ecx and edx are volatile
+; uInput = ecx
+; Result in eax:edx (lo:high)
+;
+; This is a direct implementation for the missing intrinsic from
+; Visual Studio 2003-2008. Visual Studio 2010 or higher has this
+; intrinsic built into the compiler
 ;
 
 	.686
@@ -29,4 +37,4 @@ public @_xgetbv@4
 
 _TEXT ends
 
-    end
+	end

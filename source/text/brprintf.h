@@ -29,10 +29,6 @@
 #include "brerror.h"
 #endif
 
-#ifndef __BRMETROWERKS_H__
-#include "brmetrowerks.h"
-#endif
-
 #ifndef __BRWATCOM_H__
 #include "brwatcom.h"
 #endif

@@ -1,10 +1,14 @@
 ;
-; X86 assembly for implementing the intrinsic __cpuid for
-; Open Watcom
+; X86 assembly for Open Watcom
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
 ;
 ; Build with wasm.exe
 ;
 ; void __watcall __cpuid(int a[4], int b)
+; all registers are non-volatile
+; a = eax
+; b = edx
 ;
 
 	.686
@@ -15,7 +19,7 @@ _TEXT segment para 'CODE'
 public __cpuid_
 __cpuid_ proc
 
-; Save the registers
+; Save the non-volatile registers
 	push	esi
 	push	eax
 	push	ebx

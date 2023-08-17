@@ -1,27 +1,33 @@
 ;
-; Swap the endian of a 32 bit float
+; PowerPC32 assembly for Metrowerks tool chain
 ;
-; Done in assembly, because that's how you know it's done right
-; PowerPC PEF version
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
 ;
-
-	INCLUDE 'macros.ppc'
-
+; Build with Metrowerks Codewarrior 10 for MacOSX Carbon
 ;
-; Unmangled function prototype
-; float Burger::_swapendianfloat(float) BURGER_NOEXCEPT
+; float Burger::_swapendianfloat(float fInput) BURGER_NOEXCEPT
+; r0, r3-12, fp0-fp13 are volatile
+; fInput = fp1
+; Result in fp1
 ;
 
 	EXPORT _swapendianfloat__6BurgerFf[DS]
 	EXPORT _swapendianfloat__6BurgerFf[PR]
 
-	DeclareProc _swapendianfloat__6BurgerFf
+	TOC
+	tc		_swapendianfloat__6BurgerFf[TC], _swapendianfloat__6BurgerFf[DS]
 
-	stfs	fp1, 24(SP)		; Store the 32 bit float on the stack
-	addi	r4, sp, 24		; Index to the stack addresses
+	CSECT	_swapendianfloat__6BurgerFf[DS]
+	dc.l	._swapendianfloat__6BurgerFf[PR]
+	dc.l	TOC[tc0]
+
+	CSECT	._swapendianfloat__6BurgerFf[PR]
+
+	stfs	fp1, -16(SP)	; Store the 32 bit float on the stack
+	subi	r4, sp, 16		; Index to the stack addresses
 	lwbrx	r3, r0, r4		; Load the values endian reversed
-	stw		r3, 24(SP)		; Store the swapped data
-	lfs 	fp1, 24(SP)		; Load the endian reversed float
+	stw		r3, -16(SP)		; Store the swapped data
+	lfs 	fp1, -16(SP)	; Load the endian reversed float
 	blr
 
 	END

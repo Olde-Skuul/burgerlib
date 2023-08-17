@@ -1,19 +1,20 @@
 /***************************************
 
-	\brief Return \ref TRUE if the value is a NaN
+	PowerPC 64 assembly for Xbox 360
 
-	Test for QNan and SNan and return \ref TRUE if so.
+	Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
 
-	\param dInput A 64 bit floating point number.
-	\return \ref TRUE if Nan, \ref FALSE if not.
-	\sa is_NaN(float), IsInf(double), IsFinite(double), IsNormal(double) and
-		SignBit(double)
+	Build with the masm.exe for PowerPC
+
+	uint_t BURGER_API is_NaN(double dInput)
+	r0, r3-12, fp0-fp13 are volatile
+	Result in r3
+	dInput = fp1
 
 ***************************************/
 
 #include "brfloatingpoint.h"
 
-#if defined(BURGER_XBOX360)
 __declspec(naked) uint_t BURGER_API Burger::is_NaN(
 	double /* dInput */) BURGER_NOEXCEPT
 {
@@ -28,10 +29,7 @@ __declspec(naked) uint_t BURGER_API Burger::is_NaN(
 
 // (Flags>>28)&1 Grab the "Unordered" flag
 	extrwi	r3, r0, 1, 3
-
-// Exit
 	blr
 	}
 	// clang-format on
 }
-#endif

@@ -1,14 +1,15 @@
 /***************************************
 
-	X86 assembly for implementing the function
-	Burger::_swapendiandouble(const double*) for Metrowerks Codewarrior
-
-	Build with the C compiler
-
-	EAX, ECX and EDX are scratch registers
-	pInput = ECX
+	X86 assembly for Metrowerks Codewarrior
 
 	Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+
+	Build with the Metrowerks 9.0 Pro C compiler
+
+	double __fastcall _swapendiandouble(const double* pInput)
+	eax, ecx and edx are volatile
+	Result in 8087 FPU
+	pInput = ecx
 
 ***************************************/
 
@@ -37,8 +38,6 @@ __declspec(naked) double BURGER_API Burger::_swapendiandouble(
 
 ; Fix the stack
 	add		esp, 8
-
-; Exit
 	ret
 
 	}

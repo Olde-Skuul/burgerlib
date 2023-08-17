@@ -1,10 +1,14 @@
 ;
-; X86 assembly for implementing the function
-; Burger::_swapendianfloat(float) for Visual Studio x86
+; X86 assembly for Visual Studio
 ;
-; Build with masm.exe
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+;
+; Build with ml.exe
 ;
 ; float Burger::_swapendianfloat(float fInput)
+; eax, ecx and edx are volatile
+; fInput = [esp+4]
+; Result in 8087 FPU
 ;
 
 	.686
@@ -18,10 +22,7 @@ public ?_swapendianfloat@Burger@@YIMM@Z
 ; Get the float
 	mov		edx, dword ptr[esp + 4]
 
-; Get the return address
-	mov		eax, dword ptr[esp]
-
-; Swap the float	
+; Swap the float
 	bswap	edx
 
 ; Store the float
@@ -29,12 +30,7 @@ public ?_swapendianfloat@Burger@@YIMM@Z
 
 ; Load into the x87 FPU
 	fld		dword ptr[esp + 4]
-
-; Fix the stack
-	add		esp, 8
-
-; Exit
-	jmp		eax
+	ret		4
 
 ?_swapendianfloat@Burger@@YIMM@Z endp
 

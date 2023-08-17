@@ -1,21 +1,27 @@
 ;
-; Load and swap a 64 bit integer with unaligned operations
+; PowerPC32 assembly for Metrowerks tool chain
 ;
-; Done in assembly, because that's how you know it's done right
-; PowerPC PEF version
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
 ;
-
-	INCLUDE 'macros.ppc'
-
+; Build with Metrowerks Codewarrior 10 for MacOSX Carbon
 ;
-; Unmangled function prototype
-; uint64_t BURGER_API Burger::_load_unaligned_swap(const uint64_t* pInput)
+; uint64_t Burger::_load_unaligned_swap(const uint64_t* pInput) BURGER_NOEXCEPT
+; r0, r3-12, fp0-fp13 are volatile
+; pInput = r3
+; Result in r3,r4
 ;
 
 	EXPORT _load_unaligned_swap__6BurgerFPCUx[DS]
 	EXPORT _load_unaligned_swap__6BurgerFPCUx[PR]
 
-	DeclareProc _load_unaligned_swap__6BurgerFPCUx
+	TOC
+	tc		_load_unaligned_swap__6BurgerFPCUx[TC], _load_unaligned_swap__6BurgerFPCUx[DS]
+
+	CSECT	_load_unaligned_swap__6BurgerFPCUx[DS]
+	dc.l	._load_unaligned_swap__6BurgerFPCUx[PR]
+	dc.l	TOC[tc0]
+
+	CSECT	._load_unaligned_swap__6BurgerFPCUx[PR]
 
 ; Load the lower 32 bits
 	lbz		r4,0(r3)

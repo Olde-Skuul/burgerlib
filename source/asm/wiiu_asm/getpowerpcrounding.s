@@ -1,11 +1,13 @@
 ;
-; Get the PowerPC floating point rounding value
-;
 ; Espresso assembly for the WiiU
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
 ;
 ; Build with WiiU tool chain
 ;
-; ePowerPCRounding BURGER_API Burger::get_PowerPC_rounding(void) BURGER_NOEXCEPT;
+; ePowerPCRounding BURGER_API Burger::get_PowerPC_rounding(void) BURGER_NOEXCEPT
+; r0, r3-12, fp0-fp13 are volatile
+; Result in r3
 ;
 
 	.align 2
@@ -27,8 +29,6 @@ get_PowerPC_rounding__6BurgerFv:
 
 ; Mask off the lowest 2 bits (AND & 3)
 	clrlwi	r3, r3, 30
-	
-; Exit
 	blr
 
 	.size	get_PowerPC_rounding__6BurgerFv,$-get_PowerPC_rounding__6BurgerFv

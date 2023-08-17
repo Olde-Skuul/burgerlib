@@ -1,0 +1,75 @@
+/***************************************
+
+	Assembly for MacOSX Darwin
+
+	Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+
+	Build with XCode tool chain
+
+	XCode uses a C++ parser and will try to assemble this file on all
+	CPU types, so test for the proper CPU type before invoking any cpu
+	instructions.
+
+	uint_t BURGER_API Burger::has_CPUID(void) BURGER_NOEXCEPT
+
+***************************************/
+
+/***************************************
+
+	Intel 32 bit version
+
+	eax, ecx and edx are volatile
+	Result in eax
+
+***************************************/
+
+#if defined(__i386__)
+	.align 4,0x90
+	.text
+
+	.globl __ZN6Burger9has_CPUIDEv
+__ZN6Burger9has_CPUIDEv:
+
+/***************************************
+
+	See of flags bit 21 can be changed.
+	If it can, it's higher than 486, which
+	implies that CPUID is available
+
+	To be honest, MacOSX machines should all have
+	CPUID, but if there is a 486 Hackintosh, it can
+	be detected, and you'll have my deep sympathies
+
+***************************************/
+
+/* Save flags on the stack */
+	pushfl
+
+/* Get in register and leave on stack */
+	movl	(%esp), %eax
+
+/* Switch bit 21 for the test */
+	xorl	$0x00200000, %eax
+
+/* Set the flags with the new value */
+	pushl	%eax
+	popfl
+
+/* Read in the flags into a register */
+	pushfl
+	popl	%eax
+
+/* Did the change "take" */
+	xorl	(%esp), %eax
+
+/* Move to the lowest bit */
+	shrl	$21, %eax
+
+/* Set to TRUE or FALSE */
+	andl	$1, %eax
+
+/* Restore the flags to the original state */
+	popfl
+	ret
+
+#endif

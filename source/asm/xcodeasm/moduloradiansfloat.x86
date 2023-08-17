@@ -1,0 +1,154 @@
+/***************************************
+
+	Assembly for MacOSX Darwin
+
+	Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+
+	Build with XCode tool chain
+
+	XCode uses a C++ parser and will try to assemble this file on all
+	CPU types, so test for the proper CPU type before invoking any cpu
+	instructions.
+
+	float BURGER_API Burger::ModuloRadians(float fInput) BURGER_NOEXCEPT
+
+***************************************/
+
+/***************************************
+
+	PowerPC 32/64 version
+	
+	r0, r3-12, fp0-fp13 are volatile
+	Result in fp1
+	fInput = fp1
+
+***************************************/
+
+#if defined(__ppc__) || defined(__ppc64__)
+	.align 2
+	.text
+
+	.globl __ZN6Burger13ModuloRadiansEf
+__ZN6Burger13ModuloRadiansEf:
+
+/* Fetch the pointers */
+	lis		r3, ha16(__ZN6Burger16g_fReciprocalPi2E)
+
+/* Create 0x4330000080000000 for integer to float conversions */
+	lis		r6, 0x4330
+	lis		r4, ha16(__ZN6Burger7g_fHalfE)
+	lis		r7, 0x8000
+	lis		r5, ha16(__ZN6Burger9g_fNegPi2E)
+
+/* Load in 1/ 2Pi */
+	lfs		f3, lo16(__ZN6Burger16g_fReciprocalPi2E)(r3)
+
+/* Load in 0.5f */
+	lfs		f4, lo16(__ZN6Burger7g_fHalfE)(r4)
+
+/* Load in Pi2 */
+	lfs		f5, lo16(__ZN6Burger9g_fNegPi2E)(r5)
+
+/* (fInput*g_fReciprocalPi2)+g_fHalf */
+	fmadds	f3, f1, f3, f4
+
+/* Store 0x4330000080000000 */
+	stw		r6, -16(r1)
+	stw		r7, -12(r1)
+
+/* Load 0x4330000080000000 in FPU */
+	lfd		f2, -16(r1)
+
+/* Convert to integer */
+	fctiwz	f0, f3
+
+/* Store the integer in memory (64 bit) */
+	stfd	f0, -8(r1)
+
+/* Extract the low word */
+	lwz		r0, -4(r1)
+
+/* Flip the bit */
+	xor		r0,r0,r7
+
+/* Create a fake double */
+	stw		r6,-8(r1)
+
+/* Store the integer */
+	stw		r0,-4(r1)
+
+/* Load the rounded double */
+	lfd		f0,-8(r1)
+
+/* Complete the int to float conversion */
+	fsubs 	f2,f0,f2
+
+/* Compare the two and get rid of the pre-rounded */
+	fcmpu 	cr0,f2,f3
+	ble		1f
+
+/* Load 1.0f */
+	fadds	f0, f4, f4
+
+/* Fixup */
+	fsubs	f2, f2, f0
+
+/* Don't use fnmsubs, it doesn't handle the sign bit properly */
+/* (fVar*-g_fPi2) + fInput */
+1:	fmadds	f1, f2, f5, f1
+	blr
+
+#endif
+
+/***************************************
+
+	Intel 32 bit version
+
+	eax, ecx and edx are volatile
+	Result in 8087 FPU
+	fInput = 4(%esp)
+
+***************************************/
+
+#if defined(__i386__)
+	.align	4,0x90
+	.globl __ZN6Burger13ModuloRadiansEf
+__ZN6Burger13ModuloRadiansEf:
+
+/* Load into the FPU */
+	movss		4(%esp), %xmm0
+
+/* Load in 1/ 2Pi */
+	movss		(__ZN6Burger16g_fReciprocalPi2E), %xmm2
+
+/* Multiply (Really fInput/2Pi) */
+	mulss		%xmm0, %xmm2
+
+/* Add half for rounding */
+	addss		(__ZN6Burger7g_fHalfE), %xmm2
+
+/* Convert to integer */
+	cvttss2si	%xmm2, %eax
+	cvtsi2ss	%eax, %xmm1
+
+/* Compare the two and get rid of the pre-rounded */
+	ucomiss		%xmm2, %xmm1
+
+/* Did it round up? */
+	jbe			1f
+
+/* Fixup */
+	subss		(__ZN6Burger6g_fOneE), %xmm1
+
+/* Mul by 2 pi */
+1:	mulss		(__ZN6Burger6g_fPi2E), %xmm1
+
+/* Subtract and clean up */
+	subss		%xmm1, %xmm0
+
+/* Return in st(0) */
+	movss		%xmm0, 4(%esp)
+	flds		4(%esp)
+	ret
+
+#endif

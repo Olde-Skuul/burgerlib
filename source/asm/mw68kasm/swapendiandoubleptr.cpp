@@ -1,11 +1,15 @@
 /***************************************
 
-	68000 assembly for implementing the function
-	Burger::_swapendiandouble(const double*) for Metrowerks Codewarrior
-
-	Build with the C compiler
+	68000 assembly for Metrowerks Codewarrior
 
 	Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+
+	Build with the Metrowerks 6.0 Pro C compiler
+
+	double BURGER_API Burger::_swapendiandouble(const double* pInput) BURGER_NOEXCEPT
+	d0-d2, a0-a1 are volatile
+	pResult in 4(a7)
+	pInput = a0
 
 ***************************************/
 
@@ -25,7 +29,7 @@ asm double BURGER_API Burger::_swapendiandouble(
 	// Swap halves
 	swap	d0
 	swap	d1
-	
+
 	// Swap endian of the upper 16 bits
 	ror.w	#8, d0
 	ror.w	#8, d1

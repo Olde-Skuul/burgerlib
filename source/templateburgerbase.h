@@ -102,7 +102,6 @@
 #include "brintelcompiler.h"
 #include "brsnsystems.h"
 #include "brxcode.h"
-#include "brmetrowerks.h"
 #include "brintrinsics.h"
 #include "brmacros.h"
 #include "brtemplates.h"

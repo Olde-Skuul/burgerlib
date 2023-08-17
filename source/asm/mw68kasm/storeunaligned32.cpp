@@ -1,15 +1,16 @@
 /***************************************
 
-	\brief Store a 32 bit unsigned value to memory with byte alignment.
+	68000 assembly for Metrowerks Codewarrior
 
-	Assuming the output pointer is unaligned, it will store data a byte at a
-	time into a 32 bit value in native endian.
+	Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
 
-	\param pOutput Pointer to a 32 bit value.
+	Build with the Metrowerks 6.0 Pro C compiler
 
-	\param uInput The 32 bit unsigned value.
-
-	\sa _store_unaligned_swap(uint32_t*,uint32_t)
+	void BURGER_API Burger::_store_unaligned(uint32_t* pOutput BURGER_68K_A0,
+		uint32_t uInput BURGER_68K_D0) BURGER_NOEXCEPT
+	d0-d2, a0-a1 are volatile
+	pOutput = a0
+	uInput = d0
 
 ***************************************/
 
@@ -18,9 +19,6 @@
 asm void BURGER_API Burger::_store_unaligned(
 	uint32_t* pOutput BURGER_68K_A0, uint32_t uInput BURGER_68K_D0) BURGER_NOEXCEPT
 {
-	// A0 = pOutput
-	// D0 = uInput
-
 	// Store the high byte
 	move.b	d0, 3(a0)
 	lsr.l	#8,d0

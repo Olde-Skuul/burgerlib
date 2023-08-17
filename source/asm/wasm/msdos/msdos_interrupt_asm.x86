@@ -270,7 +270,7 @@
 	push	ecx
 
 ; Dos4GW version
-	IFDEF	__DOS4G__	
+	IFDEF	__DOS4G__
 
 ; http://www.ctyme.com/intr/rb-5861.htm
 

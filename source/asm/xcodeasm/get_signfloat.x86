@@ -1,0 +1,158 @@
+/***************************************
+
+	Assembly for MacOSX Darwin
+
+	Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+
+	Build with XCode tool chain
+
+	XCode uses a C++ parser and will try to assemble this file on all
+	CPU types, so test for the proper CPU type before invoking any cpu
+	instructions.
+
+	float BURGER_API Burger::get_sign(float fInput) BURGER_NOEXCEPT
+
+***************************************/
+
+/***************************************
+
+	PowerPC 32/64 version
+	
+	r0, r3-12, fp0-fp13 are volatile
+	Result in fp1
+	fInput = fp1
+
+***************************************/
+
+#if defined(__ppc__) || defined(__ppc64__)
+	.align 2
+	.text
+
+	.globl __ZN6Burger8get_signEf
+__ZN6Burger8get_signEf:
+
+/* Test for NaN first, to avoid stalls later */
+	fcmpu	cr1, f1, f1
+
+/* Get 0.5 */
+	lis		r3, ha16(__ZN6Burger7g_fHalfE)
+
+/* -fInput */
+	fneg	f2, f1
+	lfs		f3, lo16(__ZN6Burger7g_fHalfE)(r3)
+
+/* -0.5 */
+	fneg	f4, f3
+
+/* Test twice, to also find 0.0f */
+	fsel	f0, f1, f3, f4
+	fsel	f4, f2, f4, f3
+
+/* Yields 0.0f, 1.0f, or -1.0f */
+	fadds	f1, f4, f0
+
+/* If not NaN, return now */
+	beqlr	cr1
+
+/* NaN detected, you are boned */
+/* Store the -NaN */
+	stfs	f2, -8(r1)
+
+/* Assume result is 1.0f (0.5*2) */
+	fadds	f1, f3, f3
+
+/* Test for negative with integer registers */
+	lwz		r3, -8(r1)
+	andis.	r3, r3, 0x8000
+
+/* Note: Testing on -NaN so not equal is positive */
+	bnelr
+
+/* Return negative */
+	fneg	f1, f1
+	blr
+
+#endif
+
+/***************************************
+
+	Intel 32 bit version
+
+	eax, ecx and edx are volatile
+	Result in 8087 FPU
+	fInput = 4(%esp)
+
+***************************************/
+
+#if defined(__i386__)
+	.align	4,0x90
+	.globl __ZN6Burger8get_signEf
+__ZN6Burger8get_signEf:
+
+# Get the sign (eax, ip, float)
+	movl	4(%esp), %eax
+
+# Save the sign in the carry flag
+	addl	%eax, %eax
+
+# If zero edge case, branch
+	jz		itszero
+
+# Load 1.0f
+	fld1
+	jnc		exit
+
+# Convert to -1.0f
+	fchs
+exit:
+	ret
+
+# It is the zero case
+itszero:
+	fldz
+	ret
+
+#endif
+
+/***************************************
+
+	Intel 64 bit version
+
+	eax, ecx and edx are volatile
+	Result in xmm0
+	fInput = xmm0
+
+***************************************/
+
+#if defined(__x86_64__)
+	.align	4,0x90
+	.globl __ZN6Burger8get_signEf
+__ZN6Burger8get_signEf:
+
+# Move to an integer register
+	movd	%xmm0, %eax
+
+# Load 1.0, shifted up by one bit
+	movl	$0x7F000000, %ecx
+
+# Obtain the sign bit in carry
+	shll	$1, %eax
+
+# Convert 1.0 to 1.0 or -1.0 depending on sign
+	rcrl	$1,%ecx
+
+# Set carry if not zero
+	negl	%eax
+
+# Temp is mask, zero or 0xFFFFFFFF
+	sbbl	%eax, %eax
+
+# Mask 1.0/-1.0f to zero if zero
+	andl	%eax, %ecx
+
+# Move result to float
+	movd	%ecx, %xmm0
+	ret
+
+#endif
+

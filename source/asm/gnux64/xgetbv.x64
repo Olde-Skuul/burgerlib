@@ -1,20 +1,27 @@
 #
-# X64 assembly for implementing the intrinsic _xgetbv for
-# the Clang and GNU tool chain
+# X64 assembly for the Clang and GNU tool chain
+#
+# Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
 #
 # Build with as
 #
-# extern uint64_t _xgetbv(uint_t xcr) BURGER_NOEXCEPT;
+# uint64_t _xgetbv(uint_t xcr) BURGER_NOEXCEPT;
+# rax, rcx, rdx, r8-11 are volatile
+# xcr = rdi
+# Result in rax
 #
-
-	.ifdef __amd64__
 
 	.align 8
 	.text
 	.globl _xgetbv
-_xgetbv:
+	.type	_xgetbv, @function
 
-# rdi is the input, move to ecx which is the proper
+_xgetbv:
+	.cfi_startproc
+
+# Does not use a stack frame
+#	.cfi_def_cfa_offset 16
+
 # register for xgetbv
 	movq	%rdi, %rcx
 
@@ -28,4 +35,5 @@ _xgetbv:
 
 	ret
 
-	.endif
+	.cfi_endproc
+	.size	_xgetbv, .-_xgetbv

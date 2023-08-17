@@ -1,9 +1,14 @@
 ;
 ; X64 assembly for Visual Studio 2008+ compilers
 ;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+;
 ; Build with ml64.exe
 ;
-; double Burger::get_sign(double)
+; double Burger::get_sign(double dInput)
+; dInput = xmm0
+; Result in xmm0
+; rax, rcx, rdx, r8-11 are volatile
 ;
 
 _TEXT segment para 'CODE'
@@ -11,8 +16,6 @@ _TEXT segment para 'CODE'
 	align 16
 public ?get_sign@Burger@@YANN@Z
 ?get_sign@Burger@@YANN@Z proc
-
-; rax, rcx, rdx, r8-11 are volatile
 
 ; Move to an integer register
 	movd	rax, xmm0

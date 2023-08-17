@@ -1,12 +1,14 @@
 #
-# Set the PowerPC floating point rounding value
-#
 # Sony Cell assembly for the Playstation 3
+#
+# Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
 #
 # Build with PS3 tool chain
 #
-# ePowerPCRounding BURGER_API Burger::set_PowerPC_rounding(
-#	ePowerPCRounding uInput) BURGER_NOEXCEPT;
+# ePowerPCRounding BURGER_API Burger::set_PowerPC_rounding(ePowerPCRounding uInput) BURGER_NOEXCEPT
+# r0, r3-12, fp0-fp13 are volatile
+# uInput = r3
+# Result in r3
 #
 
 	.align 2
@@ -43,8 +45,6 @@
 
 # Return the previous value
 	mr		3, 5
-
-# Exit
 	blr
 
 	.size	._ZN6Burger20set_PowerPC_roundingENS_16ePowerPCRoundingE,.-._ZN6Burger20set_PowerPC_roundingENS_16ePowerPCRoundingE

@@ -1855,7 +1855,7 @@ uint_t Burger::FileXML::Declaration::Save(OutputMemoryStream *pOutput,uint_t uDe
 
 	// If the version is a real floating point number, print it in the form of x.xx
 
-	if (IsFinite(m_fVersion)) {
+	if (is_finite(m_fVersion)) {
 		uResult |= pOutput->Append(" version=\"");
 
 		// Force the value to be in the format of x.xx

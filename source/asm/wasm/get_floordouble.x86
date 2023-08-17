@@ -1,0 +1,68 @@
+;
+; X86 assembly for Open Watcom
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+;
+; Build with wasm.exe
+;
+; double BURGER_API Burger::get_floor(double dInput) BURGER_NOEXCEPT
+; all registers are non-volatile
+; Result in 8087 FPU
+; dInput = [esp+4]
+;
+
+	.686
+	.MODEL FLAT,SYSCALL
+
+	.data
+
+; Actually Burger::g_fOne
+	EXTRN	`W?g_fOne$:Burger$nx$uint32_float_t$:1$`:DWORD
+
+_TEXT segment para 'CODE'
+
+	align 16
+public `W?get_floor$:Burger$n(d)d`
+`W?get_floor$:Burger$n(d)d` proc
+
+; Load the value in an integer register
+	mov		eax, [esp + 8]
+
+; Load the same value in the FPU
+	fld		qword ptr[esp + 4]
+
+; Mask off the sign
+	and		eax, 0x7FFFFFFF
+
+; Compare to 4503599627370496.0
+	cmp		eax, 0x43300000
+
+; Out of range, return original value
+	jae		FloorExit
+
+; Convert the integer to float (It's in range)
+	frndint
+
+; Clear ax for flags
+	xor		eax, eax
+
+; Compare values for difference (Pop stack)
+	fcom	qword ptr[esp + 4]
+
+; Get the 8087 condition flags
+	fnstsw	ax
+
+; Was the new greater than or equal the original?
+	and		ax, 0x4100
+	jnz		FloorExit
+
+; Subtract 1.0f to round down
+	fsub	dword ptr[`W?g_fOne$:Burger$nx$uint32_float_t$:1$`]
+FloorExit:
+	ret		8
+
+`W?get_floor$:Burger$n(d)d` endp
+
+_TEXT	ends
+
+	end

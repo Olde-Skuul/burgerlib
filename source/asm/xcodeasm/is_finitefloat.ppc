@@ -1,0 +1,53 @@
+/***************************************
+
+	Assembly for MacOSX Darwin
+
+	Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+
+	Build with XCode tool chain
+
+	XCode uses a C++ parser and will try to assemble this file on all
+	CPU types, so test for the proper CPU type before invoking any cpu
+	instructions.
+
+	float BURGER_API Burger::is_finite(float fInput) BURGER_NOEXCEPT
+
+***************************************/
+
+/***************************************
+
+	PowerPC 32/64 version
+	
+	r0, r3-12, fp0-fp13 are volatile
+	Result in fp1
+	fInput = fp1
+
+***************************************/
+
+#if defined(__ppc__) || defined(__ppc64__)
+	.align 2
+	.text
+
+	.globl __ZN6Burger9is_finiteEf
+__ZN6Burger9is_finiteEf:
+
+/* Get the address of g_fInf */
+	lis		r3, ha16(__ZN6Burger6g_fInfE)
+
+/* Strip the sign */
+	fabs	f1, f1
+
+/* Fetch fInf */
+	lfs		f0, lo16(__ZN6Burger6g_fInfE)(r3)
+
+/* Compare for equality */
+	fcmpu	cr0, f1, f0
+
+/* Move cr0 into r0 */
+	mfcr	r0
+
+/* (Flags>>31)&1 Grab the "Less than" flag */
+	extrwi	r3, r0, 1, 0
+	blr
+
+#endif

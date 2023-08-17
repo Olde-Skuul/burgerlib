@@ -27,10 +27,6 @@
 #include "brvisualstudio.h"
 #endif
 
-#ifndef __BRMETROWERKS_H__
-#include "brmetrowerks.h"
-#endif
-
 /* BEGIN */
 namespace Burger {
 
@@ -248,7 +244,12 @@ struct CPUID_t {
 	}
 };
 
-#if (defined(BURGER_AMD64) || defined(BURGER_XBOX)) && !defined(DOXYGEN)
+// X64, Classic Xbox and Android devices all have CPUID
+// so don't bother with the test
+// Windows, MacOSX, and DOS, test for it.
+#if (defined(BURGER_AMD64) || defined(BURGER_XBOX) || \
+	defined(BURGER_ANDROID)) && \
+	!defined(DOXYGEN)
 BURGER_INLINE uint_t has_CPUID(void) BURGER_NOEXCEPT
 {
 	return TRUE;

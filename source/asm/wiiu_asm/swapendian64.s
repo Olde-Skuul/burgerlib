@@ -1,10 +1,14 @@
 ;
-; Espresso assembly for implementing the intrinsic _swapendian64 for
-; the WiiU
+; Espresso assembly for the WiiU
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
 ;
 ; Build with WiiU tool chain
 ;
-; extern "C" uint64_t _swapendian64(uint64_t uInput) BURGER_NOEXCEPT;
+; extern "C" uint64_t _swapendian64(uint64_t uInput) BURGER_NOEXCEPT
+; r0, r3-12, fp0-fp13 are volatile
+; Result in r3/r4
+; uInput = r3/r4
 ;
 
 	.align 2
@@ -31,7 +35,7 @@ _swapendian64:
 
 ; Return them, word swapped!
 	mr		r3,r12
-	mr		r4,r0		
+	mr		r4,r0
 	blr
 
 	.size	_swapendian64,$-_swapendian64

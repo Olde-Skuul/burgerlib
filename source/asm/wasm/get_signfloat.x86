@@ -1,0 +1,56 @@
+;
+; X86 assembly for Open Watcom
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+;
+; Build with wasm.exe
+;
+; float BURGER_API Burger::get_sign(float fInput) BURGER_NOEXCEPT
+; all registers are non-volatile
+; Result in 8087 FPU
+; fInput = [esp+4]
+;
+
+	.686
+
+_TEXT segment para 'CODE'
+
+	align 16
+public `W?get_sign$:Burger$n(b)b`
+`W?get_sign$:Burger$n(b)b` proc
+
+; Watcom needs eax untouched
+	push	eax
+
+; Get the sign (eax, ip, float)
+	mov		eax, [esp+8]
+
+; Save the sign in the carry flag
+	add		eax, eax
+
+; If zero edge case, branch
+	jz		itszero
+
+; Load 1.0f
+	fld1
+	jnc		Exit
+
+; Convert to -1.0f
+	fchs
+exit:
+	pop		eax
+	ret		4
+
+; It's the zero case
+itszero:
+	fldz
+
+; Restore eax
+	pop		eax
+	ret		4
+
+`W?get_sign$:Burger$n(b)b` endp
+
+_TEXT	ends
+
+	end

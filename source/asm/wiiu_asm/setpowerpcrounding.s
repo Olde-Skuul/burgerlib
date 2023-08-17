@@ -1,12 +1,14 @@
 ;
-; Set the PowerPC floating point rounding value
-;
 ; Espresso assembly for the WiiU
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
 ;
 ; Build with WiiU tool chain
 ;
-; ePowerPCRounding BURGER_API Burger::set_PowerPC_rounding(
-;	ePowerPCRounding uInput) BURGER_NOEXCEPT;
+; ePowerPCRounding BURGER_API Burger::set_PowerPC_rounding(ePowerPCRounding uInput) BURGER_NOEXCEPT
+; r0, r3-12, fp0-fp13 are volatile
+; Result in r3
+; uInput = r3
 ;
 
 	.align 2
@@ -43,8 +45,6 @@ set_PowerPC_rounding__6BurgerFQ2_6Burger16ePowerPCRounding:
 
 ; Return the previous value
 	mr		r3, r5
-
-; Exit
 	blr
 
 	.size	set_PowerPC_rounding__6BurgerFQ2_6Burger16ePowerPCRounding,$-set_PowerPC_rounding__6BurgerFQ2_6Burger16ePowerPCRounding

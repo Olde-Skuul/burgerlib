@@ -1,9 +1,14 @@
 ;
 ; X64 assembly for Visual Studio 2008+ compilers
 ;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+;
 ; Build with ml64.exe
 ;
-; float Burger::get_sign(float)
+; float Burger::get_sign(float fInput)
+; fInput = xmm0
+; Result in xmm0
+; rax, rcx, rdx, r8-11 are volatile
 ;
 
 _TEXT segment para 'CODE'
@@ -12,10 +17,8 @@ _TEXT segment para 'CODE'
 public ?get_sign@Burger@@YAMM@Z
 ?get_sign@Burger@@YAMM@Z proc
 
-; rax, rcx, rdx, r8-11 are volatile
-
 ; Move to an integer register
-	vmovd	eax, xmm0
+	movd	eax, xmm0
 
 ; Load 1.0, shifted up by one bit
 	mov		ecx, 07F000000H
@@ -36,7 +39,7 @@ public ?get_sign@Burger@@YAMM@Z
 	and		ecx, eax
 
 ; Move result to float
-	vmovd	xmm0, ecx
+	movd	xmm0, ecx
 
 	ret
 

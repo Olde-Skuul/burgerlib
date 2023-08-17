@@ -272,6 +272,24 @@ uint32_t BURGER_API Burger::set_mxcsr_flags(
 
 ***************************************/
 
+#if (defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
+	(defined(BURGER_METROWERKS) && \
+		(defined(BURGER_68K) || defined(BURGER_X86) || \
+			defined(BURGER_PPC))) || \
+	((defined(BURGER_CLANG) || defined(BURGER_GNUC)) && \
+		(defined(BURGER_INTEL) || defined(BURGER_PPC))) || \
+	(defined(BURGER_MSVC) && \
+		(defined(BURGER_INTEL) || defined(BURGER_PPC))) || \
+	((defined(BURGER_SNSYSTEMS) || defined(BURGER_GHS)) && \
+		defined(BURGER_PPC))
+#else
+
+float BURGER_API Burger::get_sign(float fInput) BURGER_NOEXCEPT
+{
+	return ((fInput > 0.0f) ? 1.0f : ((fInput < 0.0f) ? -1.0f : 0.0f));
+}
+#endif
+
 /*! ************************************
 
 	\fn double Burger::get_sign(double dInput)
@@ -286,6 +304,23 @@ uint32_t BURGER_API Burger::set_mxcsr_flags(
 	\sa get_sign(float)
 
 ***************************************/
+
+#if (defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
+	(defined(BURGER_METROWERKS) && \
+		(defined(BURGER_68K) || defined(BURGER_X86) || \
+			defined(BURGER_PPC))) || \
+	((defined(BURGER_CLANG) || defined(BURGER_GNUC)) && \
+		(defined(BURGER_INTEL) || defined(BURGER_PPC))) || \
+	(defined(BURGER_MSVC) && \
+		(defined(BURGER_INTEL) || defined(BURGER_PPC))) || \
+	((defined(BURGER_SNSYSTEMS) || defined(BURGER_GHS)) && \
+		defined(BURGER_PPC))
+#else
+double BURGER_API Burger::get_sign(double dInput) BURGER_NOEXCEPT
+{
+	return ((dInput > 0.0) ? 1.0 : ((dInput < 0.0) ? -1.0 : 0.0));
+}
+#endif
 
 /*! ************************************
 
@@ -1455,8 +1490,8 @@ double BURGER_API Burger::square_root(double dInput) BURGER_NOEXCEPT
 
 	\param fInput A 32 bit floating point number.
 	\return \ref TRUE if Nan, \ref FALSE if not.
-	\sa is_NaN(double), IsInf(float), IsFinite(float), IsNormal(float) and
-		SignBit(float)
+	\sa is_NaN(double), is_infinite(float), is_finite(float), is_normal(float)
+		and get_sign_bit(float)
 
 ***************************************/
 
@@ -1494,9 +1529,11 @@ uint_t BURGER_API Burger::is_NaN(float fInput) BURGER_NOEXCEPT
 	Test for QNan and SNan and return \ref TRUE if so.
 
 	\param dInput A 64 bit floating point number.
+
 	\return \ref TRUE if Nan, \ref FALSE if not.
-	\sa is_NaN(float), IsInf(double), IsFinite(double), IsNormal(double) and
-		SignBit(double)
+
+	\sa is_NaN(float), is_infinite(double), is_finite(double), is_normal(double)
+		and get_sign_bit(double)
 
 ***************************************/
 
@@ -1536,52 +1573,21 @@ uint_t BURGER_API Burger::is_NaN(double dInput) BURGER_NOEXCEPT
 	Test for infinity and return \ref TRUE if so.
 
 	\param fInput A 32 bit floating point number.
+
 	\return \ref TRUE if Infinity, \ref FALSE if not.
-	\sa IsInf(double), is_NaN(float), IsFinite(float), IsNormal(float) and
-		SignBit(float)
+
+	\sa is_infinite(double), is_NaN(float), is_finite(float), is_normal(float)
+		and get_sign_bit(float)
 
 ***************************************/
 
-#if defined(BURGER_XBOX360)
-
-uint_t BURGER_API Burger::IsInf(float fInput) BURGER_NOEXCEPT
-{
-	return (fabs(fInput) == g_fInf);
-}
-
-#elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
-
-BURGER_ASM uint_t BURGER_API Burger::IsInf(float fInput) BURGER_NOEXCEPT
-{
-	// clang-format off
-    lwz r3, g_fInf(RTOC) // Get the address of g_fInf
-    fabs fp1, fp1       // Strip the sign
-    lfs fp0, 0(r3)      // Fetch fInf
-    fcmpu cr0, fp1, fp0 // Compare for equality
-    mfcr r0             // Move cr0 into r0
-    extrwi r3, r0, 1, 2 // (Flags>>29)&1 Grab the "Equal" flag
-    blr                 // Exit
-	// clang-format on
-}
-
-#elif defined(BURGER_PPC) && defined(BURGER_MACOSX)
-
-__asm__(
-	"	.align	2,0\n"
-	"	.globl	__ZN6Burger5IsInfEf\n"
-	"__ZN6Burger5IsInfEf:\n"
-	"	lis		r3,ha16(__ZN6Burger6g_fInfE)\n"     // Get the address of g_fInf
-	"	fabs	f1,f1\n"                            // Strip the sign
-	"	lfs		f0,lo16(__ZN6Burger6g_fInfE)(r3)\n" // Fetch fInf
-	"	fcmpu	cr0,f1,f0\n"                        // Compare for equality
-	"	mfcr	r0\n"                               // Move cr0 into r0
-	"	extrwi	r3,r0,1,2\n" // (Flags>>29)&1 Grab the "Equal" flag
-	"	blr\n"               // Exit
-);
+#if defined(BURGER_XBOX360) || \
+	(defined(BURGER_METROWERKS) && defined(BURGER_PPC)) || \
+	((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_PPC))
 
 #else
 
-uint_t BURGER_API Burger::IsInf(float fInput) BURGER_NOEXCEPT
+uint_t BURGER_API Burger::is_infinite(float fInput) BURGER_NOEXCEPT
 {
 	const uint32_t uInput =
 		static_cast<const uint32_float_t*>(static_cast<const void*>(&fInput))
@@ -1599,52 +1605,21 @@ uint_t BURGER_API Burger::IsInf(float fInput) BURGER_NOEXCEPT
 	Test for infinity and return \ref TRUE if so.
 
 	\param dInput A 64 bit floating point number.
+
 	\return \ref TRUE if Infinity, \ref FALSE if not.
-	\sa IsInf(float), is_NaN(double), IsFinite(double), IsNormal(double) and
-		SignBit(double)
+
+	\sa is_infinite(float), is_NaN(double), is_finite(double), is_normal(double)
+		and get_sign_bit(double)
 
 ***************************************/
 
-#if defined(BURGER_XBOX360)
-
-uint_t BURGER_API Burger::IsInf(double dInput) BURGER_NOEXCEPT
-{
-	return (fabs(dInput) == g_dInf);
-}
-
-#elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
-
-BURGER_ASM uint_t BURGER_API Burger::IsInf(double dInput) BURGER_NOEXCEPT
-{
-	// clang-format off
-    lwz r3, g_dInf(RTOC)    // Get the address of g_dInf
-    fabs fp1, fp1           // Strip the sign
-    lfd fp0, 0(r3)          // Fetch dInf
-    fcmpu cr0, fp1, fp0     // Compare for equality
-    mfcr r0                 // Move cr0 into r0
-    extrwi r3, r0, 1, 2     // (Flags>>29)&1 Grab the "Equal" flag
-    blr                     // Exit
-	// clang-format on
-}
-
-#elif defined(BURGER_MACOSX) && defined(BURGER_PPC)
-
-__asm__(
-	"	.align	2,0\n"
-	"	.globl	__ZN6Burger5IsInfEd\n"
-	"__ZN6Burger5IsInfEd:\n"
-	"	lis		r3,ha16(__ZN6Burger6g_dInfE)\n"     // Get the address of g_fInf
-	"	fabs	f1,f1\n"                            // Strip the sign
-	"	lfd		f0,lo16(__ZN6Burger6g_dInfE)(r3)\n" // Fetch fInf
-	"	fcmpu	cr0,f1,f0\n"                        // Compare for equality
-	"	mfcr	r0\n"                               // Move cr0 into r0
-	"	extrwi	r3,r0,1,2\n" // (Flags>>29)&1 Grab the "Equal" flag
-	"	blr\n"               // Exit
-);
+#if defined(BURGER_XBOX360) || \
+	(defined(BURGER_METROWERKS) && defined(BURGER_PPC)) || \
+	((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_PPC))
 
 #else
 
-uint_t BURGER_API Burger::IsInf(double dInput) BURGER_NOEXCEPT
+uint_t BURGER_API Burger::is_infinite(double dInput) BURGER_NOEXCEPT
 {
 	return (static_cast<const uint64_double_t*>(
 				static_cast<const void*>(&dInput))
@@ -1661,64 +1636,21 @@ uint_t BURGER_API Burger::IsInf(double dInput) BURGER_NOEXCEPT
 	Test for a finite number (Not Nan, Inf) and return \ref TRUE if so.
 
 	\param fInput A 32 bit floating point number.
+
 	\return \ref TRUE if finite, \ref FALSE if not.
-	\sa IsFinite(double), is_NaN(float), IsInf(float), IsNormal(float) and
-		SignBit(float)
+
+	\sa is_finite(double), is_NaN(float), is_infinite(float), is_normal(float)
+		and get_sign_bit(float)
 
 ***************************************/
 
-#if defined(BURGER_XBOX360)
-
-BURGER_DECLSPECNAKED uint_t BURGER_API Burger::IsFinite(
-	float /* fInput */) BURGER_NOEXCEPT
-{
-	// clang-format off
-    BURGER_ASM
-    {
-        lau r3, g_fInf      // Get the address of g_fInf
-        fabs fp1, fp1       // Strip the sign
-        lfs fp0, g_fInf(r3) // Fetch fInf
-        fcmpu cr0, fp1, fp0 // Compare if less than infinity
-        mfcr r0             // Move cr0 into r0
-        extrwi r3, r0, 1, 0 // (Flags>>31)&1 Grab the "Less than" flag
-        blr                 // Exit
-    }
-	// clang-format on
-}
-
-#elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
-
-BURGER_ASM uint_t BURGER_API Burger::IsFinite(float fInput) BURGER_NOEXCEPT
-{
-	// clang-format off
-    lwz r3, g_fInf(RTOC) // Get the address of g_fInf
-    fabs fp1, fp1       // Strip the sign
-    lfs fp0, 0(r3)      // Fetch fInf
-    fcmpu cr0, fp1, fp0 // Compare if less than infinity
-    mfcr r0             // Move cr0 into r0
-    extrwi r3, r0, 1, 0 // (Flags>>31)&1 Grab the "Less than" flag
-    blr                 // Exit
-	// clang-format on
-}
-
-#elif defined(BURGER_MACOSX) && defined(BURGER_PPC)
-
-__asm__(
-	"	.align	2,0\n"
-	"	.globl __ZN6Burger8IsFiniteEf\n"
-	"__ZN6Burger8IsFiniteEf:\n"
-	"	lis		r3,ha16(__ZN6Burger6g_fInfE)\n"     // Get the address of g_fInf
-	"	fabs	f1,f1\n"                            // Strip the sign
-	"	lfs		f0,lo16(__ZN6Burger6g_fInfE)(r3)\n" // Fetch fInf
-	"	fcmpu	cr0,f1,f0\n" // Compare if less than infinity
-	"	mfcr	r0\n"        // Move cr0 into r0
-	"	extrwi	r3,r0,1,0\n" // (Flags>>31)&1 Grab the "Less than" flag
-	"	blr\n"               // Exit
-);
+#if defined(BURGER_XBOX360) || \
+	(defined(BURGER_METROWERKS) && defined(BURGER_PPC)) || \
+	((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_PPC))
 
 #else
 
-uint_t BURGER_API Burger::IsFinite(float fInput) BURGER_NOEXCEPT
+uint_t BURGER_API Burger::is_finite(float fInput) BURGER_NOEXCEPT
 {
 	uint32_t uInput =
 		static_cast<const uint32_float_t*>(static_cast<const void*>(&fInput))
@@ -1737,64 +1669,21 @@ uint_t BURGER_API Burger::IsFinite(float fInput) BURGER_NOEXCEPT
 	Test for a finite number (Not Nan, Inf) and return \ref TRUE if so.
 
 	\param dInput A 64 bit floating point number.
+
 	\return \ref TRUE if finite, \ref FALSE if not.
-	\sa IsFinite(float), is_NaN(double), IsInf(double), IsNormal(double) and
-		SignBit(double)
+
+	\sa is_finite(float), is_NaN(double), is_infinite(double), is_normal(double)
+		and get_sign_bit(double)
 
 ***************************************/
 
-#if defined(BURGER_XBOX360)
-
-BURGER_DECLSPECNAKED uint_t BURGER_API Burger::IsFinite(
-	double /* dInput */) BURGER_NOEXCEPT
-{
-	// clang-format off
-    BURGER_ASM
-    {
-        lau r3, g_dInf      // Get the address of g_dInf
-        fabs fp1, fp1       // Strip the sign
-        lfd fp0, g_dInf(r3) // Fetch dInf
-        fcmpu cr0, fp1, fp0 // Compare if less than infinity
-        mfcr r0             // Move cr0 into r0
-        extrwi r3, r0, 1, 0 // (Flags>>31)&1 Grab the "Less than" flag
-        blr                 // Exit
-    }
-	// clang-format on
-}
-
-#elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
-
-BURGER_ASM uint_t BURGER_API Burger::IsFinite(double dInput) BURGER_NOEXCEPT
-{
-	// clang-format off
-    lwz r3, g_dInf(RTOC) // Get the address of g_dInf
-    fabs fp1, fp1       // Strip the sign
-    lfd fp0, 0(r3)      // Fetch dInf
-    fcmpu cr0, fp1, fp0 // Compare if less than infinity
-    mfcr r0             // Move cr0 into r0
-    extrwi r3, r0, 1, 0 // (Flags>>31)&1 Grab the "Less than" flag
-    blr                 // Exit
-	// clang-format on
-}
-
-#elif defined(BURGER_MACOSX) && defined(BURGER_PPC)
-
-__asm__(
-	"	.align	2,0\n"
-	"	.globl	__ZN6Burger8IsFiniteEd\n"
-	"__ZN6Burger8IsFiniteEd:\n"
-	"	lis		r3,ha16(__ZN6Burger6g_dInfE)\n"     // Get the address of g_fInf
-	"	fabs	f1,f1\n"                            // Strip the sign
-	"	lfd		f0,lo16(__ZN6Burger6g_dInfE)(r3)\n" // Fetch fInf
-	"	fcmpu	cr0,f1,f0\n" // Compare if less than infinity
-	"	mfcr	r0\n"        // Move cr0 into r0
-	"	extrwi	r3,r0,1,0\n" // (Flags>>31)&1 Grab the "Less than" flag
-	"	blr\n"               // Exit
-);
+#if defined(BURGER_XBOX360) || \
+	(defined(BURGER_METROWERKS) && defined(BURGER_PPC)) || \
+	((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_PPC))
 
 #else
 
-uint_t BURGER_API Burger::IsFinite(double dInput) BURGER_NOEXCEPT
+uint_t BURGER_API Burger::is_finite(double dInput) BURGER_NOEXCEPT
 {
 	uint32_t uInput;
 #if defined(BURGER_BIGENDIAN)
@@ -1820,16 +1709,20 @@ uint_t BURGER_API Burger::IsFinite(double dInput) BURGER_NOEXCEPT
 	return \ref TRUE if so.
 
 	\param fInput A 32 bit floating point number.
+
 	\return \ref TRUE if normal, \ref FALSE if not.
-	\sa IsNormal(double), is_NaN(float), IsInf(float), IsFinite(float) and
-		SignBit(float)
+
+	\sa is_normal(double), is_NaN(float), is_infinite(float), is_finite(float)
+		and get_sign_bit(float)
 
 ***************************************/
 
-#if defined(BURGER_PPC) && \
+#if (defined(BURGER_MSVC) && defined(BURGER_PPC))
+
+#elif defined(BURGER_PPC) && \
 	(defined(BURGER_METROWERKS) || defined(BURGER_MACOSX))
 
-uint_t BURGER_API Burger::IsNormal(float fInput) BURGER_NOEXCEPT
+uint_t BURGER_API Burger::is_normal(float fInput) BURGER_NOEXCEPT
 {
 	// Force absolute
 	double fInputNew = fabs(static_cast<double>(fInput));
@@ -1849,7 +1742,7 @@ uint_t BURGER_API Burger::IsNormal(float fInput) BURGER_NOEXCEPT
 // instead of the fcmpu stall.
 //
 
-uint_t BURGER_API Burger::IsNormal(float fInput) BURGER_NOEXCEPT
+uint_t BURGER_API Burger::is_normal(float fInput) BURGER_NOEXCEPT
 {
 	uint32_t uInput =
 		static_cast<const uint32_float_t*>(static_cast<const void*>(&fInput))
@@ -1869,16 +1762,20 @@ uint_t BURGER_API Burger::IsNormal(float fInput) BURGER_NOEXCEPT
 	return \ref TRUE if so.
 
 	\param dInput A 64 bit floating point number.
+
 	\return \ref TRUE if normal, \ref FALSE if not.
-	\sa IsNormal(float), is_NaN(double), IsInf(double), IsFinite(double) and
-		SignBit(double)
+
+	\sa is_normal(float), is_NaN(double), is_infinite(double), is_finite(double)
+		and get_sign_bit(double)
 
 ***************************************/
 
-#if defined(BURGER_PPC) && \
+#if (defined(BURGER_MSVC) && defined(BURGER_PPC))
+
+#elif defined(BURGER_PPC) && \
 	(defined(BURGER_METROWERKS) || defined(BURGER_MACOSX))
 
-uint_t BURGER_API Burger::IsNormal(double dInput) BURGER_NOEXCEPT
+uint_t BURGER_API Burger::is_normal(double dInput) BURGER_NOEXCEPT
 {
 	// Force absolute
 	dInput = fabs(dInput);
@@ -1894,7 +1791,7 @@ uint_t BURGER_API Burger::IsNormal(double dInput) BURGER_NOEXCEPT
 // Note: Xbox 360 and PS3 are better to take the Load/Hit/Store
 // instead of the fcmpu stall.
 
-uint_t BURGER_API Burger::IsNormal(double dInput) BURGER_NOEXCEPT
+uint_t BURGER_API Burger::is_normal(double dInput) BURGER_NOEXCEPT
 {
 	uint32_t uInput;
 #if defined(BURGER_BIGENDIAN)
@@ -1916,18 +1813,22 @@ uint_t BURGER_API Burger::IsNormal(double dInput) BURGER_NOEXCEPT
 	Test for a negative number and return \ref TRUE if so.
 
 	\param fInput A 32 bit floating point number.
+
 	\return \ref TRUE if negative, \ref FALSE if not.
-	\sa SignBit(double), is_NaN(float), IsInf(float), IsFinite(float) and
-		IsNormal(float)
 
 ***************************************/
 
-uint_t BURGER_API Burger::SignBit(float fInput) BURGER_NOEXCEPT
+#if (defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
+	(defined(BURGER_METROWERKS) && defined(BURGER_X86)) || \
+	defined(BURGER_XBOX360)
+#else
+uint_t BURGER_API Burger::get_sign_bit(float fInput) BURGER_NOEXCEPT
 {
 	return static_cast<const uint32_float_t*>(static_cast<const void*>(&fInput))
 			   ->w >>
 		31U;
 }
+#endif
 
 /*! ************************************
 
@@ -1936,13 +1837,19 @@ uint_t BURGER_API Burger::SignBit(float fInput) BURGER_NOEXCEPT
 	Test for a negative number and return \ref TRUE if so.
 
 	\param dInput A 64 bit floating point number.
+
 	\return \ref TRUE if negative, \ref FALSE if not.
-	\sa SignBit(float), is_NaN(double), IsInf(double), IsFinite(double) and
-		IsNormal(double)
+
+	\sa get_sign_bit(float), is_NaN(double), is_infinite(double),
+		is_finite(double) and is_normal(double)
 
 ***************************************/
 
-uint_t BURGER_API Burger::SignBit(double dInput) BURGER_NOEXCEPT
+#if (defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
+	(defined(BURGER_METROWERKS) && defined(BURGER_X86)) || \
+	defined(BURGER_XBOX360)
+#else
+uint_t BURGER_API Burger::get_sign_bit(double dInput) BURGER_NOEXCEPT
 {
 #if defined(BURGER_BIGENDIAN)
 	return static_cast<const uint32_t*>(static_cast<const void*>(&dInput))[0] >>
@@ -1952,6 +1859,7 @@ uint_t BURGER_API Burger::SignBit(double dInput) BURGER_NOEXCEPT
 		31;
 #endif
 }
+#endif
 
 /*! ************************************
 
@@ -1978,11 +1886,11 @@ uint_t BURGER_API Burger::SignBit(double dInput) BURGER_NOEXCEPT
 	\param fInput2 Another 32 bit floating point number to test
 	\return \ref TRUE if less than epsilon apart, \ref FALSE if not.
 
-	\sa EqualWithEpsilon(float,float,float), EqualWithEpsilon(double,double)
+	\sa equal_with_epsilon(float,float,float), equal_with_epsilon(double,double)
 
 ***************************************/
 
-uint_t BURGER_API Burger::EqualWithEpsilon(
+uint_t BURGER_API Burger::equal_with_epsilon(
 	float fInput1, float fInput2) BURGER_NOEXCEPT
 {
 	const float fDelta = absolute(fInput1 - fInput2);
@@ -2017,11 +1925,12 @@ uint_t BURGER_API Burger::EqualWithEpsilon(
 	\param dInput2 Another 64 bit floating point number to test
 	\return \ref TRUE if less than epsilon apart, \ref FALSE if not.
 
-	\sa EqualWithEpsilon(double,double,double), EqualWithEpsilon(float,float)
+	\sa equal_with_epsilon(double,double,double),
+		equal_with_epsilon(float,float)
 
 ***************************************/
 
-uint_t BURGER_API Burger::EqualWithEpsilon(
+uint_t BURGER_API Burger::equal_with_epsilon(
 	double dInput1, double dInput2) BURGER_NOEXCEPT
 {
 	const double dDelta = absolute(dInput1 - dInput2);
@@ -2056,11 +1965,12 @@ uint_t BURGER_API Burger::EqualWithEpsilon(
 	\param fEpsilon Epsilon to test with
 	\return \ref TRUE if less than epsilon apart, \ref FALSE if not.
 
-	\sa EqualWithEpsilon(float,float), EqualWithEpsilon(double,double,double)
+	\sa equal_with_epsilon(float,float),
+		equal_with_epsilon(double,double,double)
 
 ***************************************/
 
-uint_t BURGER_API Burger::EqualWithEpsilon(
+uint_t BURGER_API Burger::equal_with_epsilon(
 	float fInput1, float fInput2, float fEpsilon) BURGER_NOEXCEPT
 {
 	const float fDelta = absolute(fInput1 - fInput2);
@@ -2093,13 +2003,14 @@ uint_t BURGER_API Burger::EqualWithEpsilon(
 	\param dInput1 A 64 bit floating point number to test
 	\param dInput2 Another 64 bit floating point number to test
 	\param dEpsilon Epsilon to test with
+
 	\return \ref TRUE if less than epsilon apart, \ref FALSE if not.
 
-	\sa EqualWithEpsilon(double,double), EqualWithEpsilon(float,float,float)
+	\sa equal_with_epsilon(double,double), equal_with_epsilon(float,float,float)
 
 ***************************************/
 
-uint_t BURGER_API Burger::EqualWithEpsilon(
+uint_t BURGER_API Burger::equal_with_epsilon(
 	double dInput1, double dInput2, double dEpsilon) BURGER_NOEXCEPT
 {
 	const double dDelta = absolute(dInput1 - dInput2);
@@ -2122,147 +2033,31 @@ uint_t BURGER_API Burger::EqualWithEpsilon(
 
 	\code
 	float fResult;
-	fResult = Burger::Floor(1.1f);		//1
-	fResult = Burger::Floor(1.95f);		//1
-	fResult = Burger::Floor(-1.1f);		//-2
-	fResult = Burger::Floor(-1.95f);	//-2
-	fResult = Burger::Floor(0.1f);		//0
-	fResult = Burger::Floor(0.95f);		//0
-	fResult = Burger::Floor(-0.1f);		//-1
-	fResult = Burger::Floor(-0.95f);	//-1
+	fResult = Burger::get_floor(1.1f);		//1
+	fResult = Burger::get_floor(1.95f);		//1
+	fResult = Burger::get_floor(-1.1f);		//-2
+	fResult = Burger::get_floor(-1.95f);	//-2
+	fResult = Burger::get_floor(0.1f);		//0
+	fResult = Burger::get_floor(0.95f);		//0
+	fResult = Burger::get_floor(-0.1f);		//-1
+	fResult = Burger::get_floor(-0.95f);	//-1
 	\endcode
 
-	\sa Floor(double), Ceil(float), Round(float), RoundToZero(float), or
+	\sa get_floor(double), Ceil(float), Round(float), RoundToZero(float), or
 		FixedToIntFloor(Fixed32)
 
 ***************************************/
 
-#if defined(BURGER_XBOX360)
-
-// Do this completely branchless
-
-float BURGER_API Burger::Floor(float fInput) BURGER_NOEXCEPT
-{
-	// Convert to the input to an integer (Can fail on large numbers)
-	double dVar = __fcfid(__fctiwz(fInput));
-	// Floor the value to - infinity
-	dVar = __fsel(fInput - dVar, dVar, dVar - 1.0f); // Return floored value
-
-	// If the input number was invalid, return the original number
-	return __fself(
-		fabsf(fInput) - 8388608.0f, fInput, static_cast<float>(dVar));
-}
-
-#elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
-
-BURGER_ASM float BURGER_API Burger::Floor(float fInput) BURGER_NOEXCEPT
-{
-	// clang-format off
-    lwz r3, g_fMinNoInteger
-    fabs fp0, fp1   // Get the abs value to test
-    lfs fp2, 0(r3)  // Load 8388608.0f
-    fcmpu fp0, fp2  // Compare if already floored
-    bgelr           // Exit with the value untouched if larger
-
-    mffs fp4        // Save the rounding register
-    mtfsfi 7, 0x03  // Set bits 30 and 31 to Round toward -infinity
-
-    fadds fp3, fp1, fp2 // Push the positive number to highest value without fraction
-                    // (Removes fraction)
-    fsubs fp0, fp1, fp2 // Push the negative number to the lowest value without fraction
-                    // (Removes fraction)
-
-    fsubs fp3, fp3, fp2 // Undo the push (Fraction is gone)
-    fadds fp0, fp0, fp2 // Undo the push (Fraction is gone)
-
-    fsel fp1, fp1, fp3, fp0 // Which one to use? Positive or negative?
-    mtfsf 255, fp4  // Restore rounding
-    blr
-	// clang-format on
-}
-
-#elif defined(BURGER_PPC) && defined(BURGER_MACOSX)
-
-// __ZN6Burger5FloorEf = float BURGER_API Burger::Floor(float fInput)
-__asm__(
-	"	.align	2,0\n"
-	"	.globl	__ZN6Burger5FloorEf\n"
-	"__ZN6Burger5FloorEf:\n"
-	"	lis		r3,ha16(__ZN6Burger15g_fMinNoIntegerE)\n"
-	"	fabs	f0,f1\n" // Get the abs value to test
-	"	lfs		f2,lo16(__ZN6Burger15g_fMinNoIntegerE)(r3)\n" // Load 8388608.0f
-	"	fcmpu	cr0,f0,f2\n" // Compare if already floored
-	"	bgelr\n"             // Exit with the value untouched if larger
-
-	"	mffs	f4\n"     // Save the rounding register
-	"	mtfsfi	7,0x03\n" // Set bits 30 and 31 to Round toward -infinity
-
-	"	fadds	f3,f1,f2\n" // Push the positive number to highest value without
-							// fraction (Removes fraction)
-	"	fsubs	f0,f1,f2\n" // Push the negative number to the lowest value
-							// without fraction (Removes fraction)
-
-	"	fsubs	f3,f3,f2\n" // Undo the push (Fraction is gone)
-	"	fadds	f0,f0,f2\n" // Undo the push (Fraction is gone)
-
-	"	fsel	f1,f1,f3,f0\n" // Which one to use? Positive or negative?
-	"	mtfsf	255,f4\n"      // Restore rounding
-	"	blr\n");
-
-#elif defined(BURGER_X86) && \
-	(defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || \
-		defined(BURGER_MSVC))
-
-BURGER_DECLSPECNAKED float BURGER_API Burger::Floor(
-	float /* fInput */) BURGER_NOEXCEPT
-{
-	// clang-format off
-    BURGER_ASM
-    {
-        mov eax, [esp + 4]      // Load the value in an integer register
-        fld dword ptr[esp + 4]  // Load the same value in the FPU
-        and eax, 0x7FFFFFFF     // Mask off the sign
-        cmp eax, 0x4B000000     // Compare to 8388608.0f
-        jae FloorExit           // Out of range, return original value
-        frndint                 // Convert the integer to float (It's in range)
-        xor eax, eax            // Clear ax for flags
-        fcom dword ptr[esp + 4] // Compare values for difference (Pop stack)
-        fnstsw ax               // Get the 8087 condition flags
-        and ax, 0x4100          // Was the new greater than or equal the original?
-        jnz FloorExit
-        fsub dword ptr[g_fOne]  // Subtract 1.0f to round down
-    FloorExit:
-        ret 4                   // Clean up and exit
-    }
-	// clang-format on
-}
-
-#elif defined(BURGER_X86) && (defined(BURGER_MACOSX) || defined(BURGER_IOS))
-
-// __ZN6Burger5FloorEf = float BURGER_API Burger::Floor(float /* fInput */)
-__asm__(
-	"	.align	4,0x90\n"
-	"	.globl __ZN6Burger5FloorEf\n"
-	"__ZN6Burger5FloorEf:\n"
-	"	movl	4(%esp),%eax\n"     // Load the value in an integer register
-	"	flds	4(%esp)\n"          // Load the same value in the FPU
-	"	andl	$0x7FFFFFFF,%eax\n" // Mask off the sign
-	"	cmpl	$0x4B000000,%eax\n" // Compare to 8388608.0f
-	"	jae		1f\n"               // Out of range, return original value
-	"	frndint\n"              // Convert the integer to float (It's in range)
-	"	xorl	%eax,%eax\n"    // Clear ax for flags
-	"	fcoms	4(%esp)\n"      // Compare values for difference (Pop stack)
-	"	fnstsw	%ax\n"          // Get the 8087 condition flags
-	"	andl	$0x4100,%eax\n" // Was the new greater than or equal the
-								// original?
-	"	jnz		1f\n"
-	"	fsubs	(__ZN6Burger6g_fOneE)\n" // Subtract 1.0f to round down
-	"1:	ret\n"                           // Clean up and exit
-);
+#if (defined(BURGER_MSVC) && (defined(BURGER_PPC) || defined(BURGER_X86))) || \
+	(defined(BURGER_METROWERKS) && \
+		(defined(BURGER_PPC) || defined(BURGER_X86))) || \
+	((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
+		(defined(BURGER_PPC) || defined(BURGER_X86))) || \
+	(defined(BURGER_WATCOM) && defined(BURGER_X86))
 
 #else
 
-float BURGER_API Burger::Floor(float fInput) BURGER_NOEXCEPT
+float BURGER_API Burger::get_floor(float fInput) BURGER_NOEXCEPT
 {
 	// Note : 8388608 is the first floating point number
 	// that cannot have a fraction. Therefore this routine can't
@@ -2271,8 +2066,9 @@ float BURGER_API Burger::Floor(float fInput) BURGER_NOEXCEPT
 	// of bounds. This is a bad thing.
 
 	if ((fInput < 8388608.0f) && (fInput > -8388608.0f)) { // Within bounds?
-		const int iVar =
-			static_cast<int>(fInput); // Convert to int but rounded!
+
+		// Convert to int but rounded!
+		const int iVar = static_cast<int>(fInput);
 		float fVar = static_cast<float>(iVar);
 		if (fVar > fInput) { // Did I round up?
 			--fVar;          // Fix it
@@ -2296,147 +2092,31 @@ float BURGER_API Burger::Floor(float fInput) BURGER_NOEXCEPT
 
 	\code
 	double dResult;
-	dResult = Burger::Floor(1.1);	//1
-	dResult = Burger::Floor(1.95);	//1
-	dResult = Burger::Floor(-1.1);	//-2
-	dResult = Burger::Floor(-1.95);	//-2
-	dResult = Burger::Floor(0.1);	//0
-	dResult = Burger::Floor(0.95);	//0
-	dResult = Burger::Floor(-0.1);	//-1
-	dResult = Burger::Floor(-0.95);	//-1
+	dResult = Burger::get_floor(1.1);	//1
+	dResult = Burger::get_floor(1.95);	//1
+	dResult = Burger::get_floor(-1.1);	//-2
+	dResult = Burger::get_floor(-1.95);	//-2
+	dResult = Burger::get_floor(0.1);	//0
+	dResult = Burger::get_floor(0.95);	//0
+	dResult = Burger::get_floor(-0.1);	//-1
+	dResult = Burger::get_floor(-0.95);	//-1
 	\endcode
 
-	\sa Floor(float), Ceil(double), Round(double), RoundToZero(double), or
+	\sa get_floor(float), Ceil(double), Round(double), RoundToZero(double), or
 		FixedToIntFloor(Fixed32)
 
 ***************************************/
 
-#if defined(BURGER_XBOX360)
-
-// Do this completely branchless
-
-double BURGER_API Burger::Floor(double dInput) BURGER_NOEXCEPT
-{
-	// Convert to the input to an integer (Can fail on large numbers)
-	double dVar = __fcfid(__fctidz(dInput));
-	// Floor the value to - infinity
-	dVar = __fsel(dInput - dVar, dVar, dVar - 1.0); // Return floored value
-
-	// If the input number was invalid, return the original number
-	return __fsel(fabs(dInput) - 4503599627370496.0, dInput, dVar);
-}
-
-#elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
-
-BURGER_ASM double BURGER_API Burger::Floor(double dInput) BURGER_NOEXCEPT
-{
-	// clang-format off
-    lwz r3, g_dMinNoInteger
-    fabs fp0, fp1   // Get the abs value to test
-    lfd fp2, 0(r3)  // Load 4503599627370496.0
-    fcmpu fp0, fp2  // Compare if already floored
-    bgelr           // Exit with the value untouched if larger
-
-    mffs fp4        // Save the rounding register
-    mtfsfi 7, 0x03  // Set bits 30 and 31 to Round toward -infinity
-
-    fadd fp3, fp1, fp2  // Push the positive number to highest value without fraction
-                        // (Removes fraction)
-    fsub fp0, fp1, fp2  // Push the negative number to the lowest value without fraction
-                        // (Removes fraction)
-
-    fsub fp3, fp3, fp2  // Undo the push (Fraction is gone)
-    fadd fp0, fp0, fp2  // Undo the push (Fraction is gone)
-
-    fsel fp1, fp1, fp3, fp0 // Which one to use? Positive or negative?
-    mtfsf 255, fp4          // Restore rounding
-    blr
-	// clang-format on
-}
-
-#elif defined(BURGER_PPC) && defined(BURGER_MACOSX)
-
-// __ZN6Burger5FloorEd = double BURGER_API Burger::Floor(double dInput)
-__asm__(
-	"	.align	2,0\n"
-	"	.globl	__ZN6Burger5FloorEd\n"
-	"__ZN6Burger5FloorEd:\n"
-	"	lis		r3,ha16(__ZN6Burger15g_dMinNoIntegerE)\n"
-	"	fabs	f0,f1\n" // Get the abs value to test
-	"	lfd		f2,lo16(__ZN6Burger15g_dMinNoIntegerE)(r3)\n" // Load
-															  // 4503599627370496.0
-	"	fcmpu	cr0,f0,f2\n" // Compare if already floored
-	"	bgelr\n"             // Exit with the value untouched if larger
-
-	"	mffs	f4\n"     // Save the rounding register
-	"	mtfsfi	7,0x03\n" // Set bits 30 and 31 to Round toward -infinity
-
-	"	fadd	f3,f1,f2\n" // Push the positive number to highest value without
-							// fraction (Removes fraction)
-	"	fsub	f0,f1,f2\n" // Push the negative number to the lowest value
-							// without fraction (Removes fraction)
-
-	"	fsub	f3,f3,f2\n" // Undo the push (Fraction is gone)
-	"	fadd	f0,f0,f2\n" // Undo the push (Fraction is gone)
-
-	"	fsel	f1,f1,f3,f0\n" // Which one to use? Positive or negative?
-	"	mtfsf	255,f4\n"      // Restore rounding
-	"	blr\n");
-
-#elif defined(BURGER_X86) && \
-	(defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || \
-		defined(BURGER_MSVC))
-
-BURGER_DECLSPECNAKED double BURGER_API Burger::Floor(
-	double /* dInput */) BURGER_NOEXCEPT
-{
-	// clang-format off
-    BURGER_ASM
-    {
-        mov eax, [esp + 8]      // Load the value in an integer register
-        fld qword ptr[esp + 4]  // Load the same value in the FPU
-        and eax, 0x7FFFFFFF     // Mask off the sign
-        cmp eax, 0x43300000     // Compare to 4503599627370496.0
-        jae FloorExit           // Out of range, return original value
-        frndint                 // Convert the integer to float (It's in range)
-        xor eax, eax            // Clear ax for flags
-        fcom qword ptr[esp + 4] // Compare values for difference (Pop stack)
-        fnstsw ax               // Get the 8087 condition flags
-        and ax, 0x4100          // Was the new greater than or equal the original?
-        jnz FloorExit
-        fsub dword ptr[g_fOne]  // Subtract 1.0f to round down
-    FloorExit:
-        ret 8                   // Clean up and exit
-    }
-	// clang-format on
-}
-
-#elif defined(BURGER_X86) && (defined(BURGER_MACOSX) || defined(BURGER_IOS))
-
-// __ZN6Burger5FloorEd = double BURGER_API Burger::Floor(double /* dInput */)
-__asm__(
-	"	.align	4,0x90\n"
-	"	.globl __ZN6Burger5FloorEd\n"
-	"__ZN6Burger5FloorEd:\n"
-	"	movl	8(%esp),%eax\n"     // Load the value in an integer register
-	"	fldl	4(%esp)\n"          // Load the same value in the FPU
-	"	andl	$0x7FFFFFFF,%eax\n" // Mask off the sign
-	"	cmpl	$0x43300000,%eax\n" // Compare to 4503599627370496.0
-	"	jae		1f\n"               // Out of range, return original value
-	"	frndint\n"              // Convert the integer to float (It's in range)
-	"	xorl	%eax,%eax\n"    // Clear ax for flags
-	"	fcoml	4(%esp)\n"      // Compare values for difference (Pop stack)
-	"	fnstsw	%ax\n"          // Get the 8087 condition flags
-	"	andl	$0x4100,%eax\n" // Was the new greater than or equal the
-								// original?
-	"	jnz		1f\n"
-	"	fsubs	(__ZN6Burger6g_fOneE)\n" // Subtract 1.0f to round down
-	"1:	ret\n"                           // Clean up and exit
-);
+#if (defined(BURGER_MSVC) && (defined(BURGER_PPC) || defined(BURGER_X86))) || \
+	(defined(BURGER_METROWERKS) && \
+		(defined(BURGER_PPC) || defined(BURGER_X86))) || \
+	((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
+		(defined(BURGER_PPC) || defined(BURGER_X86))) || \
+	(defined(BURGER_WATCOM) && defined(BURGER_X86))
 
 #else
 
-double BURGER_API Burger::Floor(double dInput) BURGER_NOEXCEPT
+double BURGER_API Burger::get_floor(double dInput) BURGER_NOEXCEPT
 {
 	// Note : 4503599627370496.0 is the first floating point number
 	// that cannot have a fraction. Therefore this routine can't
@@ -2481,7 +2161,7 @@ double BURGER_API Burger::Floor(double dInput) BURGER_NOEXCEPT
 	fResult = Burger::Ceil(-0.95f);	//0
 	\endcode
 
-	\sa Ceil(double), Floor(float), Round(float), RoundToZero(float), or
+	\sa Ceil(double), get_floor(float), Round(float), RoundToZero(float), or
 		FixedToIntCeil(Fixed32)
 
 ***************************************/
@@ -2504,59 +2184,7 @@ float BURGER_API Burger::Ceil(float fInput) BURGER_NOEXCEPT
 
 #elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
 
-BURGER_ASM float BURGER_API Burger::Ceil(float fInput) BURGER_NOEXCEPT
-{
-	// clang-format off
-    lwz r3, g_fMinNoInteger
-    fabs fp0, fp1           // Get the abs value to test
-    lfs fp2, 0(r3)          // Load 8388608.0f
-    fcmpu fp0, fp2          // Compare if already floored
-    bgelr                   // Exit with the value untouched if larger
-
-    mffs fp4                // Save the rounding register
-    mtfsfi 7, 0x02          // Set bits 30 and 31 to Round toward +infinity
-
-    fadds fp3, fp1, fp2     // Push the positive number to highest value without fraction
-                            // (Removes fraction)
-    fsubs fp0, fp1, fp2     // Push the negative number to the lowest value without fraction
-                            // (Removes fraction)
-
-    fsubs fp3, fp3, fp2     // Undo the push (Fraction is gone)
-    fadds fp0, fp0, fp2     // Undo the push (Fraction is gone)
-
-    fsel fp1, fp1, fp3, fp0 // Which one to use? Positive or negative?
-    mtfsf 255, fp4          // Restore rounding
-    blr
-	// clang-format on
-}
-
 #elif defined(BURGER_PPC) && defined(BURGER_MACOSX)
-
-// __ZN6Burger4CeilEf = float BURGER_API Burger::Ceil(float fInput)
-__asm__(
-	"	.align	2,0\n"
-	"	.globl	__ZN6Burger4CeilEf\n"
-	"__ZN6Burger4CeilEf:\n"
-	"	lis		r3,ha16(__ZN6Burger15g_fMinNoIntegerE)\n"
-	"	fabs	f0,f1\n" // Get the abs value to test
-	"	lfs		f2,lo16(__ZN6Burger15g_fMinNoIntegerE)(r3)\n" // Load 8388608.0f
-	"	fcmpu	cr0,f0,f2\n" // Compare if already floored
-	"	bgelr\n"             // Exit with the value untouched if larger
-
-	"	mffs	f4\n"     // Save the rounding register
-	"	mtfsfi	7,0x02\n" // Set bits 30 and 31 to Round toward +infinity
-
-	"	fadds	f3,f1,f2\n" // Push the positive number to highest value without
-							// fraction (Removes fraction)
-	"	fsubs	f0,f1,f2\n" // Push the negative number to the lowest value
-							// without fraction (Removes fraction)
-
-	"	fsubs	f3,f3,f2\n" // Undo the push (Fraction is gone)
-	"	fadds	f0,f0,f2\n" // Undo the push (Fraction is gone)
-
-	"	fsel	f1,f1,f3,f0\n" // Which one to use? Positive or negative?
-	"	mtfsf	255,f4\n"      // Restore rounding
-	"	blr\n");
 
 #elif defined(BURGER_X86) && \
 	(defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || \
@@ -2587,25 +2215,6 @@ BURGER_DECLSPECNAKED float BURGER_API Burger::Ceil(
 }
 
 #elif defined(BURGER_X86) && (defined(BURGER_MACOSX) || defined(BURGER_IOS))
-
-// __ZN6Burger4CeilEf = float BURGER_API Burger::Ceil(float /* fInput */)
-__asm__(
-	"	.align	4,0x90\n"
-	".globl __ZN6Burger4CeilEf\n"
-	"__ZN6Burger4CeilEf:\n"
-	"	movl	4(%esp),%eax\n"     // Load the value in an integer register
-	"	flds	4(%esp)\n"          // Load the same value in the FPU
-	"	andl	$0x7FFFFFFF,%eax\n" // Mask off the sign
-	"	cmpl	$0x4B000000,%eax\n" // Compare to 8388608.0f
-	"	jae		1f\n"               // Out of range, return original value
-	"	frndint\n"           // Convert the integer to float (It's in range)
-	"	xorl	%eax,%eax\n" // Clear ax for flags
-	"	fcoms	4(%esp)\n"   // Compare values for difference (Pop stack)
-	"	fnstsw	%ax\n"
-	"	andl	$0x100,%eax\n" // Was the new less than the original?
-	"	jz		1f\n"
-	"	fadds	(__ZN6Burger6g_fOneE)\n" // Add 1.0f to round up
-	"1:	ret\n");
 
 #else
 
@@ -2652,7 +2261,7 @@ float BURGER_API Burger::Ceil(float fInput) BURGER_NOEXCEPT
 	dResult = Burger::Ceil(-0.95);	//0
 	\endcode
 
-	\sa Ceil(float), Floor(double), Round(double), RoundToZero(double), or
+	\sa Ceil(float), get_floor(double), Round(double), RoundToZero(double), or
 		FixedToIntCeil(Fixed32)
 
 ***************************************/
@@ -2674,60 +2283,7 @@ double BURGER_API Burger::Ceil(double dInput) BURGER_NOEXCEPT
 
 #elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
 
-BURGER_ASM double BURGER_API Burger::Ceil(double dInput) BURGER_NOEXCEPT
-{
-	// clang-format off
-    lwz r3, g_dMinNoInteger
-    fabs fp0, fp1       // Get the abs value to test
-    lfd fp2, 0(r3)      // Load 4503599627370496.0
-    fcmpu fp0, fp2      // Compare if already floored
-    bgelr               // Exit with the value untouched if larger
-
-    mffs fp4            // Save the rounding register
-    mtfsfi 7, 0x02      // Set bits 30 and 31 to Round toward +infinity
-
-    fadd fp3, fp1, fp2  // Push the positive number to highest value without fraction
-                        // (Removes fraction)
-    fsub fp0, fp1, fp2  // Push the negative number to the lowest value without fraction
-                        // (Removes fraction)
-
-    fsub fp3, fp3, fp2  // Undo the push (Fraction is gone)
-    fadd fp0, fp0, fp2  // Undo the push (Fraction is gone)
-
-    fsel fp1, fp1, fp3, fp0 // Which one to use? Positive or negative?
-    mtfsf 255, fp4      // Restore rounding
-    blr
-	// clang-format on
-}
-
 #elif defined(BURGER_PPC) && defined(BURGER_MACOSX)
-
-// __ZN6Burger4CeilEd = double BURGER_API Burger::Ceil(double dInput)
-__asm__(
-	"	.align	2,0\n"
-	"	.globl	__ZN6Burger4CeilEd\n"
-	"__ZN6Burger4CeilEd:\n"
-	"	lis		r3,ha16(__ZN6Burger15g_dMinNoIntegerE)\n"
-	"	fabs	f0,f1\n" // Get the abs value to test
-	"	lfd		f2,lo16(__ZN6Burger15g_dMinNoIntegerE)(r3)\n" // Load
-															  // 4503599627370496.0
-	"	fcmpu	cr0,f0,f2\n" // Compare if already floored
-	"	bgelr\n"             // Exit with the value untouched if larger
-
-	"	mffs	f4\n"     // Save the rounding register
-	"	mtfsfi	7,0x02\n" // Set bits 30 and 31 to Round toward +infinity
-
-	"	fadd	f3,f1,f2\n" // Push the positive number to highest value without
-							// fraction (Removes fraction)
-	"	fsub	f0,f1,f2\n" // Push the negative number to the lowest value
-							// without fraction (Removes fraction)
-
-	"	fsub	f3,f3,f2\n" // Undo the push (Fraction is gone)
-	"	fadd	f0,f0,f2\n" // Undo the push (Fraction is gone)
-
-	"	fsel	f1,f1,f3,f0\n" // Which one to use? Positive or negative?
-	"	mtfsf	255,f4\n"      // Restore rounding
-	"	blr\n");
 
 #elif defined(BURGER_X86) && \
 	(defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || \
@@ -2758,25 +2314,6 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::Ceil(
 }
 
 #elif defined(BURGER_X86) && (defined(BURGER_MACOSX) || defined(BURGER_IOS))
-
-// __ZN6Burger4CeilEd = double BURGER_API Burger::Ceil(double /* dInput */)
-__asm__(
-	"	.align	4,0x90\n"
-	".globl __ZN6Burger4CeilEd\n"
-	"__ZN6Burger4CeilEd:\n"
-	"	movl	8(%esp),%eax\n"     // Load the value in an integer register
-	"	fldl	4(%esp)\n"          // Load the same value in the FPU
-	"	andl	$0x7FFFFFFF,%eax\n" // Mask off the sign
-	"	cmpl	$0x43300000,%eax\n" // Compare to 4503599627370496.0
-	"	jae		1f\n"               // Out of range, return original value
-	"	frndint\n"           // Convert the integer to float (It's in range)
-	"	xorl	%eax,%eax\n" // Clear ax for flags
-	"	fcoml	4(%esp)\n"   // Compare values for difference (Pop stack)
-	"	fnstsw	%ax\n"
-	"	andl	$0x100,%eax\n" // Was the new less than the original?
-	"	jz		1f\n"
-	"	fadds	(__ZN6Burger6g_fOneE)\n" // Add 1.0f to round up
-	"1:	ret\n");
 
 #else
 
@@ -2827,7 +2364,7 @@ double BURGER_API Burger::Ceil(double dInput) BURGER_NOEXCEPT
 	fResult = Burger::Round(-0.95f);	//-1
 	\endcode
 
-	\sa Round(double), Floor(float), Ceil(float), RoundToZero(float), or
+	\sa Round(double), get_floor(float), Ceil(float), RoundToZero(float), or
 		FixedToIntNearest(Fixed32)
 
 ***************************************/
@@ -2926,32 +2463,6 @@ float BURGER_API Burger::Round(float fInput) BURGER_NOEXCEPT
 
 #elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
 
-BURGER_ASM float BURGER_API Burger::Round(float fInput) BURGER_NOEXCEPT
-{
-	// clang-format off
-    lwz r3, g_fMinNoInteger
-    fabs fp0, fp1   // Get the abs value to test
-    lfs fp2, 0(r3)  // Load 8388608.0f
-    fcmpu fp0, fp2  // Compare if already out of bounds
-    bgelr           // Exit with the value untouched if larger
-
-    lwz r3, g_fHalf // Pointer to 0.5f
-    fadds fp5, fp0, fp2 // Push the positive number to highest value without fraction
-                    // (Removes fraction)
-    lfs fp3, 0(r3)  // Load 0.5f
-    fsubs fp5, fp5, fp2 // Undo the push (Fraction is gone)
-    fsubs fp6, fp0, fp5 // Subtract original from rounded to get the fraction
-    fsubs fp6, fp6, fp3 // Test against 0.5
-    fadds fp3, fp3, fp3 // Set to one
-    fsubs fp4, fp5, fp5 // Set to zero
-    fsel fp0, fp6, fp3, fp4 // Set to zero or one depending on the test
-    fadds fp5, fp5, fp0 // Add 0 for no rounding, 1 for round up
-    fnabs fp2, fp5      // Get the negative value
-    fsel fp1, fp1, fp5, fp2 // Which one to use? Positive or negative?
-    blr
-	// clang-format on
-}
-
 #else
 
 float BURGER_API Burger::Round(float fInput) BURGER_NOEXCEPT
@@ -3031,7 +2542,7 @@ float BURGER_API Burger::Round(float fInput) BURGER_NOEXCEPT
 	dResult = Burger::Round(-0.95);	//-1
 	\endcode
 
-	\sa Round(float), Floor(double), Ceil(double), RoundToZero(double), or
+	\sa Round(float), get_floor(double), Ceil(double), RoundToZero(double), or
 		FixedToIntNearest(Fixed32)
 
 ***************************************/
@@ -3131,32 +2642,6 @@ double BURGER_API Burger::Round(double dInput) BURGER_NOEXCEPT
 
 #elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
 
-BURGER_ASM double BURGER_API Burger::Round(double dInput) BURGER_NOEXCEPT
-{
-	// clang-format off
-    lwz r3, g_dMinNoInteger
-    fabs fp0, fp1   // Get the abs value to test
-    lfd fp2, 0(r3)  // Load 4503599627370496.0
-    fcmpu fp0, fp2  // Compare if already out of bounds
-    bgelr           // Exit with the value untouched if larger
-
-    lwz r3, g_fHalf     // Pointer to 0.5f
-    fadd fp5, fp0, fp2  // Push the positive number to highest value without fraction
-                        // (Removes fraction)
-    lfs fp3, 0(r3)      // Load 0.5f
-    fsub fp5, fp5, fp2  // Undo the push (Fraction is gone)
-    fsub fp6, fp0, fp5  // Subtract original from rounded to get the fraction
-    fsub fp6, fp6, fp3  // Test against 0.5
-    fadd fp3, fp3, fp3  // Set to one
-    fsub fp4, fp5, fp5  // Set to zero
-    fsel fp0, fp6, fp3, fp4 // Set to zero or one depending on the test
-    fadd fp5, fp5, fp0  // Add 0 for no rounding, 1 for round up
-    fnabs fp2, fp5      // Get the negative value
-    fsel fp1, fp1, fp5, fp2 // Which one to use? Positive or negative?
-    blr
-	// clang-format on
-}
-
 #else
 
 double BURGER_API Burger::Round(double dInput) BURGER_NOEXCEPT
@@ -3251,7 +2736,7 @@ double BURGER_API Burger::Round(double dInput) BURGER_NOEXCEPT
 	fResult = Burger::RoundToZero(-0.95f);	//0
 	\endcode
 
-	\sa RoundToZero(double), Floor(float), Ceil(float), Round(float), or
+	\sa RoundToZero(double), get_floor(float), Ceil(float), Round(float), or
 		FixedToInt(Fixed32)
 
 ***************************************/
@@ -3261,7 +2746,7 @@ float BURGER_API Burger::RoundToZero(float fInput) BURGER_NOEXCEPT
 	if (fInput < 0.0f) {
 		fInput = Ceil(fInput);
 	} else {
-		fInput = Floor(fInput);
+		fInput = get_floor(fInput);
 	}
 	return fInput;
 }
@@ -3288,7 +2773,7 @@ float BURGER_API Burger::RoundToZero(float fInput) BURGER_NOEXCEPT
 	dResult = Burger::RoundToZero(-0.95);	//0
 	\endcode
 
-	\sa RoundToZero(float), Floor(double), Ceil(double), Round(double), or
+	\sa RoundToZero(float), get_floor(double), Ceil(double), Round(double), or
 		FixedToInt(Fixed32)
 
 ***************************************/
@@ -3298,7 +2783,7 @@ double BURGER_API Burger::RoundToZero(double dInput) BURGER_NOEXCEPT
 	if (dInput < 0.0) {
 		dInput = Ceil(dInput);
 	} else {
-		dInput = Floor(dInput);
+		dInput = get_floor(dInput);
 	}
 	return dInput;
 }

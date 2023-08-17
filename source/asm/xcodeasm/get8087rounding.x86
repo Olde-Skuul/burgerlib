@@ -1,7 +1,8 @@
-/*
-	Get the X86 floating point rounding value
+/***************************************
 
-	X86 assembly for XCode
+	Assembly for MacOSX Darwin
+
+	Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
 
 	Build with XCode tool chain
 
@@ -9,10 +10,18 @@
 	CPU types, so test for the proper CPU type before invoking any cpu
 	instructions.
 
-	Burger::e8087Rounding BURGER_API Burger::get_8087_rounding(void)
+	float BURGER_API Burger::get_sign(float fInput) BURGER_NOEXCEPT
 
-	X86 version.
-*/
+***************************************/
+
+/***************************************
+
+	Intel 32 bit version
+
+	eax, ecx and edx are volatile
+	Result in eax
+
+***************************************/
 
 #if defined(__i386__)
 	.align 4,0x90
@@ -31,7 +40,7 @@ __ZN6Burger17get_8087_roundingEv:
 	popl	%eax
 
 /* Shift the bits of interest down */
-	shrl	$10,%eax
+	shrl	$10, %eax
 
 /* Mask to enumeration */
 	andl	$0x0003, %eax

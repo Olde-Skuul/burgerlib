@@ -1,11 +1,15 @@
 /***************************************
 
-	68000 assembly for implementing the function
-	Burger::get_sign(double) for Metrowerks Codewarrior
-
-	Build with the C compiler
+	68000 assembly for Metrowerks Codewarrior
 
 	Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+
+	Build with the Metrowerks 6.0 Pro C compiler
+
+	double BURGER_API Burger::get_sign(double dInput) BURGER_NOEXCEPT
+	d0-d2, a0-a1 are volatile
+	pResult in 4(a7)
+	dInput = 8(a7)
 
 ***************************************/
 
@@ -21,7 +25,7 @@ asm double BURGER_API Burger::get_sign(double dInput) BURGER_NOEXCEPT
 	move.l	8(a7), d1
 
 	// 1.0f shifted one bit up
-	move.l #0x7FE00000, d0
+	move.l	#0x7FE00000, d0
 
 	// Take the floating point number and move the sign to carry
 	add.l	d1, d1

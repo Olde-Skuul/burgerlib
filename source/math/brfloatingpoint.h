@@ -31,10 +31,6 @@
 #include "brvisualstudio.h"
 #endif
 
-#ifndef __BRMETROWERKS_H__
-#include "brmetrowerks.h"
-#endif
-
 #ifndef __BRSNSYSTEMS_H__
 #include "brsnsystems.h"
 #endif
@@ -101,7 +97,7 @@ enum e8087Rounding {
 	/** Use round to nearest integer (Banker's rounding) */
 	k8087RoundingNearest = 0,
 
-	/** Use Floor() rounding (-Infinity) */
+	/** Use get_floor() rounding (-Infinity) */
 	k8087RoundingDown = 1,
 
 	/** Use Ceil() rounding (+Infinity) */
@@ -134,7 +130,7 @@ enum ePowerPCRounding {
 	/** Use Ceil() rounding (+Infinity) */
 	kPPCRoundingUp = 2,
 
-	/** Use Floor() rounding (-Infinity) */
+	/** Use get_floor() rounding (-Infinity) */
 	kPPCRoundingDown = 3
 };
 
@@ -144,35 +140,18 @@ extern ePowerPCRounding BURGER_API set_PowerPC_rounding(
 
 #endif
 
-#if defined(BURGER_PPC) && !defined(DOXYGEN)
-// Zero and -Zero will cancel out. Otherwise, adding two 0.5 will become 1.0
-// This code is branchless for performance
-BURGER_INLINE float get_sign(float fInput) BURGER_NOEXCEPT
-{
-	return static_cast<float>(
-		__fsel(fInput, 0.5f, -0.5f) + __fsel(-fInput, -0.5f, 0.5f));
-}
-BURGER_INLINE double get_sign(double dInput) BURGER_NOEXCEPT
-{
-	return __fsel(dInput, 0.5, -0.5) + __fsel(-dInput, -0.5, 0.5);
-}
+#if (defined(BURGER_METROWERKS) && defined(BURGER_68881))
+#pragma parameter __D0 get_68881_FPCR
+// fmove fpcr,d0
+uint32_t get_68881_FPCR(void) = {0xF200, 0xB000};
 
-#elif (defined(BURGER_68K) && defined(BURGER_METROWERKS) || \
-	defined(BURGER_XBOXONE) || defined(BURGER_PS4) || defined(BURGER_PS5)) && \
-	!defined(DOXYGEN)
+#pragma parameter set_68881_FPCR(__D0)
+// fmove d0,fpcr
+void set_68881_FPCR(uint32_t) = {0xF200, 0x9000};
+#endif
+
 extern float BURGER_API get_sign(float fInput) BURGER_NOEXCEPT;
 extern double BURGER_API get_sign(double dInput) BURGER_NOEXCEPT;
-
-#else
-BURGER_INLINE float get_sign(float fInput) BURGER_NOEXCEPT
-{
-	return ((fInput > 0.0f) ? 1.0f : ((fInput < 0.0f) ? -1.0f : 0.0f));
-}
-BURGER_INLINE double get_sign(double dInput) BURGER_NOEXCEPT
-{
-	return ((dInput > 0.0) ? 1.0 : ((dInput < 0.0) ? -1.0 : 0.0));
-}
-#endif
 
 BURGER_INLINE BURGER_CONSTEXPR float square(float fInput) BURGER_NOEXCEPT
 {
@@ -491,24 +470,24 @@ BURGER_INLINE double clamp(double dIn, double dMin, double dMax) BURGER_NOEXCEPT
 
 extern uint_t BURGER_API is_NaN(float fInput) BURGER_NOEXCEPT;
 extern uint_t BURGER_API is_NaN(double dInput) BURGER_NOEXCEPT;
-extern uint_t BURGER_API IsInf(float fInput) BURGER_NOEXCEPT;
-extern uint_t BURGER_API IsInf(double dInput) BURGER_NOEXCEPT;
-extern uint_t BURGER_API IsFinite(float fInput) BURGER_NOEXCEPT;
-extern uint_t BURGER_API IsFinite(double dInput) BURGER_NOEXCEPT;
-extern uint_t BURGER_API IsNormal(float fInput) BURGER_NOEXCEPT;
-extern uint_t BURGER_API IsNormal(double dInput) BURGER_NOEXCEPT;
-extern uint_t BURGER_API SignBit(float fInput) BURGER_NOEXCEPT;
-extern uint_t BURGER_API SignBit(double dInput) BURGER_NOEXCEPT;
-extern uint_t BURGER_API EqualWithEpsilon(
+extern uint_t BURGER_API is_infinite(float fInput) BURGER_NOEXCEPT;
+extern uint_t BURGER_API is_infinite(double dInput) BURGER_NOEXCEPT;
+extern uint_t BURGER_API is_finite(float fInput) BURGER_NOEXCEPT;
+extern uint_t BURGER_API is_finite(double dInput) BURGER_NOEXCEPT;
+extern uint_t BURGER_API is_normal(float fInput) BURGER_NOEXCEPT;
+extern uint_t BURGER_API is_normal(double dInput) BURGER_NOEXCEPT;
+extern uint_t BURGER_API get_sign_bit(float fInput) BURGER_NOEXCEPT;
+extern uint_t BURGER_API get_sign_bit(double dInput) BURGER_NOEXCEPT;
+extern uint_t BURGER_API equal_with_epsilon(
 	float fInput1, float fInput2) BURGER_NOEXCEPT;
-extern uint_t BURGER_API EqualWithEpsilon(
+extern uint_t BURGER_API equal_with_epsilon(
 	double dInput1, double dInput2) BURGER_NOEXCEPT;
-extern uint_t BURGER_API EqualWithEpsilon(
+extern uint_t BURGER_API equal_with_epsilon(
 	float fInput1, float fInput2, float fEpsilon) BURGER_NOEXCEPT;
-extern uint_t BURGER_API EqualWithEpsilon(
+extern uint_t BURGER_API equal_with_epsilon(
 	double dInput1, double dInput2, double dEpsilon) BURGER_NOEXCEPT;
-extern float BURGER_API Floor(float fInput) BURGER_NOEXCEPT;
-extern double BURGER_API Floor(double dInput) BURGER_NOEXCEPT;
+extern float BURGER_API get_floor(float fInput) BURGER_NOEXCEPT;
+extern double BURGER_API get_floor(double dInput) BURGER_NOEXCEPT;
 extern float BURGER_API Ceil(float fInput) BURGER_NOEXCEPT;
 extern double BURGER_API Ceil(double dInput) BURGER_NOEXCEPT;
 extern float BURGER_API Round(float fInput) BURGER_NOEXCEPT;

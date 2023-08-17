@@ -1,10 +1,15 @@
 ;
-; X86 assembly for implementing the intrinsic __cpuidex for
-; Open Watcom
+; X86 assembly for Open Watcom
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
 ;
 ; Build with wasm.exe
 ;
 ; void __cdecl __watcall __cpuidex(int a[4], int b, int c)
+; all registers are non-volatile
+; a = eax
+; b = edx
+; c = ebx
 ;
 
 	.686

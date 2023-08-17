@@ -1,19 +1,16 @@
 /***************************************
 
-	\brief Fetch a 64 bit unsigned reverse endian integer from memory with byte
-		alignment.
+	68000 assembly for Metrowerks Codewarrior
 
-	Assuming the data is unaligned, it will grab data a byte at a time
-	and reconstruct it into a 64 bit value in reverse endian. The pointer does
-	not have to be 64-bit aligned. uint8_t alignment is acceptable.
+	Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
 
-	\param pInput Pointer to a 64 bit value.
+	Build with the Metrowerks 6.0 Pro C compiler
 
-	\return The value with the bytes swapped.
-
-	\note \ref nullptr pointers are illegal and will page fault.
-
-	\sa _load_unaligned(const uint64_t*)
+	uint64_t BURGER_API Burger::_load_unaligned_swap(
+		const uint64_t* pInput BURGER_68K_A0) BURGER_NOEXCEPT
+	d0-d2, a0-a1 are volatile
+	pResult = 4(a7)
+	pInput = a0
 
 ***************************************/
 

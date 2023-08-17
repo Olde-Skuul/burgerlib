@@ -1,12 +1,14 @@
 #
-# Fetch a 64 bit unsigned value from memory with byte alignment.
-#
 # Sony Cell assembly for the Playstation 3
+#
+# Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
 #
 # Build with PS3 tool chain
 #
-# uint64_t BURGER_API Burger::_load_unaligned(
-#	const uint64_t* pInput) BURGER_NOEXCEPT
+# uint64_t BURGER_API Burger::_load_unaligned(const uint64_t* pInput) BURGER_NOEXCEPT
+# r0, r3-12, fp0-fp13 are volatile
+# uInput = r3
+# Result in r3
 #
 
 	.align 2

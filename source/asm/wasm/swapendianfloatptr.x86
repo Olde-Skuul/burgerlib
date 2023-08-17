@@ -1,14 +1,14 @@
 ;
-; X86 assembly for implementing the function
-; Burger::_swapendianfloat(const float*) for Open Watcom
+; X86 assembly for Open Watcom
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
 ;
 ; Build with wasm.exe
 ;
 ; float BURGER_API Burger::_swapendianfloat(const float* pInput)
+; all registers are non-volatile
+; Result in 8087 FPU
 ; pInput = eax
-; Note: All integer registers are NON-VOLATILE!
-;
-; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
 ;
 
 	.686
@@ -37,8 +37,6 @@ _TEXT segment para 'CODE'
 ; Fix the stack and restore edx
 	pop		edx
 	pop		edx
-
-; Exit
 	ret
 
 `W?_swapendianfloat$:Burger$n(pnxb)b` endp

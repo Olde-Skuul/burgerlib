@@ -1426,7 +1426,7 @@ float BURGER_API Burger::AsciiToFloat(
         const float fValue = AsciiToFloat(pInput, &pDest);
         if (pDest != pInput) {
             // Is it NaN or Inf?
-            if (!IsFinite(fValue)) {
+            if (!is_finite(fValue)) {
                 fDefault = 0.0f; // Nope, nope, nope...
             } else {
                 fDefault = fValue;
@@ -1469,7 +1469,7 @@ float BURGER_API Burger::AsciiToFloat(
         const float fValue = AsciiToFloat(pInput, &pDest);
         if (pDest != pInput) {
             // Is it NaN or Inf?
-            if (!IsFinite(fValue)) {
+            if (!is_finite(fValue)) {
                 fDefault = 0.0f; // Nope, nope, nope...
             } else if (fValue < fMin) {
                 fDefault = fMin;
@@ -1547,7 +1547,7 @@ double BURGER_API Burger::AsciiToDouble(
         const double dValue = AsciiToDouble(pInput, &pDest);
         if (pDest != pInput) {
             // Is it NaN or Inf?
-            if (!IsFinite(dValue)) {
+            if (!is_finite(dValue)) {
                 dDefault = 0.0f; // Nope, nope, nope...
             } else {
                 dDefault = dValue;
@@ -1589,7 +1589,7 @@ double BURGER_API Burger::AsciiToDouble(const char* pInput, double dDefault,
         const double dValue = AsciiToDouble(pInput, &pDest);
         if (pDest != pInput) {
             // Is it NaN or Inf?
-            if (!IsFinite(dValue)) {
+            if (!is_finite(dValue)) {
                 dDefault = 0.0f; // Nope, nope, nope...
             } else if (dValue < dMin) {
                 dDefault = dMin;

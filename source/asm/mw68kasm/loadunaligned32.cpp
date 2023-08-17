@@ -1,15 +1,16 @@
 /***************************************
 
-	\brief Fetch a 32 bit unsigned value from memory with byte alignment.
+	68000 assembly for Metrowerks Codewarrior
 
-	Assuming the data is unaligned, it will grab data a byte at a time
-	and reconstruct it into a 32 bit value in native endian.
+	Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
 
-	\param pInput Pointer to a 32 bit value.
+	Build with the Metrowerks 6.0 Pro C compiler
 
-	\return The 32 bit unsigned value.
-
-	\sa _load_unaligned_swap(const uint32_t*)
+	uint32_t BURGER_API Burger::_load_unaligned(
+		const uint32_t* pInput BURGER_68K_A0) BURGER_NOEXCEPT
+	d0-d2, a0-a1 are volatile
+	Result in d0
+	pInput = a0
 
 ***************************************/
 

@@ -1,13 +1,19 @@
 /***************************************
 
-	X86 assembly for implementing the intrinsic __cpuid for
-	Metrowerks Codewarrior
+	X86 assembly for Metrowerks Codewarrior
 
-	Build with the C compiler
+	Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+
+	Build with the Metrowerks 9.0 Pro C compiler
+
+	void __fastcall __cpuid(int* a, int b)
+	eax, ecx and edx are volatile
+	a = ecx
+	b = edx
 
 ***************************************/
 
-#include "brmetrowerks.h"
+#include "brintrinsics.h"
 
 __declspec(naked) void __fastcall __cpuid(int*, int)
 {
@@ -31,10 +37,10 @@ __declspec(naked) void __fastcall __cpuid(int*, int)
 	cpuid
 
 ; Store the result in the same order as Visual C
-	mov		[esi],eax
-	mov		[esi+4],ebx
-	mov		[esi+8],ecx
-	mov		[esi+12],edx
+	mov		[esi], eax
+	mov		[esi+4], ebx
+	mov		[esi+8], ecx
+	mov		[esi+12], edx
 
 ; Restore the non-volatile registers
 	pop 	ebx

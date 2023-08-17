@@ -859,7 +859,8 @@
 	\struct Burger::default_delete
 	\brief Delete an object using delete
 
-	A template to pass to \ref unique_ptr to delete the object with std::delete.
+	A template to pass to \ref Burger::unique_ptr to delete the object with
+	std::delete.
 
 	\tparam T Type of object to delete
 	\sa unique_ptr
@@ -871,7 +872,7 @@
 	\struct Burger::default_delete_array
 	\brief Delete an object using delete[]
 
-	A template to pass to \ref unique_ptr to delete the object with
+	A template to pass to \ref Burger::unique_ptr to delete the object with
 	std::delete[].
 
 	\note This is explicitly used to maintain compatibility with compilers that

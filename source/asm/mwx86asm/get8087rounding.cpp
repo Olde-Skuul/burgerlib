@@ -1,12 +1,14 @@
 /***************************************
 
-	X86 assembly for implementing the function for Metrowerks Codewarrior
-
-	Build with the C compiler
-
-	EAX, ECX and EDX are scratch registers
+	X86 assembly for Metrowerks Codewarrior
 
 	Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+
+	Build with the Metrowerks 9.0 Pro C compiler
+
+	e8087Rounding __fastcall get_8087_rounding(void)
+	eax, ecx and edx are volatile
+	Result in eax
 
 ***************************************/
 

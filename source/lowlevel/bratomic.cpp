@@ -411,16 +411,16 @@
 
 /*! ************************************
 
+	\fn Burger::has_CPUID(void)
 	\brief Return \ref TRUE if the instruction CPUID is present
 
-	On x86 CPUs, this function will perform a test to determine
-	if the CPUID instruction is present. It will return \ref TRUE
-	if it does, and \ref FALSE if not. It's very likely this
-	will return \ref TRUE on x86 CPUs due to the introduction
-	of the instruction occurred in 1993
+	On x86 CPUs, this function will perform a test to determine if the CPUID
+	instruction is present. It will return \ref TRUE if it does, and \ref FALSE
+	if not. It's very likely this will return \ref TRUE on x86 CPUs due to the
+	introduction of the instruction occurred in 1993
 
-	On x64 machines, this will always return \ref TRUE and on
-	non Intel CPUs it will always return \ref FALSE.
+	On x64 machines, this will always return \ref TRUE and on non Intel CPUs it
+	will always return \ref FALSE.
 
 	\note This function only matters on systems with an x86 CPU
 
@@ -431,55 +431,6 @@
 ***************************************/
 
 #if defined(BURGER_INTEL) || defined(DOXYGEN)
-#if !(defined(BURGER_AMD64) || defined(BURGER_XBOX)) || defined(DOXYGEN)
-
-#if defined(BURGER_GNUC) || defined(BURGER_CLANG)
-// clang-format off
-__asm__(
-"	.align	4,0x90\n"
-"	.globl __ZN6Burger9has_CPUIDEv\n"
-"__ZN6Burger9has_CPUIDEv:\n"
-"	pushfl\n"
-"	movl	(%esp),%eax\n"
-"	xorl	$0x00200000,%eax\n"
-"	pushl	%eax\n"
-"	popfl\n"
-"	pushfl\n"
-"	popl	%eax\n"
-"	xorl	(%esp),%eax\n"
-"	shrl	$21,%eax\n"
-"	andl	$1,%eax\n"
-"	popfl\n"
-"	retl\n"
-);
-
-#else
-
-BURGER_DECLSPECNAKED uint_t BURGER_API Burger::has_CPUID(void) BURGER_NOEXCEPT
-{
-	BURGER_ASM {
-
-		// See of flags bit 21 can be changed.
-		// If it can, it's higher than 486, which
-		// implies that CPUID is available
-
-		pushfd						// save flags on the stack
-		mov		eax,dword ptr[esp]	// Get in register and leave on stack
-		xor		eax,0x00200000		// Switch bit 21 for the test
-		push	eax					// Set the flags with the new value
-		popfd
-		pushfd						// Read in the flags into a register
-		pop		eax
-		xor		eax,dword ptr[esp]	// Did the change "take"
-		shr		eax,21				// Move to the lowest bit
-		and		eax,1				// Set to TRUE or FALSE
-		popfd						// Restore the flags to the original state
-		ret
-	}
-}
-#endif
-#endif
-// clang-format on
 
 /*! ************************************
 

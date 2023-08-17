@@ -1,27 +1,25 @@
 /***************************************
 
-	\brief Get the floating point rounding setting
+	PowerPC 64 assembly for Xbox 360
 
-	On PowerPC processors, there's a special floating point register to control
-	the rounding behavior. This function returns the current setting.
+	Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
 
-	\note This function only exists on PowerPC compatible CPU targets.
+	Build with the masm.exe for PowerPC
 
-	\return Current precision state
-	\sa ePowerPCRounding or set_PowerPC_rounding(ePowerPCRounding)
+	Burger::ePowerPCRounding BURGER_API Burger::get_PowerPC_rounding(void)
+	r0, r3-12, fp0-fp13 are volatile
+	Result in r3
 
 ***************************************/
 
 #include "brfloatingpoint.h"
-
-#if defined(BURGER_XBOX360)
 
 __declspec(naked) Burger::ePowerPCRounding BURGER_API Burger::get_PowerPC_rounding(void)
 {
 __asm {
 
 // Get the floating point control register
-	mffs fp0 
+	mffs fp0
 
 // Store it in memory
 	stfd fp0, -8(r1)
@@ -36,5 +34,3 @@ __asm {
 	blr
 	}
 }
-
-#endif

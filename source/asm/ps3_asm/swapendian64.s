@@ -1,19 +1,23 @@
 #
-# Sony Cell assembly for implementing the intrinsic _swapendian64 for
-# the Playstation 3
+# Sony Cell assembly for the Playstation 3
+#
+# Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
 #
 # Build with PS3 tool chain
 #
-# extern "C" uint64_t _swapendian64(uint64_t uInput) BURGER_NOEXCEPT;
+# extern "C" uint64_t _swapendian64(uint64_t uInput) BURGER_NOEXCEPT
+# r0, r3-12, fp0-fp13 are volatile
+# uInput = r3
+# Result in r3
 #
 
 	.align 2
 
 	.text
 
+	.type ._swapendian64, @function
 	.globl ._swapendian64
 ._swapendian64:
-	.type ._swapendian64, @function
 
 # Split to 2 32 bit registers
 	srdi	4,3,32

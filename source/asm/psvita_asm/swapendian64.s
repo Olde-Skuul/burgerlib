@@ -1,10 +1,13 @@
 #
-# ARM32 assembly for implementing the intrinsic _swapendian64 for
-# the Playstation Vita
+# ARM32 assembly for the Playstation Vita
+#
+# Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
 #
 # Build with PS Vita tool chain
 #
 # extern "C" uint64_t _swapendian64(uint64_t uInput) BURGER_NOEXCEPT;
+# uInput = r0,r1
+# Result in r0,r1
 #
 
 	.cpu	cortex-a9

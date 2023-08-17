@@ -1,0 +1,127 @@
+/***************************************
+
+	Assembly for MacOSX Darwin
+
+	Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+
+	Build with XCode tool chain
+
+	XCode uses a C++ parser and will try to assemble this file on all
+	CPU types, so test for the proper CPU type before invoking any cpu
+	instructions.
+
+	double BURGER_API Burger::get_floor(double dInput) BURGER_NOEXCEPT
+
+***************************************/
+
+/***************************************
+
+	PowerPC 32/64 version
+	
+	r0, r3-12, fp0-fp13 are volatile
+	Result in fp1
+	dInput = fp1
+
+***************************************/
+
+#if defined(__ppc__) || defined(__ppc64__)
+	.align 2
+	.text
+
+	.globl __ZN6Burger9get_floorEd
+__ZN6Burger9get_floorEd:
+
+	lis		r3, ha16(__ZN6Burger15g_dMinNoIntegerE)
+
+/* Get the abs value to test */
+	fabs	f0, f1
+
+/* Load 8388608.0f */
+	lfd		f2, lo16(__ZN6Burger15g_dMinNoIntegerE)(r3)
+
+/* Compare if already floored */
+	fcmpu	cr0, f0, f2
+
+/* Exit with the value untouched if larger */
+	bgelr
+
+/* Save the rounding register */
+	mffs	f4
+
+/* Set bits 30 and 31 to Round toward -infinity */
+	mtfsfi	7, 0x03
+
+/* Push the positive number to highest value without */
+/* fraction (Removes fraction) */
+	fadd	f3, f1, f2
+
+/* Push the negative number to the lowest value without */
+/* fraction (Removes fraction) */
+	fsub	f0, f1, f2
+
+/* Undo the push (Fraction is gone) */
+	fsub	f3, f3, f2
+
+/* Undo the push (Fraction is gone) */
+	fadd	f0, f0, f2
+
+/* Which one to use? Positive or negative? */
+	fsel	f1, f1, f3, f0
+
+/* Restore rounding */
+	mtfsf	255, f4
+	blr
+
+#endif
+
+/***************************************
+
+	Intel 32 bit version
+
+	eax, ecx and edx are volatile
+	pResult in 8087 FPU
+	dInput = 4(%esp)
+
+***************************************/
+
+#if defined(__i386__)
+	.align	4,0x90
+	.globl __ZN6Burger9get_floorEd
+__ZN6Burger9get_floorEd:
+
+/* Load the value in an integer register */
+	movl	8(%esp), %eax
+
+/* Load the same value in the FPU */
+	fldl	4(%esp)
+
+/* Mask off the sign */
+	andl	$0x7FFFFFFF, %eax
+
+/* Compare to 4503599627370496.0 */
+	cmpl	$0x43300000, %eax
+
+/* Out of range, return original value */
+	jae		1f
+
+/* Convert the integer to float (It's in range) */
+	frndint
+
+/* Clear ax for flags */
+	xorl	%eax, %eax
+
+/* Compare values for difference (Pop stack) */
+	fcoml	4(%esp)
+
+/* Get the 8087 condition flags */
+	fnstsw	%ax
+
+/* Was the new greater than or equal the original? */
+	andl	$0x4100, %eax
+	jnz		1f
+
+/* Subtract 1.0f to round down */
+	fsubs	(__ZN6Burger6g_fOneE)
+1:	ret
+
+#endif

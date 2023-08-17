@@ -1,19 +1,16 @@
 /***************************************
 
-	\brief Fetch a 16 bit unsigned reverse endian integer from memory with byte
-		alignment.
+	68000 assembly for Metrowerks Codewarrior
 
-	Given a pointer to a 16 bit value, load it and swap the bytes
-	so that 0x1234 becomes 0x3412. The pointer does not have
-	to be 16-bit aligned. uint8_t alignment is acceptable.
+	Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
 
-	\param pInput Pointer to a value to endian convert
+	Build with the Metrowerks 6.0 Pro C compiler
 
-	\return The value with the bytes swapped.
-
-	\note \ref nullptr pointers are illegal and will page fault.
-
-	\sa _load_unaligned(const uint16_t *)
+	uint16_t BURGER_API Burger::_load_unaligned_swap(
+		const uint16_t* pInput BURGER_68K_A0) BURGER_NOEXCEPT
+	d0-d2, a0-a1 are volatile
+	Result in d0
+	pInput = a0
 
 ***************************************/
 

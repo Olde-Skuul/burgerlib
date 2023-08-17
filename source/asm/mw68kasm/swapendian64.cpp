@@ -1,32 +1,19 @@
 /***************************************
 
-	_swapendian64() for 68K Metrowerks
+	68000 assembly for Metrowerks Codewarrior
 
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
 
-	It is released under an MIT Open Source license. Please see LICENSE for
-	license details. Yes, you can use it in a commercial title without paying
-	anything, just give me a credit.
+	Build with the Metrowerks 6.0 Pro C compiler
 
-	Please? It's not like I'm asking you for money!
+	uint64_t BURGER_API Burger::_swapendian64(uint64_t uInput) BURGER_NOEXCEPT
+	d0-d2, a0-a1 are volatile
+	pResult in 4(a7)
+	uInput = 8(a7)
 
 ***************************************/
 
 #include "brendian.h"
-
-#if !defined(DOXYGEN) && defined(BURGER_68K)
-
-/***************************************
-
-	\brief Swap endian of a 64 bit integer.
-
-	64 bit operations for endian swap are specialized on different platforms
-	since some forms require the return value to be in a structure.
-
-	\param uInput 64 integer to swap endian.
-	\return Input with all 8 bytes reversed.
-
-***************************************/
 
 #if defined(BURGER_METROWERKS)
 
@@ -47,7 +34,7 @@ asm uint64_t _swapendian64(uint64_t uInput)
 	// Swap halves
 	swap	d0
 	swap	d1
-	
+
 	// Swap endian of the upper 16 bits
 	ror.w	#8, d0
 	ror.w	#8, d1
@@ -94,5 +81,4 @@ uint64_t _swapendian64(const uint64_t& rInput)
 	return temp;
 }
 
-#endif
 #endif

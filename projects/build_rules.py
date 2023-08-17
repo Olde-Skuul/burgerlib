@@ -362,7 +362,8 @@ def clean(working_directory):
 
     # This directory has read only files
     delete_directory(os.path.join(working_directory, "Durango"), True)
-    delete_directory(os.path.join(working_directory, "Gaming.Xbox.XboxOne.x64"), True)
+    delete_directory(os.path.join(working_directory,
+                                  "Gaming.Xbox.XboxOne.x64"), True)
 
     # Clean these directories
     clean_directories(working_directory,
@@ -664,7 +665,7 @@ def vs2003_stripcomments(line_list):
 
 def vs2003_rules(project):
     """
-    Handle special cases for Visual Studio 2003
+    Handle special cases for Visual Stuid.x86udio 2003
 
     Assume these IDEs are building only for Windows
     """
@@ -673,12 +674,13 @@ def vs2003_rules(project):
     # Add assembly files to vs2003
     if ide is IDETypes.vs2003:
 
-        # Add missing intrinsics, but only the x86 version
-        project.source_files_list.extend(
-            ("../source/asm/masm/xgetbv.x86",
-             "../source/asm/masm/cpuid.x86",
-             "../source/asm/masm/cpuidex.x86",
-             "../source/asm/masm/swapendian64.x86"))
+        # Add missing intrinsics for 2003
+        project.source_folders_list.append(
+            "../source/asm/masm/vs2003")
+        project.source_folders_list.append(
+            "../source/asm/masm/vs2003_2005")
+        project.source_folders_list.append(
+            "../source/asm/masm/vs2003_2008")
 
         # stripcomments.exe is on the path, but VS 2003 doesn't use it
         # So, replace the call to where the binary actually is
@@ -721,18 +723,20 @@ def vs2005_2008_rules(project):
         project.vs_rules.append("../ide_plugins/vs2005_2008/masm64.rules")
 
         # This is a missing intrinsic
-        project.source_files_list.extend(
-            ("../source/asm/masm64/xgetbv.x64",
-             "../source/asm/masm/xgetbv.x86"))
+        project.source_folders_list.append(
+            "../source/asm/masm/vs2003_2008")
+        project.source_folders_list.append(
+            "../source/asm/masm64/vs2005_2008")
 
         # Include the DirectX SDK, June 2010
         project.include_folders_list.append("$(DXSDK_DIR)/Include")
 
     # __cpuindex() is available on 2008, but not 2005
     if ide is IDETypes.vs2005:
-        project.source_files_list.extend(
-            ("../source/asm/masm64/cpuidex.x64",
-             "../source/asm/masm/cpuidex.x86"))
+        project.source_folders_list.append(
+            "../source/asm/masm/vs2003_2005")
+        project.source_folders_list.append(
+            "../source/asm/masm64/vs2005")
 
         # Direct Draw was not included in the Visual Studio 2005
         # Windows SDK, use the local copy
@@ -751,8 +755,8 @@ def gnu_clang_rules(project):
 
     ide = project.solution.ide
     if ide is IDETypes.make:
-        project.source_files_list.append(
-            "../source/asm/gnux64/xgetbv.x64")
+        project.source_folders_list.append(
+            "../source/asm/gnux64")
 
 
 ########################################
@@ -813,19 +817,12 @@ def project_settings(project):
             # VS 2007-2010 default to 8087 math. All others use SSE2
             if ide in (IDETypes.vs2003, IDETypes.vs2005,
                        IDETypes.vs2008, IDETypes.vs2010):
-                project.source_files_list.extend((
-                    "../source/asm/masm/swapendianfloat.x86",
-                    "../source/asm/masm/swapendiandouble.x86",
-                    "../source/asm/masm/swapendianfloatptr.x86",
-                    "../source/asm/masm/swapendiandoubleptr.x86"))
+                project.source_folders_list.append(
+                    "../source/asm/masm/vs2003_2010")
 
             # 8087 control for all x86 targets
-            project.source_files_list.extend((
-                "../source/asm/masm/get8087precision.x86",
-                "../source/asm/masm/set8087precision.x86",
-                "../source/asm/masm/get8087rounding.x86",
-                "../source/asm/masm/set8087rounding.x86"
-            ))
+            project.source_folders_list.append(
+                "../source/asm/masm")
 
         # Add in the headers for Windows, but there be dragons
         if not ide.is_codewarrior() and ide is not IDETypes.watcom:
@@ -914,8 +911,8 @@ def project_settings(project):
         project.source_folders_list.extend(BURGER_LIB_VITA)
 
         # PSVita assembly code
-        project.source_files_list.append(
-            "../source/asm/psvita_asm/swapendian64.s")
+        project.source_folders_list.append(
+            "../source/asm/psvita_asm")
 
         project.vs_props.append(
             "$(VCTargetsPath)\\BuildCustomizations\\vitacg.props")
@@ -1027,6 +1024,14 @@ def project_settings(project):
     # Default to Unicode APIs on Windows
     if platform.is_windows() or platform.is_xbox():
         project.vs_CharacterSet = "Unicode"
+
+    # Add in x64 burgerlib assembly
+    if ide.is_visual_studio():
+        if platform.is_windows():
+            # VS 2003 doesn't handle 64 bit code
+            if ide is not IDETypes.vs2003:
+                project.source_folders_list.append(
+                    "../source/asm/masm64")
 
     project.custom_rules = {
         "ps*.hlsl":
