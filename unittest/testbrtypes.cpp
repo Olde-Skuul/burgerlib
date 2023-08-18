@@ -618,6 +618,19 @@ static void BURGER_API ShowCPUFeatures(uint_t uVerbose) BURGER_NOEXCEPT
 		Burger::set_PowerPC_rounding(uRounding);
 	}
 #endif
+
+	//
+	// Handle 68K special registers
+	//
+
+#if defined(BURGER_68881)
+	if (uVerbose & VERBOSE_MSG) {
+		uint32_t uFPCR = Burger::get_68881_FPCR();
+		Message("Burger::get_68881_FPCR() = %08X",
+			static_cast<uint_t>(uFPCR));		
+	}
+#endif
+
 }
 
 /***************************************

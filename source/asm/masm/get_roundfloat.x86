@@ -1,0 +1,58 @@
+;
+; X86 assembly for Visual Studio
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+;
+; Build with ml.exe
+;
+; float BURGER_API Burger::get_fget_roundloor(float fInput)
+; eax, ecx and edx are volatile
+; fInput = [esp+4]
+; Result in 8087 FPU
+;
+
+	.686
+	.MODEL FLAT
+
+	.data
+
+; Actually Burger::g_X86RoundDownFlag
+	EXTRN	?g_X86RoundDownFlag@Burger@@3GB:WORD
+	EXTRN	?g_X86OneAndNegOne@Burger@@3QBTuint32_float_t@1@B:DWORD
+
+_TEXT segment para 'CODE'
+
+	align 16
+public ?get_round@Burger@@YIMM@Z
+?get_round@Burger@@YIMM@Z proc
+
+; Get the sign bit
+	mov		eax, dword ptr[esp + 4]
+
+; Load into the FPU
+	fld		dword ptr[esp + 4]
+
+; 1 for negative, 0 for positive
+	shr		eax, 31
+
+; Save state
+	fstcw	[esp + 4]
+
+; Set round down
+	fldcw	word ptr[?g_X86RoundDownFlag@Burger@@3GB]
+
+; Add or subtract 0.5f
+	fadd	dword ptr[?g_X86OneAndNegOne@Burger@@3QBTuint32_float_t@1@B + eax * 4]
+
+; Round
+	frndint
+
+; Restore rounding
+	fldcw	[esp + 4]
+	ret		4
+
+?get_round@Burger@@YIMM@Z endp
+
+_TEXT ends
+
+	end

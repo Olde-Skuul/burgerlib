@@ -55,7 +55,7 @@ __declspec(naked) double BURGER_API Burger::get_floor(
 ; Subtract 1.0f to round down
 	fsub	dword ptr[g_fOne]
 FloorExit:
-	ret		8                   
+	ret		8
 	}
 	// clang-format on
 }

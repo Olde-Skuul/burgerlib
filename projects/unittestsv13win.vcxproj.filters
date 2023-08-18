@@ -448,9 +448,6 @@
     <ClInclude Include="..\source\lowlevel\brmacros.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\lowlevel\brmetrowerks.h">
-      <Filter>source\lowlevel</Filter>
-    </ClInclude>
     <ClInclude Include="..\source\lowlevel\brmutex.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
@@ -1645,6 +1642,57 @@
     <ClCompile Include="..\unittest\testmacros.cpp">
       <Filter>unittest</Filter>
     </ClCompile>
+    <MASM Include="..\source\asm\masm64\get_signdouble.x64">
+      <Filter>source\asm\masm64</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm64\get_signfloat.x64">
+      <Filter>source\asm\masm64</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\get8087precision.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\get8087rounding.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\get_ceilingdouble.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\get_ceilingfloat.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\get_floordouble.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\get_floorfloat.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\get_rounddouble.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\get_roundfloat.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\get_signdouble.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\get_signfloat.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\has_cpuid.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\modulo_radiansdouble.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\modulo_radiansfloat.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\set8087precision.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\set8087rounding.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
     <HLSL Include="..\source\graphics\shadersdx9\pscclr4dx9.hlsl">
       <Filter>source\graphics\shadersdx9</Filter>
     </HLSL>
@@ -1701,6 +1749,15 @@
     </Filter>
     <Filter Include="source\ansi">
       <UniqueIdentifier>97187A14-A14D-3772-B447-0E3BC58A1979</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\asm">
+      <UniqueIdentifier>C16DF911-B523-3B99-92F6-24CA1EC729A1</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\asm\masm">
+      <UniqueIdentifier>B66C55E1-7BDA-321C-9C5A-776CF05B06B8</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\asm\masm64">
+      <UniqueIdentifier>E77350BB-FBAD-369F-8D2B-9A2C2D4D9CFE</UniqueIdentifier>
     </Filter>
     <Filter Include="source\audio">
       <UniqueIdentifier>521A5164-EB6F-3B12-8D1C-B240431BCFCB</UniqueIdentifier>

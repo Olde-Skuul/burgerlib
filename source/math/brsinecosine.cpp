@@ -50,54 +50,25 @@
 	\return The input converted to a 32 bit floating point value wrapped to fit
 		within.
 
-	\sa ModuloRadians(double), Sin(float), Cos(float)
+	\sa modulo_radians(double), get_sine(float), get_cosine(float)
 
 ***************************************/
 
 // Written in assembly
-#if ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
-	(defined(BURGER_X86) || defined(BURGER_PPC))) || \
-	(defined(BURGER_METROWERKS) && defined(BURGER_PPC)) || \
-	((defined(BURGER_SNSYSTEMS) || defined(BURGER_GHS) || \
-		 defined(BURGER_MSVC)) && \
-		defined(BURGER_PPC))
-
-#elif defined(BURGER_X86) && \
-	(defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || \
-		defined(BURGER_MSVC))
-
-// x86 version
-
-BURGER_DECLSPECNAKED float BURGER_API Burger::ModuloRadians(
-	float /* fInput */) BURGER_NOEXCEPT
-{
-	// clang-format off
-    BURGER_ASM
-    {
-        fld dword ptr[esp + 4]  // Load into the FPU
-        fld dword ptr[g_fReciprocalPi2] // Load in 1/ 2Pi
-        fmul st(0), st(1)       // Multiply (Really fInput/2Pi)
-        fadd dword ptr[g_fHalf] // Add half for rounding
-        fst dword ptr[esp + 4]  // Round to nearest in 24 bit to force consistent precision
-        frndint                 // Convert to integer
-        fcom dword ptr[esp + 4] // Compare the two and get rid of the pre-rounded
-        fnstsw ax
-        test ah, 0x41          // Branch if less or equal
-        jne ModuloRadiansFExit // Did it round up?
-        fsub dword ptr[g_fOne] // Fixup
-    ModuloRadiansFExit:
-        fmul dword ptr[g_fPi2] // Mul by 2 pi
-        fsubp st(1), st(0)  // Subtract and clean up
-        ret 4               // Clean up and exit
-    }
-	// clang-format on
-}
+#if (defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
+	((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
+		(defined(BURGER_X86) || defined(BURGER_PPC))) || \
+	(defined(BURGER_METROWERKS) && \
+		(defined(BURGER_PPC) || defined(BURGER_X86))) || \
+	((defined(BURGER_SNSYSTEMS) || defined(BURGER_GHS)) && \
+		defined(BURGER_PPC)) || \
+	(defined(BURGER_MSVC) && (defined(BURGER_X86) || defined(BURGER_PPC)))
 
 #else
 
 // Generic code
 
-float BURGER_API Burger::ModuloRadians(float fInput) BURGER_NOEXCEPT
+float BURGER_API Burger::modulo_radians(float fInput) BURGER_NOEXCEPT
 {
 	// Produce Input/(BURGER_PI*2)
 	const float fTemp = (fInput * static_cast<float>(g_fReciprocalPi2)) + 0.5f;
@@ -127,52 +98,25 @@ float BURGER_API Burger::ModuloRadians(float fInput) BURGER_NOEXCEPT
 	\return The input converted to a 64 bit floating point value wrapped to fit
 		within.
 
-	\sa ModuloRadians(float), Sin(double), Cos(double)
+	\sa modulo_radians(float), get_sine(double), get_cosine(double)
 
 ***************************************/
 
 // Written in assembly
-#if ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
-	(defined(BURGER_X86) || defined(BURGER_PPC))) || \
-	(defined(BURGER_METROWERKS) && defined(BURGER_PPC)) || \
-	((defined(BURGER_SNSYSTEMS) || defined(BURGER_GHS) || \
-		 defined(BURGER_MSVC)) && \
-		defined(BURGER_PPC))
-
-#elif defined(BURGER_X86) && \
-	(defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || \
-		defined(BURGER_MSVC))
-
-BURGER_DECLSPECNAKED double BURGER_API Burger::ModuloRadians(
-	double /* dInput */) BURGER_NOEXCEPT
-{
-	// clang-format off
-    BURGER_ASM
-    {
-        fld qword ptr[esp + 4]          // Load into the FPU
-        fld qword ptr[g_dReciprocalPi2] // Load in 1/2Pi
-        fmul st(0), st(1)               // Multiply
-        fadd qword ptr[g_dHalf] // Add half for rounding
-        fst qword ptr[esp + 4]  // Store at double precision
-        frndint                 // Remove fraction
-        fcom qword ptr[esp + 4] // Compare the two and get rid of the pre-rounded
-        fnstsw ax
-        test ah, 0x41
-        jnz ModuloRadiansFExit  // Did it round up?
-        fsub qword ptr[g_dOne]  // Fixup
-    ModuloRadiansFExit:
-        fmul qword ptr[g_dPi2]  // Mul by 2 pi
-        fsubp st(1), st(0)      // Subtract and clean up
-        ret 8                   // Clean up and exit
-    }
-	// clang-format on
-}
+#if (defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
+	((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
+		(defined(BURGER_X86) || defined(BURGER_PPC))) || \
+	(defined(BURGER_METROWERKS) && \
+		(defined(BURGER_PPC) || defined(BURGER_X86))) || \
+	((defined(BURGER_SNSYSTEMS) || defined(BURGER_GHS)) && \
+		defined(BURGER_PPC)) || \
+	(defined(BURGER_MSVC) && (defined(BURGER_X86) || defined(BURGER_PPC)))
 
 #else
 
 // Generic code
 
-double BURGER_API Burger::ModuloRadians(double dInput) BURGER_NOEXCEPT
+double BURGER_API Burger::modulo_radians(double dInput) BURGER_NOEXCEPT
 {
 	// Produce Input/(BURGER_PI*2)
 	const double dTemp = (dInput * g_dReciprocalPi2) + 0.5;
@@ -190,7 +134,7 @@ double BURGER_API Burger::ModuloRadians(double dInput) BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\fn float BURGER_API Burger::Sin387(float fInput)
+	\fn float BURGER_API Burger::sine_387(float fInput)
 	\brief Return the sine from radians
 
 	Use the fsin instruction to generate sine. Will loop in cases
@@ -201,13 +145,13 @@ double BURGER_API Burger::ModuloRadians(double dInput) BURGER_NOEXCEPT
 	\param fInput Value in Radians
 	\return Sine of fInput
 
-	\sa Sin387(double) or Cos387(float)
+	\sa sine_387(double) or cosine_387(float)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn double BURGER_API Burger::Sin387(double dInput)
+	\fn double BURGER_API Burger::sine_387(double dInput)
 	\brief Return the sine from radians
 
 	Use the fsin instruction to generate sine. Will loop in cases
@@ -218,13 +162,13 @@ double BURGER_API Burger::ModuloRadians(double dInput) BURGER_NOEXCEPT
 	\param dInput Value in Radians
 	\return Sine of fInput
 
-	\sa Sin387(float) or Cos387(double)
+	\sa sine_387(float) or cosine_387(double)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn float BURGER_API Burger::Cos387(float fInput)
+	\fn float BURGER_API Burger::cosine_387(float fInput)
 	\brief Return the cosine from radians
 
 	Use the fcos instruction to generate sine. Will loop in cases
@@ -235,13 +179,13 @@ double BURGER_API Burger::ModuloRadians(double dInput) BURGER_NOEXCEPT
 	\param fInput Value in Radians
 	\return Cosine of fInput
 
-	\sa Cos387(double) or Sin387(float)
+	\sa cosine_387(double) or sine_387(float)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn double BURGER_API Burger::Cos387(double dInput)
+	\fn double BURGER_API Burger::cosine_387(double dInput)
 	\brief Return the cosine from radians
 
 	Use the fcos instruction to generate sine. Will loop in cases
@@ -252,7 +196,7 @@ double BURGER_API Burger::ModuloRadians(double dInput) BURGER_NOEXCEPT
 	\param dInput Value in Radians
 	\return Cosine of fInput
 
-	\sa Cos387(float) or Sin387(double)
+	\sa cosine_387(float) or sine_387(double)
 
 ***************************************/
 
@@ -263,7 +207,7 @@ static BURGER_USED const Burger::Float80Bit g_lPI2 = {
 
 #if defined(BURGER_METROWERKS) || defined(BURGER_WATCOM) || defined(BURGER_MSVC)
 
-BURGER_DECLSPECNAKED float BURGER_API Burger::Sin387(
+BURGER_DECLSPECNAKED float BURGER_API Burger::sine_387(
 	float /* fInput */) BURGER_NOEXCEPT
 {
 	// clang-format off
@@ -294,7 +238,7 @@ BURGER_DECLSPECNAKED float BURGER_API Burger::Sin387(
 	// clang-format on
 }
 
-BURGER_DECLSPECNAKED double BURGER_API Burger::Sin387(
+BURGER_DECLSPECNAKED double BURGER_API Burger::sine_387(
 	double /* dInput */) BURGER_NOEXCEPT
 {
 	// clang-format off
@@ -332,7 +276,7 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::Sin387(
 	// clang-format on
 }
 
-BURGER_DECLSPECNAKED float BURGER_API Burger::Cos387(
+BURGER_DECLSPECNAKED float BURGER_API Burger::cosine_387(
 	float /* fInput */) BURGER_NOEXCEPT
 {
 	// clang-format off
@@ -363,7 +307,7 @@ BURGER_DECLSPECNAKED float BURGER_API Burger::Cos387(
 	// clang-format on
 }
 
-BURGER_DECLSPECNAKED double BURGER_API Burger::Cos387(
+BURGER_DECLSPECNAKED double BURGER_API Burger::cosine_387(
 	double /* dInput */) BURGER_NOEXCEPT
 {
 	// clang-format off
@@ -402,10 +346,10 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::Cos387(
 }
 
 #elif defined(BURGER_CLANG) || defined(BURGER_GNUC)
-// __ZN6Burger6Sin387Ef = float BURGER_API Burger::Sin387(float fInput)
+// __ZN6Burger8sine_387Ef = float BURGER_API Burger::sine_387(float fInput)
 __asm__(
-	".globl __ZN6Burger6Sin387Ef\n"
-	"__ZN6Burger6Sin387Ef:\n"
+	".globl __ZN6Burger8sine_387Ef\n"
+	"__ZN6Burger8sine_387Ef:\n"
 	"	flds 4(%esp)\n" // Load into the FPU
 	"1:\n"
 	"	fsin\n"
@@ -430,10 +374,10 @@ __asm__(
 	"	ret\n" // Clean up and exit
 );
 
-// __ZN6Burger6Sin387Ed = double BURGER_API Burger::Sin387(double dInput)
+// __ZN6Burger8sine_387Ed = double BURGER_API Burger::sine_387(double dInput)
 __asm__(
-	".globl __ZN6Burger6Sin387Ed\n"
-	"__ZN6Burger6Sin387Ed:\n"
+	".globl __ZN6Burger8sine_387Ed\n"
+	"__ZN6Burger8sine_387Ed:\n"
 	"	fldl 4(%esp)\n"      // Load into the FPU
 	"	fnstcw 8(%esp)\n"    // Get the current status word
 	"	movl 8(%esp),%eax\n" // Get the current value for return
@@ -465,10 +409,10 @@ __asm__(
 	"	ret\n"           // Clean up and exit
 );
 
-// __ZN6Burger6Cos387Ef = float BURGER_API Burger::Cos387(float fInput)
+// __ZN6Burger10cosine_387Ef = float BURGER_API Burger::cosine_387(float fInput)
 __asm__(
-	".globl __ZN6Burger6Cos387Ef\n"
-	"__ZN6Burger6Cos387Ef:\n"
+	".globl __ZN6Burger10cosine_387Ef\n"
+	"__ZN6Burger10cosine_387Ef:\n"
 	"	flds 4(%esp)\n" // Load into the FPU
 	"1:\n"
 	"	fcos\n"
@@ -493,10 +437,10 @@ __asm__(
 	"	ret\n" // Clean up and exit
 );
 
-// __ZN6Burger6Cos387Ed = double BURGER_API Burger::Cos387(double dInput)
+// __ZN6Burger10cosine_387Ed = double BURGER_API Burger::cosine_387(double dInput)
 __asm__(
-	".globl __ZN6Burger6Cos387Ed\n"
-	"__ZN6Burger6Cos387Ed:\n"
+	".globl __ZN6Burger10cosine_387Ed\n"
+	"__ZN6Burger10cosine_387Ed:\n"
 	"	fldl 4(%esp)\n"      // Load into the FPU
 	"	fnstcw 8(%esp)\n"    // Get the current status word
 	"	movl 8(%esp),%eax\n" // Get the current value for return
@@ -531,7 +475,7 @@ __asm__(
 
 #endif
 
-// Terms for Cos3Digits()
+// Terms for get_cosine_3_digits()
 static const Burger::uint32_float_t g_fCos3DigitsValues[9] = {
 	{0x00000000}, // 0.0
 	{0x40490FDB}, // PI
@@ -554,11 +498,11 @@ static const Burger::uint32_float_t g_fCos3DigitsValues[9] = {
 	\param fInput Value in Radians
 	\return Cosine of fInput
 
-	\sa Sin3Digits(float)
+	\sa get_sine_3_digits(float)
 
 ***************************************/
 
-float BURGER_API Burger::Cos3Digits(float fInput) BURGER_NOEXCEPT
+float BURGER_API Burger::get_cosine_3_digits(float fInput) BURGER_NOEXCEPT
 {
 	// Cosine uses absolute value
 	fInput = absolute(fInput);
@@ -598,16 +542,16 @@ float BURGER_API Burger::Cos3Digits(float fInput) BURGER_NOEXCEPT
 	\param fInput Value in Radians
 	\return Sine of fInput
 
-	\sa Cos3Digits(float)
+	\sa get_cosine_3_digits(float)
 
 ***************************************/
 
-float BURGER_API Burger::Sin3Digits(float fInput) BURGER_NOEXCEPT
+float BURGER_API Burger::get_sine_3_digits(float fInput) BURGER_NOEXCEPT
 {
-	return Cos3Digits(static_cast<float>(BURGER_PI * 0.5f) - fInput);
+	return get_cosine_3_digits(static_cast<float>(BURGER_PI * 0.5f) - fInput);
 }
 
-// Terms for Cos5Digits()
+// Terms for get_cosine_5_digits()
 static const Burger::uint32_float_t g_fCos5DigitsValues[10] = {
 	{0x00000000}, // 0.0
 	{0x40490FDB}, // PI
@@ -631,11 +575,11 @@ static const Burger::uint32_float_t g_fCos5DigitsValues[10] = {
 	\param fInput Value in Radians
 	\return Cosine of fInput
 
-	\sa Sin3Digits(float)
+	\sa get_sine_3_digits(float)
 
 ***************************************/
 
-float BURGER_API Burger::Cos5Digits(float fInput) BURGER_NOEXCEPT
+float BURGER_API Burger::get_cosine_5_digits(float fInput) BURGER_NOEXCEPT
 {
 	// Cosine uses absolute value
 	fInput = absolute(fInput);
@@ -677,13 +621,13 @@ float BURGER_API Burger::Cos5Digits(float fInput) BURGER_NOEXCEPT
 	\param fInput Value in Radians
 	\return Sine of fInput
 
-	\sa Cos3Digits(float)
+	\sa get_cosine_3_digits(float)
 
 ***************************************/
 
-float BURGER_API Burger::Sin5Digits(float fInput) BURGER_NOEXCEPT
+float BURGER_API Burger::get_sine_5_digits(float fInput) BURGER_NOEXCEPT
 {
-	return Cos5Digits(static_cast<float>(BURGER_PI * 0.5f) - fInput);
+	return get_cosine_5_digits(static_cast<float>(BURGER_PI * 0.5f) - fInput);
 }
 
 static const Burger::uint32_float_t g_fSinefCosfValues[11] = {
@@ -710,11 +654,11 @@ static const Burger::uint32_float_t g_fSinefCosfValues[11] = {
 	\param fInput Value in Radians
 	\return Sine of fInput
 
-	\sa Cos6Digits(float)
+	\sa get_cosine_6_digits(float)
 
 ***************************************/
 
-float BURGER_API Burger::Sin6Digits(float fInput) BURGER_NOEXCEPT
+float BURGER_API Burger::get_sine_6_digits(float fInput) BURGER_NOEXCEPT
 {
 	// Handle negative arguments
 #if defined(BURGER_PPC)
@@ -780,11 +724,11 @@ float BURGER_API Burger::Sin6Digits(float fInput) BURGER_NOEXCEPT
 	\param fInput Value in Radians
 	\return Cosine of fInput
 
-	\sa Sin6Digits(float)
+	\sa get_sine_6_digits(float)
 
 ***************************************/
 
-float BURGER_API Burger::Cos6Digits(float fInput) BURGER_NOEXCEPT
+float BURGER_API Burger::get_cosine_6_digits(float fInput) BURGER_NOEXCEPT
 {
 	// Cosine uses absolute value
 	fInput = absolute(fInput);
@@ -831,7 +775,7 @@ float BURGER_API Burger::Cos6Digits(float fInput) BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\fn float BURGER_API Burger::Sin(float fInput)
+	\fn float BURGER_API Burger::get_sine(float fInput)
 	\brief Return the sine from radians
 
 	This is a replacement of sinf() from the C++ libraries
@@ -848,7 +792,7 @@ float BURGER_API Burger::Cos6Digits(float fInput) BURGER_NOEXCEPT
 	\param fInput Value in Radians
 	\return Sine of fInput
 
-	\sa Sin(double) or Cos(float)
+	\sa get_sine(double) or get_cosine(float)
 
 ***************************************/
 
@@ -870,7 +814,7 @@ static const BURGER_USED Burger::uint32_float_t g_fInverseSineFactors[11] = {
 	(defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || \
 		defined(BURGER_MSVC))
 
-BURGER_DECLSPECNAKED float BURGER_API Burger::Sin(
+BURGER_DECLSPECNAKED float BURGER_API Burger::get_sine(
 	float /* fInput */) BURGER_NOEXCEPT
 {
 	// clang-format off
@@ -947,10 +891,10 @@ BURGER_DECLSPECNAKED float BURGER_API Burger::Sin(
 }
 
 #elif defined(BURGER_X86) && (defined(BURGER_MACOSX) || defined(BURGER_IOS))
-// __ZN6Burger3SinEf = float BURGER_API Burger::Sin(float fInput)
+// __ZN6Burger8get_sineEf = float BURGER_API Burger::get_sine(float fInput)
 __asm__(
-	".globl __ZN6Burger3SinEf\n"
-	"__ZN6Burger3SinEf:\n"
+	".globl __ZN6Burger8get_sineEf\n"
+	"__ZN6Burger8get_sineEf:\n"
 	"	flds	4(%esp)\n"                          // Load into the FPU
 	"	flds	(__ZN6Burger16g_fReciprocalPi2E)\n" // Load in 1/2Pi
 	"	fmul	%st(1),%st(0)\n"          // Multiply (Really fInput/2Pi)
@@ -1017,11 +961,11 @@ __asm__(
 
 #else
 
-float BURGER_API Burger::Sin(float fInput) BURGER_NOEXCEPT
+float BURGER_API Burger::get_sine(float fInput) BURGER_NOEXCEPT
 {
 	// Start by rounding the radians to reduce the chance
 	// of floating point rounding errors
-	fInput = ModuloRadians(fInput);
+	fInput = modulo_radians(fInput);
 
 	// To calculate sine...
 	// Note: ! is factoral so 3! = 1*2*3, and 5! = 1*2*3*4*5
@@ -1084,7 +1028,7 @@ float BURGER_API Burger::Sin(float fInput) BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\fn float BURGER_API Burger::Cos(float fInput)
+	\fn float BURGER_API Burger::get_cosine(float fInput)
 	\brief Return the cosine from radians
 
 	This is a replacement of cosf() from the C++ libraries
@@ -1092,7 +1036,7 @@ float BURGER_API Burger::Sin(float fInput) BURGER_NOEXCEPT
 	\param fInput Value in Radians
 	\return Cosine of fInput
 
-	\sa Cos(double) or Sin(float)
+	\sa get_cosine(double) or get_sine(float)
 
 ***************************************/
 
@@ -1112,7 +1056,7 @@ static const BURGER_USED Burger::uint32_float_t g_fInverseCosineFactors[11] = {
 #if defined(BURGER_X86) && \
 	(defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || \
 		defined(BURGER_MSVC))
-BURGER_DECLSPECNAKED float BURGER_API Burger::Cos(
+BURGER_DECLSPECNAKED float BURGER_API Burger::get_cosine(
 	float /* fInput */) BURGER_NOEXCEPT
 {
 	// clang-format off
@@ -1183,10 +1127,10 @@ BURGER_DECLSPECNAKED float BURGER_API Burger::Cos(
     // clang-format on 
 }
 #elif defined(BURGER_X86) && (defined(BURGER_MACOSX) || defined(BURGER_IOS))
-// __ZN6Burger3CosEf = float BURGER_API Burger::Cos(float fInput)
+// __ZN6Burger10get_cosineEf = float BURGER_API Burger::get_cosine(float fInput)
 __asm__(
-    ".globl __ZN6Burger3CosEf\n"
-    "__ZN6Burger3CosEf:\n"
+    ".globl __ZN6Burger10get_cosineEf\n"
+    "__ZN6Burger10get_cosineEf:\n"
     "	flds	(__ZN6Burger6g_fOneE)\n"            // Initial 1
     "	flds	4(%esp)\n"                          // Load into the FPU
     "	flds	(__ZN6Burger16g_fReciprocalPi2E)\n" // Load in 1/2Pi
@@ -1251,13 +1195,13 @@ __asm__(
 );
 
 #else
-float BURGER_API Burger::Cos(float fInput) BURGER_NOEXCEPT
+float BURGER_API Burger::get_cosine(float fInput) BURGER_NOEXCEPT
 {
     //return xcosf(fInput);
 
     // Start by rounding the radians to reduce the chance
     // of floating point rounding errors
-    fInput = ModuloRadians(fInput);
+    fInput = modulo_radians(fInput);
 
     // To calculate cosine...
     // Note: ! is factoral so 2! = 1*2, and 4! = 1*2*3*4
@@ -1328,11 +1272,11 @@ static const Burger::uint64_double_t g_fxcosf7Values[11] = {
 	\param dInput Value in Radians
 	\return Cosine of dInput
 
-	\sa Sin7Digits(double)
+	\sa get_sine_7_digits(double)
 
 ***************************************/
 
-double BURGER_API Burger::Cos7Digits(double dInput) BURGER_NOEXCEPT
+double BURGER_API Burger::get_cosine_7_digits(double dInput) BURGER_NOEXCEPT
 {
 	// Cosine uses absolute value
 	dInput = absolute(dInput);
@@ -1376,13 +1320,13 @@ double BURGER_API Burger::Cos7Digits(double dInput) BURGER_NOEXCEPT
 	\param dInput Value in Radians
 	\return Sine of dInput
 
-	\sa Cos7Digits(double)
+	\sa get_cosine_7_digits(double)
 
 ***************************************/
 
-double BURGER_API Burger::Sin7Digits(double dInput) BURGER_NOEXCEPT
+double BURGER_API Burger::get_sine_7_digits(double dInput) BURGER_NOEXCEPT
 {
-	return Cos7Digits((BURGER_PI * 0.5) - dInput);
+	return get_cosine_7_digits((BURGER_PI * 0.5) - dInput);
 }
 
 static const Burger::uint64_double_t g_fxcosf12Values[13] = {
@@ -1411,11 +1355,11 @@ static const Burger::uint64_double_t g_fxcosf12Values[13] = {
 	\param dInput Value in Radians
 	\return Cosine of dInput
 
-	\sa Sin12Digits(double)
+	\sa get_sine_12_digits(double)
 
 ***************************************/
 
-double BURGER_API Burger::Cos12Digits(double dInput) BURGER_NOEXCEPT
+double BURGER_API Burger::get_cosine_12_digits(double dInput) BURGER_NOEXCEPT
 {
 	// Cosine uses absolute value
 	dInput = absolute(dInput);
@@ -1464,18 +1408,18 @@ double BURGER_API Burger::Cos12Digits(double dInput) BURGER_NOEXCEPT
    \param dInput Value in Radians
    \return Sine of dInput
 
-   \sa Cos12Digits(double)
+   \sa get_cosine_12_digits(double)
 
 ***************************************/
 
-double BURGER_API Burger::Sin12Digits(double dInput) BURGER_NOEXCEPT
+double BURGER_API Burger::get_sine_12_digits(double dInput) BURGER_NOEXCEPT
 {
-	return Cos12Digits((BURGER_PI * 0.5) - dInput);
+	return get_cosine_12_digits((BURGER_PI * 0.5) - dInput);
 }
 
 /*! ************************************
 
-	\fn double BURGER_API Burger::Sin18Digits(double dInput)
+	\fn double BURGER_API Burger::get_sine_18_digits(double dInput)
 	\brief Return the sine from radians
 
 	This is a replacement of sin() from the C++ libraries
@@ -1483,7 +1427,7 @@ double BURGER_API Burger::Sin12Digits(double dInput) BURGER_NOEXCEPT
 	\param dInput Value in Radians
 	\return Sine of dInput
 
-	\sa Sin(double) or Cos18Digits(double)
+	\sa get_sine(double) or get_cosine_18_digits(double)
 
 ***************************************/
 
@@ -1504,7 +1448,7 @@ static const Burger::uint64_double_t g_dInverseSineFactors[11] = {
 #if defined(BURGER_X86) && \
 	(defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || \
 		defined(BURGER_MSVC))
-BURGER_DECLSPECNAKED double BURGER_API Burger::Sin18Digits(
+BURGER_DECLSPECNAKED double BURGER_API Burger::get_sine_18_digits(
 	double /* dInput */) BURGER_NOEXCEPT
 {
 	// clang-format off
@@ -1584,11 +1528,11 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::Sin18Digits(
 
 #else
 
-double BURGER_API Burger::Sin18Digits(double dInput) BURGER_NOEXCEPT
+double BURGER_API Burger::get_sine_18_digits(double dInput) BURGER_NOEXCEPT
 {
 	// Start by rounding the radians to reduce the chance
 	// of floating point rounding errors
-	dInput = ModuloRadians(dInput);
+	dInput = modulo_radians(dInput);
 
 	// To calculate sine...
 	// Note: ! is factoral so 3! = 1*2*3, and 5! = 1*2*3*4*5
@@ -1638,7 +1582,7 @@ double BURGER_API Burger::Sin18Digits(double dInput) BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\fn double BURGER_API Burger::Cos18Digits(double dInput)
+	\fn double BURGER_API Burger::get_cosine_18_digits(double dInput)
 	\brief Return the cosine from radians
 
 	This is a replacement of cos() from the C++ libraries
@@ -1646,7 +1590,7 @@ double BURGER_API Burger::Sin18Digits(double dInput) BURGER_NOEXCEPT
 	\param dInput Value in Radians
 	\return Cosine of dInput
 
-	\sa Cos(float) or Cos18Digits(double)
+	\sa get_cosine(float) or get_cosine_18_digits(double)
 
 ***************************************/
 
@@ -1670,7 +1614,7 @@ static const Burger::uint64_double_t g_dInverseCosineFactors[11] = {
 #if defined(BURGER_X86) && \
 	(defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || \
 		defined(BURGER_MSVC))
-BURGER_DECLSPECNAKED double BURGER_API Burger::Cos18Digits(
+BURGER_DECLSPECNAKED double BURGER_API Burger::get_cosine_18_digits(
 	double /* dInput */) BURGER_NOEXCEPT
 {
 	// clang-format off
@@ -1743,11 +1687,11 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::Cos18Digits(
 // No MacOSX 32 bit intel version assembly version, since SSE builds quite
 // nicely
 #else
-double BURGER_API Burger::Cos18Digits(double dInput) BURGER_NOEXCEPT
+double BURGER_API Burger::get_cosine_18_digits(double dInput) BURGER_NOEXCEPT
 {
 	// Start by rounding the radians to reduce the chance
 	// of floating point rounding errors
-	dInput = ModuloRadians(dInput);
+	dInput = modulo_radians(dInput);
 
 	// To calculate cosine...
 	// Note: ! is factoral so 2! = 1*2, and 4! = 1*2*3*4
@@ -1822,11 +1766,11 @@ static const Burger::uint64_double_t g_fxcosf20Values[16] = {
 	\param dInput Value in Radians
 	\return Cosine of dInput
 
-	\sa Sin(double)
+	\sa get_sine(double)
 
 ***************************************/
 
-double BURGER_API Burger::Cos(double dInput) BURGER_NOEXCEPT
+double BURGER_API Burger::get_cosine(double dInput) BURGER_NOEXCEPT
 {
 	// Cosine uses absolute value
 	dInput = absolute(dInput);
@@ -1886,11 +1830,11 @@ double BURGER_API Burger::Cos(double dInput) BURGER_NOEXCEPT
    \param dInput Value in Radians
    \return Sine of dInput
 
-   \sa Cos(double)
+   \sa get_cosine(double)
 
 ***************************************/
 
-double BURGER_API Burger::Sin(double dInput) BURGER_NOEXCEPT
+double BURGER_API Burger::get_sine(double dInput) BURGER_NOEXCEPT
 {
-	return Cos((BURGER_PI * 0.5) - dInput);
+	return get_cosine((BURGER_PI * 0.5) - dInput);
 }

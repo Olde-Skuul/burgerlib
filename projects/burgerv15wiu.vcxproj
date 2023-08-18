@@ -294,7 +294,6 @@
     <ClInclude Include="..\source\lowlevel\brlinkedlistobject.h" />
     <ClInclude Include="..\source\lowlevel\brlinkedlistpointer.h" />
     <ClInclude Include="..\source\lowlevel\brmacros.h" />
-    <ClInclude Include="..\source\lowlevel\brmetrowerks.h" />
     <ClInclude Include="..\source\lowlevel\brmutex.h" />
     <ClInclude Include="..\source\lowlevel\broscursor.h" />
     <ClInclude Include="..\source\lowlevel\brpair.h" />
@@ -546,8 +545,14 @@
     <ClCompile Include="..\source\text\brutf8.cpp" />
     <ClCompile Include="..\source\text\brwin1252.cpp" />
     <ClCompile Include="..\source\text\brwin437.cpp" />
+    <ASM Include="..\source\asm\wiiu_asm\get_signdouble.s" />
+    <ASM Include="..\source\asm\wiiu_asm\get_signfloat.s" />
     <ASM Include="..\source\asm\wiiu_asm\getpowerpcrounding.s" />
+    <ASM Include="..\source\asm\wiiu_asm\is_nandouble.s" />
+    <ASM Include="..\source\asm\wiiu_asm\is_nanfloat.s" />
     <ASM Include="..\source\asm\wiiu_asm\loadunaligned64.s" />
+    <ASM Include="..\source\asm\wiiu_asm\moduloradiansdouble.s" />
+    <ASM Include="..\source\asm\wiiu_asm\moduloradiansfloat.s" />
     <ASM Include="..\source\asm\wiiu_asm\setpowerpcrounding.s" />
     <ASM Include="..\source\asm\wiiu_asm\swapendian64.s" />
   </ItemGroup>

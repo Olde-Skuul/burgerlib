@@ -181,8 +181,8 @@ void BURGER_API Burger::Matrix3D_t::Set(const Matrix4D_t *pInput)
 	\brief Initialize a rotation matrix with radians for yaw (Y)
 
 	\code
-	float sy = Sin(fYaw);
-	float cy = Cos(fYaw);
+	float sy = get_sine(fYaw);
+	float cy = get_cosine(fYaw);
 	\endcode
 
 	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
@@ -199,8 +199,8 @@ void BURGER_API Burger::Matrix3D_t::Set(const Matrix4D_t *pInput)
 
 void BURGER_API Burger::Matrix3D_t::SetYaw(float fYaw)
 {
-	float fSY = Sin(fYaw);		// Get the sine/cosine
-	float fCY = Cos(fYaw);
+	float fSY = get_sine(fYaw);		// Get the sine/cosine
+	float fCY = get_cosine(fYaw);
 
 	x.x = fCY;
 	x.y = 0.0f;
@@ -220,8 +220,8 @@ void BURGER_API Burger::Matrix3D_t::SetYaw(float fYaw)
 	\brief Initialize a rotation matrix with radians for pitch (X)
 
 	\code
-	float sx = Sin(fPitch);
-	float cx = Cos(fPitch);
+	float sx = get_sine(fPitch);
+	float cx = get_cosine(fPitch);
 	\endcode
 
 	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
@@ -238,8 +238,8 @@ void BURGER_API Burger::Matrix3D_t::SetYaw(float fYaw)
 
 void BURGER_API Burger::Matrix3D_t::SetPitch(float fPitch)
 {
-	float fSX = Sin(fPitch);		// Get the sine/cosine
-	float fCX = Cos(fPitch);
+	float fSX = get_sine(fPitch);		// Get the sine/cosine
+	float fCX = get_cosine(fPitch);
 
 	x.x = 1.0f;
 	x.y = 0.0f;
@@ -259,8 +259,8 @@ void BURGER_API Burger::Matrix3D_t::SetPitch(float fPitch)
 	\brief Initialize a rotation matrix with radians for roll (Z)
 
 	\code
-	float sz = Sin(fRoll);
-	float cz = Cos(fRoll);
+	float sz = get_sine(fRoll);
+	float cz = get_cosine(fRoll);
 	\endcode
 
 	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
@@ -277,8 +277,8 @@ void BURGER_API Burger::Matrix3D_t::SetPitch(float fPitch)
 
 void BURGER_API Burger::Matrix3D_t::SetRoll(float fRoll)
 {
-	float fSZ = Sin(fRoll);		// Get the sine/cosine
-	float fCZ = Cos(fRoll);
+	float fSZ = get_sine(fRoll);		// Get the sine/cosine
+	float fCZ = get_cosine(fRoll);
 
 	x.x = fCZ;
 	x.y = -fSZ;
@@ -302,12 +302,12 @@ void BURGER_API Burger::Matrix3D_t::SetRoll(float fRoll)
 	then Z.
 
 	\code
-	float sx = Sin(fPitch);
-	float sy = Sin(fYaw);
-	float sz = Sin(fRoll);
-	float cx = Cos(fPitch);
-	float cy = Cos(fYaw);
-	float cz = Cos(fRoll);
+	float sx = get_sine(fPitch);
+	float sy = get_sine(fYaw);
+	float sz = get_sine(fRoll);
+	float cx = get_cosine(fPitch);
+	float cy = get_cosine(fYaw);
+	float cz = get_cosine(fRoll);
 	\endcode
 
 	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
@@ -327,12 +327,12 @@ void BURGER_API Burger::Matrix3D_t::SetRoll(float fRoll)
 void BURGER_API Burger::Matrix3D_t::SetYXZ(float fYaw,float fPitch,float fRoll)
 {
 	// Create the sines and cosines
-	float fSX = Sin(fPitch);
-	float fSY = Sin(fYaw);
-	float fSZ = Sin(fRoll);
-	float fCX = Cos(fPitch);
-	float fCY = Cos(fYaw);
-	float fCZ = Cos(fRoll);
+	float fSX = get_sine(fPitch);
+	float fSY = get_sine(fYaw);
+	float fSZ = get_sine(fRoll);
+	float fCX = get_cosine(fPitch);
+	float fCY = get_cosine(fYaw);
+	float fCZ = get_cosine(fRoll);
 
 	// Cache this value
 	float fSXSZ = fSX*fSZ;	// sx*sz
@@ -361,12 +361,12 @@ void BURGER_API Burger::Matrix3D_t::SetYXZ(float fYaw,float fPitch,float fRoll)
 	then X.
 
 	\code
-	float sx = Sin(fPitch);
-	float sy = Sin(fYaw);
-	float sz = Sin(fRoll);
-	float cx = Cos(fPitch);
-	float cy = Cos(fYaw);
-	float cz = Cos(fRoll);
+	float sx = get_sine(fPitch);
+	float sy = get_sine(fYaw);
+	float sz = get_sine(fRoll);
+	float cx = get_cosine(fPitch);
+	float cy = get_cosine(fYaw);
+	float cz = get_cosine(fRoll);
 	\endcode
 
 	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
@@ -386,12 +386,12 @@ void BURGER_API Burger::Matrix3D_t::SetYXZ(float fYaw,float fPitch,float fRoll)
 void BURGER_API Burger::Matrix3D_t::SetYZX(float fYaw,float fPitch,float fRoll)
 {
 	// Create the sines and cosines
-	float fSX = Sin(fPitch);
-	float fSY = Sin(fYaw);
-	float fSZ = Sin(fRoll);
-	float fCX = Cos(fPitch);
-	float fCY = Cos(fYaw);
-	float fCZ = Cos(fRoll);
+	float fSX = get_sine(fPitch);
+	float fSY = get_sine(fYaw);
+	float fSZ = get_sine(fRoll);
+	float fCX = get_cosine(fPitch);
+	float fCY = get_cosine(fYaw);
+	float fCZ = get_cosine(fRoll);
 
 	// Cache this value
 	float fSZCX = fSZ*fCX;	// sz*cx
@@ -420,12 +420,12 @@ void BURGER_API Burger::Matrix3D_t::SetYZX(float fYaw,float fPitch,float fRoll)
 	then Z.
 
 	\code
-	float sx = Sin(fPitch);
-	float sy = Sin(fYaw);
-	float sz = Sin(fRoll);
-	float cx = Cos(fPitch);
-	float cy = Cos(fYaw);
-	float cz = Cos(fRoll);
+	float sx = get_sine(fPitch);
+	float sy = get_sine(fYaw);
+	float sz = get_sine(fRoll);
+	float cx = get_cosine(fPitch);
+	float cy = get_cosine(fYaw);
+	float cz = get_cosine(fRoll);
 	\endcode
 
 	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
@@ -445,12 +445,12 @@ void BURGER_API Burger::Matrix3D_t::SetYZX(float fYaw,float fPitch,float fRoll)
 void BURGER_API Burger::Matrix3D_t::SetXYZ(float fYaw,float fPitch,float fRoll)
 {
 	// Create the sines and cosines
-	float fSX = Sin(fPitch);
-	float fSY = Sin(fYaw);
-	float fSZ = Sin(fRoll);
-	float fCX = Cos(fPitch);
-	float fCY = Cos(fYaw);
-	float fCZ = Cos(fRoll);
+	float fSX = get_sine(fPitch);
+	float fSY = get_sine(fYaw);
+	float fSZ = get_sine(fRoll);
+	float fCX = get_cosine(fPitch);
+	float fCY = get_cosine(fYaw);
+	float fCZ = get_cosine(fRoll);
 
 	// Cache this value
 	float fSXSZ = fSX*fSZ;	// sx*sz
@@ -479,12 +479,12 @@ void BURGER_API Burger::Matrix3D_t::SetXYZ(float fYaw,float fPitch,float fRoll)
 	then Y.
 
 	\code
-	float sx = Sin(fPitch);
-	float sy = Sin(fYaw);
-	float sz = Sin(fRoll);
-	float cx = Cos(fPitch);
-	float cy = Cos(fYaw);
-	float cz = Cos(fRoll);
+	float sx = get_sine(fPitch);
+	float sy = get_sine(fYaw);
+	float sz = get_sine(fRoll);
+	float cx = get_cosine(fPitch);
+	float cy = get_cosine(fYaw);
+	float cz = get_cosine(fRoll);
 	\endcode
 
 	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
@@ -504,12 +504,12 @@ void BURGER_API Burger::Matrix3D_t::SetXYZ(float fYaw,float fPitch,float fRoll)
 void BURGER_API Burger::Matrix3D_t::SetXZY(float fYaw,float fPitch,float fRoll)
 {
 	// Create the sines and cosines
-	float fSX = Sin(fPitch);
-	float fSY = Sin(fYaw);
-	float fSZ = Sin(fRoll);
-	float fCX = Cos(fPitch);
-	float fCY = Cos(fYaw);
-	float fCZ = Cos(fRoll);
+	float fSX = get_sine(fPitch);
+	float fSY = get_sine(fYaw);
+	float fSZ = get_sine(fRoll);
+	float fCX = get_cosine(fPitch);
+	float fCY = get_cosine(fYaw);
+	float fCZ = get_cosine(fRoll);
 
 	// Cache this value
 	float fSZCY = fSZ*fCY;	// sz*cy
@@ -538,12 +538,12 @@ void BURGER_API Burger::Matrix3D_t::SetXZY(float fYaw,float fPitch,float fRoll)
 	then X.
 
 	\code
-	float sx = Sin(fPitch);
-	float sy = Sin(fYaw);
-	float sz = Sin(fRoll);
-	float cx = Cos(fPitch);
-	float cy = Cos(fYaw);
-	float cz = Cos(fRoll);
+	float sx = get_sine(fPitch);
+	float sy = get_sine(fYaw);
+	float sz = get_sine(fRoll);
+	float cx = get_cosine(fPitch);
+	float cy = get_cosine(fYaw);
+	float cz = get_cosine(fRoll);
 	\endcode
 
 	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
@@ -563,12 +563,12 @@ void BURGER_API Burger::Matrix3D_t::SetXZY(float fYaw,float fPitch,float fRoll)
 void BURGER_API Burger::Matrix3D_t::SetZYX(float fYaw,float fPitch,float fRoll)
 {
 	// Create the sines and cosines
-	float fSX = Sin(fPitch);
-	float fSY = Sin(fYaw);
-	float fSZ = Sin(fRoll);
-	float fCX = Cos(fPitch);
-	float fCY = Cos(fYaw);
-	float fCZ = Cos(fRoll);
+	float fSX = get_sine(fPitch);
+	float fSY = get_sine(fYaw);
+	float fSZ = get_sine(fRoll);
+	float fCX = get_cosine(fPitch);
+	float fCY = get_cosine(fYaw);
+	float fCZ = get_cosine(fRoll);
 
 	// Cache this value
 	float fSYSX = fSY*fSX;	// sy*sx
@@ -597,12 +597,12 @@ void BURGER_API Burger::Matrix3D_t::SetZYX(float fYaw,float fPitch,float fRoll)
 	then Y.
 
 	\code
-	float sx = Sin(fPitch);
-	float sy = Sin(fYaw);
-	float sz = Sin(fRoll);
-	float cx = Cos(fPitch);
-	float cy = Cos(fYaw);
-	float cz = Cos(fRoll);
+	float sx = get_sine(fPitch);
+	float sy = get_sine(fYaw);
+	float sz = get_sine(fRoll);
+	float cx = get_cosine(fPitch);
+	float cy = get_cosine(fYaw);
+	float cz = get_cosine(fRoll);
 	\endcode
 
 	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
@@ -622,12 +622,12 @@ void BURGER_API Burger::Matrix3D_t::SetZYX(float fYaw,float fPitch,float fRoll)
 void BURGER_API Burger::Matrix3D_t::SetZXY(float fYaw,float fPitch,float fRoll)
 {
 	// Create the sines and cosines
-	float fSX = Sin(fPitch);
-	float fSY = Sin(fYaw);
-	float fSZ = Sin(fRoll);
-	float fCX = Cos(fPitch);
-	float fCY = Cos(fYaw);
-	float fCZ = Cos(fRoll);
+	float fSX = get_sine(fPitch);
+	float fSY = get_sine(fYaw);
+	float fSZ = get_sine(fRoll);
+	float fCX = get_cosine(fPitch);
+	float fCY = get_cosine(fYaw);
+	float fCZ = get_cosine(fRoll);
 
 	// Cache this value
 	float fSYSX = fSY*fSX;	// sy*sx
@@ -765,8 +765,8 @@ void BURGER_API Burger::Matrix3D_t::SetFromQuaternion(const Vector4D_t *pInput)
 	\brief Initialize a rotation matrix with radians for yaw (Y)
 
 	\code
-	float sy = Sin(fYaw);
-	float cy = Cos(fYaw);
+	float sy = get_sine(fYaw);
+	float cy = get_cosine(fYaw);
 	\endcode
 
 	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
@@ -783,8 +783,8 @@ void BURGER_API Burger::Matrix3D_t::SetFromQuaternion(const Vector4D_t *pInput)
 
 void BURGER_API Burger::Matrix3D_t::TransposeSetYaw(float fYaw)
 {
-	float fSY = Sin(fYaw);		// Get the sine/cosine
-	float fCY = Cos(fYaw);
+	float fSY = get_sine(fYaw);		// Get the sine/cosine
+	float fCY = get_cosine(fYaw);
 
 	x.x = fCY;
 	x.y = 0.0f;
@@ -804,8 +804,8 @@ void BURGER_API Burger::Matrix3D_t::TransposeSetYaw(float fYaw)
 	\brief Initialize a rotation matrix with radians for pitch (X)
 
 	\code
-	float sx = Sin(fPitch);
-	float cx = Cos(fPitch);
+	float sx = get_sine(fPitch);
+	float cx = get_cosine(fPitch);
 	\endcode
 
 	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
@@ -822,8 +822,8 @@ void BURGER_API Burger::Matrix3D_t::TransposeSetYaw(float fYaw)
 
 void BURGER_API Burger::Matrix3D_t::TransposeSetPitch(float fPitch)
 {
-	float fSX = Sin(fPitch);		// Get the sine/cosine
-	float fCX = Cos(fPitch);
+	float fSX = get_sine(fPitch);		// Get the sine/cosine
+	float fCX = get_cosine(fPitch);
 
 	x.x = 1.0f;
 	x.y = 0.0f;
@@ -843,8 +843,8 @@ void BURGER_API Burger::Matrix3D_t::TransposeSetPitch(float fPitch)
 	\brief Initialize a rotation matrix with radians for roll (Z)
 
 	\code
-	float sz = Sin(fRoll);
-	float cz = Cos(fRoll);
+	float sz = get_sine(fRoll);
+	float cz = get_cosine(fRoll);
 	\endcode
 
 	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
@@ -861,8 +861,8 @@ void BURGER_API Burger::Matrix3D_t::TransposeSetPitch(float fPitch)
 
 void BURGER_API Burger::Matrix3D_t::TransposeSetRoll(float fRoll)
 {
-	float fSZ = Sin(fRoll);		// Get the sine/cosine
-	float fCZ = Cos(fRoll);
+	float fSZ = get_sine(fRoll);		// Get the sine/cosine
+	float fCZ = get_cosine(fRoll);
 
 	x.x = fCZ;
 	x.y = fSZ;
@@ -885,12 +885,12 @@ void BURGER_API Burger::Matrix3D_t::TransposeSetRoll(float fRoll)
 	Pitch (X), and Roll (Z) in the order of Y, X and then Z.
 
 	\code
-	float sx = Sin(fPitch);
-	float sy = Sin(fYaw);
-	float sz = Sin(fRoll);
-	float cx = Cos(fPitch);
-	float cy = Cos(fYaw);
-	float cz = Cos(fRoll);
+	float sx = get_sine(fPitch);
+	float sy = get_sine(fYaw);
+	float sz = get_sine(fRoll);
+	float cx = get_cosine(fPitch);
+	float cy = get_cosine(fYaw);
+	float cz = get_cosine(fRoll);
 	\endcode
 
 	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
@@ -910,12 +910,12 @@ void BURGER_API Burger::Matrix3D_t::TransposeSetRoll(float fRoll)
 void BURGER_API Burger::Matrix3D_t::TransposeSetYXZ(float fYaw,float fPitch,float fRoll)
 {
 	// Create the sines and cosines
-	float fSX = Sin(fPitch);
-	float fSY = Sin(fYaw);
-	float fSZ = Sin(fRoll);
-	float fCX = Cos(fPitch);
-	float fCY = Cos(fYaw);
-	float fCZ = Cos(fRoll);
+	float fSX = get_sine(fPitch);
+	float fSY = get_sine(fYaw);
+	float fSZ = get_sine(fRoll);
+	float fCX = get_cosine(fPitch);
+	float fCY = get_cosine(fYaw);
+	float fCZ = get_cosine(fRoll);
 
 	// Cache this value
 	float fSXSZ = fSX*fSZ;	// sx*sz
@@ -943,12 +943,12 @@ void BURGER_API Burger::Matrix3D_t::TransposeSetYXZ(float fYaw,float fPitch,floa
 	Pitch (X), and Roll (Z) in the order of Y, Z and then X.
 
 	\code
-	float sx = Sin(fPitch);
-	float sy = Sin(fYaw);
-	float sz = Sin(fRoll);
-	float cx = Cos(fPitch);
-	float cy = Cos(fYaw);
-	float cz = Cos(fRoll);
+	float sx = get_sine(fPitch);
+	float sy = get_sine(fYaw);
+	float sz = get_sine(fRoll);
+	float cx = get_cosine(fPitch);
+	float cy = get_cosine(fYaw);
+	float cz = get_cosine(fRoll);
 	\endcode
 
 	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
@@ -968,12 +968,12 @@ void BURGER_API Burger::Matrix3D_t::TransposeSetYXZ(float fYaw,float fPitch,floa
 void BURGER_API Burger::Matrix3D_t::TransposeSetYZX(float fYaw,float fPitch,float fRoll)
 {
 	// Create the sines and cosines
-	float fSX = Sin(fPitch);
-	float fSY = Sin(fYaw);
-	float fSZ = Sin(fRoll);
-	float fCX = Cos(fPitch);
-	float fCY = Cos(fYaw);
-	float fCZ = Cos(fRoll);
+	float fSX = get_sine(fPitch);
+	float fSY = get_sine(fYaw);
+	float fSZ = get_sine(fRoll);
+	float fCX = get_cosine(fPitch);
+	float fCY = get_cosine(fYaw);
+	float fCZ = get_cosine(fRoll);
 
 	// Cache this value
 	float fSXSZ = fSX*fSZ;		// sx*sz
@@ -1001,12 +1001,12 @@ void BURGER_API Burger::Matrix3D_t::TransposeSetYZX(float fYaw,float fPitch,floa
 	Pitch (X), and Roll (Z) in the order of X, Y and then Z.
 
 	\code
-	float sx = Sin(fPitch);
-	float sy = Sin(fYaw);
-	float sz = Sin(fRoll);
-	float cx = Cos(fPitch);
-	float cy = Cos(fYaw);
-	float cz = Cos(fRoll);
+	float sx = get_sine(fPitch);
+	float sy = get_sine(fYaw);
+	float sz = get_sine(fRoll);
+	float cx = get_cosine(fPitch);
+	float cy = get_cosine(fYaw);
+	float cz = get_cosine(fRoll);
 	\endcode
 
 	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
@@ -1026,12 +1026,12 @@ void BURGER_API Burger::Matrix3D_t::TransposeSetYZX(float fYaw,float fPitch,floa
 void BURGER_API Burger::Matrix3D_t::TransposeSetXYZ(float fYaw,float fPitch,float fRoll)
 {
 	// Create the sines and cosines
-	float fSX = Sin(fPitch);
-	float fSY = Sin(fYaw);
-	float fSZ = Sin(fRoll);
-	float fCX = Cos(fPitch);
-	float fCY = Cos(fYaw);
-	float fCZ = Cos(fRoll);
+	float fSX = get_sine(fPitch);
+	float fSY = get_sine(fYaw);
+	float fSZ = get_sine(fRoll);
+	float fCX = get_cosine(fPitch);
+	float fCY = get_cosine(fYaw);
+	float fCZ = get_cosine(fRoll);
 
 	// Cache this value
 	float fSYSX = fSY*fSX;	// sy*sx
@@ -1059,12 +1059,12 @@ void BURGER_API Burger::Matrix3D_t::TransposeSetXYZ(float fYaw,float fPitch,floa
 	Pitch (X), and Roll (Z) in the order of X, Z and then Y.
 
 	\code
-	float sx = Sin(fPitch);
-	float sy = Sin(fYaw);
-	float sz = Sin(fRoll);
-	float cx = Cos(fPitch);
-	float cy = Cos(fYaw);
-	float cz = Cos(fRoll);
+	float sx = get_sine(fPitch);
+	float sy = get_sine(fYaw);
+	float sz = get_sine(fRoll);
+	float cx = get_cosine(fPitch);
+	float cy = get_cosine(fYaw);
+	float cz = get_cosine(fRoll);
 	\endcode
 
 	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
@@ -1084,12 +1084,12 @@ void BURGER_API Burger::Matrix3D_t::TransposeSetXYZ(float fYaw,float fPitch,floa
 void BURGER_API Burger::Matrix3D_t::TransposeSetXZY(float fYaw,float fPitch,float fRoll)
 {
 	// Create the sines and cosines
-	float fSX = Sin(fPitch);
-	float fSY = Sin(fYaw);
-	float fSZ = Sin(fRoll);
-	float fCX = Cos(fPitch);
-	float fCY = Cos(fYaw);
-	float fCZ = Cos(fRoll);
+	float fSX = get_sine(fPitch);
+	float fSY = get_sine(fYaw);
+	float fSZ = get_sine(fRoll);
+	float fCX = get_cosine(fPitch);
+	float fCY = get_cosine(fYaw);
+	float fCZ = get_cosine(fRoll);
 
 	// Cache this value
 	float fSZCY = fSZ*fCY;	// sz*cy
@@ -1117,12 +1117,12 @@ void BURGER_API Burger::Matrix3D_t::TransposeSetXZY(float fYaw,float fPitch,floa
 	Pitch (X), and Roll (Z) in the order of Z, Y and then X.
 
 	\code
-	float sx = Sin(fPitch);
-	float sy = Sin(fYaw);
-	float sz = Sin(fRoll);
-	float cx = Cos(fPitch);
-	float cy = Cos(fYaw);
-	float cz = Cos(fRoll);
+	float sx = get_sine(fPitch);
+	float sy = get_sine(fYaw);
+	float sz = get_sine(fRoll);
+	float cx = get_cosine(fPitch);
+	float cy = get_cosine(fYaw);
+	float cz = get_cosine(fRoll);
 	\endcode
 
 	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
@@ -1142,12 +1142,12 @@ void BURGER_API Burger::Matrix3D_t::TransposeSetXZY(float fYaw,float fPitch,floa
 void BURGER_API Burger::Matrix3D_t::TransposeSetZYX(float fYaw,float fPitch,float fRoll)
 {
 	// Create the sines and cosines
-	float fSX = Sin(fPitch);
-	float fSY = Sin(fYaw);
-	float fSZ = Sin(fRoll);
-	float fCX = Cos(fPitch);
-	float fCY = Cos(fYaw);
-	float fCZ = Cos(fRoll);
+	float fSX = get_sine(fPitch);
+	float fSY = get_sine(fYaw);
+	float fSZ = get_sine(fRoll);
+	float fCX = get_cosine(fPitch);
+	float fCY = get_cosine(fYaw);
+	float fCZ = get_cosine(fRoll);
 
 	// Cache this value
 	float fSYSX = fSY*fSX;	// sy*sx
@@ -1175,12 +1175,12 @@ void BURGER_API Burger::Matrix3D_t::TransposeSetZYX(float fYaw,float fPitch,floa
 	Pitch (X), and Roll (Z) in the order of Z, X and then Y.
 
 	\code
-	float sx = Sin(fPitch);
-	float sy = Sin(fYaw);
-	float sz = Sin(fRoll);
-	float cx = Cos(fPitch);
-	float cy = Cos(fYaw);
-	float cz = Cos(fRoll);
+	float sx = get_sine(fPitch);
+	float sy = get_sine(fYaw);
+	float sz = get_sine(fRoll);
+	float cx = get_cosine(fPitch);
+	float cy = get_cosine(fYaw);
+	float cz = get_cosine(fRoll);
 	\endcode
 
 	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
@@ -1200,12 +1200,12 @@ void BURGER_API Burger::Matrix3D_t::TransposeSetZYX(float fYaw,float fPitch,floa
 void BURGER_API Burger::Matrix3D_t::TransposeSetZXY(float fYaw,float fPitch,float fRoll)
 {
 	// Create the sines and cosines
-	float fSX = Sin(fPitch);
-	float fSY = Sin(fYaw);
-	float fSZ = Sin(fRoll);
-	float fCX = Cos(fPitch);
-	float fCY = Cos(fYaw);
-	float fCZ = Cos(fRoll);
+	float fSX = get_sine(fPitch);
+	float fSY = get_sine(fYaw);
+	float fSZ = get_sine(fRoll);
+	float fCX = get_cosine(fPitch);
+	float fCY = get_cosine(fYaw);
+	float fCZ = get_cosine(fRoll);
 
 	// Cache this value
 	float fSXSZ = fSX*fSZ;	// sx*sz
@@ -3079,7 +3079,7 @@ uint_t BURGER_API Burger::Matrix3D_t::AffineInverse(const Matrix3D_t *pInput)
 
 	Given a Y angle in radians, rotate the matrix accordingly
 
-	fCos = Cos(fYaw); fSin = Sin(fYaw);
+	fCos = get_cosine(fYaw); fSin = get_sine(fYaw);
 
 	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
 	<tr><th/><th>x</th><th>y</th><th>z</th></tr>
@@ -3095,8 +3095,8 @@ uint_t BURGER_API Burger::Matrix3D_t::AffineInverse(const Matrix3D_t *pInput)
 
 void BURGER_API Burger::Matrix3D_t::Yaw(float fYaw)
 {
-	float fCos = Cos(fYaw);
-	float fSin = Sin(fYaw);
+	float fCos = get_cosine(fYaw);
+	float fSin = get_sine(fYaw);
 
 	float fXX = x.x;
 	float fXY = x.y;
@@ -3117,7 +3117,7 @@ void BURGER_API Burger::Matrix3D_t::Yaw(float fYaw)
 
 	Given a X angle in radians, rotate the matrix accordingly
 
-	fCos = Cos(fPitch); fSin = Sin(fPitch);
+	fCos = get_cosine(fPitch); fSin = get_sine(fPitch);
 
 	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
 	<tr><th/><th>x</th><th>y</th><th>z</th></tr>
@@ -3133,8 +3133,8 @@ void BURGER_API Burger::Matrix3D_t::Yaw(float fYaw)
 
 void BURGER_API Burger::Matrix3D_t::Pitch(float fPitch)
 {
-	float fCos = Cos(fPitch);
-	float fSin = Sin(fPitch);
+	float fCos = get_cosine(fPitch);
+	float fSin = get_sine(fPitch);
 
 	float fYX = y.x;
 	float fYY = y.y;
@@ -3155,7 +3155,7 @@ void BURGER_API Burger::Matrix3D_t::Pitch(float fPitch)
 
 	Given a Z angle in radians, rotate the matrix accordingly
 
-	fCos = Cos(fRoll); fSin = Sin(fRoll);
+	fCos = get_cosine(fRoll); fSin = get_sine(fRoll);
 
 	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
 	<tr><th/><th>x</th><th>y</th><th>z</th></tr>
@@ -3171,8 +3171,8 @@ void BURGER_API Burger::Matrix3D_t::Pitch(float fPitch)
 
 void BURGER_API Burger::Matrix3D_t::Roll(float fRoll)
 {
-	float fCos = Cos(fRoll);
-	float fSin = Sin(fRoll);
+	float fCos = get_cosine(fRoll);
+	float fSin = get_sine(fRoll);
 
 	float fXX = x.x;
 	float fXY = x.y;

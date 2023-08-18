@@ -14,16 +14,48 @@
 ***************************************/
 
 #include "brfloatingpoint.h"
-#include <math.h>
 
-float BURGER_API Burger::get_floor(float fInput) BURGER_NOEXCEPT
+__declspec(naked) float BURGER_API Burger::get_floor(
+	float /* fInput */) BURGER_NOEXCEPT
 {
-	// Convert to the input to an integer (Can fail on large numbers)
-	double dVar = __fcfid(__fctiwz(fInput));
-	// Floor the value to - infinity
-	dVar = __fsel(fInput - dVar, dVar, dVar - 1.0f); // Return floored value
+	// clang-format off
+	__asm {
+// Convert the float to an integer, round to zero
+		fctiwz	fp2, fp1
 
-	// If the input number was invalid, return the original number
-	return __fself(
-		fabsf(fInput) - 8388608.0f, fInput, static_cast<float>(dVar));
+// Prep for loading 1.0f
+		lau		r3, g_fOne
+
+// Get abs fInput
+		fabs	fp6, fp1
+
+// Convert back to float without fraction, possible final answer
+		fcfid	fp2, fp2
+
+// Prep for loading 8388608.0f
+		lau		r4, g_fMinNoInteger
+
+// Fetch 1.0f in fp3
+		lfs		fp3, g_fOne(r3)
+
+// Fetch 8388608.0f in fp4
+		lfs		fp4, g_fMinNoInteger(r4)
+
+// Take the answer and subtract 1.0f
+		fsubs	fp3, fp2, fp3
+
+// fp6 has abs(fInput) - 8388608.0f
+		fsubs	fp6, fp6, fp4
+
+// fp5 has fInput - answer, to test if it overflowed
+		fsubs	fp5, fp1, fp2
+
+// answer = ((fInput-answer)>=0) ? answer : answer - 1.0f
+		fsel	fp2, fp5, fp2, fp3
+
+// answer = (fabs(fInput) - 8388608)>=0 ? fInput, answer
+		fsel	fp1, fp6, fp1, fp2
+		blr
+	}
+	// clang-format on
 }

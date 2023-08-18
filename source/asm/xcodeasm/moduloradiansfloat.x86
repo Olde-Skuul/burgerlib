@@ -10,7 +10,7 @@
 	CPU types, so test for the proper CPU type before invoking any cpu
 	instructions.
 
-	float BURGER_API Burger::ModuloRadians(float fInput) BURGER_NOEXCEPT
+	float BURGER_API Burger::modulo_radians(float fInput) BURGER_NOEXCEPT
 
 ***************************************/
 
@@ -28,8 +28,8 @@
 	.align 2
 	.text
 
-	.globl __ZN6Burger13ModuloRadiansEf
-__ZN6Burger13ModuloRadiansEf:
+	.globl __ZN6Burger14modulo_radiansEf
+__ZN6Burger14modulo_radiansEf:
 
 /* Fetch the pointers */
 	lis		r3, ha16(__ZN6Burger16g_fReciprocalPi2E)
@@ -112,8 +112,8 @@ __ZN6Burger13ModuloRadiansEf:
 
 #if defined(__i386__)
 	.align	4,0x90
-	.globl __ZN6Burger13ModuloRadiansEf
-__ZN6Burger13ModuloRadiansEf:
+	.globl __ZN6Burger14modulo_radiansEf
+__ZN6Burger14modulo_radiansEf:
 
 /* Load into the FPU */
 	movss		4(%esp), %xmm0

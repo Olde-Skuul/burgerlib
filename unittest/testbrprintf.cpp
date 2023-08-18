@@ -53,7 +53,6 @@
 #include "bratomic.h"
 #include "brfpinfo.h"
 #include "brmemoryfunctions.h"
-#include "brmetrowerks.h"
 #include "brnumberstring.h"
 #include "brprintf.h"
 #include "brstringfunctions.h"

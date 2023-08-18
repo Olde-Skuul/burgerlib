@@ -10,7 +10,7 @@
 	CPU types, so test for the proper CPU type before invoking any cpu
 	instructions.
 
-	double BURGER_API Burger::Ceil(double dInput) BURGER_NOEXCEPT
+	double BURGER_API Burger::get_ceiling(double dInput) BURGER_NOEXCEPT
 
 ***************************************/
 
@@ -28,8 +28,8 @@
 	.align 2
 	.text
 
-	.globl __ZN6Burger4CeilEd
-__ZN6Burger4CeilEd:
+	.globl __ZN6Burger11get_ceilingEd
+__ZN6Burger11get_ceilingEd:
 
 	lis		r3, ha16(__ZN6Burger15g_dMinNoIntegerE)
 
@@ -86,8 +86,8 @@ __ZN6Burger4CeilEd:
 
 #if defined(__i386__)
 	.align	4,0x90
-	.globl __ZN6Burger4CeilEd
-__ZN6Burger4CeilEd:
+	.globl __ZN6Burger11get_ceilingEd
+__ZN6Burger11get_ceilingEd:
 
 /* Load the value in an integer register */
 	movl	8(%esp), %eax

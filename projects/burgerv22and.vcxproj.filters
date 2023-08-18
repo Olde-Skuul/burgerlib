@@ -424,9 +424,6 @@
     <ClInclude Include="..\source\lowlevel\brmacros.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\lowlevel\brmetrowerks.h">
-      <Filter>source\lowlevel</Filter>
-    </ClInclude>
     <ClInclude Include="..\source\lowlevel\brmutex.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>

@@ -397,9 +397,6 @@
     <ClInclude Include="..\source\lowlevel\brmacros.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\lowlevel\brmetrowerks.h">
-      <Filter>source\lowlevel</Filter>
-    </ClInclude>
     <ClInclude Include="..\source\lowlevel\brmutex.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
@@ -1168,10 +1165,46 @@
     <ClCompile Include="..\source\text\brwin437.cpp">
       <Filter>source\text</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\asm\ps3_asm\get_ceilingdouble.s">
+      <Filter>source\asm\ps3_asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\ps3_asm\get_ceilingfloat.s">
+      <Filter>source\asm\ps3_asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\ps3_asm\get_floordouble.s">
+      <Filter>source\asm\ps3_asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\ps3_asm\get_floorfloat.s">
+      <Filter>source\asm\ps3_asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\ps3_asm\get_rounddouble.s">
+      <Filter>source\asm\ps3_asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\ps3_asm\get_roundfloat.s">
+      <Filter>source\asm\ps3_asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\ps3_asm\get_signdouble.s">
+      <Filter>source\asm\ps3_asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\ps3_asm\get_signfloat.s">
+      <Filter>source\asm\ps3_asm</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\asm\ps3_asm\getpowerpcrounding.s">
       <Filter>source\asm\ps3_asm</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\asm\ps3_asm\is_nandouble.s">
+      <Filter>source\asm\ps3_asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\ps3_asm\is_nanfloat.s">
+      <Filter>source\asm\ps3_asm</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\asm\ps3_asm\loadunaligned64.s">
+      <Filter>source\asm\ps3_asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\ps3_asm\moduloradiansdouble.s">
+      <Filter>source\asm\ps3_asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\ps3_asm\moduloradiansfloat.s">
       <Filter>source\asm\ps3_asm</Filter>
     </ClCompile>
     <ClCompile Include="..\source\asm\ps3_asm\setpowerpcrounding.s">

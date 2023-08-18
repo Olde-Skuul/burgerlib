@@ -421,9 +421,6 @@
     <ClInclude Include="..\source\lowlevel\brmacros.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\lowlevel\brmetrowerks.h">
-      <Filter>source\lowlevel</Filter>
-    </ClInclude>
     <ClInclude Include="..\source\lowlevel\brmutex.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
@@ -709,10 +706,70 @@
     <ClCompile Include="..\source\ansi\brstdouthelpers.cpp">
       <Filter>source\ansi</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\asm\xbox360asm\get_ceilingdouble.cpp">
+      <Filter>source\asm\xbox360asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\xbox360asm\get_ceilingfloat.cpp">
+      <Filter>source\asm\xbox360asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\xbox360asm\get_floordouble.cpp">
+      <Filter>source\asm\xbox360asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\xbox360asm\get_floorfloat.cpp">
+      <Filter>source\asm\xbox360asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\xbox360asm\get_rounddouble.cpp">
+      <Filter>source\asm\xbox360asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\xbox360asm\get_roundfloat.cpp">
+      <Filter>source\asm\xbox360asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\xbox360asm\get_sign_bitdouble.cpp">
+      <Filter>source\asm\xbox360asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\xbox360asm\get_sign_bitfloat.cpp">
+      <Filter>source\asm\xbox360asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\xbox360asm\get_signdouble.cpp">
+      <Filter>source\asm\xbox360asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\xbox360asm\get_signfloat.cpp">
+      <Filter>source\asm\xbox360asm</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\asm\xbox360asm\getpowerpcrounding.cpp">
       <Filter>source\asm\xbox360asm</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\asm\xbox360asm\is_finitedouble.cpp">
+      <Filter>source\asm\xbox360asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\xbox360asm\is_finitefloat.cpp">
+      <Filter>source\asm\xbox360asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\xbox360asm\is_infinitedouble.cpp">
+      <Filter>source\asm\xbox360asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\xbox360asm\is_infinitefloat.cpp">
+      <Filter>source\asm\xbox360asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\xbox360asm\is_nandouble.cpp">
+      <Filter>source\asm\xbox360asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\xbox360asm\is_nanfloat.cpp">
+      <Filter>source\asm\xbox360asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\xbox360asm\is_normaldouble.cpp">
+      <Filter>source\asm\xbox360asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\xbox360asm\is_normalfloat.cpp">
+      <Filter>source\asm\xbox360asm</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\asm\xbox360asm\loadunaligned64.cpp">
+      <Filter>source\asm\xbox360asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\xbox360asm\moduloradiansdouble.cpp">
+      <Filter>source\asm\xbox360asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\xbox360asm\moduloradiansfloat.cpp">
       <Filter>source\asm\xbox360asm</Filter>
     </ClCompile>
     <ClCompile Include="..\source\asm\xbox360asm\setpowerpcrounding.cpp">

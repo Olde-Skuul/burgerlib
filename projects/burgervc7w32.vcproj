@@ -23,7 +23,7 @@
 				FavorSizeOrSpeed="1"
 				OptimizeForProcessor="3"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\platforms\windows\vc7compat;..\source\random;..\source\text;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\sdks\steamworks\public\steam;$(DXSDK_DIR)\Include;C:\Program Files\Microsoft SDKs\Windows\v6.0A\Include"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm\vs2003;..\source\asm\masm\vs2003_2005;..\source\asm\masm\vs2003_2008;..\source\asm\masm\vs2003_2010;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\platforms\windows\vc7compat;..\source\random;..\source\text;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\sdks\steamworks\public\steam;$(DXSDK_DIR)\Include;C:\Program Files\Microsoft SDKs\Windows\v6.0A\Include"
 				PreprocessorDefinitions="_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
@@ -83,7 +83,7 @@
 				EnableFiberSafeOptimizations="TRUE"
 				OptimizeForProcessor="3"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\platforms\windows\vc7compat;..\source\random;..\source\text;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\sdks\steamworks\public\steam;$(DXSDK_DIR)\Include;C:\Program Files\Microsoft SDKs\Windows\v6.0A\Include"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm\vs2003;..\source\asm\masm\vs2003_2005;..\source\asm\masm\vs2003_2008;..\source\asm\masm\vs2003_2010;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\platforms\windows\vc7compat;..\source\random;..\source\text;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\sdks\steamworks\public\steam;$(DXSDK_DIR)\Include;C:\Program Files\Microsoft SDKs\Windows\v6.0A\Include"
 				PreprocessorDefinitions="_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
@@ -142,7 +142,7 @@
 				EnableFiberSafeOptimizations="TRUE"
 				OptimizeForProcessor="3"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\platforms\windows\vc7compat;..\source\random;..\source\text;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\sdks\steamworks\public\steam;$(DXSDK_DIR)\Include;C:\Program Files\Microsoft SDKs\Windows\v6.0A\Include"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm\vs2003;..\source\asm\masm\vs2003_2005;..\source\asm\masm\vs2003_2008;..\source\asm\masm\vs2003_2010;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\platforms\windows\vc7compat;..\source\random;..\source\text;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\sdks\steamworks\public\steam;$(DXSDK_DIR)\Include;C:\Program Files\Microsoft SDKs\Windows\v6.0A\Include"
 				PreprocessorDefinitions="NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
@@ -203,7 +203,7 @@
 				WholeProgramOptimization="TRUE"
 				OptimizeForProcessor="3"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\platforms\windows\vc7compat;..\source\random;..\source\text;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\sdks\steamworks\public\steam;$(DXSDK_DIR)\Include;C:\Program Files\Microsoft SDKs\Windows\v6.0A\Include"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm\vs2003;..\source\asm\masm\vs2003_2005;..\source\asm\masm\vs2003_2008;..\source\asm\masm\vs2003_2010;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\platforms\windows\vc7compat;..\source\random;..\source\text;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\sdks\steamworks\public\steam;$(DXSDK_DIR)\Include;C:\Program Files\Microsoft SDKs\Windows\v6.0A\Include"
 				PreprocessorDefinitions="NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
@@ -301,285 +301,822 @@
 				<Filter
 					Name="masm">
 					<File
-						RelativePath="..\source\asm\masm\cpuid.x86">
+						RelativePath="..\source\asm\masm\get8087precision.x86">
 						<FileConfiguration
 							Name="Debug|Win32">
 							<Tool
 								Name="VCCustomBuildTool"
-								Description="Assembling cpuid.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)cpuid.obj&quot; /Ta&quot;../source/asm/masm/cpuid.x86&quot;"
-								Outputs="$(IntDir)cpuid.obj"/>
+								Description="Assembling get8087precision.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get8087precision.obj&quot; /Ta&quot;../source/asm/masm/get8087precision.x86&quot;"
+								Outputs="$(IntDir)get8087precision.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Internal|Win32">
 							<Tool
 								Name="VCCustomBuildTool"
-								Description="Assembling cpuid.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)cpuid.obj&quot; /Ta&quot;../source/asm/masm/cpuid.x86&quot;"
-								Outputs="$(IntDir)cpuid.obj"/>
+								Description="Assembling get8087precision.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get8087precision.obj&quot; /Ta&quot;../source/asm/masm/get8087precision.x86&quot;"
+								Outputs="$(IntDir)get8087precision.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
 								Name="VCCustomBuildTool"
-								Description="Assembling cpuid.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)cpuid.obj&quot; /Ta&quot;../source/asm/masm/cpuid.x86&quot;"
-								Outputs="$(IntDir)cpuid.obj"/>
+								Description="Assembling get8087precision.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get8087precision.obj&quot; /Ta&quot;../source/asm/masm/get8087precision.x86&quot;"
+								Outputs="$(IntDir)get8087precision.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Release_LTCG|Win32">
 							<Tool
 								Name="VCCustomBuildTool"
-								Description="Assembling cpuid.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)cpuid.obj&quot; /Ta&quot;../source/asm/masm/cpuid.x86&quot;"
-								Outputs="$(IntDir)cpuid.obj"/>
+								Description="Assembling get8087precision.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get8087precision.obj&quot; /Ta&quot;../source/asm/masm/get8087precision.x86&quot;"
+								Outputs="$(IntDir)get8087precision.obj"/>
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\source\asm\masm\cpuidex.x86">
+						RelativePath="..\source\asm\masm\get8087rounding.x86">
 						<FileConfiguration
 							Name="Debug|Win32">
 							<Tool
 								Name="VCCustomBuildTool"
-								Description="Assembling cpuidex.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)cpuidex.obj&quot; /Ta&quot;../source/asm/masm/cpuidex.x86&quot;"
-								Outputs="$(IntDir)cpuidex.obj"/>
+								Description="Assembling get8087rounding.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get8087rounding.obj&quot; /Ta&quot;../source/asm/masm/get8087rounding.x86&quot;"
+								Outputs="$(IntDir)get8087rounding.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Internal|Win32">
 							<Tool
 								Name="VCCustomBuildTool"
-								Description="Assembling cpuidex.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)cpuidex.obj&quot; /Ta&quot;../source/asm/masm/cpuidex.x86&quot;"
-								Outputs="$(IntDir)cpuidex.obj"/>
+								Description="Assembling get8087rounding.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get8087rounding.obj&quot; /Ta&quot;../source/asm/masm/get8087rounding.x86&quot;"
+								Outputs="$(IntDir)get8087rounding.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
 								Name="VCCustomBuildTool"
-								Description="Assembling cpuidex.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)cpuidex.obj&quot; /Ta&quot;../source/asm/masm/cpuidex.x86&quot;"
-								Outputs="$(IntDir)cpuidex.obj"/>
+								Description="Assembling get8087rounding.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get8087rounding.obj&quot; /Ta&quot;../source/asm/masm/get8087rounding.x86&quot;"
+								Outputs="$(IntDir)get8087rounding.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Release_LTCG|Win32">
 							<Tool
 								Name="VCCustomBuildTool"
-								Description="Assembling cpuidex.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)cpuidex.obj&quot; /Ta&quot;../source/asm/masm/cpuidex.x86&quot;"
-								Outputs="$(IntDir)cpuidex.obj"/>
+								Description="Assembling get8087rounding.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get8087rounding.obj&quot; /Ta&quot;../source/asm/masm/get8087rounding.x86&quot;"
+								Outputs="$(IntDir)get8087rounding.obj"/>
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\source\asm\masm\swapendian64.x86">
+						RelativePath="..\source\asm\masm\get_ceilingdouble.x86">
 						<FileConfiguration
 							Name="Debug|Win32">
 							<Tool
 								Name="VCCustomBuildTool"
-								Description="Assembling swapendian64.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendian64.obj&quot; /Ta&quot;../source/asm/masm/swapendian64.x86&quot;"
-								Outputs="$(IntDir)swapendian64.obj"/>
+								Description="Assembling get_ceilingdouble.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_ceilingdouble.obj&quot; /Ta&quot;../source/asm/masm/get_ceilingdouble.x86&quot;"
+								Outputs="$(IntDir)get_ceilingdouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Internal|Win32">
 							<Tool
 								Name="VCCustomBuildTool"
-								Description="Assembling swapendian64.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendian64.obj&quot; /Ta&quot;../source/asm/masm/swapendian64.x86&quot;"
-								Outputs="$(IntDir)swapendian64.obj"/>
+								Description="Assembling get_ceilingdouble.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_ceilingdouble.obj&quot; /Ta&quot;../source/asm/masm/get_ceilingdouble.x86&quot;"
+								Outputs="$(IntDir)get_ceilingdouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
 								Name="VCCustomBuildTool"
-								Description="Assembling swapendian64.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendian64.obj&quot; /Ta&quot;../source/asm/masm/swapendian64.x86&quot;"
-								Outputs="$(IntDir)swapendian64.obj"/>
+								Description="Assembling get_ceilingdouble.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_ceilingdouble.obj&quot; /Ta&quot;../source/asm/masm/get_ceilingdouble.x86&quot;"
+								Outputs="$(IntDir)get_ceilingdouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Release_LTCG|Win32">
 							<Tool
 								Name="VCCustomBuildTool"
-								Description="Assembling swapendian64.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendian64.obj&quot; /Ta&quot;../source/asm/masm/swapendian64.x86&quot;"
-								Outputs="$(IntDir)swapendian64.obj"/>
+								Description="Assembling get_ceilingdouble.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_ceilingdouble.obj&quot; /Ta&quot;../source/asm/masm/get_ceilingdouble.x86&quot;"
+								Outputs="$(IntDir)get_ceilingdouble.obj"/>
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\source\asm\masm\swapendiandouble.x86">
+						RelativePath="..\source\asm\masm\get_ceilingfloat.x86">
 						<FileConfiguration
 							Name="Debug|Win32">
 							<Tool
 								Name="VCCustomBuildTool"
-								Description="Assembling swapendiandouble.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandouble.obj&quot; /Ta&quot;../source/asm/masm/swapendiandouble.x86&quot;"
-								Outputs="$(IntDir)swapendiandouble.obj"/>
+								Description="Assembling get_ceilingfloat.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_ceilingfloat.obj&quot; /Ta&quot;../source/asm/masm/get_ceilingfloat.x86&quot;"
+								Outputs="$(IntDir)get_ceilingfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Internal|Win32">
 							<Tool
 								Name="VCCustomBuildTool"
-								Description="Assembling swapendiandouble.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandouble.obj&quot; /Ta&quot;../source/asm/masm/swapendiandouble.x86&quot;"
-								Outputs="$(IntDir)swapendiandouble.obj"/>
+								Description="Assembling get_ceilingfloat.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_ceilingfloat.obj&quot; /Ta&quot;../source/asm/masm/get_ceilingfloat.x86&quot;"
+								Outputs="$(IntDir)get_ceilingfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
 								Name="VCCustomBuildTool"
-								Description="Assembling swapendiandouble.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandouble.obj&quot; /Ta&quot;../source/asm/masm/swapendiandouble.x86&quot;"
-								Outputs="$(IntDir)swapendiandouble.obj"/>
+								Description="Assembling get_ceilingfloat.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_ceilingfloat.obj&quot; /Ta&quot;../source/asm/masm/get_ceilingfloat.x86&quot;"
+								Outputs="$(IntDir)get_ceilingfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Release_LTCG|Win32">
 							<Tool
 								Name="VCCustomBuildTool"
-								Description="Assembling swapendiandouble.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandouble.obj&quot; /Ta&quot;../source/asm/masm/swapendiandouble.x86&quot;"
-								Outputs="$(IntDir)swapendiandouble.obj"/>
+								Description="Assembling get_ceilingfloat.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_ceilingfloat.obj&quot; /Ta&quot;../source/asm/masm/get_ceilingfloat.x86&quot;"
+								Outputs="$(IntDir)get_ceilingfloat.obj"/>
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\source\asm\masm\swapendiandoubleptr.x86">
+						RelativePath="..\source\asm\masm\get_floordouble.x86">
 						<FileConfiguration
 							Name="Debug|Win32">
 							<Tool
 								Name="VCCustomBuildTool"
-								Description="Assembling swapendiandoubleptr.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandoubleptr.obj&quot; /Ta&quot;../source/asm/masm/swapendiandoubleptr.x86&quot;"
-								Outputs="$(IntDir)swapendiandoubleptr.obj"/>
+								Description="Assembling get_floordouble.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_floordouble.obj&quot; /Ta&quot;../source/asm/masm/get_floordouble.x86&quot;"
+								Outputs="$(IntDir)get_floordouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Internal|Win32">
 							<Tool
 								Name="VCCustomBuildTool"
-								Description="Assembling swapendiandoubleptr.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandoubleptr.obj&quot; /Ta&quot;../source/asm/masm/swapendiandoubleptr.x86&quot;"
-								Outputs="$(IntDir)swapendiandoubleptr.obj"/>
+								Description="Assembling get_floordouble.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_floordouble.obj&quot; /Ta&quot;../source/asm/masm/get_floordouble.x86&quot;"
+								Outputs="$(IntDir)get_floordouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
 								Name="VCCustomBuildTool"
-								Description="Assembling swapendiandoubleptr.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandoubleptr.obj&quot; /Ta&quot;../source/asm/masm/swapendiandoubleptr.x86&quot;"
-								Outputs="$(IntDir)swapendiandoubleptr.obj"/>
+								Description="Assembling get_floordouble.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_floordouble.obj&quot; /Ta&quot;../source/asm/masm/get_floordouble.x86&quot;"
+								Outputs="$(IntDir)get_floordouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Release_LTCG|Win32">
 							<Tool
 								Name="VCCustomBuildTool"
-								Description="Assembling swapendiandoubleptr.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandoubleptr.obj&quot; /Ta&quot;../source/asm/masm/swapendiandoubleptr.x86&quot;"
-								Outputs="$(IntDir)swapendiandoubleptr.obj"/>
+								Description="Assembling get_floordouble.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_floordouble.obj&quot; /Ta&quot;../source/asm/masm/get_floordouble.x86&quot;"
+								Outputs="$(IntDir)get_floordouble.obj"/>
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\source\asm\masm\swapendianfloat.x86">
+						RelativePath="..\source\asm\masm\get_floorfloat.x86">
 						<FileConfiguration
 							Name="Debug|Win32">
 							<Tool
 								Name="VCCustomBuildTool"
-								Description="Assembling swapendianfloat.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloat.obj&quot; /Ta&quot;../source/asm/masm/swapendianfloat.x86&quot;"
-								Outputs="$(IntDir)swapendianfloat.obj"/>
+								Description="Assembling get_floorfloat.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_floorfloat.obj&quot; /Ta&quot;../source/asm/masm/get_floorfloat.x86&quot;"
+								Outputs="$(IntDir)get_floorfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Internal|Win32">
 							<Tool
 								Name="VCCustomBuildTool"
-								Description="Assembling swapendianfloat.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloat.obj&quot; /Ta&quot;../source/asm/masm/swapendianfloat.x86&quot;"
-								Outputs="$(IntDir)swapendianfloat.obj"/>
+								Description="Assembling get_floorfloat.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_floorfloat.obj&quot; /Ta&quot;../source/asm/masm/get_floorfloat.x86&quot;"
+								Outputs="$(IntDir)get_floorfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
 								Name="VCCustomBuildTool"
-								Description="Assembling swapendianfloat.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloat.obj&quot; /Ta&quot;../source/asm/masm/swapendianfloat.x86&quot;"
-								Outputs="$(IntDir)swapendianfloat.obj"/>
+								Description="Assembling get_floorfloat.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_floorfloat.obj&quot; /Ta&quot;../source/asm/masm/get_floorfloat.x86&quot;"
+								Outputs="$(IntDir)get_floorfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Release_LTCG|Win32">
 							<Tool
 								Name="VCCustomBuildTool"
-								Description="Assembling swapendianfloat.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloat.obj&quot; /Ta&quot;../source/asm/masm/swapendianfloat.x86&quot;"
-								Outputs="$(IntDir)swapendianfloat.obj"/>
+								Description="Assembling get_floorfloat.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_floorfloat.obj&quot; /Ta&quot;../source/asm/masm/get_floorfloat.x86&quot;"
+								Outputs="$(IntDir)get_floorfloat.obj"/>
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\source\asm\masm\swapendianfloatptr.x86">
+						RelativePath="..\source\asm\masm\get_rounddouble.x86">
 						<FileConfiguration
 							Name="Debug|Win32">
 							<Tool
 								Name="VCCustomBuildTool"
-								Description="Assembling swapendianfloatptr.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloatptr.obj&quot; /Ta&quot;../source/asm/masm/swapendianfloatptr.x86&quot;"
-								Outputs="$(IntDir)swapendianfloatptr.obj"/>
+								Description="Assembling get_rounddouble.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_rounddouble.obj&quot; /Ta&quot;../source/asm/masm/get_rounddouble.x86&quot;"
+								Outputs="$(IntDir)get_rounddouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Internal|Win32">
 							<Tool
 								Name="VCCustomBuildTool"
-								Description="Assembling swapendianfloatptr.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloatptr.obj&quot; /Ta&quot;../source/asm/masm/swapendianfloatptr.x86&quot;"
-								Outputs="$(IntDir)swapendianfloatptr.obj"/>
+								Description="Assembling get_rounddouble.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_rounddouble.obj&quot; /Ta&quot;../source/asm/masm/get_rounddouble.x86&quot;"
+								Outputs="$(IntDir)get_rounddouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
 								Name="VCCustomBuildTool"
-								Description="Assembling swapendianfloatptr.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloatptr.obj&quot; /Ta&quot;../source/asm/masm/swapendianfloatptr.x86&quot;"
-								Outputs="$(IntDir)swapendianfloatptr.obj"/>
+								Description="Assembling get_rounddouble.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_rounddouble.obj&quot; /Ta&quot;../source/asm/masm/get_rounddouble.x86&quot;"
+								Outputs="$(IntDir)get_rounddouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Release_LTCG|Win32">
 							<Tool
 								Name="VCCustomBuildTool"
-								Description="Assembling swapendianfloatptr.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloatptr.obj&quot; /Ta&quot;../source/asm/masm/swapendianfloatptr.x86&quot;"
-								Outputs="$(IntDir)swapendianfloatptr.obj"/>
+								Description="Assembling get_rounddouble.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_rounddouble.obj&quot; /Ta&quot;../source/asm/masm/get_rounddouble.x86&quot;"
+								Outputs="$(IntDir)get_rounddouble.obj"/>
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\source\asm\masm\xgetbv.x86">
+						RelativePath="..\source\asm\masm\get_roundfloat.x86">
 						<FileConfiguration
 							Name="Debug|Win32">
 							<Tool
 								Name="VCCustomBuildTool"
-								Description="Assembling xgetbv.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)xgetbv.obj&quot; /Ta&quot;../source/asm/masm/xgetbv.x86&quot;"
-								Outputs="$(IntDir)xgetbv.obj"/>
+								Description="Assembling get_roundfloat.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_roundfloat.obj&quot; /Ta&quot;../source/asm/masm/get_roundfloat.x86&quot;"
+								Outputs="$(IntDir)get_roundfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Internal|Win32">
 							<Tool
 								Name="VCCustomBuildTool"
-								Description="Assembling xgetbv.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)xgetbv.obj&quot; /Ta&quot;../source/asm/masm/xgetbv.x86&quot;"
-								Outputs="$(IntDir)xgetbv.obj"/>
+								Description="Assembling get_roundfloat.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_roundfloat.obj&quot; /Ta&quot;../source/asm/masm/get_roundfloat.x86&quot;"
+								Outputs="$(IntDir)get_roundfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Release|Win32">
 							<Tool
 								Name="VCCustomBuildTool"
-								Description="Assembling xgetbv.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)xgetbv.obj&quot; /Ta&quot;../source/asm/masm/xgetbv.x86&quot;"
-								Outputs="$(IntDir)xgetbv.obj"/>
+								Description="Assembling get_roundfloat.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_roundfloat.obj&quot; /Ta&quot;../source/asm/masm/get_roundfloat.x86&quot;"
+								Outputs="$(IntDir)get_roundfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Release_LTCG|Win32">
 							<Tool
 								Name="VCCustomBuildTool"
-								Description="Assembling xgetbv.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)xgetbv.obj&quot; /Ta&quot;../source/asm/masm/xgetbv.x86&quot;"
-								Outputs="$(IntDir)xgetbv.obj"/>
+								Description="Assembling get_roundfloat.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_roundfloat.obj&quot; /Ta&quot;../source/asm/masm/get_roundfloat.x86&quot;"
+								Outputs="$(IntDir)get_roundfloat.obj"/>
 						</FileConfiguration>
 					</File>
+					<File
+						RelativePath="..\source\asm\masm\get_signdouble.x86">
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling get_signdouble.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_signdouble.obj&quot; /Ta&quot;../source/asm/masm/get_signdouble.x86&quot;"
+								Outputs="$(IntDir)get_signdouble.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling get_signdouble.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_signdouble.obj&quot; /Ta&quot;../source/asm/masm/get_signdouble.x86&quot;"
+								Outputs="$(IntDir)get_signdouble.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling get_signdouble.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_signdouble.obj&quot; /Ta&quot;../source/asm/masm/get_signdouble.x86&quot;"
+								Outputs="$(IntDir)get_signdouble.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling get_signdouble.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_signdouble.obj&quot; /Ta&quot;../source/asm/masm/get_signdouble.x86&quot;"
+								Outputs="$(IntDir)get_signdouble.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm\get_signfloat.x86">
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling get_signfloat.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_signfloat.obj&quot; /Ta&quot;../source/asm/masm/get_signfloat.x86&quot;"
+								Outputs="$(IntDir)get_signfloat.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling get_signfloat.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_signfloat.obj&quot; /Ta&quot;../source/asm/masm/get_signfloat.x86&quot;"
+								Outputs="$(IntDir)get_signfloat.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling get_signfloat.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_signfloat.obj&quot; /Ta&quot;../source/asm/masm/get_signfloat.x86&quot;"
+								Outputs="$(IntDir)get_signfloat.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling get_signfloat.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_signfloat.obj&quot; /Ta&quot;../source/asm/masm/get_signfloat.x86&quot;"
+								Outputs="$(IntDir)get_signfloat.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm\has_cpuid.x86">
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling has_cpuid.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)has_cpuid.obj&quot; /Ta&quot;../source/asm/masm/has_cpuid.x86&quot;"
+								Outputs="$(IntDir)has_cpuid.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling has_cpuid.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)has_cpuid.obj&quot; /Ta&quot;../source/asm/masm/has_cpuid.x86&quot;"
+								Outputs="$(IntDir)has_cpuid.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling has_cpuid.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)has_cpuid.obj&quot; /Ta&quot;../source/asm/masm/has_cpuid.x86&quot;"
+								Outputs="$(IntDir)has_cpuid.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling has_cpuid.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)has_cpuid.obj&quot; /Ta&quot;../source/asm/masm/has_cpuid.x86&quot;"
+								Outputs="$(IntDir)has_cpuid.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm\modulo_radiansdouble.x86">
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling modulo_radiansdouble.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)modulo_radiansdouble.obj&quot; /Ta&quot;../source/asm/masm/modulo_radiansdouble.x86&quot;"
+								Outputs="$(IntDir)modulo_radiansdouble.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling modulo_radiansdouble.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)modulo_radiansdouble.obj&quot; /Ta&quot;../source/asm/masm/modulo_radiansdouble.x86&quot;"
+								Outputs="$(IntDir)modulo_radiansdouble.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling modulo_radiansdouble.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)modulo_radiansdouble.obj&quot; /Ta&quot;../source/asm/masm/modulo_radiansdouble.x86&quot;"
+								Outputs="$(IntDir)modulo_radiansdouble.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling modulo_radiansdouble.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)modulo_radiansdouble.obj&quot; /Ta&quot;../source/asm/masm/modulo_radiansdouble.x86&quot;"
+								Outputs="$(IntDir)modulo_radiansdouble.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm\modulo_radiansfloat.x86">
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling modulo_radiansfloat.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)modulo_radiansfloat.obj&quot; /Ta&quot;../source/asm/masm/modulo_radiansfloat.x86&quot;"
+								Outputs="$(IntDir)modulo_radiansfloat.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling modulo_radiansfloat.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)modulo_radiansfloat.obj&quot; /Ta&quot;../source/asm/masm/modulo_radiansfloat.x86&quot;"
+								Outputs="$(IntDir)modulo_radiansfloat.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling modulo_radiansfloat.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)modulo_radiansfloat.obj&quot; /Ta&quot;../source/asm/masm/modulo_radiansfloat.x86&quot;"
+								Outputs="$(IntDir)modulo_radiansfloat.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling modulo_radiansfloat.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)modulo_radiansfloat.obj&quot; /Ta&quot;../source/asm/masm/modulo_radiansfloat.x86&quot;"
+								Outputs="$(IntDir)modulo_radiansfloat.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm\set8087precision.x86">
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling set8087precision.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)set8087precision.obj&quot; /Ta&quot;../source/asm/masm/set8087precision.x86&quot;"
+								Outputs="$(IntDir)set8087precision.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling set8087precision.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)set8087precision.obj&quot; /Ta&quot;../source/asm/masm/set8087precision.x86&quot;"
+								Outputs="$(IntDir)set8087precision.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling set8087precision.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)set8087precision.obj&quot; /Ta&quot;../source/asm/masm/set8087precision.x86&quot;"
+								Outputs="$(IntDir)set8087precision.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling set8087precision.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)set8087precision.obj&quot; /Ta&quot;../source/asm/masm/set8087precision.x86&quot;"
+								Outputs="$(IntDir)set8087precision.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm\set8087rounding.x86">
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling set8087rounding.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)set8087rounding.obj&quot; /Ta&quot;../source/asm/masm/set8087rounding.x86&quot;"
+								Outputs="$(IntDir)set8087rounding.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling set8087rounding.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)set8087rounding.obj&quot; /Ta&quot;../source/asm/masm/set8087rounding.x86&quot;"
+								Outputs="$(IntDir)set8087rounding.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling set8087rounding.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)set8087rounding.obj&quot; /Ta&quot;../source/asm/masm/set8087rounding.x86&quot;"
+								Outputs="$(IntDir)set8087rounding.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling set8087rounding.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)set8087rounding.obj&quot; /Ta&quot;../source/asm/masm/set8087rounding.x86&quot;"
+								Outputs="$(IntDir)set8087rounding.obj"/>
+						</FileConfiguration>
+					</File>
+					<Filter
+						Name="vs2003">
+						<File
+							RelativePath="..\source\asm\masm\vs2003\cpuid.x86">
+							<FileConfiguration
+								Name="Debug|Win32">
+								<Tool
+									Name="VCCustomBuildTool"
+									Description="Assembling cpuid.x86..."
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)cpuid.obj&quot; /Ta&quot;../source/asm/masm/vs2003/cpuid.x86&quot;"
+									Outputs="$(IntDir)cpuid.obj"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Internal|Win32">
+								<Tool
+									Name="VCCustomBuildTool"
+									Description="Assembling cpuid.x86..."
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)cpuid.obj&quot; /Ta&quot;../source/asm/masm/vs2003/cpuid.x86&quot;"
+									Outputs="$(IntDir)cpuid.obj"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release|Win32">
+								<Tool
+									Name="VCCustomBuildTool"
+									Description="Assembling cpuid.x86..."
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)cpuid.obj&quot; /Ta&quot;../source/asm/masm/vs2003/cpuid.x86&quot;"
+									Outputs="$(IntDir)cpuid.obj"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release_LTCG|Win32">
+								<Tool
+									Name="VCCustomBuildTool"
+									Description="Assembling cpuid.x86..."
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)cpuid.obj&quot; /Ta&quot;../source/asm/masm/vs2003/cpuid.x86&quot;"
+									Outputs="$(IntDir)cpuid.obj"/>
+							</FileConfiguration>
+						</File>
+						<File
+							RelativePath="..\source\asm\masm\vs2003\swapendian64.x86">
+							<FileConfiguration
+								Name="Debug|Win32">
+								<Tool
+									Name="VCCustomBuildTool"
+									Description="Assembling swapendian64.x86..."
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendian64.obj&quot; /Ta&quot;../source/asm/masm/vs2003/swapendian64.x86&quot;"
+									Outputs="$(IntDir)swapendian64.obj"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Internal|Win32">
+								<Tool
+									Name="VCCustomBuildTool"
+									Description="Assembling swapendian64.x86..."
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendian64.obj&quot; /Ta&quot;../source/asm/masm/vs2003/swapendian64.x86&quot;"
+									Outputs="$(IntDir)swapendian64.obj"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release|Win32">
+								<Tool
+									Name="VCCustomBuildTool"
+									Description="Assembling swapendian64.x86..."
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendian64.obj&quot; /Ta&quot;../source/asm/masm/vs2003/swapendian64.x86&quot;"
+									Outputs="$(IntDir)swapendian64.obj"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release_LTCG|Win32">
+								<Tool
+									Name="VCCustomBuildTool"
+									Description="Assembling swapendian64.x86..."
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendian64.obj&quot; /Ta&quot;../source/asm/masm/vs2003/swapendian64.x86&quot;"
+									Outputs="$(IntDir)swapendian64.obj"/>
+							</FileConfiguration>
+						</File>
+					</Filter>
+					<Filter
+						Name="vs2003_2005">
+						<File
+							RelativePath="..\source\asm\masm\vs2003_2005\cpuidex.x86">
+							<FileConfiguration
+								Name="Debug|Win32">
+								<Tool
+									Name="VCCustomBuildTool"
+									Description="Assembling cpuidex.x86..."
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)cpuidex.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2005/cpuidex.x86&quot;"
+									Outputs="$(IntDir)cpuidex.obj"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Internal|Win32">
+								<Tool
+									Name="VCCustomBuildTool"
+									Description="Assembling cpuidex.x86..."
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)cpuidex.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2005/cpuidex.x86&quot;"
+									Outputs="$(IntDir)cpuidex.obj"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release|Win32">
+								<Tool
+									Name="VCCustomBuildTool"
+									Description="Assembling cpuidex.x86..."
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)cpuidex.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2005/cpuidex.x86&quot;"
+									Outputs="$(IntDir)cpuidex.obj"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release_LTCG|Win32">
+								<Tool
+									Name="VCCustomBuildTool"
+									Description="Assembling cpuidex.x86..."
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)cpuidex.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2005/cpuidex.x86&quot;"
+									Outputs="$(IntDir)cpuidex.obj"/>
+							</FileConfiguration>
+						</File>
+					</Filter>
+					<Filter
+						Name="vs2003_2008">
+						<File
+							RelativePath="..\source\asm\masm\vs2003_2008\xgetbv.x86">
+							<FileConfiguration
+								Name="Debug|Win32">
+								<Tool
+									Name="VCCustomBuildTool"
+									Description="Assembling xgetbv.x86..."
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)xgetbv.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2008/xgetbv.x86&quot;"
+									Outputs="$(IntDir)xgetbv.obj"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Internal|Win32">
+								<Tool
+									Name="VCCustomBuildTool"
+									Description="Assembling xgetbv.x86..."
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)xgetbv.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2008/xgetbv.x86&quot;"
+									Outputs="$(IntDir)xgetbv.obj"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release|Win32">
+								<Tool
+									Name="VCCustomBuildTool"
+									Description="Assembling xgetbv.x86..."
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)xgetbv.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2008/xgetbv.x86&quot;"
+									Outputs="$(IntDir)xgetbv.obj"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release_LTCG|Win32">
+								<Tool
+									Name="VCCustomBuildTool"
+									Description="Assembling xgetbv.x86..."
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)xgetbv.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2008/xgetbv.x86&quot;"
+									Outputs="$(IntDir)xgetbv.obj"/>
+							</FileConfiguration>
+						</File>
+					</Filter>
+					<Filter
+						Name="vs2003_2010">
+						<File
+							RelativePath="..\source\asm\masm\vs2003_2010\swapendiandouble.x86">
+							<FileConfiguration
+								Name="Debug|Win32">
+								<Tool
+									Name="VCCustomBuildTool"
+									Description="Assembling swapendiandouble.x86..."
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandouble.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendiandouble.x86&quot;"
+									Outputs="$(IntDir)swapendiandouble.obj"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Internal|Win32">
+								<Tool
+									Name="VCCustomBuildTool"
+									Description="Assembling swapendiandouble.x86..."
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandouble.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendiandouble.x86&quot;"
+									Outputs="$(IntDir)swapendiandouble.obj"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release|Win32">
+								<Tool
+									Name="VCCustomBuildTool"
+									Description="Assembling swapendiandouble.x86..."
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandouble.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendiandouble.x86&quot;"
+									Outputs="$(IntDir)swapendiandouble.obj"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release_LTCG|Win32">
+								<Tool
+									Name="VCCustomBuildTool"
+									Description="Assembling swapendiandouble.x86..."
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandouble.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendiandouble.x86&quot;"
+									Outputs="$(IntDir)swapendiandouble.obj"/>
+							</FileConfiguration>
+						</File>
+						<File
+							RelativePath="..\source\asm\masm\vs2003_2010\swapendiandoubleptr.x86">
+							<FileConfiguration
+								Name="Debug|Win32">
+								<Tool
+									Name="VCCustomBuildTool"
+									Description="Assembling swapendiandoubleptr.x86..."
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandoubleptr.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendiandoubleptr.x86&quot;"
+									Outputs="$(IntDir)swapendiandoubleptr.obj"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Internal|Win32">
+								<Tool
+									Name="VCCustomBuildTool"
+									Description="Assembling swapendiandoubleptr.x86..."
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandoubleptr.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendiandoubleptr.x86&quot;"
+									Outputs="$(IntDir)swapendiandoubleptr.obj"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release|Win32">
+								<Tool
+									Name="VCCustomBuildTool"
+									Description="Assembling swapendiandoubleptr.x86..."
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandoubleptr.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendiandoubleptr.x86&quot;"
+									Outputs="$(IntDir)swapendiandoubleptr.obj"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release_LTCG|Win32">
+								<Tool
+									Name="VCCustomBuildTool"
+									Description="Assembling swapendiandoubleptr.x86..."
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandoubleptr.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendiandoubleptr.x86&quot;"
+									Outputs="$(IntDir)swapendiandoubleptr.obj"/>
+							</FileConfiguration>
+						</File>
+						<File
+							RelativePath="..\source\asm\masm\vs2003_2010\swapendianfloat.x86">
+							<FileConfiguration
+								Name="Debug|Win32">
+								<Tool
+									Name="VCCustomBuildTool"
+									Description="Assembling swapendianfloat.x86..."
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloat.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendianfloat.x86&quot;"
+									Outputs="$(IntDir)swapendianfloat.obj"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Internal|Win32">
+								<Tool
+									Name="VCCustomBuildTool"
+									Description="Assembling swapendianfloat.x86..."
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloat.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendianfloat.x86&quot;"
+									Outputs="$(IntDir)swapendianfloat.obj"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release|Win32">
+								<Tool
+									Name="VCCustomBuildTool"
+									Description="Assembling swapendianfloat.x86..."
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloat.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendianfloat.x86&quot;"
+									Outputs="$(IntDir)swapendianfloat.obj"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release_LTCG|Win32">
+								<Tool
+									Name="VCCustomBuildTool"
+									Description="Assembling swapendianfloat.x86..."
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloat.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendianfloat.x86&quot;"
+									Outputs="$(IntDir)swapendianfloat.obj"/>
+							</FileConfiguration>
+						</File>
+						<File
+							RelativePath="..\source\asm\masm\vs2003_2010\swapendianfloatptr.x86">
+							<FileConfiguration
+								Name="Debug|Win32">
+								<Tool
+									Name="VCCustomBuildTool"
+									Description="Assembling swapendianfloatptr.x86..."
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloatptr.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendianfloatptr.x86&quot;"
+									Outputs="$(IntDir)swapendianfloatptr.obj"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Internal|Win32">
+								<Tool
+									Name="VCCustomBuildTool"
+									Description="Assembling swapendianfloatptr.x86..."
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloatptr.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendianfloatptr.x86&quot;"
+									Outputs="$(IntDir)swapendianfloatptr.obj"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release|Win32">
+								<Tool
+									Name="VCCustomBuildTool"
+									Description="Assembling swapendianfloatptr.x86..."
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloatptr.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendianfloatptr.x86&quot;"
+									Outputs="$(IntDir)swapendianfloatptr.obj"/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release_LTCG|Win32">
+								<Tool
+									Name="VCCustomBuildTool"
+									Description="Assembling swapendianfloatptr.x86..."
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloatptr.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendianfloatptr.x86&quot;"
+									Outputs="$(IntDir)swapendianfloatptr.obj"/>
+							</FileConfiguration>
+						</File>
+					</Filter>
 				</Filter>
 			</Filter>
 			<Filter
@@ -1971,9 +2508,6 @@
 				</File>
 				<File
 					RelativePath="..\source\lowlevel\brmacros.h">
-				</File>
-				<File
-					RelativePath="..\source\lowlevel\brmetrowerks.h">
 				</File>
 				<File
 					RelativePath="..\source\lowlevel\brmutex.cpp">

@@ -547,6 +547,23 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/common.obj &
 	$(A)/cpuid.obj &
 	$(A)/cpuidex.obj &
+	$(A)/get8087precision.obj &
+	$(A)/get8087rounding.obj &
+	$(A)/get_ceilingdouble.obj &
+	$(A)/get_ceilingfloat.obj &
+	$(A)/get_floordouble.obj &
+	$(A)/get_floorfloat.obj &
+	$(A)/get_rounddouble.obj &
+	$(A)/get_roundfloat.obj &
+	$(A)/get_sign_bitdouble.obj &
+	$(A)/get_sign_bitfloat.obj &
+	$(A)/get_signdouble.obj &
+	$(A)/get_signfloat.obj &
+	$(A)/has_cpuid.obj &
+	$(A)/modulo_radiansdouble.obj &
+	$(A)/modulo_radiansfloat.obj &
+	$(A)/set8087precision.obj &
+	$(A)/set8087rounding.obj &
 	$(A)/swapendiandouble.obj &
 	$(A)/swapendiandoubleptr.obj &
 	$(A)/swapendianfloat.obj &

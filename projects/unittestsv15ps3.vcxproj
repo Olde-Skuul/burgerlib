@@ -291,7 +291,6 @@
     <ClInclude Include="..\source\lowlevel\brlinkedlistobject.h" />
     <ClInclude Include="..\source\lowlevel\brlinkedlistpointer.h" />
     <ClInclude Include="..\source\lowlevel\brmacros.h" />
-    <ClInclude Include="..\source\lowlevel\brmetrowerks.h" />
     <ClInclude Include="..\source\lowlevel\brmutex.h" />
     <ClInclude Include="..\source\lowlevel\broscursor.h" />
     <ClInclude Include="..\source\lowlevel\brpair.h" />
@@ -591,8 +590,20 @@
     <ClCompile Include="..\unittest\testbrtypes.cpp" />
     <ClCompile Include="..\unittest\testcharset.cpp" />
     <ClCompile Include="..\unittest\testmacros.cpp" />
+    <ClCompile Include="..\source\asm\ps3_asm\get_ceilingdouble.s" />
+    <ClCompile Include="..\source\asm\ps3_asm\get_ceilingfloat.s" />
+    <ClCompile Include="..\source\asm\ps3_asm\get_floordouble.s" />
+    <ClCompile Include="..\source\asm\ps3_asm\get_floorfloat.s" />
+    <ClCompile Include="..\source\asm\ps3_asm\get_rounddouble.s" />
+    <ClCompile Include="..\source\asm\ps3_asm\get_roundfloat.s" />
+    <ClCompile Include="..\source\asm\ps3_asm\get_signdouble.s" />
+    <ClCompile Include="..\source\asm\ps3_asm\get_signfloat.s" />
     <ClCompile Include="..\source\asm\ps3_asm\getpowerpcrounding.s" />
+    <ClCompile Include="..\source\asm\ps3_asm\is_nandouble.s" />
+    <ClCompile Include="..\source\asm\ps3_asm\is_nanfloat.s" />
     <ClCompile Include="..\source\asm\ps3_asm\loadunaligned64.s" />
+    <ClCompile Include="..\source\asm\ps3_asm\moduloradiansdouble.s" />
+    <ClCompile Include="..\source\asm\ps3_asm\moduloradiansfloat.s" />
     <ClCompile Include="..\source\asm\ps3_asm\setpowerpcrounding.s" />
     <ClCompile Include="..\source\asm\ps3_asm\swapendian64.s" />
   </ItemGroup>

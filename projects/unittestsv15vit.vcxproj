@@ -298,7 +298,6 @@
     <ClInclude Include="..\source\lowlevel\brlinkedlistobject.h" />
     <ClInclude Include="..\source\lowlevel\brlinkedlistpointer.h" />
     <ClInclude Include="..\source\lowlevel\brmacros.h" />
-    <ClInclude Include="..\source\lowlevel\brmetrowerks.h" />
     <ClInclude Include="..\source\lowlevel\brmutex.h" />
     <ClInclude Include="..\source\lowlevel\broscursor.h" />
     <ClInclude Include="..\source\lowlevel\brpair.h" />

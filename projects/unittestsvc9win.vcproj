@@ -57,7 +57,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm64;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\random;..\source\text;..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\sdks\steamworks\public\steam;$(DXSDK_DIR)\Include"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm64;..\source\asm\masm64\vs2005_2008;..\source\asm\masm\vs2003_2008;..\source\asm\masm\vs2003_2010;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\random;..\source\text;..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\sdks\steamworks\public\steam;$(DXSDK_DIR)\Include"
 				PreprocessorDefinitions="_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -143,7 +143,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm64;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\random;..\source\text;..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\sdks\steamworks\public\steam;$(DXSDK_DIR)\Include"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm64;..\source\asm\masm64\vs2005_2008;..\source\asm\masm\vs2003_2008;..\source\asm\masm\vs2003_2010;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\random;..\source\text;..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\sdks\steamworks\public\steam;$(DXSDK_DIR)\Include"
 				PreprocessorDefinitions="_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN64;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -232,7 +232,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm64;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\random;..\source\text;..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\sdks\steamworks\public\steam;$(DXSDK_DIR)\Include"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm64;..\source\asm\masm64\vs2005_2008;..\source\asm\masm\vs2003_2008;..\source\asm\masm\vs2003_2010;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\random;..\source\text;..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\sdks\steamworks\public\steam;$(DXSDK_DIR)\Include"
 				PreprocessorDefinitions="_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -322,7 +322,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm64;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\random;..\source\text;..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\sdks\steamworks\public\steam;$(DXSDK_DIR)\Include"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm64;..\source\asm\masm64\vs2005_2008;..\source\asm\masm\vs2003_2008;..\source\asm\masm\vs2003_2010;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\random;..\source\text;..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\sdks\steamworks\public\steam;$(DXSDK_DIR)\Include"
 				PreprocessorDefinitions="_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN64;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -411,7 +411,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm64;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\random;..\source\text;..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\sdks\steamworks\public\steam;$(DXSDK_DIR)\Include"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm64;..\source\asm\masm64\vs2005_2008;..\source\asm\masm\vs2003_2008;..\source\asm\masm\vs2003_2010;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\random;..\source\text;..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\sdks\steamworks\public\steam;$(DXSDK_DIR)\Include"
 				PreprocessorDefinitions="NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -500,7 +500,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm64;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\random;..\source\text;..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\sdks\steamworks\public\steam;$(DXSDK_DIR)\Include"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm64;..\source\asm\masm64\vs2005_2008;..\source\asm\masm\vs2003_2008;..\source\asm\masm\vs2003_2010;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\random;..\source\text;..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\sdks\steamworks\public\steam;$(DXSDK_DIR)\Include"
 				PreprocessorDefinitions="NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN64;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -590,7 +590,7 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm64;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\random;..\source\text;..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\sdks\steamworks\public\steam;$(DXSDK_DIR)\Include"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm64;..\source\asm\masm64\vs2005_2008;..\source\asm\masm\vs2003_2008;..\source\asm\masm\vs2003_2010;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\random;..\source\text;..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\sdks\steamworks\public\steam;$(DXSDK_DIR)\Include"
 				PreprocessorDefinitions="NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -682,7 +682,7 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm64;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\random;..\source\text;..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\sdks\steamworks\public\steam;$(DXSDK_DIR)\Include"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm64;..\source\asm\masm64\vs2005_2008;..\source\asm\masm\vs2003_2008;..\source\asm\masm\vs2003_2010;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\random;..\source\text;..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\sdks\steamworks\public\steam;$(DXSDK_DIR)\Include"
 				PreprocessorDefinitions="NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN64;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -815,7 +815,7 @@
 					Name="masm"
 					>
 					<File
-						RelativePath="..\source\asm\masm\swapendiandouble.x86"
+						RelativePath="..\source\asm\masm\get8087precision.x86"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -879,7 +879,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\source\asm\masm\swapendiandoubleptr.x86"
+						RelativePath="..\source\asm\masm\get8087rounding.x86"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -943,7 +943,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\source\asm\masm\swapendianfloat.x86"
+						RelativePath="..\source\asm\masm\get_ceilingdouble.x86"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1007,7 +1007,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\source\asm\masm\swapendianfloatptr.x86"
+						RelativePath="..\source\asm\masm\get_ceilingfloat.x86"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1071,7 +1071,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\source\asm\masm\xgetbv.x86"
+						RelativePath="..\source\asm\masm\get_floordouble.x86"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1134,12 +1134,980 @@
 							/>
 						</FileConfiguration>
 					</File>
+					<File
+						RelativePath="..\source\asm\masm\get_floorfloat.x86"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm\get_rounddouble.x86"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm\get_roundfloat.x86"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm\get_signdouble.x86"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm\get_signfloat.x86"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm\has_cpuid.x86"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm\modulo_radiansdouble.x86"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm\modulo_radiansfloat.x86"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm\set8087precision.x86"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm\set8087rounding.x86"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+					</File>
+					<Filter
+						Name="vs2003_2008"
+						>
+						<File
+							RelativePath="..\source\asm\masm\vs2003_2008\xgetbv.x86"
+							>
+							<FileConfiguration
+								Name="Debug|Win32"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Debug|x64"
+								ExcludedFromBuild="true"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Internal|Win32"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Internal|x64"
+								ExcludedFromBuild="true"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release|Win32"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release|x64"
+								ExcludedFromBuild="true"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release_LTCG|Win32"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release_LTCG|x64"
+								ExcludedFromBuild="true"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+						</File>
+					</Filter>
+					<Filter
+						Name="vs2003_2010"
+						>
+						<File
+							RelativePath="..\source\asm\masm\vs2003_2010\swapendiandouble.x86"
+							>
+							<FileConfiguration
+								Name="Debug|Win32"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Debug|x64"
+								ExcludedFromBuild="true"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Internal|Win32"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Internal|x64"
+								ExcludedFromBuild="true"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release|Win32"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release|x64"
+								ExcludedFromBuild="true"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release_LTCG|Win32"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release_LTCG|x64"
+								ExcludedFromBuild="true"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+						</File>
+						<File
+							RelativePath="..\source\asm\masm\vs2003_2010\swapendiandoubleptr.x86"
+							>
+							<FileConfiguration
+								Name="Debug|Win32"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Debug|x64"
+								ExcludedFromBuild="true"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Internal|Win32"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Internal|x64"
+								ExcludedFromBuild="true"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release|Win32"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release|x64"
+								ExcludedFromBuild="true"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release_LTCG|Win32"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release_LTCG|x64"
+								ExcludedFromBuild="true"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+						</File>
+						<File
+							RelativePath="..\source\asm\masm\vs2003_2010\swapendianfloat.x86"
+							>
+							<FileConfiguration
+								Name="Debug|Win32"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Debug|x64"
+								ExcludedFromBuild="true"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Internal|Win32"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Internal|x64"
+								ExcludedFromBuild="true"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release|Win32"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release|x64"
+								ExcludedFromBuild="true"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release_LTCG|Win32"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release_LTCG|x64"
+								ExcludedFromBuild="true"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+						</File>
+						<File
+							RelativePath="..\source\asm\masm\vs2003_2010\swapendianfloatptr.x86"
+							>
+							<FileConfiguration
+								Name="Debug|Win32"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Debug|x64"
+								ExcludedFromBuild="true"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Internal|Win32"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Internal|x64"
+								ExcludedFromBuild="true"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release|Win32"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release|x64"
+								ExcludedFromBuild="true"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release_LTCG|Win32"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release_LTCG|x64"
+								ExcludedFromBuild="true"
+								>
+								<Tool
+									Name="MASM"
+								/>
+							</FileConfiguration>
+						</File>
+					</Filter>
 				</Filter>
 				<Filter
 					Name="masm64"
 					>
 					<File
-						RelativePath="..\source\asm\masm64\xgetbv.x64"
+						RelativePath="..\source\asm\masm64\get_signdouble.x64"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1158,6 +2126,50 @@
 							ExcludedFromBuild="true"
 						/>
 					</File>
+					<File
+						RelativePath="..\source\asm\masm64\get_signfloat.x64"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+						/>
+						<FileConfiguration
+							Name="Internal|Win32"
+							ExcludedFromBuild="true"
+						/>
+						<FileConfiguration
+							Name="Release|Win32"
+							ExcludedFromBuild="true"
+						/>
+						<FileConfiguration
+							Name="Release_LTCG|Win32"
+							ExcludedFromBuild="true"
+						/>
+					</File>
+					<Filter
+						Name="vs2005_2008"
+						>
+						<File
+							RelativePath="..\source\asm\masm64\vs2005_2008\xgetbv.x64"
+							>
+							<FileConfiguration
+								Name="Debug|Win32"
+								ExcludedFromBuild="true"
+							/>
+							<FileConfiguration
+								Name="Internal|Win32"
+								ExcludedFromBuild="true"
+							/>
+							<FileConfiguration
+								Name="Release|Win32"
+								ExcludedFromBuild="true"
+							/>
+							<FileConfiguration
+								Name="Release_LTCG|Win32"
+								ExcludedFromBuild="true"
+							/>
+						</File>
+					</Filter>
 				</Filter>
 			</Filter>
 			<Filter
@@ -3481,10 +4493,6 @@
 				</File>
 				<File
 					RelativePath="..\source\lowlevel\brmacros.h"
-					>
-				</File>
-				<File
-					RelativePath="..\source\lowlevel\brmetrowerks.h"
 					>
 				</File>
 				<File

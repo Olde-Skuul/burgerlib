@@ -1,0 +1,74 @@
+;
+; X86 assembly for Visual Studio
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+;
+; Build with ml.exe
+;
+; float BURGER_API Burger::modulo_radians(float fInput)
+; eax, ecx and edx are volatile
+; fInput = [esp+4]
+; Result in 8087 FPU
+;
+
+	.686
+	.MODEL FLAT
+
+	.data
+
+; Actually Burger::g_X86RoundDownFlag
+	EXTRN	?g_fReciprocalPi2@Burger@@3Tuint32_float_t@1@B:DWORD
+	EXTRN	?g_fHalf@Burger@@3Tuint32_float_t@1@B:DWORD
+	EXTRN	?g_fOne@Burger@@3Tuint32_float_t@1@B:DWORD
+	EXTRN	?g_fPi2@Burger@@3Tuint32_float_t@1@B:DWORD
+
+_TEXT segment para 'CODE'
+
+	align 16
+public ?modulo_radians@Burger@@YIMM@Z
+?modulo_radians@Burger@@YIMM@Z proc
+
+; Load into the FPU
+	fld		dword ptr[esp + 4]
+
+; Load in 1/ 2Pi
+	fld		dword ptr[?g_fReciprocalPi2@Burger@@3Tuint32_float_t@1@B]
+
+; Multiply (Really fInput/2Pi)
+	fmul	st(0), st(1)
+
+; Add half for rounding
+	fadd	dword ptr[?g_fHalf@Burger@@3Tuint32_float_t@1@B]
+
+; Round to nearest in 24 bit to force consistent precision
+	fst		dword ptr[esp + 4]
+
+; Convert to integer
+	frndint
+
+; Compare the two and get rid of the pre-rounded
+	fcom	dword ptr[esp + 4]
+	fnstsw	ax
+
+; Branch if less or equal
+	test	ah, 041H
+
+; Did it round up?
+	jne		ModuloRadiansFExit
+
+; Fixup
+	fsub	dword ptr[?g_fOne@Burger@@3Tuint32_float_t@1@B]
+ModuloRadiansFExit:
+
+; Mul by 2 pi
+	fmul	dword ptr[?g_fPi2@Burger@@3Tuint32_float_t@1@B]
+
+; Subtract and clean up
+	fsubp	st(1), st(0)
+	ret		4
+
+?modulo_radians@Burger@@YIMM@Z endp
+
+_TEXT ends
+
+	end

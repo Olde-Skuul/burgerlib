@@ -5,7 +5,7 @@
 #
 # Build with PS3 tool chain
 #
-# double BURGER_API Burger::ModuloRadians(double dInput) BURGER_NOEXCEPT
+# double BURGER_API Burger::modulo_radians(double dInput) BURGER_NOEXCEPT
 # r0, r3-12, fp0-fp13 are volatile
 # dInput = fp1
 # Result in fp1
@@ -15,9 +15,9 @@
 
 	.text
 
-	.type	._ZN6Burger13ModuloRadiansEd,@function
-	.globl	._ZN6Burger13ModuloRadiansEd
-._ZN6Burger13ModuloRadiansEd:
+	.type	._ZN6Burger14modulo_radiansEd,@function
+	.globl	._ZN6Burger14modulo_radiansEd
+._ZN6Burger14modulo_radiansEd:
 
 # Fetch the pointers
 	lis		3, _ZN6Burger16g_dReciprocalPi2E@ha
@@ -94,4 +94,4 @@
 1:	fmadd	1, 2, 5, 1
 	blr
 
-	.size	._ZN6Burger13ModuloRadiansEd,.-._ZN6Burger13ModuloRadiansEd
+	.size	._ZN6Burger14modulo_radiansEd,.-._ZN6Burger14modulo_radiansEd

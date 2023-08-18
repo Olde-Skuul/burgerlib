@@ -17,10 +17,10 @@
 #include "brsemaphore.h"
 
 #if defined(BURGER_WINDOWS)
-#include "brmetrowerks.h"
 #include "brtick.h"
 #include "brvisualstudio.h"
 #include "brwatcom.h"
+#include "brintrinsics.h"
 #include "win_synchapi.h"
 #include "win_version.h"
 #include "win_windows.h"

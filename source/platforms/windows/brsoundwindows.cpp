@@ -70,7 +70,8 @@
 	Table used for quick Direct sound volume
 	conversion from 0-255 to Decibels
 
-	\sa ConvertToDirectSoundVolume(uint_t) of ConvertToDirectSoundVolume(float)
+	\sa convert_to_DirectSound_volume(uint_t) of
+		convert_to_DirectSound_volume(float)
 
 ***************************************/
 
@@ -284,9 +285,9 @@ uint_t BURGER_API Burger::SoundManager::Voice::Init(
 
 					// Set the speed and other settings
 					pDirectSoundBuffer8->SetVolume(
-						ConvertToDirectSoundVolume(m_uVolume));
+						convert_to_DirectSound_volume(m_uVolume));
 					pDirectSoundBuffer8->SetPan(
-						ConvertToDirectSoundPan(m_uPan));
+						convert_to_DirectSound_pan(m_uPan));
 					pDirectSoundBuffer8->SetFrequency(m_uSampleRate);
 				}
 			}
@@ -473,7 +474,7 @@ uint_t BURGER_API Burger::SoundManager::Voice::SetVolume(uint_t uVolume)
 		IDirectSoundBuffer* pDirectSoundBuffer8 = m_pDirectSoundBuffer8;
 		if (pDirectSoundBuffer8) {
 			uResult = static_cast<uint_t>(pDirectSoundBuffer8->SetVolume(
-				ConvertToDirectSoundVolume(uVolume)));
+				convert_to_DirectSound_volume(uVolume)));
 		}
 	}
 	return uResult;
@@ -491,7 +492,7 @@ uint_t BURGER_API Burger::SoundManager::Voice::SetPan(uint_t uPan)
 		IDirectSoundBuffer* pDirectSoundBuffer8 = m_pDirectSoundBuffer8;
 		if (pDirectSoundBuffer8) {
 			uResult = static_cast<uint_t>(
-				pDirectSoundBuffer8->SetPan(ConvertToDirectSoundPan(m_uPan)));
+				pDirectSoundBuffer8->SetPan(convert_to_DirectSound_pan(m_uPan)));
 		}
 	}
 	return uResult;
@@ -759,8 +760,10 @@ uint_t BURGER_API Burger::SoundManager::Init(void)
 										->CommitDeferredSettings();
 
 									// Start up XAudio2
-									uResult = Win32::XAudio2Create(&m_pIXAudio2, 0,
-										static_cast<uint_t>(XAUDIO2_DEFAULT_PROCESSOR));
+									uResult =
+										Win32::XAudio2Create(&m_pIXAudio2, 0,
+											static_cast<uint_t>(
+												XAUDIO2_DEFAULT_PROCESSOR));
 									if (uResult == S_OK) {
 										uResult =
 											m_pIXAudio2->CreateMasteringVoice(
@@ -862,7 +865,7 @@ void BURGER_API Burger::SoundManager::SetVolume(uint_t uVolume)
 		m_uVolume = uVolume;
 		if (m_pDirectSoundBuffer) {
 			m_pDirectSoundBuffer->SetVolume(
-				ConvertToDirectSoundVolume(uVolume));
+				convert_to_DirectSound_volume(uVolume));
 		}
 	}
 }

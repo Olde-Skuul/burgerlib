@@ -1859,10 +1859,10 @@ uint_t Burger::FileXML::Declaration::Save(OutputMemoryStream *pOutput,uint_t uDe
 		uResult |= pOutput->Append(" version=\"");
 
 		// Force the value to be in the format of x.xx
-		float fInt = RoundToZero(m_fVersion);
+		float fInt = round_to_zero(m_fVersion);
 		uResult |= pOutput->AppendAscii(FloatToIntRound(fInt));
 		uResult |= pOutput->Append('.');
-		float fFrac = RoundToZero((m_fVersion-fInt)*10.f);		// 10 gets 1 digits of fraction
+		float fFrac = round_to_zero((m_fVersion-fInt)*10.f);		// 10 gets 1 digits of fraction
 		uResult |= pOutput->AppendAscii(FloatToIntRound(fFrac));
 		uResult |= pOutput->Append('"');
 	}

@@ -542,7 +542,6 @@
 		73992465B412F3568CEC519A /* brshape8bit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = brshape8bit.h; path = ../source/graphics/brshape8bit.h; sourceTree = SOURCE_ROOT; };
 		749634FA8BF87884BDF1ADE4 /* unix_shims.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = unix_shims.cpp; path = ../source/platforms/unix/unix_shims.cpp; sourceTree = SOURCE_ROOT; };
 		750508270E85F9A11A9997C8 /* testcharset.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = testcharset.cpp; path = ../unittest/testcharset.cpp; sourceTree = SOURCE_ROOT; };
-		7532A62DD7779D6129DC57D1 /* brmetrowerks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = brmetrowerks.h; path = ../source/lowlevel/brmetrowerks.h; sourceTree = SOURCE_ROOT; };
 		756760E8BA2E269EF94A186D /* unix_dbus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = unix_dbus.cpp; path = ../source/platforms/unix/unix_dbus.cpp; sourceTree = SOURCE_ROOT; };
 		76994DB98CB8F2E55379E71F /* brconditionvariableunix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brconditionvariableunix.cpp; path = ../source/platforms/unix/brconditionvariableunix.cpp; sourceTree = SOURCE_ROOT; };
 		7762B32B5184D9B14F81FB1F /* brdisplayopenglsoftware8.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brdisplayopenglsoftware8.cpp; path = ../source/graphics/brdisplayopenglsoftware8.cpp; sourceTree = SOURCE_ROOT; };
@@ -903,7 +902,6 @@
 				161D18BB2BE71372493B4CC6 /* brlinkedlistpointer.cpp */,
 				CEB41F04F82581AEE31EC6D3 /* brlinkedlistpointer.h */,
 				D8757C15DCBC5B9E4F14B61C /* brmacros.h */,
-				7532A62DD7779D6129DC57D1 /* brmetrowerks.h */,
 				0E71315314396CBB60AD66D5 /* brmutex.cpp */,
 				6288AFA87D053D9636013D71 /* brmutex.h */,
 				11F9031AFED983B4C55585AE /* broscursor.cpp */,

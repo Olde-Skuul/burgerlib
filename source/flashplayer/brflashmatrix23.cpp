@@ -177,8 +177,8 @@ void BURGER_API Burger::Flash::Matrix23::Interpolate(const Matrix23 *pInput1,con
 
 void BURGER_API Burger::Flash::Matrix23::SetScaleRotation(float fXScale,float fYScale,float fRotation)
 {
-	float fCos = Cos(fRotation);
-	float fSin = Sin(fRotation);
+	float fCos = get_cosine(fRotation);
+	float fSin = get_sine(fRotation);
 	m_fScaleX = fXScale * fCos;
 	m_fRotateSkew0 = fYScale * -fSin;
 	m_fRotateSkew1 = fXScale * fSin;
@@ -497,7 +497,7 @@ float BURGER_API Burger::Flash::Matrix23::GetRotation(void) const
 		fScaleX = -fScaleX;
 	}
 	// Calculate the radians
-	return ATan2(m_fRotateSkew1,fScaleX);
+	return get_arctangent2(m_fRotateSkew1,fScaleX);
 }
 
 /*! ************************************

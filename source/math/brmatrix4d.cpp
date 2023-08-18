@@ -218,8 +218,8 @@ void BURGER_API Burger::Matrix4D_t::Set(
     \brief Initialize a rotation matrix with radians for yaw (Y)
 
     \code
-    float sy = Sin(fYaw);
-    float cy = Cos(fYaw);
+    float sy = get_sine(fYaw);
+    float cy = get_cosine(fYaw);
     \endcode
 
     ||x|y|z|w|
@@ -237,8 +237,8 @@ void BURGER_API Burger::Matrix4D_t::Set(
 
 void BURGER_API Burger::Matrix4D_t::SetYaw(float fYaw) BURGER_NOEXCEPT
 {
-    const float fSY = Sin(fYaw); // Get the sine/cosine
-    const float fCY = Cos(fYaw);
+    const float fSY = get_sine(fYaw); // Get the sine/cosine
+    const float fCY = get_cosine(fYaw);
 
     x.x = fCY;
     x.y = 0.0f;
@@ -266,8 +266,8 @@ void BURGER_API Burger::Matrix4D_t::SetYaw(float fYaw) BURGER_NOEXCEPT
     \brief Initialize a rotation matrix with radians for pitch (X)
 
     \code
-    float sx = Sin(fPitch);
-    float cx = Cos(fPitch);
+    float sx = get_sine(fPitch);
+    float cx = get_cosine(fPitch);
     \endcode
 
     ||x|y|z|w|
@@ -285,8 +285,8 @@ void BURGER_API Burger::Matrix4D_t::SetYaw(float fYaw) BURGER_NOEXCEPT
 
 void BURGER_API Burger::Matrix4D_t::SetPitch(float fPitch) BURGER_NOEXCEPT
 {
-    const float fSX = Sin(fPitch); // Get the sine/cosine
-    const float fCX = Cos(fPitch);
+    const float fSX = get_sine(fPitch); // Get the sine/cosine
+    const float fCX = get_cosine(fPitch);
 
     x.x = 1.0f;
     x.y = 0.0f;
@@ -314,8 +314,8 @@ void BURGER_API Burger::Matrix4D_t::SetPitch(float fPitch) BURGER_NOEXCEPT
     \brief Initialize a rotation matrix with radians for roll (Z)
 
     \code
-    float sz = Sin(fRoll);
-    float cz = Cos(fRoll);
+    float sz = get_sine(fRoll);
+    float cz = get_cosine(fRoll);
     \endcode
 
     ||x|y|z|w|
@@ -333,8 +333,8 @@ void BURGER_API Burger::Matrix4D_t::SetPitch(float fPitch) BURGER_NOEXCEPT
 
 void BURGER_API Burger::Matrix4D_t::SetRoll(float fRoll) BURGER_NOEXCEPT
 {
-    const float fSZ = Sin(fRoll); // Get the sine/cosine
-    const float fCZ = Cos(fRoll);
+    const float fSZ = get_sine(fRoll); // Get the sine/cosine
+    const float fCZ = get_cosine(fRoll);
 
     x.x = fCZ;
     x.y = -fSZ;
@@ -365,12 +365,12 @@ void BURGER_API Burger::Matrix4D_t::SetRoll(float fRoll) BURGER_NOEXCEPT
     (Z) in the order of Y, X and then Z.
 
     \code
-    float sx = Sin(fPitch);
-    float sy = Sin(fYaw);
-    float sz = Sin(fRoll);
-    float cx = Cos(fPitch);
-    float cy = Cos(fYaw);
-    float cz = Cos(fRoll);
+    float sx = get_sine(fPitch);
+    float sy = get_sine(fYaw);
+    float sz = get_sine(fRoll);
+    float cx = get_cosine(fPitch);
+    float cy = get_cosine(fYaw);
+    float cz = get_cosine(fRoll);
     \endcode
 
     ||x|y|z|w|
@@ -392,12 +392,12 @@ void BURGER_API Burger::Matrix4D_t::SetYXZ(
     float fYaw, float fPitch, float fRoll) BURGER_NOEXCEPT
 {
     // Create the sines and cosines
-    const float fSX = Sin(fPitch);
-    const float fSY = Sin(fYaw);
-    const float fSZ = Sin(fRoll);
-    const float fCX = Cos(fPitch);
-    const float fCY = Cos(fYaw);
-    const float fCZ = Cos(fRoll);
+    const float fSX = get_sine(fPitch);
+    const float fSY = get_sine(fYaw);
+    const float fSZ = get_sine(fRoll);
+    const float fCX = get_cosine(fPitch);
+    const float fCY = get_cosine(fYaw);
+    const float fCZ = get_cosine(fRoll);
 
     // Cache this value
     const float fSXSZ = fSX * fSZ;     // sx*sz
@@ -433,12 +433,12 @@ void BURGER_API Burger::Matrix4D_t::SetYXZ(
     (Z) in the order of Y, Z and then X.
 
     \code
-    float sx = Sin(fPitch);
-    float sy = Sin(fYaw);
-    float sz = Sin(fRoll);
-    float cx = Cos(fPitch);
-    float cy = Cos(fYaw);
-    float cz = Cos(fRoll);
+    float sx = get_sine(fPitch);
+    float sy = get_sine(fYaw);
+    float sz = get_sine(fRoll);
+    float cx = get_cosine(fPitch);
+    float cy = get_cosine(fYaw);
+    float cz = get_cosine(fRoll);
     \endcode
 
     ||x|y|z|w|
@@ -460,12 +460,12 @@ void BURGER_API Burger::Matrix4D_t::SetYZX(
     float fYaw, float fPitch, float fRoll) BURGER_NOEXCEPT
 {
     // Create the sines and cosines
-    const float fSX = Sin(fPitch);
-    const float fSY = Sin(fYaw);
-    const float fSZ = Sin(fRoll);
-    const float fCX = Cos(fPitch);
-    const float fCY = Cos(fYaw);
-    const float fCZ = Cos(fRoll);
+    const float fSX = get_sine(fPitch);
+    const float fSY = get_sine(fYaw);
+    const float fSZ = get_sine(fRoll);
+    const float fCX = get_cosine(fPitch);
+    const float fCY = get_cosine(fYaw);
+    const float fCZ = get_cosine(fRoll);
 
     // Cache this value
     const float fSZCX = fSZ * fCX; // sz*cx
@@ -501,12 +501,12 @@ void BURGER_API Burger::Matrix4D_t::SetYZX(
     (Z) in the order of X, Y and then Z.
 
     \code
-    float sx = Sin(fPitch);
-    float sy = Sin(fYaw);
-    float sz = Sin(fRoll);
-    float cx = Cos(fPitch);
-    float cy = Cos(fYaw);
-    float cz = Cos(fRoll);
+    float sx = get_sine(fPitch);
+    float sy = get_sine(fYaw);
+    float sz = get_sine(fRoll);
+    float cx = get_cosine(fPitch);
+    float cy = get_cosine(fYaw);
+    float cz = get_cosine(fRoll);
     \endcode
 
     ||x|y|z|w|
@@ -528,12 +528,12 @@ void BURGER_API Burger::Matrix4D_t::SetXYZ(
     float fYaw, float fPitch, float fRoll) BURGER_NOEXCEPT
 {
     // Create the sines and cosines
-    const float fSX = Sin(fPitch);
-    const float fSY = Sin(fYaw);
-    const float fSZ = Sin(fRoll);
-    const float fCX = Cos(fPitch);
-    const float fCY = Cos(fYaw);
-    const float fCZ = Cos(fRoll);
+    const float fSX = get_sine(fPitch);
+    const float fSY = get_sine(fYaw);
+    const float fSZ = get_sine(fRoll);
+    const float fCX = get_cosine(fPitch);
+    const float fCY = get_cosine(fYaw);
+    const float fCZ = get_cosine(fRoll);
 
     // Cache this value
     const float fSXSZ = fSX * fSZ;     // sx*sz
@@ -569,12 +569,12 @@ void BURGER_API Burger::Matrix4D_t::SetXYZ(
     (Z) in the order of X, Z and then Y.
 
     \code
-    float sx = Sin(fPitch);
-    float sy = Sin(fYaw);
-    float sz = Sin(fRoll);
-    float cx = Cos(fPitch);
-    float cy = Cos(fYaw);
-    float cz = Cos(fRoll);
+    float sx = get_sine(fPitch);
+    float sy = get_sine(fYaw);
+    float sz = get_sine(fRoll);
+    float cx = get_cosine(fPitch);
+    float cy = get_cosine(fYaw);
+    float cz = get_cosine(fRoll);
     \endcode
 
     ||x|y|z|w|
@@ -596,12 +596,12 @@ void BURGER_API Burger::Matrix4D_t::SetXZY(
     float fYaw, float fPitch, float fRoll) BURGER_NOEXCEPT
 {
     // Create the sines and cosines
-    const float fSX = Sin(fPitch);
-    const float fSY = Sin(fYaw);
-    const float fSZ = Sin(fRoll);
-    const float fCX = Cos(fPitch);
-    const float fCY = Cos(fYaw);
-    const float fCZ = Cos(fRoll);
+    const float fSX = get_sine(fPitch);
+    const float fSY = get_sine(fYaw);
+    const float fSZ = get_sine(fRoll);
+    const float fCX = get_cosine(fPitch);
+    const float fCY = get_cosine(fYaw);
+    const float fCZ = get_cosine(fRoll);
 
     // Cache this value
     const float fSZCY = fSZ * fCY; // sz*cy
@@ -637,12 +637,12 @@ void BURGER_API Burger::Matrix4D_t::SetXZY(
     (Z) in the order of Z, Y and then X.
 
     \code
-    float sx = Sin(fPitch);
-    float sy = Sin(fYaw);
-    float sz = Sin(fRoll);
-    float cx = Cos(fPitch);
-    float cy = Cos(fYaw);
-    float cz = Cos(fRoll);
+    float sx = get_sine(fPitch);
+    float sy = get_sine(fYaw);
+    float sz = get_sine(fRoll);
+    float cx = get_cosine(fPitch);
+    float cy = get_cosine(fYaw);
+    float cz = get_cosine(fRoll);
     \endcode
 
     ||x|y|z|w|
@@ -664,12 +664,12 @@ void BURGER_API Burger::Matrix4D_t::SetZYX(
     float fYaw, float fPitch, float fRoll) BURGER_NOEXCEPT
 {
     // Create the sines and cosines
-    const float fSX = Sin(fPitch);
-    const float fSY = Sin(fYaw);
-    const float fSZ = Sin(fRoll);
-    const float fCX = Cos(fPitch);
-    const float fCY = Cos(fYaw);
-    const float fCZ = Cos(fRoll);
+    const float fSX = get_sine(fPitch);
+    const float fSY = get_sine(fYaw);
+    const float fSZ = get_sine(fRoll);
+    const float fCX = get_cosine(fPitch);
+    const float fCY = get_cosine(fYaw);
+    const float fCZ = get_cosine(fRoll);
 
     // Cache this value
     const float fSYSX = fSY * fSX; // sy*sx
@@ -705,12 +705,12 @@ void BURGER_API Burger::Matrix4D_t::SetZYX(
     (Z) in the order of Z, X and then Y.
 
     \code
-    float sx = Sin(fPitch);
-    float sy = Sin(fYaw);
-    float sz = Sin(fRoll);
-    float cx = Cos(fPitch);
-    float cy = Cos(fYaw);
-    float cz = Cos(fRoll);
+    float sx = get_sine(fPitch);
+    float sy = get_sine(fYaw);
+    float sz = get_sine(fRoll);
+    float cx = get_cosine(fPitch);
+    float cy = get_cosine(fYaw);
+    float cz = get_cosine(fRoll);
     \endcode
 
     ||x|y|z|w|
@@ -732,12 +732,12 @@ void BURGER_API Burger::Matrix4D_t::SetZXY(
     float fYaw, float fPitch, float fRoll) BURGER_NOEXCEPT
 {
     // Create the sines and cosines
-    const float fSX = Sin(fPitch);
-    const float fSY = Sin(fYaw);
-    const float fSZ = Sin(fRoll);
-    const float fCX = Cos(fPitch);
-    const float fCY = Cos(fYaw);
-    const float fCZ = Cos(fRoll);
+    const float fSX = get_sine(fPitch);
+    const float fSY = get_sine(fYaw);
+    const float fSZ = get_sine(fRoll);
+    const float fCX = get_cosine(fPitch);
+    const float fCY = get_cosine(fYaw);
+    const float fCZ = get_cosine(fRoll);
 
     // Cache this value
     const float fSYSX = fSY * fSX; // sy*sx
@@ -863,8 +863,8 @@ void BURGER_API Burger::Matrix4D_t::SetFromQuaternion(
     \brief Initialize a rotation matrix with radians for yaw (Y)
 
     \code
-    float sy = Sin(fYaw);
-    float cy = Cos(fYaw);
+    float sy = get_sine(fYaw);
+    float cy = get_cosine(fYaw);
     \endcode
 
     ||x|y|z|w|
@@ -882,8 +882,8 @@ TransposeSetPitch(float) and TransposeSetRoll(float)
 
 void BURGER_API Burger::Matrix4D_t::TransposeSetYaw(float fYaw) BURGER_NOEXCEPT
 {
-    const float fSY = Sin(fYaw); // Get the sine/cosine
-    const float fCY = Cos(fYaw);
+    const float fSY = get_sine(fYaw); // Get the sine/cosine
+    const float fCY = get_cosine(fYaw);
 
     x.x = fCY;
     x.y = 0.0f;
@@ -911,8 +911,8 @@ void BURGER_API Burger::Matrix4D_t::TransposeSetYaw(float fYaw) BURGER_NOEXCEPT
     \brief Initialize a rotation matrix with radians for pitch (X)
 
     \code
-    float sx = Sin(fPitch);
-    float cx = Cos(fPitch);
+    float sx = get_sine(fPitch);
+    float cx = get_cosine(fPitch);
     \endcode
 
     ||x|y|z|w|
@@ -931,8 +931,8 @@ TransposeSetYaw(float) and TransposeSetRoll(float)
 void BURGER_API Burger::Matrix4D_t::TransposeSetPitch(
     float fPitch) BURGER_NOEXCEPT
 {
-    const float fSX = Sin(fPitch); // Get the sine/cosine
-    const float fCX = Cos(fPitch);
+    const float fSX = get_sine(fPitch); // Get the sine/cosine
+    const float fCX = get_cosine(fPitch);
 
     x.x = 1.0f;
     x.y = 0.0f;
@@ -960,8 +960,8 @@ void BURGER_API Burger::Matrix4D_t::TransposeSetPitch(
     \brief Initialize a rotation matrix with radians for roll (Z)
 
     \code
-    float sz = Sin(fRoll);
-    float cz = Cos(fRoll);
+    float sz = get_sine(fRoll);
+    float cz = get_cosine(fRoll);
     \endcode
 
     ||x|y|z|w|
@@ -980,8 +980,8 @@ TransposeSetYaw(float) and TransposeSetPitch(float)
 void BURGER_API Burger::Matrix4D_t::TransposeSetRoll(
     float fRoll) BURGER_NOEXCEPT
 {
-    const float fSZ = Sin(fRoll); // Get the sine/cosine
-    const float fCZ = Cos(fRoll);
+    const float fSZ = get_sine(fRoll); // Get the sine/cosine
+    const float fCZ = get_cosine(fRoll);
 
     x.x = fCZ;
     x.y = fSZ;
@@ -1012,12 +1012,12 @@ void BURGER_API Burger::Matrix4D_t::TransposeSetRoll(
     and Roll (Z) in the order of Y, X and then Z.
 
     \code
-    float sx = Sin(fPitch);
-    float sy = Sin(fYaw);
-    float sz = Sin(fRoll);
-    float cx = Cos(fPitch);
-    float cy = Cos(fYaw);
-    float cz = Cos(fRoll);
+    float sx = get_sine(fPitch);
+    float sy = get_sine(fYaw);
+    float sz = get_sine(fRoll);
+    float cx = get_cosine(fPitch);
+    float cy = get_cosine(fYaw);
+    float cz = get_cosine(fRoll);
     \endcode
 
     ||x|y|z|w|
@@ -1039,12 +1039,12 @@ void BURGER_API Burger::Matrix4D_t::TransposeSetYXZ(
     float fYaw, float fPitch, float fRoll) BURGER_NOEXCEPT
 {
     // Create the sines and cosines
-    const float fSX = Sin(fPitch);
-    const float fSY = Sin(fYaw);
-    const float fSZ = Sin(fRoll);
-    const float fCX = Cos(fPitch);
-    const float fCY = Cos(fYaw);
-    const float fCZ = Cos(fRoll);
+    const float fSX = get_sine(fPitch);
+    const float fSY = get_sine(fYaw);
+    const float fSZ = get_sine(fRoll);
+    const float fCX = get_cosine(fPitch);
+    const float fCY = get_cosine(fYaw);
+    const float fCZ = get_cosine(fRoll);
 
     // Cache this value
     const float fSXSZ = fSX * fSZ; // sx*sz
@@ -1080,12 +1080,12 @@ void BURGER_API Burger::Matrix4D_t::TransposeSetYXZ(
     and Roll (Z) in the order of Y, Z and then X.
 
     \code
-    float sx = Sin(fPitch);
-    float sy = Sin(fYaw);
-    float sz = Sin(fRoll);
-    float cx = Cos(fPitch);
-    float cy = Cos(fYaw);
-    float cz = Cos(fRoll);
+    float sx = get_sine(fPitch);
+    float sy = get_sine(fYaw);
+    float sz = get_sine(fRoll);
+    float cx = get_cosine(fPitch);
+    float cy = get_cosine(fYaw);
+    float cz = get_cosine(fRoll);
     \endcode
 
     ||x|y|z|w|
@@ -1107,12 +1107,12 @@ void BURGER_API Burger::Matrix4D_t::TransposeSetYZX(
     float fYaw, float fPitch, float fRoll) BURGER_NOEXCEPT
 {
     // Create the sines and cosines
-    const float fSX = Sin(fPitch);
-    const float fSY = Sin(fYaw);
-    const float fSZ = Sin(fRoll);
-    const float fCX = Cos(fPitch);
-    const float fCY = Cos(fYaw);
-    const float fCZ = Cos(fRoll);
+    const float fSX = get_sine(fPitch);
+    const float fSY = get_sine(fYaw);
+    const float fSZ = get_sine(fRoll);
+    const float fCX = get_cosine(fPitch);
+    const float fCY = get_cosine(fYaw);
+    const float fCZ = get_cosine(fRoll);
 
     // Cache this value
     const float fSXSZ = fSX * fSZ;     // sx*sz
@@ -1148,12 +1148,12 @@ void BURGER_API Burger::Matrix4D_t::TransposeSetYZX(
     and Roll (Z) in the order of X, Y and then Z.
 
     \code
-    float sx = Sin(fPitch);
-    float sy = Sin(fYaw);
-    float sz = Sin(fRoll);
-    float cx = Cos(fPitch);
-    float cy = Cos(fYaw);
-    float cz = Cos(fRoll);
+    float sx = get_sine(fPitch);
+    float sy = get_sine(fYaw);
+    float sz = get_sine(fRoll);
+    float cx = get_cosine(fPitch);
+    float cy = get_cosine(fYaw);
+    float cz = get_cosine(fRoll);
     \endcode
 
     ||x|y|z|w|
@@ -1175,12 +1175,12 @@ void BURGER_API Burger::Matrix4D_t::TransposeSetXYZ(
     float fYaw, float fPitch, float fRoll) BURGER_NOEXCEPT
 {
     // Create the sines and cosines
-    const float fSX = Sin(fPitch);
-    const float fSY = Sin(fYaw);
-    const float fSZ = Sin(fRoll);
-    const float fCX = Cos(fPitch);
-    const float fCY = Cos(fYaw);
-    const float fCZ = Cos(fRoll);
+    const float fSX = get_sine(fPitch);
+    const float fSY = get_sine(fYaw);
+    const float fSZ = get_sine(fRoll);
+    const float fCX = get_cosine(fPitch);
+    const float fCY = get_cosine(fYaw);
+    const float fCZ = get_cosine(fRoll);
 
     // Cache this value
     const float fSYSX = fSY * fSX; // sy*sx
@@ -1216,12 +1216,12 @@ void BURGER_API Burger::Matrix4D_t::TransposeSetXYZ(
     and Roll (Z) in the order of X, Z and then Y.
 
     \code
-    float sx = Sin(fPitch);
-    float sy = Sin(fYaw);
-    float sz = Sin(fRoll);
-    float cx = Cos(fPitch);
-    float cy = Cos(fYaw);
-    float cz = Cos(fRoll);
+    float sx = get_sine(fPitch);
+    float sy = get_sine(fYaw);
+    float sz = get_sine(fRoll);
+    float cx = get_cosine(fPitch);
+    float cy = get_cosine(fYaw);
+    float cz = get_cosine(fRoll);
     \endcode
 
     ||x|y|z|w|
@@ -1243,12 +1243,12 @@ void BURGER_API Burger::Matrix4D_t::TransposeSetXZY(
     float fYaw, float fPitch, float fRoll) BURGER_NOEXCEPT
 {
     // Create the sines and cosines
-    const float fSX = Sin(fPitch);
-    const float fSY = Sin(fYaw);
-    const float fSZ = Sin(fRoll);
-    const float fCX = Cos(fPitch);
-    const float fCY = Cos(fYaw);
-    const float fCZ = Cos(fRoll);
+    const float fSX = get_sine(fPitch);
+    const float fSY = get_sine(fYaw);
+    const float fSZ = get_sine(fRoll);
+    const float fCX = get_cosine(fPitch);
+    const float fCY = get_cosine(fYaw);
+    const float fCZ = get_cosine(fRoll);
 
     // Cache this value
     const float fSZCY = fSZ * fCY; // sz*cy
@@ -1284,12 +1284,12 @@ void BURGER_API Burger::Matrix4D_t::TransposeSetXZY(
     and Roll (Z) in the order of Z, Y and then X.
 
     \code
-    float sx = Sin(fPitch);
-    float sy = Sin(fYaw);
-    float sz = Sin(fRoll);
-    float cx = Cos(fPitch);
-    float cy = Cos(fYaw);
-    float cz = Cos(fRoll);
+    float sx = get_sine(fPitch);
+    float sy = get_sine(fYaw);
+    float sz = get_sine(fRoll);
+    float cx = get_cosine(fPitch);
+    float cy = get_cosine(fYaw);
+    float cz = get_cosine(fRoll);
     \endcode
 
     ||x|y|z|w|
@@ -1311,12 +1311,12 @@ void BURGER_API Burger::Matrix4D_t::TransposeSetZYX(
     float fYaw, float fPitch, float fRoll) BURGER_NOEXCEPT
 {
     // Create the sines and cosines
-    const float fSX = Sin(fPitch);
-    const float fSY = Sin(fYaw);
-    const float fSZ = Sin(fRoll);
-    const float fCX = Cos(fPitch);
-    const float fCY = Cos(fYaw);
-    const float fCZ = Cos(fRoll);
+    const float fSX = get_sine(fPitch);
+    const float fSY = get_sine(fYaw);
+    const float fSZ = get_sine(fRoll);
+    const float fCX = get_cosine(fPitch);
+    const float fCY = get_cosine(fYaw);
+    const float fCZ = get_cosine(fRoll);
 
     // Cache this value
     const float fSYSX = fSY * fSX;     // sy*sx
@@ -1352,12 +1352,12 @@ void BURGER_API Burger::Matrix4D_t::TransposeSetZYX(
     and Roll (Z) in the order of Z, X and then Y.
 
     \code
-    float sx = Sin(fPitch);
-    float sy = Sin(fYaw);
-    float sz = Sin(fRoll);
-    float cx = Cos(fPitch);
-    float cy = Cos(fYaw);
-    float cz = Cos(fRoll);
+    float sx = get_sine(fPitch);
+    float sy = get_sine(fYaw);
+    float sz = get_sine(fRoll);
+    float cx = get_cosine(fPitch);
+    float cy = get_cosine(fYaw);
+    float cz = get_cosine(fRoll);
     \endcode
 
     ||x|y|z|w|
@@ -1379,12 +1379,12 @@ void BURGER_API Burger::Matrix4D_t::TransposeSetZXY(
     float fYaw, float fPitch, float fRoll) BURGER_NOEXCEPT
 {
     // Create the sines and cosines
-    const float fSX = Sin(fPitch);
-    const float fSY = Sin(fYaw);
-    const float fSZ = Sin(fRoll);
-    const float fCX = Cos(fPitch);
-    const float fCY = Cos(fYaw);
-    const float fCZ = Cos(fRoll);
+    const float fSX = get_sine(fPitch);
+    const float fSY = get_sine(fYaw);
+    const float fSZ = get_sine(fRoll);
+    const float fCX = get_cosine(fPitch);
+    const float fCY = get_cosine(fYaw);
+    const float fCZ = get_cosine(fRoll);
 
     // Cache this value
     const float fSXSZ = fSX * fSZ; // sx*sz
@@ -1885,7 +1885,7 @@ void BURGER_API Burger::Matrix4D_t::SetPerspective(
     float fFieldOfViewY, float fAspect, float fNear, float fFar) BURGER_NOEXCEPT
 {
     // Calculate the cotangent of Field of View * 2.0f
-    const float f = 1.0f / Tan(fFieldOfViewY * static_cast<float>(g_fDegreesToRadians) * 0.5f);
+    const float f = 1.0f / get_tangent(fFieldOfViewY * static_cast<float>(g_fDegreesToRadians) * 0.5f);
 
     const float fDepth = (fNear - fFar);
 
@@ -1939,7 +1939,7 @@ void BURGER_API Burger::Matrix4D_t::TransposeSetPerspective(
     float fFieldOfViewY, float fAspect, float fNear, float fFar) BURGER_NOEXCEPT
 {
     // Calculate the cotangent of Field of View * 2.0f
-    const float f = 1.0f / Tan(fFieldOfViewY * static_cast<float>(g_fDegreesToRadians) * 0.5f);
+    const float f = 1.0f / get_tangent(fFieldOfViewY * static_cast<float>(g_fDegreesToRadians) * 0.5f);
 
     const float fDepth = (fNear - fFar);
 
@@ -3937,7 +3937,7 @@ void BURGER_API Burger::Matrix4D_t::TransposeTransform3x3(
 
     Given a Y angle in radians, rotate the matrix accordingly
 
-    fCos = Cos(fYaw); fSin = Sin(fYaw);
+    fCos = get_cosine(fYaw); fSin = get_sine(fYaw);
 
     ||x|y|z|w|
     |:--:|:--:|:--:|:--:|:--:|
@@ -3953,8 +3953,8 @@ void BURGER_API Burger::Matrix4D_t::TransposeTransform3x3(
 
 void BURGER_API Burger::Matrix4D_t::Yaw(float fYaw) BURGER_NOEXCEPT
 {
-    const float fCos = Cos(fYaw);
-    const float fSin = Sin(fYaw);
+    const float fCos = get_cosine(fYaw);
+    const float fSin = get_sine(fYaw);
 
     const float fXX = x.x;
     const float fXY = x.y;
@@ -3978,7 +3978,7 @@ void BURGER_API Burger::Matrix4D_t::Yaw(float fYaw) BURGER_NOEXCEPT
 
     Given a X angle in radians, rotate the matrix accordingly
 
-    fCos = Cos(fPitch); fSin = Sin(fPitch);
+    fCos = get_cosine(fPitch); fSin = get_sine(fPitch);
 
     ||x|y|z|w|
     |:--:|:--:|:--:|:--:|:--:|
@@ -3994,8 +3994,8 @@ void BURGER_API Burger::Matrix4D_t::Yaw(float fYaw) BURGER_NOEXCEPT
 
 void BURGER_API Burger::Matrix4D_t::Pitch(float fPitch) BURGER_NOEXCEPT
 {
-    const float fCos = Cos(fPitch);
-    const float fSin = Sin(fPitch);
+    const float fCos = get_cosine(fPitch);
+    const float fSin = get_sine(fPitch);
 
     const float fYX = y.x;
     const float fYY = y.y;
@@ -4019,7 +4019,7 @@ void BURGER_API Burger::Matrix4D_t::Pitch(float fPitch) BURGER_NOEXCEPT
 
     Given a Z angle in radians, rotate the matrix accordingly
 
-    fCos = Cos(fRoll); fSin = Sin(fRoll);
+    fCos = get_cosine(fRoll); fSin = get_sine(fRoll);
 
     ||x|y|z|w|
     |:--:|:--:|:--:|:--:|:--:|
@@ -4035,8 +4035,8 @@ void BURGER_API Burger::Matrix4D_t::Pitch(float fPitch) BURGER_NOEXCEPT
 
 void BURGER_API Burger::Matrix4D_t::Roll(float fRoll) BURGER_NOEXCEPT
 {
-    const float fCos = Cos(fRoll);
-    const float fSin = Sin(fRoll);
+    const float fCos = get_cosine(fRoll);
+    const float fSin = get_sine(fRoll);
 
     const float fXX = x.x;
     const float fXY = x.y;
@@ -4081,8 +4081,8 @@ void BURGER_API Burger::Matrix4D_t::Rotate(
     } else if ((fX == 0.0f) && (fY == 0.0f)) {
         Roll(fRadians);
     } else {
-        const float fSin = Sin(fRadians);
-        const float fCos = Cos(fRadians);
+        const float fSin = get_sine(fRadians);
+        const float fCos = get_cosine(fRadians);
 
         // Get the length of the vector
         const float fLength = square_root((fX * fX) + (fY * fY) + (fZ * fZ));
@@ -4369,7 +4369,7 @@ void BURGER_API Burger::Matrix4D_t::PerspectiveFovLH(
     float fFieldOfViewY, float fAspect, float fNear, float fFar) BURGER_NOEXCEPT
 {
     // Calculate the cotangent of Field of View * 2.0f
-    const float fYScale = 1.0f / Tan(fFieldOfViewY * 0.5f);
+    const float fYScale = 1.0f / get_tangent(fFieldOfViewY * 0.5f);
     const float fDepth = (fFar - fNear);
 
     x.x = fYScale / fAspect;
@@ -4425,7 +4425,7 @@ void BURGER_API Burger::Matrix4D_t::PerspectiveFovRH(
     float fFieldOfViewY, float fAspect, float fNear, float fFar) BURGER_NOEXCEPT
 {
     // Calculate the cotangent of Field of View * 2.0f
-    const float fYScale = 1.0f / Tan(fFieldOfViewY * 0.5f);
+    const float fYScale = 1.0f / get_tangent(fFieldOfViewY * 0.5f);
     const float fDepth = (fNear - fFar);
 
     x.x = fYScale / fAspect;

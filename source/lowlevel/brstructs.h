@@ -213,10 +213,10 @@ extern const uint32_float_t g_fPi4;
 /** Constant for -Pi*4 in the float format. */
 extern const uint32_float_t g_fNegPi4;
 
-/** Constant for Cos(Pi/6.0) in the float format */
+/** Constant for get_cosine(Pi/6.0) in the float format */
 extern const uint32_float_t g_fCosPiDiv6;
 
-/** Constant for -Cos(Pi/6.0) in the float format */
+/** Constant for -get_cosine(Pi/6.0) in the float format */
 extern const uint32_float_t g_fNegCosPiDiv6;
 
 /** Constant for 1/(Pi*0.5f) in the float format. */
@@ -357,10 +357,10 @@ extern const uint64_double_t g_dPi4;
 /** Constant for -Pi*4 in the double format. */
 extern const uint64_double_t g_dNegPi4;
 
-/** Constant for Cos(Pi/6.0) in the double format */
+/** Constant for get_cosine(Pi/6.0) in the double format */
 extern const uint64_double_t g_dCosPiDiv6;
 
-/** Constant for -Cos(Pi/6.0) in the double format */
+/** Constant for -get_cosine(Pi/6.0) in the double format */
 extern const uint64_double_t g_dNegCosPiDiv6;
 
 /** Constant for 1/(Pi*0.5) in the double format. */

@@ -6,7 +6,7 @@
 
 	Build with the masm.exe for PowerPC
 
-	double BURGER_API Burger::ModuloRadians(double dInput)
+	double BURGER_API Burger::modulo_radians(double dInput)
 	r0, r3-12, fp0-fp13 are volatile
 	Result in fp1
 	dInput = fp1
@@ -15,7 +15,7 @@
 
 #include "brfloatingpoint.h"
 
-__declspec(naked) double BURGER_API Burger::ModuloRadians(
+__declspec(naked) double BURGER_API Burger::modulo_radians(
 	double /* dInput */) BURGER_NOEXCEPT
 {
 	// clang-format off

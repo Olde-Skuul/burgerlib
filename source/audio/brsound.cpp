@@ -421,7 +421,7 @@ uint_t BURGER_API Burger::SoundManager::BufferDecoder::ParseSoundFileImage(const
 				m_uCompressedLength = BigEndian::load(&pSoundChunk->m_uChunkLength)-8;
 
 				// Sample rate is stored as a big endian 80 bit float
-				m_uSampleRate = static_cast<uint_t>(static_cast<int>(BigEndianLoadExtended(pCommonChunk->m_fxSampleRate)));
+				m_uSampleRate = static_cast<uint_t>(static_cast<int>(big_endian_load_extended(pCommonChunk->m_fxSampleRate)));
 
 				// 8 bit data?
 				uint_t uSampleSize = BigEndian::load(&pCommonChunk->m_uSampleSize);

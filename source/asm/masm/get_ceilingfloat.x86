@@ -1,0 +1,66 @@
+;
+; X86 assembly for Visual Studio
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+;
+; Build with ml.exe
+;
+; float BURGER_API Burger::get_ceiling(float fInput)
+; eax, ecx and edx are volatile
+; fInput = [esp+4]
+; Result in 8087 FPU
+;
+
+	.686
+	.MODEL FLAT
+
+	.data
+
+; Actually Burger::g_fOne
+	EXTRN	?g_fOne@Burger@@3Tuint32_float_t@1@B:DWORD
+
+_TEXT segment para 'CODE'
+
+	align 16
+public ?get_ceiling@Burger@@YIMM@Z
+?get_ceiling@Burger@@YIMM@Z proc
+
+; Load the value in an integer register
+	mov		eax, [esp + 4]
+
+; Load the same value in the FPU
+	fld		dword ptr[esp + 4]
+
+; Mask off the sign
+	and		eax, 07FFFFFFFH
+
+; Compare to 8388608.0f
+	cmp		eax, 04B000000H
+
+; Out of range, return original value
+	jae		CeilExit
+
+; Convert the integer to float (It's in range)
+	frndint
+
+; Clear ax for flags
+	xor		eax, eax
+
+; Compare values for difference (Pop stack)
+	fcom	dword ptr[esp + 4]
+	fnstsw	ax
+
+; Was the new less than the original?
+	and		eax, 0100H
+	jz		CeilExit
+
+; Add 1.0f to round up
+	fadd	dword ptr[?g_fOne@Burger@@3Tuint32_float_t@1@B]
+CeilExit:
+	ret		4
+
+?get_ceiling@Burger@@YIMM@Z endp
+
+_TEXT ends
+
+	end

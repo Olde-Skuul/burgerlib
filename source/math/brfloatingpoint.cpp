@@ -2043,8 +2043,8 @@ uint_t BURGER_API Burger::equal_with_epsilon(
 	fResult = Burger::get_floor(-0.95f);	//-1
 	\endcode
 
-	\sa get_floor(double), Ceil(float), Round(float), RoundToZero(float), or
-		FixedToIntFloor(Fixed32)
+	\sa get_floor(double), get_ceiling(float), get_round(float),
+		round_to_zero(float), or FixedToIntFloor(Fixed32)
 
 ***************************************/
 
@@ -2053,7 +2053,8 @@ uint_t BURGER_API Burger::equal_with_epsilon(
 		(defined(BURGER_PPC) || defined(BURGER_X86))) || \
 	((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
 		(defined(BURGER_PPC) || defined(BURGER_X86))) || \
-	(defined(BURGER_WATCOM) && defined(BURGER_X86))
+	(defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
+	(defined(BURGER_SNSYSTEMS) && defined(BURGER_PPC))
 
 #else
 
@@ -2102,8 +2103,8 @@ float BURGER_API Burger::get_floor(float fInput) BURGER_NOEXCEPT
 	dResult = Burger::get_floor(-0.95);	//-1
 	\endcode
 
-	\sa get_floor(float), Ceil(double), Round(double), RoundToZero(double), or
-		FixedToIntFloor(Fixed32)
+	\sa get_floor(float), get_ceiling(double), get_round(double),
+		round_to_zero(double), or FixedToIntFloor(Fixed32)
 
 ***************************************/
 
@@ -2112,8 +2113,8 @@ float BURGER_API Burger::get_floor(float fInput) BURGER_NOEXCEPT
 		(defined(BURGER_PPC) || defined(BURGER_X86))) || \
 	((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
 		(defined(BURGER_PPC) || defined(BURGER_X86))) || \
-	(defined(BURGER_WATCOM) && defined(BURGER_X86))
-
+	(defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
+	(defined(BURGER_SNSYSTEMS) && defined(BURGER_PPC))
 #else
 
 double BURGER_API Burger::get_floor(double dInput) BURGER_NOEXCEPT
@@ -2151,74 +2152,32 @@ double BURGER_API Burger::get_floor(double dInput) BURGER_NOEXCEPT
 
 	\code
 	float fResult;
-	fResult = Burger::Ceil(1.1f);	//2
-	fResult = Burger::Ceil(1.95f);	//2
-	fResult = Burger::Ceil(-1.1f);	//-1
-	fResult = Burger::Ceil(-1.95f);	//-1
-	fResult = Burger::Ceil(0.1f);	//1
-	fResult = Burger::Ceil(0.95f);	//1
-	fResult = Burger::Ceil(-0.1f);	//0
-	fResult = Burger::Ceil(-0.95f);	//0
+	fResult = Burger::get_ceiling(1.1f);	//2
+	fResult = Burger::get_ceiling(1.95f);	//2
+	fResult = Burger::get_ceiling(-1.1f);	//-1
+	fResult = Burger::get_ceiling(-1.95f);	//-1
+	fResult = Burger::get_ceiling(0.1f);	//1
+	fResult = Burger::get_ceiling(0.95f);	//1
+	fResult = Burger::get_ceiling(-0.1f);	//0
+	fResult = Burger::get_ceiling(-0.95f);	//0
 	\endcode
 
-	\sa Ceil(double), get_floor(float), Round(float), RoundToZero(float), or
-		FixedToIntCeil(Fixed32)
+	\sa get_ceiling(double), get_floor(float), get_round(float),
+		round_to_zero(float), or FixedToIntCeil(Fixed32)
 
 ***************************************/
 
-#if defined(BURGER_XBOX360)
-
-// Do this completely branchless
-
-float BURGER_API Burger::Ceil(float fInput) BURGER_NOEXCEPT
-{
-	// Convert to the input to an integer (Can fail on large numbers)
-	double dVar = __fcfid(__fctiwz(fInput));
-	// Ceiling the value to + infinity
-	dVar = __fsel(dVar - fInput, dVar, dVar + 1.0f); // Return ceiling value
-
-	// If the input number was invalid, return the original number
-	return __fself(
-		fabsf(fInput) - 8388608.0f, fInput, static_cast<float>(dVar));
-}
-
-#elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
-
-#elif defined(BURGER_PPC) && defined(BURGER_MACOSX)
-
-#elif defined(BURGER_X86) && \
-	(defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || \
-		defined(BURGER_MSVC))
-
-BURGER_DECLSPECNAKED float BURGER_API Burger::Ceil(
-	float /* fInput */) BURGER_NOEXCEPT
-{
-	// clang-format off
-    BURGER_ASM
-    {
-        mov eax, [esp + 4]      // Load the value in an integer register
-        fld dword ptr[esp + 4]  // Load the same value in the FPU
-        and eax, 0x7FFFFFFF     // Mask off the sign
-        cmp eax, 0x4B000000     // Compare to 8388608.0f
-        jae CeilExit            // Out of range, return original value
-        frndint                 // Convert the integer to float (It's in range)
-        xor eax, eax            // Clear ax for flags
-        fcom dword ptr[esp + 4] // Compare values for difference (Pop stack)
-        fnstsw ax
-        and eax, 0x100          // Was the new less than the original?
-        jz CeilExit
-        fadd dword ptr[g_fOne]  // Add 1.0f to round up
-    CeilExit:
-        ret 4                   // Clean up and exit
-    }
-	// clang-format on
-}
-
-#elif defined(BURGER_X86) && (defined(BURGER_MACOSX) || defined(BURGER_IOS))
+#if (defined(BURGER_MSVC) && (defined(BURGER_PPC) || defined(BURGER_X86))) || \
+	(defined(BURGER_METROWERKS) && \
+		(defined(BURGER_PPC) || defined(BURGER_X86))) || \
+	((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
+		(defined(BURGER_PPC) || defined(BURGER_X86))) || \
+	(defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
+	(defined(BURGER_SNSYSTEMS) && defined(BURGER_PPC))
 
 #else
 
-float BURGER_API Burger::Ceil(float fInput) BURGER_NOEXCEPT
+float BURGER_API Burger::get_ceiling(float fInput) BURGER_NOEXCEPT
 {
 	// Note : 8388608 is the first floating point number
 	// that cannot have a fraction. Therefore this routine can't
@@ -2251,73 +2210,31 @@ float BURGER_API Burger::Ceil(float fInput) BURGER_NOEXCEPT
 
 	\code
 	double dResult;
-	dResult = Burger::Ceil(1.1);	//2
-	dResult = Burger::Ceil(1.95);	//2
-	dResult = Burger::Ceil(-1.1);	//-1
-	dResult = Burger::Ceil(-1.95);	//-1
-	dResult = Burger::Ceil(0.1);	//1
-	dResult = Burger::Ceil(0.95);	//1
-	dResult = Burger::Ceil(-0.1);	//0
-	dResult = Burger::Ceil(-0.95);	//0
+	dResult = Burger::get_ceiling(1.1);	//2
+	dResult = Burger::get_ceiling(1.95);	//2
+	dResult = Burger::get_ceiling(-1.1);	//-1
+	dResult = Burger::get_ceiling(-1.95);	//-1
+	dResult = Burger::get_ceiling(0.1);	//1
+	dResult = Burger::get_ceiling(0.95);	//1
+	dResult = Burger::get_ceiling(-0.1);	//0
+	dResult = Burger::get_ceiling(-0.95);	//0
 	\endcode
 
-	\sa Ceil(float), get_floor(double), Round(double), RoundToZero(double), or
-		FixedToIntCeil(Fixed32)
+	\sa get_ceiling(float), get_floor(double), get_round(double),
+		round_to_zero(double), or FixedToIntCeil(Fixed32)
 
 ***************************************/
 
-#if defined(BURGER_XBOX360)
-
-// Do this completely branchless
-
-double BURGER_API Burger::Ceil(double dInput) BURGER_NOEXCEPT
-{
-	// Convert to the input to an integer (Can fail on large numbers)
-	double dVar = __fcfid(__fctidz(dInput));
-	// Ceiling the value to + infinity
-	dVar = __fsel(dVar - dInput, dVar, dVar + 1.0); // Return ceilinged value
-
-	// If the input number was invalid, return the original number
-	return __fsel(fabs(dInput) - 4503599627370496.0, dInput, dVar);
-}
-
-#elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
-
-#elif defined(BURGER_PPC) && defined(BURGER_MACOSX)
-
-#elif defined(BURGER_X86) && \
-	(defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || \
-		defined(BURGER_MSVC))
-
-BURGER_DECLSPECNAKED double BURGER_API Burger::Ceil(
-	double /* dInput */) BURGER_NOEXCEPT
-{
-	// clang-format off
-    BURGER_ASM
-    {
-        mov eax, [esp + 8]      // Load the value in an integer register
-        fld qword ptr[esp + 4]  // Load the same value in the FPU
-        and eax, 0x7FFFFFFF     // Mask off the sign
-        cmp eax, 0x43300000     // Compare to 4503599627370496.0
-        jae CeilExit            // Out of range, return original value
-        frndint                 // Convert the integer to float (It's in range)
-        xor eax, eax            // Clear ax for flags
-        fcom qword ptr[esp + 4] // Compare values for difference (Pop stack)
-        fnstsw ax
-        and eax, 0x100          // Was the new less than the original?
-        jz CeilExit
-        fadd dword ptr[g_fOne]  // Add 1.0f to round up
-    CeilExit:
-        ret 8                   // Clean up and exit
-    }
-	// clang-format on
-}
-
-#elif defined(BURGER_X86) && (defined(BURGER_MACOSX) || defined(BURGER_IOS))
-
+#if (defined(BURGER_MSVC) && (defined(BURGER_PPC) || defined(BURGER_X86))) || \
+	(defined(BURGER_METROWERKS) && \
+		(defined(BURGER_PPC) || defined(BURGER_X86))) || \
+	((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
+		(defined(BURGER_PPC) || defined(BURGER_X86))) || \
+	(defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
+	(defined(BURGER_SNSYSTEMS) && defined(BURGER_PPC))
 #else
 
-double BURGER_API Burger::Ceil(double dInput) BURGER_NOEXCEPT
+double BURGER_API Burger::get_ceiling(double dInput) BURGER_NOEXCEPT
 {
 	// Note : 4503599627370496.0 is the first floating point number
 	// that cannot have a fraction. Therefore this routine can't
@@ -2354,49 +2271,30 @@ double BURGER_API Burger::Ceil(double dInput) BURGER_NOEXCEPT
 
 	\code
 	float fResult;
-	fResult = Burger::Round(1.1f);		//1
-	fResult = Burger::Round(1.95f);		//2
-	fResult = Burger::Round(-1.1f);		//-1
-	fResult = Burger::Round(-1.95f);	//-2
-	fResult = Burger::Round(0.1f);		//0
-	fResult = Burger::Round(0.95f);		//1
-	fResult = Burger::Round(-0.1f);		//0
-	fResult = Burger::Round(-0.95f);	//-1
+	fResult = Burger::get_round(1.1f);		//1
+	fResult = Burger::get_round(1.95f);		//2
+	fResult = Burger::get_round(-1.1f);		//-1
+	fResult = Burger::get_round(-1.95f);	//-2
+	fResult = Burger::get_round(0.1f);		//0
+	fResult = Burger::get_round(0.95f);		//1
+	fResult = Burger::get_round(-0.1f);		//0
+	fResult = Burger::get_round(-0.95f);	//-1
 	\endcode
 
-	\sa Round(double), get_floor(float), Ceil(float), RoundToZero(float), or
-		FixedToIntNearest(Fixed32)
+	\sa get_round(double), get_floor(float), get_ceiling(float),
+		round_to_zero(float), or FixedToIntNearest(Fixed32)
 
 ***************************************/
 
-#if defined(BURGER_X86) && \
-	(defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || \
-		defined(BURGER_MSVC))
-
-// x86 version
-
-BURGER_DECLSPECNAKED float BURGER_API Burger::Round(
-	float /* fInput */) BURGER_NOEXCEPT
-{
-	// clang-format off
-    BURGER_ASM
-    {
-        mov eax, dword ptr[esp + 4] // Get the sign bit
-        fld dword ptr[esp + 4]      // Load into the FPU
-        shr eax, 31                 // 1 for negative, 0 for positive
-        fstcw[esp + 4]              // Save state
-        fldcw word ptr[g_X86RoundDownFlag] // Set round down
-        fadd dword ptr[g_X86OneAndNegOne + eax * 4] // Add or subtract 0.5f
-        frndint                     // Round
-        fldcw[esp + 4]              // Restore rounding
-        ret 4                       // Clean up and exit
-    }
-	// clang-format on
-}
+#if (defined(BURGER_METROWERKS) && \
+	(defined(BURGER_PPC) || defined(BURGER_X86))) || \
+	(defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
+	(defined(BURGER_MSVC) && (defined(BURGER_X86) || defined(BURGER_PPC))) || \
+	(defined(BURGER_SNSYSTEMS) && defined(BURGER_PPC))
 
 #elif defined(BURGER_AMD64)
 
-float BURGER_API Burger::Round(float fInput) BURGER_NOEXCEPT
+float BURGER_API Burger::get_round(float fInput) BURGER_NOEXCEPT
 {
 	// Convert to SSE register
 	__m128 vInput = _mm_set_ss(fInput);
@@ -2438,34 +2336,9 @@ float BURGER_API Burger::Round(float fInput) BURGER_NOEXCEPT
 	return _mm_cvtss_f32(_mm_xor_ps(vResult, vAbs));
 }
 
-#elif defined(BURGER_XBOX360)
-
-float BURGER_API Burger::Round(float fInput) BURGER_NOEXCEPT
-{
-	// Get the absolute value
-	double dAbs = fabs(fInput);
-
-	// Convert to the input to an integer (Can fail on large numbers)
-	double dVar = __fcfid(__fctiwz(dAbs));
-
-	// Get the fraction
-	double dFraction = dAbs - dVar;
-
-	// Test for rounding and add 1 if it needs to round up
-	dVar += __fsel(dFraction - 0.5f, 1.0f, 0.0f);
-
-	// Restore the sign
-	dVar = __fsel(fInput, dVar, -dVar);
-
-	// If the input number was invalid, return the original number
-	return static_cast<float>(__fsel(dAbs - 8388608.0f, fInput, dVar));
-}
-
-#elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
-
 #else
 
-float BURGER_API Burger::Round(float fInput) BURGER_NOEXCEPT
+float BURGER_API Burger::get_round(float fInput) BURGER_NOEXCEPT
 {
 	uint32_float_t Converter;
 	Converter.f = fInput;
@@ -2532,50 +2405,31 @@ float BURGER_API Burger::Round(float fInput) BURGER_NOEXCEPT
 
 	\code
 	double dResult;
-	dResult = Burger::Round(1.1);	//1
-	dResult = Burger::Round(1.95);	//2
-	dResult = Burger::Round(-1.1);	//-1
-	dResult = Burger::Round(-1.95);	//-2
-	dResult = Burger::Round(0.1);	//0
-	dResult = Burger::Round(0.95);	//1
-	dResult = Burger::Round(-0.1);	//0
-	dResult = Burger::Round(-0.95);	//-1
+	dResult = Burger::get_round(1.1);	//1
+	dResult = Burger::get_round(1.95);	//2
+	dResult = Burger::get_round(-1.1);	//-1
+	dResult = Burger::get_round(-1.95);	//-2
+	dResult = Burger::get_round(0.1);	//0
+	dResult = Burger::get_round(0.95);	//1
+	dResult = Burger::get_round(-0.1);	//0
+	dResult = Burger::get_round(-0.95);	//-1
 	\endcode
 
-	\sa Round(float), get_floor(double), Ceil(double), RoundToZero(double), or
-		FixedToIntNearest(Fixed32)
+	\sa get_round(float), get_floor(double), get_ceiling(double),
+		round_to_zero(double), or FixedToIntNearest(Fixed32)
 
 ***************************************/
 
-#if defined(BURGER_X86) && \
-	(defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || \
-		defined(BURGER_MSVC))
-
-// x86 version
-
-BURGER_DECLSPECNAKED double BURGER_API Burger::Round(
-	double /* fInput */) BURGER_NOEXCEPT
-{
-	// clang-format off
-    BURGER_ASM
-    {
-        mov eax, dword ptr[esp + 8] // Get the sign bit
-        fld qword ptr[esp + 4]      // Load into the FPU
-        shr eax, 31                 // 1 for negative, 0 for positive
-        fstcw[esp + 4]              // Save state
-        fldcw word ptr[g_X86RoundDownFlag] // Set round down
-        fadd dword ptr[g_X86OneAndNegOne + eax * 4] // Add or subtract 0.5f
-        frndint                     // Round
-        fldcw[esp + 4]              // Restore rounding
-        ret 8                       // Clean up and exit
-    }
-	// clang-format on
-}
+#if (defined(BURGER_METROWERKS) && \
+	(defined(BURGER_PPC) || defined(BURGER_X86))) || \
+	(defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
+	(defined(BURGER_MSVC) && (defined(BURGER_X86) || defined(BURGER_PPC))) || \
+	(defined(BURGER_SNSYSTEMS) && defined(BURGER_PPC))
 
 // Note: VS 2005 and earlier doesn't support the _mm_cvtsd_si64() intrinsic
 #elif defined(BURGER_AMD64) && !(defined(BURGER_MSVC) && (_MSC_VER < 1500))
 
-double BURGER_API Burger::Round(double dInput) BURGER_NOEXCEPT
+double BURGER_API Burger::get_round(double dInput) BURGER_NOEXCEPT
 {
 	// Convert to SSE register
 	__m128d vInput = _mm_set_sd(dInput);
@@ -2617,34 +2471,9 @@ double BURGER_API Burger::Round(double dInput) BURGER_NOEXCEPT
 	return _mm_cvtsd_f64(_mm_xor_pd(vResult, vAbs));
 }
 
-#elif defined(BURGER_XBOX360)
-
-double BURGER_API Burger::Round(double dInput) BURGER_NOEXCEPT
-{
-	// Get the absolute value
-	double dAbs = fabs(dInput);
-
-	// Convert to the input to an integer (Can fail on large numbers)
-	double dVar = __fcfid(__fctidz(dAbs));
-
-	// Get the fraction
-	double dFraction = dAbs - dVar;
-
-	// Test for rounding and add 1 if it needs to round up
-	dVar += __fsel(dFraction - 0.5f, 1.0f, 0.0f);
-
-	// Restore the sign
-	dVar = __fsel(dInput, dVar, -dVar);
-
-	// If the input number was invalid, return the original number
-	return __fsel(dAbs - 4503599627370496.0, dInput, dVar);
-}
-
-#elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
-
 #else
 
-double BURGER_API Burger::Round(double dInput) BURGER_NOEXCEPT
+double BURGER_API Burger::get_round(double dInput) BURGER_NOEXCEPT
 {
 	uint64_double_t Converter;
 	Converter.d = dInput;
@@ -2726,25 +2555,25 @@ double BURGER_API Burger::Round(double dInput) BURGER_NOEXCEPT
 
 	\code
 	float fResult;
-	fResult = Burger::RoundToZero(1.1f);	//1
-	fResult = Burger::RoundToZero(1.95f);	//1
-	fResult = Burger::RoundToZero(-1.1f);	//-1
-	fResult = Burger::RoundToZero(-1.95f);	//-1
-	fResult = Burger::RoundToZero(0.1f);	//0
-	fResult = Burger::RoundToZero(0.95f);	//0
-	fResult = Burger::RoundToZero(-0.1f);	//0
-	fResult = Burger::RoundToZero(-0.95f);	//0
+	fResult = Burger::round_to_zero(1.1f);	//1
+	fResult = Burger::round_to_zero(1.95f);	//1
+	fResult = Burger::round_to_zero(-1.1f);	//-1
+	fResult = Burger::round_to_zero(-1.95f);	//-1
+	fResult = Burger::round_to_zero(0.1f);	//0
+	fResult = Burger::round_to_zero(0.95f);	//0
+	fResult = Burger::round_to_zero(-0.1f);	//0
+	fResult = Burger::round_to_zero(-0.95f);	//0
 	\endcode
 
-	\sa RoundToZero(double), get_floor(float), Ceil(float), Round(float), or
-		FixedToInt(Fixed32)
+	\sa round_to_zero(double), get_floor(float), get_ceiling(float),
+		get_round(float), or FixedToInt(Fixed32)
 
 ***************************************/
 
-float BURGER_API Burger::RoundToZero(float fInput) BURGER_NOEXCEPT
+float BURGER_API Burger::round_to_zero(float fInput) BURGER_NOEXCEPT
 {
 	if (fInput < 0.0f) {
-		fInput = Ceil(fInput);
+		fInput = get_ceiling(fInput);
 	} else {
 		fInput = get_floor(fInput);
 	}
@@ -2763,32 +2592,32 @@ float BURGER_API Burger::RoundToZero(float fInput) BURGER_NOEXCEPT
 
 	\code
 	double dResult;
-	dResult = Burger::RoundToZero(1.1);		//1
-	dResult = Burger::RoundToZero(1.95);	//1
-	dResult = Burger::RoundToZero(-1.1);	//-1
-	dResult = Burger::RoundToZero(-1.95);	//-1
-	dResult = Burger::RoundToZero(0.1);		//0
-	dResult = Burger::RoundToZero(0.95);	//0
-	dResult = Burger::RoundToZero(-0.1);	//0
-	dResult = Burger::RoundToZero(-0.95);	//0
+	dResult = Burger::round_to_zero(1.1);		//1
+	dResult = Burger::round_to_zero(1.95);	//1
+	dResult = Burger::round_to_zero(-1.1);	//-1
+	dResult = Burger::round_to_zero(-1.95);	//-1
+	dResult = Burger::round_to_zero(0.1);		//0
+	dResult = Burger::round_to_zero(0.95);	//0
+	dResult = Burger::round_to_zero(-0.1);	//0
+	dResult = Burger::round_to_zero(-0.95);	//0
 	\endcode
 
-	\sa RoundToZero(float), get_floor(double), Ceil(double), Round(double), or
-		FixedToInt(Fixed32)
+	\sa round_to_zero(float), get_floor(double), get_ceiling(double),
+		get_round(double), or FixedToInt(Fixed32)
 
 ***************************************/
 
-double BURGER_API Burger::RoundToZero(double dInput) BURGER_NOEXCEPT
+double BURGER_API Burger::round_to_zero(double dInput) BURGER_NOEXCEPT
 {
 	if (dInput < 0.0) {
-		dInput = Ceil(dInput);
+		dInput = get_ceiling(dInput);
 	} else {
 		dInput = get_floor(dInput);
 	}
 	return dInput;
 }
 
-float BURGER_API Burger::Tan(float fInput) BURGER_NOEXCEPT
+float BURGER_API Burger::get_tangent(float fInput) BURGER_NOEXCEPT
 {
 // Watcom and Mac Class StdC do not have the fast version
 #if defined(BURGER_WATCOM) || (defined(BURGER_MAC) && defined(__MATH_H__))
@@ -2798,12 +2627,12 @@ float BURGER_API Burger::Tan(float fInput) BURGER_NOEXCEPT
 #endif
 }
 
-double BURGER_API Burger::Tan(double dInput) BURGER_NOEXCEPT
+double BURGER_API Burger::get_tangent(double dInput) BURGER_NOEXCEPT
 {
 	return tan(dInput);
 }
 
-float BURGER_API Burger::ASin(float fInput) BURGER_NOEXCEPT
+float BURGER_API Burger::get_arcsine(float fInput) BURGER_NOEXCEPT
 {
 // Watcom and Mac Class StdC do not have the fast version
 #if defined(BURGER_WATCOM) || (defined(BURGER_MAC) && defined(__MATH_H__))
@@ -2813,12 +2642,12 @@ float BURGER_API Burger::ASin(float fInput) BURGER_NOEXCEPT
 #endif
 }
 
-double BURGER_API Burger::ASin(double dInput) BURGER_NOEXCEPT
+double BURGER_API Burger::get_arcsine(double dInput) BURGER_NOEXCEPT
 {
 	return asin(dInput);
 }
 
-float BURGER_API Burger::ACos(float fInput) BURGER_NOEXCEPT
+float BURGER_API Burger::get_arccosine(float fInput) BURGER_NOEXCEPT
 {
 // Watcom and Mac Class StdC do not have the fast version
 #if defined(BURGER_WATCOM) || (defined(BURGER_MAC) && defined(__MATH_H__))
@@ -2828,12 +2657,12 @@ float BURGER_API Burger::ACos(float fInput) BURGER_NOEXCEPT
 #endif
 }
 
-double BURGER_API Burger::ACos(double dInput) BURGER_NOEXCEPT
+double BURGER_API Burger::get_arccosine(double dInput) BURGER_NOEXCEPT
 {
 	return acos(dInput);
 }
 
-float BURGER_API Burger::ATan(float fInput) BURGER_NOEXCEPT
+float BURGER_API Burger::get_arctangent(float fInput) BURGER_NOEXCEPT
 {
 // Watcom and Mac Class StdC do not have the fast version
 #if defined(BURGER_WATCOM) || (defined(BURGER_MAC) && defined(__MATH_H__))
@@ -2843,12 +2672,12 @@ float BURGER_API Burger::ATan(float fInput) BURGER_NOEXCEPT
 #endif
 }
 
-double BURGER_API Burger::ATan(double dInput) BURGER_NOEXCEPT
+double BURGER_API Burger::get_arctangent(double dInput) BURGER_NOEXCEPT
 {
 	return atan(dInput);
 }
 
-float BURGER_API Burger::ATan2(float fSin, float fCos) BURGER_NOEXCEPT
+float BURGER_API Burger::get_arctangent2(float fSin, float fCos) BURGER_NOEXCEPT
 {
 // Watcom and Mac Class StdC do not have the fast version
 #if defined(BURGER_WATCOM) || (defined(BURGER_MAC) && defined(__MATH_H__))
@@ -2858,12 +2687,12 @@ float BURGER_API Burger::ATan2(float fSin, float fCos) BURGER_NOEXCEPT
 #endif
 }
 
-double BURGER_API Burger::ATan2(double dSin, double dCos) BURGER_NOEXCEPT
+double BURGER_API Burger::get_arctangent2(double dSin, double dCos) BURGER_NOEXCEPT
 {
 	return atan2(dSin, dCos);
 }
 
-float BURGER_API Burger::Pow(float fX, float fY) BURGER_NOEXCEPT
+float BURGER_API Burger::get_power(float fX, float fY) BURGER_NOEXCEPT
 {
 // Watcom and Mac Class StdC do not have the fast version
 #if defined(BURGER_WATCOM) || (defined(BURGER_MAC) && defined(__MATH_H__))
@@ -2873,12 +2702,12 @@ float BURGER_API Burger::Pow(float fX, float fY) BURGER_NOEXCEPT
 #endif
 }
 
-double BURGER_API Burger::Pow(double dX, double dY) BURGER_NOEXCEPT
+double BURGER_API Burger::get_power(double dX, double dY) BURGER_NOEXCEPT
 {
 	return pow(dX, dY);
 }
 
-float BURGER_API Burger::Exp(float fInput) BURGER_NOEXCEPT
+float BURGER_API Burger::get_exponent(float fInput) BURGER_NOEXCEPT
 {
 // Watcom and Mac Class StdC do not have the fast version
 #if defined(BURGER_WATCOM) || (defined(BURGER_MAC) && defined(__MATH_H__))
@@ -2888,12 +2717,12 @@ float BURGER_API Burger::Exp(float fInput) BURGER_NOEXCEPT
 #endif
 }
 
-double BURGER_API Burger::Exp(double dInput) BURGER_NOEXCEPT
+double BURGER_API Burger::get_exponent(double dInput) BURGER_NOEXCEPT
 {
 	return exp(dInput);
 }
 
-float BURGER_API Burger::Log(float fInput) BURGER_NOEXCEPT
+float BURGER_API Burger::get_logarithm(float fInput) BURGER_NOEXCEPT
 {
 // Watcom and Mac Class StdC do not have the fast version
 #if defined(BURGER_WATCOM) || (defined(BURGER_MAC) && defined(__MATH_H__))
@@ -2903,24 +2732,24 @@ float BURGER_API Burger::Log(float fInput) BURGER_NOEXCEPT
 #endif
 }
 
-double BURGER_API Burger::Log(double dInput) BURGER_NOEXCEPT
+double BURGER_API Burger::get_logarithm(double dInput) BURGER_NOEXCEPT
 {
 	return log(dInput);
 }
 
 static const float LN_2 = 1.44269504088896340736f;
 
-float BURGER_API Burger::Log2(float fInput) BURGER_NOEXCEPT
+float BURGER_API Burger::get_logarithm2(float fInput) BURGER_NOEXCEPT
 {
-	return Log(fInput) * LN_2;
+	return get_logarithm(fInput) * LN_2;
 }
 
-double BURGER_API Burger::Log2(double dInput) BURGER_NOEXCEPT
+double BURGER_API Burger::get_logarithm2(double dInput) BURGER_NOEXCEPT
 {
-	return Log(dInput) * 1.44269504088896340736;
+	return get_logarithm(dInput) * 1.44269504088896340736;
 }
 
-float BURGER_API Burger::Log10(float fInput) BURGER_NOEXCEPT
+float BURGER_API Burger::get_logarithm10(float fInput) BURGER_NOEXCEPT
 {
 // Watcom and Mac Class StdC do not have the fast version
 #if defined(BURGER_WATCOM) || (defined(BURGER_MAC) && defined(__MATH_H__))
@@ -2930,12 +2759,12 @@ float BURGER_API Burger::Log10(float fInput) BURGER_NOEXCEPT
 #endif
 }
 
-double BURGER_API Burger::Log10(double dInput) BURGER_NOEXCEPT
+double BURGER_API Burger::get_logarithm10(double dInput) BURGER_NOEXCEPT
 {
 	return log10(dInput);
 }
 
-float BURGER_API Burger::Modf(float fInput, float* pInteger) BURGER_NOEXCEPT
+float BURGER_API Burger::get_fraction(float fInput, float* pInteger) BURGER_NOEXCEPT
 {
 // Watcom and Mac Class StdC do not have the fast version
 #if defined(BURGER_WATCOM) || (defined(BURGER_MAC) && defined(__MATH_H__))
@@ -2950,12 +2779,12 @@ float BURGER_API Burger::Modf(float fInput, float* pInteger) BURGER_NOEXCEPT
 #endif
 }
 
-double BURGER_API Burger::Modf(double dInput, double* pInteger) BURGER_NOEXCEPT
+double BURGER_API Burger::get_fraction(double dInput, double* pInteger) BURGER_NOEXCEPT
 {
 	return modf(dInput, pInteger);
 }
 
-float BURGER_API Burger::Fmod(float fInput, float fDivisor) BURGER_NOEXCEPT
+float BURGER_API Burger::get_modulo(float fInput, float fDivisor) BURGER_NOEXCEPT
 {
 // Watcom and Mac Class StdC do not have the fast version
 #if defined(BURGER_WATCOM) || (defined(BURGER_MAC) && defined(__MATH_H__))
@@ -2965,7 +2794,7 @@ float BURGER_API Burger::Fmod(float fInput, float fDivisor) BURGER_NOEXCEPT
 #endif
 }
 
-double BURGER_API Burger::Fmod(double dInput, double dDivisor) BURGER_NOEXCEPT
+double BURGER_API Burger::get_modulo(double dInput, double dDivisor) BURGER_NOEXCEPT
 {
 	return fmod(dInput, dDivisor);
 }
@@ -2979,11 +2808,11 @@ double BURGER_API Burger::Fmod(double dInput, double dDivisor) BURGER_NOEXCEPT
 
 	\param pInput Pointer to the 80 bit floating point number
 	\return Value in the form of a double
-	\sa LittleEndianLoadExtended(const Float80Bit)
+	\sa little_endian_load_extended(const Float80Bit)
 
 ***************************************/
 
-double BURGER_API Burger::BigEndianLoadExtended(
+double BURGER_API Burger::big_endian_load_extended(
 	const Float80Bit pInput) BURGER_NOEXCEPT
 {
 	// Union to expose the double
@@ -3049,11 +2878,11 @@ double BURGER_API Burger::BigEndianLoadExtended(
 
 	\param pInput Pointer to the 80 bit floating point number
 	\return Value in the form of a double
-	\sa BigEndianLoadExtended(const Float80Bit)
+	\sa big_endian_load_extended(const Float80Bit)
 
 ***************************************/
 
-double BURGER_API Burger::LittleEndianLoadExtended(
+double BURGER_API Burger::little_endian_load_extended(
 	const Float80Bit pInput) BURGER_NOEXCEPT
 {
 	// Union to expose the double
@@ -3121,11 +2950,11 @@ double BURGER_API Burger::LittleEndianLoadExtended(
 
 	\param uInput Volume from 0 to 255 as a percentage of volume in 256 steps
 	\return Value in the form of 0 to -10000 in the scale needed for DirectSound
-	\sa ConvertToDirectSoundVolume(float)
+	\sa convert_to_DirectSound_volume(float)
 
 ***************************************/
 
-long BURGER_API Burger::ConvertToDirectSoundVolume(
+long BURGER_API Burger::convert_to_DirectSound_volume(
 	uint_t uInput) BURGER_NOEXCEPT
 {
 	long lResult;
@@ -3140,7 +2969,7 @@ long BURGER_API Burger::ConvertToDirectSoundVolume(
 		// interested in Normalize 0-255 to 0-1.0f
 		float fInput =
 			static_cast<float>(static_cast<int>(uInput)) * (1.0f / 255.0f);
-		lResult = static_cast<long>(Log(1.0f / fInput) * -1000.0f);
+		lResult = static_cast<long>(get_logarithm(1.0f / fInput) * -1000.0f);
 	}
 	return lResult;
 }
@@ -3157,11 +2986,11 @@ long BURGER_API Burger::ConvertToDirectSoundVolume(
 
 	\param fInput Volume from 0.0f to 1.0f as a percentage of volume
 	\return Value in the form of 0 to -10000 in the scale needed for DirectSound
-	\sa ConvertToDirectSoundVolume(uint_t)
+	\sa convert_to_DirectSound_volume(uint_t)
 
 ***************************************/
 
-long BURGER_API Burger::ConvertToDirectSoundVolume(float fInput) BURGER_NOEXCEPT
+long BURGER_API Burger::convert_to_DirectSound_volume(float fInput) BURGER_NOEXCEPT
 {
 	long lResult;
 	// Anything softer than this is pretty much silence
@@ -3173,7 +3002,7 @@ long BURGER_API Burger::ConvertToDirectSoundVolume(float fInput) BURGER_NOEXCEPT
 	} else {
 		// Log(1.0/.0000000001) yields 10, which is the largest number I'm
 		// interested in
-		lResult = static_cast<long>(Log(1.0f / fInput) * -1000.0f);
+		lResult = static_cast<long>(get_logarithm(1.0f / fInput) * -1000.0f);
 	}
 	return lResult;
 }
@@ -3191,11 +3020,11 @@ long BURGER_API Burger::ConvertToDirectSoundVolume(float fInput) BURGER_NOEXCEPT
 	\param uInput Pan from 0x0000 to 0xFFFFU as a pan value
 	\return Value in the form of -10000 to -10000 in the scale needed for
 		DirectSound
-	\sa ConvertToDirectSoundPan(float)
+	\sa convert_to_DirectSound_pan(float)
 
 ***************************************/
 
-long BURGER_API Burger::ConvertToDirectSoundPan(uint_t uInput) BURGER_NOEXCEPT
+long BURGER_API Burger::convert_to_DirectSound_pan(uint_t uInput) BURGER_NOEXCEPT
 {
 	long lResult;
 	if (uInput == 0x8000U) {
@@ -3211,7 +3040,7 @@ long BURGER_API Burger::ConvertToDirectSoundPan(uint_t uInput) BURGER_NOEXCEPT
 			static_cast<float>(static_cast<int32_t>(uInput - 0x8000U)) *
 			(1.0f / 32767.0f);
 		lResult =
-			static_cast<long>(Log(1.0f / (1.0f - absolute(fValue))) * -1000.0f);
+			static_cast<long>(get_logarithm(1.0f / (1.0f - absolute(fValue))) * -1000.0f);
 		if (uInput >= 0x8000U) {
 			lResult = -lResult;
 		}
@@ -3232,11 +3061,11 @@ long BURGER_API Burger::ConvertToDirectSoundPan(uint_t uInput) BURGER_NOEXCEPT
 	\param fInput Pan from -1.0f to 1.0f as a pan value
 	\return Value in the form of -10000 to -10000 in the scale needed for
 		DirectSound
-	\sa ConvertToDirectSoundPan(uint_t)
+	\sa convert_to_DirectSound_pan(uint_t)
 
 ***************************************/
 
-long BURGER_API Burger::ConvertToDirectSoundPan(float fInput) BURGER_NOEXCEPT
+long BURGER_API Burger::convert_to_DirectSound_pan(float fInput) BURGER_NOEXCEPT
 {
 	// Get the absolute value
 	const float fAbs = absolute(fInput);
@@ -3257,7 +3086,7 @@ long BURGER_API Burger::ConvertToDirectSoundPan(float fInput) BURGER_NOEXCEPT
 			// Calculate the value assuming left
 			// and the input is clamped at 0.0f to 1.0f
 
-			lResult = static_cast<long>(Log(1.0f / (1.0f - fAbs)) * -1000.0f);
+			lResult = static_cast<long>(get_logarithm(1.0f / (1.0f - fAbs)) * -1000.0f);
 		}
 		// If positive then negate (Make positive)
 		if (fInput >= 0.0f) {
@@ -3277,11 +3106,11 @@ long BURGER_API Burger::ConvertToDirectSoundPan(float fInput) BURGER_NOEXCEPT
 	\param uInput Volume from 0 to 255. Numbers higher than 255 will be clamped.
 	\return Value in the form of 0.0f to 1.0f in the scale needed for Mac OSX /
 		iOS AudioUnit
-	\sa ConvertToAudioUnitPan(uint_t)
+	\sa convert_to_AudioUnit_pan(uint_t)
 
 ***************************************/
 
-float BURGER_API Burger::ConvertToAudioUnitVolume(uint_t uInput) BURGER_NOEXCEPT
+float BURGER_API Burger::convert_to_AudioUnit_volume(uint_t uInput) BURGER_NOEXCEPT
 {
 	float fResult;
 	if (!uInput) {
@@ -3306,11 +3135,11 @@ float BURGER_API Burger::ConvertToAudioUnitVolume(uint_t uInput) BURGER_NOEXCEPT
 	\return Value in the form of 0.0f to 1.0f in the scale needed for Mac
 		OSX / iOS AudioUnit
 
-	\sa ConvertToAudioUnitVolume(uint_t)
+	\sa convert_to_AudioUnit_volume(uint_t)
 
 ***************************************/
 
-float BURGER_API Burger::ConvertToAudioUnitPan(uint_t uInput) BURGER_NOEXCEPT
+float BURGER_API Burger::convert_to_AudioUnit_pan(uint_t uInput) BURGER_NOEXCEPT
 {
 	float fResult;
 	if (uInput >= 0xFFFFU) {
@@ -3330,16 +3159,18 @@ float BURGER_API Burger::ConvertToAudioUnitPan(uint_t uInput) BURGER_NOEXCEPT
 	Convert the decibels from -10000 to 0 to 0 to 1.0f
 
 	\param fDecibels DirectSound decibels from -10000 to 0.
+
 	\return Value in the form of 0.0f to 1.0f in the scale needed for XAudio2
 		SetVolume()
-	\sa AmplitudeRatioToDecibels(float)
+
+	\sa amplitude_ratio_to_decibels(float)
 
 ***************************************/
 
-float BURGER_API Burger::DecibelsToAmplitudeRatio(
+float BURGER_API Burger::decibels_to_amplitude_ratio(
 	float fDecibels) BURGER_NOEXCEPT
 {
-	return Pow(10.0f, fDecibels * (1.0f / 20.0f));
+	return get_power(10.0f, fDecibels * (1.0f / 20.0f));
 }
 
 /*! ************************************
@@ -3351,17 +3182,18 @@ float BURGER_API Burger::DecibelsToAmplitudeRatio(
 	\param fVolume in the form of 0.0f to 1.0f in the scale needed for XAudio2
 		GetVolume()
 
-		\return DirectSound decibels from -10000 to 0.
-	\sa DecibelsToAmplitudeRatio(float)
+	\return DirectSound decibels from -10000 to 0.
+	
+	\sa decibels_to_amplitude_ratio(float)
 
 ***************************************/
 
-float BURGER_API Burger::AmplitudeRatioToDecibels(float fVolume) BURGER_NOEXCEPT
+float BURGER_API Burger::amplitude_ratio_to_decibels(float fVolume) BURGER_NOEXCEPT
 {
 	if (fVolume == 0.0f) {
 		fVolume = g_fNegMax; // Smallest value (Negative)
 	} else {
-		fVolume = Log10(fVolume) * 20.0f;
+		fVolume = get_logarithm10(fVolume) * 20.0f;
 	}
 	return fVolume;
 }

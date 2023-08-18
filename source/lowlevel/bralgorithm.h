@@ -68,8 +68,11 @@ public:
 	typedef T* pointer;
 
 protected:
-	pointer m_pObject;      ///< Pointer to the object to track
-	deleter_type m_Deleter; ///< Instance of the deleter object
+	/** Pointer to the object to track */
+	pointer m_pObject;
+
+	/** Instance of the deleter object */
+	deleter_type m_Deleter;
 
 public:
 	unique_ptr() BURGER_NOEXCEPT: m_pObject(nullptr) {}
@@ -98,6 +101,7 @@ public:
 		return *this;
 	}
 #endif
+
 	/** Dispose of the object */
 	~unique_ptr()
 	{

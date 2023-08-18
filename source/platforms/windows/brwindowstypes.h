@@ -27,10 +27,6 @@
 #include "brvisualstudio.h"
 #endif
 
-#ifndef __BRMETROWERKS_H__
-#include "brmetrowerks.h"
-#endif
-
 #ifndef __BRGUID_H__
 #include "brguid.h"
 #endif

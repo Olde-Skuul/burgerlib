@@ -303,7 +303,7 @@ Fixed32 BURGER_API Burger::IntToFixedSaturate(int32_t iInput) BURGER_NOEXCEPT
 	iResult = Burger::FixedToIntCeil(FLOATTOFIXED(-0.95f));	//0
 	\endcode
 
-	\sa Ceil(float), Ceil(double), FixedToIntFloor(Fixed32),
+	\sa get_ceiling(float), get_ceiling(double), FixedToIntFloor(Fixed32),
 		FixedToInt(Fixed32), or FixedToIntNearest(Fixed32)
 
 ***************************************/
@@ -332,7 +332,7 @@ Fixed32 BURGER_API Burger::IntToFixedSaturate(int32_t iInput) BURGER_NOEXCEPT
 
 	\note This can be used to replace FixRound() from MacOS.
 
-	\sa Round(float), Round(double), FixedToIntFloor(Fixed32),
+	\sa get_round(float), get_round(double), FixedToIntFloor(Fixed32),
 		FixedToInt(Fixed32), or FixedToIntCeil(Fixed32)
 
 ***************************************/

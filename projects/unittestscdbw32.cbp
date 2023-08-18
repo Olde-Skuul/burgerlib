@@ -400,7 +400,6 @@
 		<Unit filename="../source/lowlevel/brlinkedlistpointer.cpp" />
 		<Unit filename="../source/lowlevel/brlinkedlistpointer.h" />
 		<Unit filename="../source/lowlevel/brmacros.h" />
-		<Unit filename="../source/lowlevel/brmetrowerks.h" />
 		<Unit filename="../source/lowlevel/brmutex.cpp" />
 		<Unit filename="../source/lowlevel/brmutex.h" />
 		<Unit filename="../source/lowlevel/broscursor.cpp" />

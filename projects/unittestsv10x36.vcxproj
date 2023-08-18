@@ -162,7 +162,6 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\asm\xbox360asm;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersxbox360;$(ProjectDir)..\source\graphics\shadersxbox360\generated;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\xbox360;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -265,7 +264,6 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\asm\xbox360asm;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersxbox360;$(ProjectDir)..\source\graphics\shadersxbox360\generated;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\xbox360;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -303,7 +301,6 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\asm\xbox360asm;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersxbox360;$(ProjectDir)..\source\graphics\shadersxbox360\generated;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\xbox360;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -341,7 +338,6 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\asm\xbox360asm;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersxbox360;$(ProjectDir)..\source\graphics\shadersxbox360\generated;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\xbox360;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -377,7 +373,6 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\asm\xbox360asm;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersxbox360;$(ProjectDir)..\source\graphics\shadersxbox360\generated;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\xbox360;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -547,7 +542,6 @@
     <ClInclude Include="..\source\lowlevel\brlinkedlistobject.h" />
     <ClInclude Include="..\source\lowlevel\brlinkedlistpointer.h" />
     <ClInclude Include="..\source\lowlevel\brmacros.h" />
-    <ClInclude Include="..\source\lowlevel\brmetrowerks.h" />
     <ClInclude Include="..\source\lowlevel\brmutex.h" />
     <ClInclude Include="..\source\lowlevel\broscursor.h" />
     <ClInclude Include="..\source\lowlevel\brpair.h" />
@@ -643,8 +637,28 @@
     <ClCompile Include="..\source\ansi\brfileansihelpers.cpp" />
     <ClCompile Include="..\source\ansi\brmemoryansi.cpp" />
     <ClCompile Include="..\source\ansi\brstdouthelpers.cpp" />
+    <ClCompile Include="..\source\asm\xbox360asm\get_ceilingdouble.cpp" />
+    <ClCompile Include="..\source\asm\xbox360asm\get_ceilingfloat.cpp" />
+    <ClCompile Include="..\source\asm\xbox360asm\get_floordouble.cpp" />
+    <ClCompile Include="..\source\asm\xbox360asm\get_floorfloat.cpp" />
+    <ClCompile Include="..\source\asm\xbox360asm\get_rounddouble.cpp" />
+    <ClCompile Include="..\source\asm\xbox360asm\get_roundfloat.cpp" />
+    <ClCompile Include="..\source\asm\xbox360asm\get_sign_bitdouble.cpp" />
+    <ClCompile Include="..\source\asm\xbox360asm\get_sign_bitfloat.cpp" />
+    <ClCompile Include="..\source\asm\xbox360asm\get_signdouble.cpp" />
+    <ClCompile Include="..\source\asm\xbox360asm\get_signfloat.cpp" />
     <ClCompile Include="..\source\asm\xbox360asm\getpowerpcrounding.cpp" />
+    <ClCompile Include="..\source\asm\xbox360asm\is_finitedouble.cpp" />
+    <ClCompile Include="..\source\asm\xbox360asm\is_finitefloat.cpp" />
+    <ClCompile Include="..\source\asm\xbox360asm\is_infinitedouble.cpp" />
+    <ClCompile Include="..\source\asm\xbox360asm\is_infinitefloat.cpp" />
+    <ClCompile Include="..\source\asm\xbox360asm\is_nandouble.cpp" />
+    <ClCompile Include="..\source\asm\xbox360asm\is_nanfloat.cpp" />
+    <ClCompile Include="..\source\asm\xbox360asm\is_normaldouble.cpp" />
+    <ClCompile Include="..\source\asm\xbox360asm\is_normalfloat.cpp" />
     <ClCompile Include="..\source\asm\xbox360asm\loadunaligned64.cpp" />
+    <ClCompile Include="..\source\asm\xbox360asm\moduloradiansdouble.cpp" />
+    <ClCompile Include="..\source\asm\xbox360asm\moduloradiansfloat.cpp" />
     <ClCompile Include="..\source\asm\xbox360asm\setpowerpcrounding.cpp" />
     <ClCompile Include="..\source\audio\bralaw.cpp" />
     <ClCompile Include="..\source\audio\brimportit.cpp" />

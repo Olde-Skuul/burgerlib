@@ -493,12 +493,12 @@ uint_t BURGER_API Burger::SoundManager::Voice::Init(
 
 		ComponentInstanceRecord* pMixer = pManager->GetMixerUnit();
 		uResult = AudioUnitSetParameter(pMixer, kMultiChannelMixerParam_Volume,
-			kAudioUnitScope_Input, uIndex, ConvertToAudioUnitVolume(m_uVolume),
+			kAudioUnitScope_Input, uIndex, convert_to_AudioUnit_volume(m_uVolume),
 			0);
 		if (!uResult) {
 			uResult = AudioUnitSetParameter(pMixer, kMultiChannelMixerParam_Pan,
 				kAudioUnitScope_Input, uIndex,
-				PANFIX(ConvertToAudioUnitPan(m_uPan)), 0);
+				PANFIX(convert_to_AudioUnit_pan(m_uPan)), 0);
 		}
 	}
 	return static_cast<uint_t>(uResult);
@@ -714,7 +714,7 @@ uint_t BURGER_API Burger::SoundManager::Voice::SetVolume(uint_t uVolume)
 		//
 		// Convert to MacOSX
 		//
-		float fVolume = ConvertToAudioUnitVolume(uVolume);
+		float fVolume = convert_to_AudioUnit_volume(uVolume);
 		SoundManager* pManager = m_pManager;
 		uint_t uIndex = static_cast<uint_t>(this - pManager->m_ActiveVoices);
 		uResult = AudioUnitSetParameter(pManager->GetMixerUnit(),
@@ -752,7 +752,7 @@ uint_t BURGER_API Burger::SoundManager::Voice::SetPan(uint_t uPan)
 		//
 		// Convert to MacOSX
 		//
-		float fPan = PANFIX(ConvertToAudioUnitPan(uPan));
+		float fPan = PANFIX(convert_to_AudioUnit_pan(uPan));
 		SoundManager* pManager = m_pManager;
 		uint_t uIndex = static_cast<uint_t>(this - pManager->m_ActiveVoices);
 
@@ -1026,7 +1026,7 @@ uint_t BURGER_API Burger::SoundManager::Init(void)
 
 					uResult = AudioUnitSetParameter(m_pMixerUnit,
 						kMultiChannelMixerParam_Volume, kAudioUnitScope_Output,
-						0, ConvertToAudioUnitVolume(m_uVolume), 0);
+						0, convert_to_AudioUnit_volume(m_uVolume), 0);
 					if (uResult) {
 						break;
 					}
@@ -1158,7 +1158,7 @@ void BURGER_API Burger::SoundManager::SetVolume(uint_t uVolume)
 		// Only update the volume if the audio system is running
 		if (m_pMixerUnit) {
 			AudioUnitSetParameter(m_pMixerUnit, kMultiChannelMixerParam_Volume,
-				kAudioUnitScope_Output, 0, ConvertToAudioUnitVolume(uVolume),
+				kAudioUnitScope_Output, 0, convert_to_AudioUnit_volume(uVolume),
 				0);
 		}
 	}

@@ -145,6 +145,7 @@
 #include "brsdbmhash.h"
 #include "brdjb2hash.h"
 #include "brendian.h"
+#include "brfloatingpoint.h"
 #include "brmemoryhandle.h"
 
 #include "brlocalization.h"
@@ -189,7 +190,6 @@
 #include "brosstringfunctions.h"
 #include "brhashmap.h"
 #include "brfixedpoint.h"
-#include "brfloatingpoint.h"
 #include "brvector2d.h"
 #include "brvector3d.h"
 #include "brvector4d.h"

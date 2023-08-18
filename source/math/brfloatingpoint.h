@@ -19,8 +19,16 @@
 #include "brtypes.h"
 #endif
 
+#ifndef __BRSTRUCTS_H__
+#include "brstructs.h"
+#endif
+
 #ifndef __BRINTRINSICS_H__
 #include "brintrinsics.h"
+#endif
+
+#ifndef __BRTEMPLATES_H__
+#include "brtemplates.h"
 #endif
 
 #ifndef __BRWATCOM_H__
@@ -31,36 +39,8 @@
 #include "brvisualstudio.h"
 #endif
 
-#ifndef __BRSNSYSTEMS_H__
-#include "brsnsystems.h"
-#endif
-
-#ifndef __BRINTELCOMPILER_H__
-#include "brintelcompiler.h"
-#endif
-
 #ifndef __BRXCODE_H__
 #include "brxcode.h"
-#endif
-
-#if defined(BURGER_PS3) && !defined(__BRPS3TYPES_H__)
-#include "brps3types.h"
-#endif
-
-#if defined(BURGER_PS4) && !defined(__BRPS4TYPES_H__)
-#include "brps4types.h"
-#endif
-
-#if defined(BURGER_WIIU) && !defined(__BRWIIUTYPES_H__)
-#include "brwiiutypes.h"
-#endif
-
-#ifndef __BRALGORITHM_H__
-#include "bralgorithm.h"
-#endif
-
-#ifndef __BRSTRUCTS_H__
-#include "brstructs.h"
 #endif
 
 /* BEGIN */
@@ -100,7 +80,7 @@ enum e8087Rounding {
 	/** Use get_floor() rounding (-Infinity) */
 	k8087RoundingDown = 1,
 
-	/** Use Ceil() rounding (+Infinity) */
+	/** Use get_ceiling() rounding (+Infinity) */
 	k8087RoundingUp = 2,
 
 	/** Use fraction truncation rounding (To Zero) */
@@ -127,7 +107,7 @@ enum ePowerPCRounding {
 	/** Use fraction truncation rounding (To Zero) */
 	kPPCRoundingTruncate = 1,
 
-	/** Use Ceil() rounding (+Infinity) */
+	/** Use get_ceiling() rounding (+Infinity) */
 	kPPCRoundingUp = 2,
 
 	/** Use get_floor() rounding (-Infinity) */
@@ -488,75 +468,89 @@ extern uint_t BURGER_API equal_with_epsilon(
 	double dInput1, double dInput2, double dEpsilon) BURGER_NOEXCEPT;
 extern float BURGER_API get_floor(float fInput) BURGER_NOEXCEPT;
 extern double BURGER_API get_floor(double dInput) BURGER_NOEXCEPT;
-extern float BURGER_API Ceil(float fInput) BURGER_NOEXCEPT;
-extern double BURGER_API Ceil(double dInput) BURGER_NOEXCEPT;
-extern float BURGER_API Round(float fInput) BURGER_NOEXCEPT;
-extern double BURGER_API Round(double dInput) BURGER_NOEXCEPT;
-extern float BURGER_API RoundToZero(float fInput) BURGER_NOEXCEPT;
-extern double BURGER_API RoundToZero(double dInput) BURGER_NOEXCEPT;
-extern float BURGER_API ModuloRadians(float fInput) BURGER_NOEXCEPT;
-extern double BURGER_API ModuloRadians(double dInput) BURGER_NOEXCEPT;
+extern float BURGER_API get_ceiling(float fInput) BURGER_NOEXCEPT;
+extern double BURGER_API get_ceiling(double dInput) BURGER_NOEXCEPT;
+extern float BURGER_API get_round(float fInput) BURGER_NOEXCEPT;
+extern double BURGER_API get_round(double dInput) BURGER_NOEXCEPT;
+extern float BURGER_API round_to_zero(float fInput) BURGER_NOEXCEPT;
+extern double BURGER_API round_to_zero(double dInput) BURGER_NOEXCEPT;
+extern float BURGER_API modulo_radians(float fInput) BURGER_NOEXCEPT;
+extern double BURGER_API modulo_radians(double dInput) BURGER_NOEXCEPT;
+
 #if defined(BURGER_X86) || defined(DOXYGEN)
-extern float BURGER_API Sin387(float fInput) BURGER_NOEXCEPT;
-extern double BURGER_API Sin387(double fInput) BURGER_NOEXCEPT;
-extern float BURGER_API Cos387(float fInput) BURGER_NOEXCEPT;
-extern double BURGER_API Cos387(double fInput) BURGER_NOEXCEPT;
+extern float BURGER_API sine_387(float fInput) BURGER_NOEXCEPT;
+extern double BURGER_API sine_387(double fInput) BURGER_NOEXCEPT;
+extern float BURGER_API cosine_387(float fInput) BURGER_NOEXCEPT;
+extern double BURGER_API cosine_387(double fInput) BURGER_NOEXCEPT;
 #endif
-extern float BURGER_API Sin3Digits(float fInput) BURGER_NOEXCEPT;
-extern float BURGER_API Cos3Digits(float fInput) BURGER_NOEXCEPT;
-extern float BURGER_API Sin5Digits(float fInput) BURGER_NOEXCEPT;
-extern float BURGER_API Cos5Digits(float fInput) BURGER_NOEXCEPT;
-extern float BURGER_API Sin6Digits(float fInput) BURGER_NOEXCEPT;
-extern float BURGER_API Cos6Digits(float fInput) BURGER_NOEXCEPT;
-extern float BURGER_API Sin(float fInput) BURGER_NOEXCEPT;
-extern float BURGER_API Cos(float fInput) BURGER_NOEXCEPT;
-extern double BURGER_API Sin7Digits(double dInput) BURGER_NOEXCEPT;
-extern double BURGER_API Cos7Digits(double dInput) BURGER_NOEXCEPT;
-extern double BURGER_API Sin12Digits(double dInput) BURGER_NOEXCEPT;
-extern double BURGER_API Cos12Digits(double dInput) BURGER_NOEXCEPT;
-extern double BURGER_API Sin18Digits(double dInput) BURGER_NOEXCEPT;
-extern double BURGER_API Cos18Digits(double dInput) BURGER_NOEXCEPT;
-extern double BURGER_API Sin(double dInput) BURGER_NOEXCEPT;
-extern double BURGER_API Cos(double dInput) BURGER_NOEXCEPT;
-extern float BURGER_API Tan(float fInput) BURGER_NOEXCEPT;
-extern double BURGER_API Tan(double dInput) BURGER_NOEXCEPT;
-extern float BURGER_API ASin(float fInput) BURGER_NOEXCEPT;
-extern double BURGER_API ASin(double dInput) BURGER_NOEXCEPT;
-extern float BURGER_API ACos(float fInput) BURGER_NOEXCEPT;
-extern double BURGER_API ACos(double dInput) BURGER_NOEXCEPT;
-extern float BURGER_API ATan(float fInput) BURGER_NOEXCEPT;
-extern double BURGER_API ATan(double dInput) BURGER_NOEXCEPT;
-extern float BURGER_API ATan2(float fSin, float fCos) BURGER_NOEXCEPT;
-extern double BURGER_API ATan2(double dSin, double dCos) BURGER_NOEXCEPT;
-extern float BURGER_API Pow(float fX, float fY) BURGER_NOEXCEPT;
-extern double BURGER_API Pow(double dX, double dY) BURGER_NOEXCEPT;
-extern float BURGER_API Exp(float fInput) BURGER_NOEXCEPT;
-extern double BURGER_API Exp(double dInput) BURGER_NOEXCEPT;
-extern float BURGER_API Log(float fInput) BURGER_NOEXCEPT;
-extern double BURGER_API Log(double dInput) BURGER_NOEXCEPT;
-extern float BURGER_API Log2(float fInput) BURGER_NOEXCEPT;
-extern double BURGER_API Log2(double dInput) BURGER_NOEXCEPT;
-extern float BURGER_API Log10(float fInput) BURGER_NOEXCEPT;
-extern double BURGER_API Log10(double dInput) BURGER_NOEXCEPT;
-extern float BURGER_API Modf(float fInput, float* pInteger) BURGER_NOEXCEPT;
-extern double BURGER_API Modf(double dInput, double* pInteger) BURGER_NOEXCEPT;
-extern float BURGER_API Fmod(float fInput, float fDivisor) BURGER_NOEXCEPT;
-extern double BURGER_API Fmod(double dInput, double dDivisor) BURGER_NOEXCEPT;
-extern double BURGER_API LittleEndianLoadExtended(
+
+extern float BURGER_API get_sine_3_digits(float fInput) BURGER_NOEXCEPT;
+extern float BURGER_API get_cosine_3_digits(float fInput) BURGER_NOEXCEPT;
+extern float BURGER_API get_sine_5_digits(float fInput) BURGER_NOEXCEPT;
+extern float BURGER_API get_cosine_5_digits(float fInput) BURGER_NOEXCEPT;
+extern float BURGER_API get_sine_6_digits(float fInput) BURGER_NOEXCEPT;
+extern float BURGER_API get_cosine_6_digits(float fInput) BURGER_NOEXCEPT;
+extern float BURGER_API get_sine(float fInput) BURGER_NOEXCEPT;
+extern float BURGER_API get_cosine(float fInput) BURGER_NOEXCEPT;
+
+extern double BURGER_API get_sine_7_digits(double dInput) BURGER_NOEXCEPT;
+extern double BURGER_API get_cosine_7_digits(double dInput) BURGER_NOEXCEPT;
+extern double BURGER_API get_sine_12_digits(double dInput) BURGER_NOEXCEPT;
+extern double BURGER_API get_cosine_12_digits(double dInput) BURGER_NOEXCEPT;
+extern double BURGER_API get_sine_18_digits(double dInput) BURGER_NOEXCEPT;
+extern double BURGER_API get_cosine_18_digits(double dInput) BURGER_NOEXCEPT;
+extern double BURGER_API get_sine(double dInput) BURGER_NOEXCEPT;
+extern double BURGER_API get_cosine(double dInput) BURGER_NOEXCEPT;
+
+extern float BURGER_API get_tangent(float fInput) BURGER_NOEXCEPT;
+extern double BURGER_API get_tangent(double dInput) BURGER_NOEXCEPT;
+extern float BURGER_API get_arcsine(float fInput) BURGER_NOEXCEPT;
+extern double BURGER_API get_arcsine(double dInput) BURGER_NOEXCEPT;
+extern float BURGER_API get_arccosine(float fInput) BURGER_NOEXCEPT;
+extern double BURGER_API get_arccosine(double dInput) BURGER_NOEXCEPT;
+extern float BURGER_API get_arctangent(float fInput) BURGER_NOEXCEPT;
+extern double BURGER_API get_arctangent(double dInput) BURGER_NOEXCEPT;
+extern float BURGER_API get_arctangent2(float fSin, float fCos) BURGER_NOEXCEPT;
+extern double BURGER_API get_arctangent2(
+	double dSin, double dCos) BURGER_NOEXCEPT;
+extern float BURGER_API get_power(float fX, float fY) BURGER_NOEXCEPT;
+extern double BURGER_API get_power(double dX, double dY) BURGER_NOEXCEPT;
+extern float BURGER_API get_exponent(float fInput) BURGER_NOEXCEPT;
+extern double BURGER_API get_exponent(double dInput) BURGER_NOEXCEPT;
+extern float BURGER_API get_logarithm(float fInput) BURGER_NOEXCEPT;
+extern double BURGER_API get_logarithm(double dInput) BURGER_NOEXCEPT;
+extern float BURGER_API get_logarithm2(float fInput) BURGER_NOEXCEPT;
+extern double BURGER_API get_logarithm2(double dInput) BURGER_NOEXCEPT;
+extern float BURGER_API get_logarithm10(float fInput) BURGER_NOEXCEPT;
+extern double BURGER_API get_logarithm10(double dInput) BURGER_NOEXCEPT;
+extern float BURGER_API get_fraction(
+	float fInput, float* pInteger) BURGER_NOEXCEPT;
+extern double BURGER_API get_fraction(
+	double dInput, double* pInteger) BURGER_NOEXCEPT;
+extern float BURGER_API get_modulo(
+	float fInput, float fDivisor) BURGER_NOEXCEPT;
+extern double BURGER_API get_modulo(
+	double dInput, double dDivisor) BURGER_NOEXCEPT;
+
+extern double BURGER_API little_endian_load_extended(
 	const Float80Bit pInput) BURGER_NOEXCEPT;
-extern double BURGER_API BigEndianLoadExtended(
+extern double BURGER_API big_endian_load_extended(
 	const Float80Bit pInput) BURGER_NOEXCEPT;
-extern long BURGER_API ConvertToDirectSoundVolume(
+
+extern long BURGER_API convert_to_DirectSound_volume(
 	uint_t uInput) BURGER_NOEXCEPT;
-extern long BURGER_API ConvertToDirectSoundVolume(float fInput) BURGER_NOEXCEPT;
-extern long BURGER_API ConvertToDirectSoundPan(uint_t uInput) BURGER_NOEXCEPT;
-extern long BURGER_API ConvertToDirectSoundPan(float fInput) BURGER_NOEXCEPT;
-extern float BURGER_API ConvertToAudioUnitVolume(uint_t uInput) BURGER_NOEXCEPT;
-extern float BURGER_API ConvertToAudioUnitPan(uint_t uInput) BURGER_NOEXCEPT;
-extern float BURGER_API ConvertToAudioUnitVolume(uint_t uInput) BURGER_NOEXCEPT;
-extern float BURGER_API DecibelsToAmplitudeRatio(
+extern long BURGER_API convert_to_DirectSound_volume(
+	float fInput) BURGER_NOEXCEPT;
+extern long BURGER_API convert_to_DirectSound_pan(
+	uint_t uInput) BURGER_NOEXCEPT;
+extern long BURGER_API convert_to_DirectSound_pan(float fInput) BURGER_NOEXCEPT;
+extern float BURGER_API convert_to_AudioUnit_volume(
+	uint_t uInput) BURGER_NOEXCEPT;
+extern float BURGER_API convert_to_AudioUnit_pan(uint_t uInput) BURGER_NOEXCEPT;
+extern float BURGER_API decibels_to_amplitude_ratio(
 	float fDecibels) BURGER_NOEXCEPT;
-extern float BURGER_API AmplitudeRatioToDecibels(float fVolume) BURGER_NOEXCEPT;
+extern float BURGER_API amplitude_ratio_to_decibels(
+	float fVolume) BURGER_NOEXCEPT;
 
 }
 

@@ -5,7 +5,7 @@
 ;
 ; Build with WiiU tool chain
 ;
-; double BURGER_API Burger::ModuloRadians(double dInput) BURGER_NOEXCEPT
+; double BURGER_API Burger::modulo_radians(double dInput) BURGER_NOEXCEPT
 ; r0, r3-12, fp0-fp13 are volatile
 ; Result in fp1
 ; dInput = fp1
@@ -19,9 +19,9 @@
 
 	.text
 
-	.global ModuloRadians__6BurgerFd
-ModuloRadians__6BurgerFd:
-	.type ModuloRadians__6BurgerFd, @function
+	.global modulo_radians__6BurgerFd
+modulo_radians__6BurgerFd:
+	.type modulo_radians__6BurgerFd, @function
 
 ; Fetch the pointers
 	lis		r3, %hiadj(g_dReciprocalPi2__6Burger)
@@ -99,4 +99,4 @@ FModule1:
 	fmadd	fp1, fp2, fp5, fp1
 	blr
 
-	.size	ModuloRadians__6BurgerFd,$-ModuloRadians__6BurgerFd
+	.size	modulo_radians__6BurgerFd,$-modulo_radians__6BurgerFd

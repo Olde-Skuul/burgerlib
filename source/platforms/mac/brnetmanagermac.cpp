@@ -76,9 +76,9 @@ uint_t BURGER_API Burger::NetAddr_t::ToOTAddress(
 	case TYPE_IPV4:
 		pOutput->fAddressType = AF_INET;
 		reinterpret_cast<InetAddress*>(pOutput)->fPort =
-			BigEndian::Load(static_cast<uint16_t>(U.IPv4.m_uPort));
+			BigEndian::load(static_cast<uint16_t>(U.IPv4.m_uPort));
 		reinterpret_cast<InetAddress*>(pOutput)->fHost =
-			BigEndian::Load(U.IPv4.m_uIP);
+			BigEndian::load(U.IPv4.m_uIP);
 		MemoryClear(reinterpret_cast<InetAddress*>(pOutput)->fUnused,
 			sizeof(reinterpret_cast<InetAddress*>(pOutput)->fUnused));
 		break;
@@ -86,7 +86,7 @@ uint_t BURGER_API Burger::NetAddr_t::ToOTAddress(
 	case TYPE_APPLETALK:
 		pOutput->fAddressType = AF_ATALK_DDP;
 		reinterpret_cast<DDPAddress*>(pOutput)->fNetwork =
-			BigEndian::Load(static_cast<uint16_t>(U.APPLETALK.m_uNetwork));
+			BigEndian::load(static_cast<uint16_t>(U.APPLETALK.m_uNetwork));
 		reinterpret_cast<DDPAddress*>(pOutput)->fNodeID =
 			static_cast<uint8_t>(U.APPLETALK.m_uNodeID);
 		reinterpret_cast<DDPAddress*>(pOutput)->fSocket =
@@ -130,15 +130,15 @@ uint_t BURGER_API Burger::NetAddr_t::FromOTAddress(
 
 	case AF_INET:
 		m_uType = TYPE_IPV4;
-		U.IPv4.m_uPort = BigEndian::Load(
+		U.IPv4.m_uPort = BigEndian::load(
 			reinterpret_cast<const InetAddress*>(pInput)->fPort);
-		U.IPv4.m_uIP = BigEndian::Load(static_cast<uint32_t>(
+		U.IPv4.m_uIP = BigEndian::load(static_cast<uint32_t>(
 			reinterpret_cast<const InetAddress*>(pInput)->fHost));
 		break;
 
 	case AF_ATALK_DDP:
 		m_uType = TYPE_APPLETALK;
-		U.APPLETALK.m_uNetwork = BigEndian::Load(
+		U.APPLETALK.m_uNetwork = BigEndian::load(
 			reinterpret_cast<const DDPAddress*>(pInput)->fNetwork);
 		U.APPLETALK.m_uNodeID =
 			reinterpret_cast<const DDPAddress*>(pInput)->fNodeID;
@@ -606,7 +606,7 @@ Burger::eError BURGER_API Burger::NetworkManager::EnumerateLocalAddresses(
 			m_pLocalAddresses = pNetAddr;
 			pNetAddr->m_uType = NetAddr_t::TYPE_IPV4;
 			pNetAddr->U.IPv4.m_uPort = 0;
-			pNetAddr->U.IPv4.m_uIP = BigEndian::Load((uint32_t)MyInfo.fAddress);
+			pNetAddr->U.IPv4.m_uIP = BigEndian::load((uint32_t)MyInfo.fAddress);
 			m_uLocalAddressCount = 1;
 			uError = kErrorNone;
 		}
