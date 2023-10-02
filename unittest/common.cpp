@@ -31,6 +31,7 @@
 #include "testbrmatrix3d.h"
 #include "testbrmatrix4d.h"
 #include "testbrnumberto.h"
+#include "testbrpoweroftwo.h"
 #include "testbrprintf.h"
 #include "testbrstaticrtti.h"
 #include "testbrstrings.h"
@@ -345,6 +346,7 @@ int BURGER_ANSIAPI main(int argc, const char** argv)
 		iResult |= TestBrtypes(uVerbose);
 		iResult |= TestBrendian(uVerbose);
 		iResult |= static_cast<int>(TestBralgorithm(uVerbose));
+		iResult |= TestBrpoweroftwo(uVerbose);
 		iResult |= TestBrfixedpoint(uVerbose);
 		iResult |= TestBrfloatingpoint(uVerbose);
 		iResult |= TestBrmatrix3d(uVerbose);

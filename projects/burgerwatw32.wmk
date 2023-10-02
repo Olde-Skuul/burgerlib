@@ -480,6 +480,7 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brperforcewindows.obj &
 	$(A)/brpoint2d.obj &
 	$(A)/brpoint2dwindows.obj &
+	$(A)/brpoweroftwo.obj &
 	$(A)/brprintf.obj &
 	$(A)/brqueue.obj &
 	$(A)/brrandom.obj &
@@ -545,6 +546,18 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brwindowsapp.obj &
 	$(A)/cpuid.obj &
 	$(A)/cpuidex.obj &
+	$(A)/floattofixedceil.obj &
+	$(A)/floattofixedceilptr.obj &
+	$(A)/floattofixedfloor.obj &
+	$(A)/floattofixedfloorptr.obj &
+	$(A)/floattofixedround.obj &
+	$(A)/floattofixedroundptr.obj &
+	$(A)/floattointceil.obj &
+	$(A)/floattointceilptr.obj &
+	$(A)/floattointfloor.obj &
+	$(A)/floattointfloorptr.obj &
+	$(A)/floattointround.obj &
+	$(A)/floattointroundptr.obj &
 	$(A)/get8087precision.obj &
 	$(A)/get8087rounding.obj &
 	$(A)/get_ceilingdouble.obj &
@@ -560,6 +573,8 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/has_cpuid.obj &
 	$(A)/modulo_radiansdouble.obj &
 	$(A)/modulo_radiansfloat.obj &
+	$(A)/poweroftwo32.obj &
+	$(A)/poweroftwo64.obj &
 	$(A)/set8087precision.obj &
 	$(A)/set8087rounding.obj &
 	$(A)/swapendiandouble.obj &

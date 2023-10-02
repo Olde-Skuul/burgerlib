@@ -379,9 +379,6 @@
     <ClInclude Include="..\source\lowlevel\brguid.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\lowlevel\brintelcompiler.h">
-      <Filter>source\lowlevel</Filter>
-    </ClInclude>
     <ClInclude Include="..\source\lowlevel\brintrinsics.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
@@ -422,9 +419,6 @@
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brsmartpointer.h">
-      <Filter>source\lowlevel</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\lowlevel\brsnsystems.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brstaticrtti.h">
@@ -502,6 +496,9 @@
     <ClInclude Include="..\source\math\brmatrix4d.h">
       <Filter>source\math</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\math\brpoweroftwo.h">
+      <Filter>source\math</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\math\brvector2d.h">
       <Filter>source\math</Filter>
     </ClInclude>
@@ -519,9 +516,6 @@
     </ClInclude>
     <ClInclude Include="..\source\memory\brmemorymanager.h">
       <Filter>source\memory</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\platforms\ps3\brps3types.h">
-      <Filter>source\platforms\ps3</Filter>
     </ClInclude>
     <ClInclude Include="..\source\random\brmersennetwist.h">
       <Filter>source\random</Filter>
@@ -1060,6 +1054,9 @@
     <ClCompile Include="..\source\math\brmatrix4d.cpp">
       <Filter>source\math</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\math\brpoweroftwo.cpp">
+      <Filter>source\math</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\math\brsinecosine.cpp">
       <Filter>source\math</Filter>
     </ClCompile>
@@ -1164,6 +1161,24 @@
     </ClCompile>
     <ClCompile Include="..\source\text\brwin437.cpp">
       <Filter>source\text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\ps3_asm\floattointceil.s">
+      <Filter>source\asm\ps3_asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\ps3_asm\floattointceilptr.s">
+      <Filter>source\asm\ps3_asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\ps3_asm\floattointfloor.s">
+      <Filter>source\asm\ps3_asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\ps3_asm\floattointfloorptr.s">
+      <Filter>source\asm\ps3_asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\ps3_asm\floattointround.s">
+      <Filter>source\asm\ps3_asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\ps3_asm\floattointroundptr.s">
+      <Filter>source\asm\ps3_asm</Filter>
     </ClCompile>
     <ClCompile Include="..\source\asm\ps3_asm\get_ceilingdouble.s">
       <Filter>source\asm\ps3_asm</Filter>

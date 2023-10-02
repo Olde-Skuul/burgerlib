@@ -285,7 +285,6 @@
     <ClInclude Include="..\source\lowlevel\brglobals.h" />
     <ClInclude Include="..\source\lowlevel\brgridindex.h" />
     <ClInclude Include="..\source\lowlevel\brguid.h" />
-    <ClInclude Include="..\source\lowlevel\brintelcompiler.h" />
     <ClInclude Include="..\source\lowlevel\brintrinsics.h" />
     <ClInclude Include="..\source\lowlevel\brlastinfirstout.h" />
     <ClInclude Include="..\source\lowlevel\brlinkedlistobject.h" />
@@ -300,7 +299,6 @@
     <ClInclude Include="..\source\lowlevel\brsemaphore.h" />
     <ClInclude Include="..\source\lowlevel\brsimplearray.h" />
     <ClInclude Include="..\source\lowlevel\brsmartpointer.h" />
-    <ClInclude Include="..\source\lowlevel\brsnsystems.h" />
     <ClInclude Include="..\source\lowlevel\brstaticrtti.h" />
     <ClInclude Include="..\source\lowlevel\brstructs.h" />
     <ClInclude Include="..\source\lowlevel\brtemplates.h" />
@@ -326,13 +324,13 @@
     <ClInclude Include="..\source\math\brfpprintinfo.h" />
     <ClInclude Include="..\source\math\brmatrix3d.h" />
     <ClInclude Include="..\source\math\brmatrix4d.h" />
+    <ClInclude Include="..\source\math\brpoweroftwo.h" />
     <ClInclude Include="..\source\math\brvector2d.h" />
     <ClInclude Include="..\source\math\brvector3d.h" />
     <ClInclude Include="..\source\math\brvector4d.h" />
     <ClInclude Include="..\source\memory\brglobalmemorymanager.h" />
     <ClInclude Include="..\source\memory\brmemoryhandle.h" />
     <ClInclude Include="..\source\memory\brmemorymanager.h" />
-    <ClInclude Include="..\source\platforms\ps3\brps3types.h" />
     <ClInclude Include="..\source\random\brmersennetwist.h" />
     <ClInclude Include="..\source\random\brrandom.h" />
     <ClInclude Include="..\source\random\brrandombase.h" />
@@ -512,6 +510,7 @@
     <ClCompile Include="..\source\math\brfpprintinfo.cpp" />
     <ClCompile Include="..\source\math\brmatrix3d.cpp" />
     <ClCompile Include="..\source\math\brmatrix4d.cpp" />
+    <ClCompile Include="..\source\math\brpoweroftwo.cpp" />
     <ClCompile Include="..\source\math\brsinecosine.cpp" />
     <ClCompile Include="..\source\math\brvector2d.cpp" />
     <ClCompile Include="..\source\math\brvector3d.cpp" />
@@ -547,6 +546,12 @@
     <ClCompile Include="..\source\text\brutf8.cpp" />
     <ClCompile Include="..\source\text\brwin1252.cpp" />
     <ClCompile Include="..\source\text\brwin437.cpp" />
+    <ClCompile Include="..\source\asm\ps3_asm\floattointceil.s" />
+    <ClCompile Include="..\source\asm\ps3_asm\floattointceilptr.s" />
+    <ClCompile Include="..\source\asm\ps3_asm\floattointfloor.s" />
+    <ClCompile Include="..\source\asm\ps3_asm\floattointfloorptr.s" />
+    <ClCompile Include="..\source\asm\ps3_asm\floattointround.s" />
+    <ClCompile Include="..\source\asm\ps3_asm\floattointroundptr.s" />
     <ClCompile Include="..\source\asm\ps3_asm\get_ceilingdouble.s" />
     <ClCompile Include="..\source\asm\ps3_asm\get_ceilingfloat.s" />
     <ClCompile Include="..\source\asm\ps3_asm\get_floordouble.s" />

@@ -390,7 +390,6 @@
 		<Unit filename="../source/lowlevel/brgridindex.h" />
 		<Unit filename="../source/lowlevel/brguid.cpp" />
 		<Unit filename="../source/lowlevel/brguid.h" />
-		<Unit filename="../source/lowlevel/brintelcompiler.h" />
 		<Unit filename="../source/lowlevel/brintrinsics.cpp" />
 		<Unit filename="../source/lowlevel/brintrinsics.h" />
 		<Unit filename="../source/lowlevel/brlastinfirstout.cpp" />
@@ -418,7 +417,6 @@
 		<Unit filename="../source/lowlevel/brsimplearray.h" />
 		<Unit filename="../source/lowlevel/brsmartpointer.cpp" />
 		<Unit filename="../source/lowlevel/brsmartpointer.h" />
-		<Unit filename="../source/lowlevel/brsnsystems.h" />
 		<Unit filename="../source/lowlevel/brstaticrtti.cpp" />
 		<Unit filename="../source/lowlevel/brstaticrtti.h" />
 		<Unit filename="../source/lowlevel/brstructs.cpp" />
@@ -466,6 +464,8 @@
 		<Unit filename="../source/math/brmatrix3d.h" />
 		<Unit filename="../source/math/brmatrix4d.cpp" />
 		<Unit filename="../source/math/brmatrix4d.h" />
+		<Unit filename="../source/math/brpoweroftwo.cpp" />
+		<Unit filename="../source/math/brpoweroftwo.h" />
 		<Unit filename="../source/math/brsinecosine.cpp" />
 		<Unit filename="../source/math/brvector2d.cpp" />
 		<Unit filename="../source/math/brvector2d.h" />
@@ -659,6 +659,8 @@
 		<Unit filename="../unittest/testbrmatrix4d.h" />
 		<Unit filename="../unittest/testbrnumberto.cpp" />
 		<Unit filename="../unittest/testbrnumberto.h" />
+		<Unit filename="../unittest/testbrpoweroftwo.cpp" />
+		<Unit filename="../unittest/testbrpoweroftwo.h" />
 		<Unit filename="../unittest/testbrprintf.cpp" />
 		<Unit filename="../unittest/testbrprintf.h" />
 		<Unit filename="../unittest/testbrstaticrtti.cpp" />

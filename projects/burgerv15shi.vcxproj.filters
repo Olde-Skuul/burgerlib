@@ -406,9 +406,6 @@
     <ClInclude Include="..\source\lowlevel\brguid.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\lowlevel\brintelcompiler.h">
-      <Filter>source\lowlevel</Filter>
-    </ClInclude>
     <ClInclude Include="..\source\lowlevel\brintrinsics.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
@@ -449,9 +446,6 @@
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brsmartpointer.h">
-      <Filter>source\lowlevel</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\lowlevel\brsnsystems.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brstaticrtti.h">
@@ -527,6 +521,9 @@
       <Filter>source\math</Filter>
     </ClInclude>
     <ClInclude Include="..\source\math\brmatrix4d.h">
+      <Filter>source\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\math\brpoweroftwo.h">
       <Filter>source\math</Filter>
     </ClInclude>
     <ClInclude Include="..\source\math\brvector2d.h">
@@ -1112,6 +1109,9 @@
       <Filter>source\math</Filter>
     </ClCompile>
     <ClCompile Include="..\source\math\brmatrix4d.cpp">
+      <Filter>source\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\math\brpoweroftwo.cpp">
       <Filter>source\math</Filter>
     </ClCompile>
     <ClCompile Include="..\source\math\brsinecosine.cpp">

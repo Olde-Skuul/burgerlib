@@ -379,9 +379,6 @@
     <ClInclude Include="..\source\lowlevel\brguid.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\lowlevel\brintelcompiler.h">
-      <Filter>source\lowlevel</Filter>
-    </ClInclude>
     <ClInclude Include="..\source\lowlevel\brintrinsics.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
@@ -422,9 +419,6 @@
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brsmartpointer.h">
-      <Filter>source\lowlevel</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\lowlevel\brsnsystems.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brstaticrtti.h">
@@ -502,6 +496,9 @@
     <ClInclude Include="..\source\math\brmatrix4d.h">
       <Filter>source\math</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\math\brpoweroftwo.h">
+      <Filter>source\math</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\math\brvector2d.h">
       <Filter>source\math</Filter>
     </ClInclude>
@@ -519,9 +516,6 @@
     </ClInclude>
     <ClInclude Include="..\source\memory\brmemorymanager.h">
       <Filter>source\memory</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\platforms\wiiu\brwiiutypes.h">
-      <Filter>source\platforms\wiiu</Filter>
     </ClInclude>
     <ClInclude Include="..\source\random\brmersennetwist.h">
       <Filter>source\random</Filter>
@@ -1060,6 +1054,9 @@
     <ClCompile Include="..\source\math\brmatrix4d.cpp">
       <Filter>source\math</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\math\brpoweroftwo.cpp">
+      <Filter>source\math</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\math\brsinecosine.cpp">
       <Filter>source\math</Filter>
     </ClCompile>
@@ -1150,6 +1147,24 @@
     <ClCompile Include="..\source\text\brwin437.cpp">
       <Filter>source\text</Filter>
     </ClCompile>
+    <ASM Include="..\source\asm\wiiu_asm\floattointceil.s">
+      <Filter>source\asm\wiiu_asm</Filter>
+    </ASM>
+    <ASM Include="..\source\asm\wiiu_asm\floattointceilptr.s">
+      <Filter>source\asm\wiiu_asm</Filter>
+    </ASM>
+    <ASM Include="..\source\asm\wiiu_asm\floattointfloor.s">
+      <Filter>source\asm\wiiu_asm</Filter>
+    </ASM>
+    <ASM Include="..\source\asm\wiiu_asm\floattointfloorptr.s">
+      <Filter>source\asm\wiiu_asm</Filter>
+    </ASM>
+    <ASM Include="..\source\asm\wiiu_asm\floattointround.s">
+      <Filter>source\asm\wiiu_asm</Filter>
+    </ASM>
+    <ASM Include="..\source\asm\wiiu_asm\floattointroundptr.s">
+      <Filter>source\asm\wiiu_asm</Filter>
+    </ASM>
     <ASM Include="..\source\asm\wiiu_asm\get_signdouble.s">
       <Filter>source\asm\wiiu_asm</Filter>
     </ASM>
@@ -1230,12 +1245,6 @@
     </Filter>
     <Filter Include="source\memory">
       <UniqueIdentifier>B2791887-15F9-3169-BBB4-1CA236890807</UniqueIdentifier>
-    </Filter>
-    <Filter Include="source\platforms">
-      <UniqueIdentifier>0434DA66-9C56-3266-A3A1-B26FE51AD9FB</UniqueIdentifier>
-    </Filter>
-    <Filter Include="source\platforms\wiiu">
-      <UniqueIdentifier>20203F9E-B8AE-3937-8038-83B26AF819EC</UniqueIdentifier>
     </Filter>
     <Filter Include="source\random">
       <UniqueIdentifier>5438A721-98F6-313F-A439-C2E65D6997E1</UniqueIdentifier>

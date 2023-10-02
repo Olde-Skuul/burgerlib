@@ -326,6 +326,426 @@
 				<Filter
 					Name="masm">
 					<File
+						RelativePath="..\source\asm\masm\floattofixedceil.x86">
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattofixedceil.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedceil.obj&quot; /Ta&quot;../source/asm/masm/floattofixedceil.x86&quot;"
+								Outputs="$(IntDir)floattofixedceil.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattofixedceil.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedceil.obj&quot; /Ta&quot;../source/asm/masm/floattofixedceil.x86&quot;"
+								Outputs="$(IntDir)floattofixedceil.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattofixedceil.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedceil.obj&quot; /Ta&quot;../source/asm/masm/floattofixedceil.x86&quot;"
+								Outputs="$(IntDir)floattofixedceil.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattofixedceil.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedceil.obj&quot; /Ta&quot;../source/asm/masm/floattofixedceil.x86&quot;"
+								Outputs="$(IntDir)floattofixedceil.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm\floattofixedceilptr.x86">
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattofixedceilptr.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedceilptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedceilptr.x86&quot;"
+								Outputs="$(IntDir)floattofixedceilptr.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattofixedceilptr.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedceilptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedceilptr.x86&quot;"
+								Outputs="$(IntDir)floattofixedceilptr.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattofixedceilptr.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedceilptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedceilptr.x86&quot;"
+								Outputs="$(IntDir)floattofixedceilptr.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattofixedceilptr.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedceilptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedceilptr.x86&quot;"
+								Outputs="$(IntDir)floattofixedceilptr.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm\floattofixedfloor.x86">
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattofixedfloor.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedfloor.obj&quot; /Ta&quot;../source/asm/masm/floattofixedfloor.x86&quot;"
+								Outputs="$(IntDir)floattofixedfloor.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattofixedfloor.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedfloor.obj&quot; /Ta&quot;../source/asm/masm/floattofixedfloor.x86&quot;"
+								Outputs="$(IntDir)floattofixedfloor.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattofixedfloor.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedfloor.obj&quot; /Ta&quot;../source/asm/masm/floattofixedfloor.x86&quot;"
+								Outputs="$(IntDir)floattofixedfloor.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattofixedfloor.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedfloor.obj&quot; /Ta&quot;../source/asm/masm/floattofixedfloor.x86&quot;"
+								Outputs="$(IntDir)floattofixedfloor.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm\floattofixedfloorptr.x86">
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattofixedfloorptr.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedfloorptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedfloorptr.x86&quot;"
+								Outputs="$(IntDir)floattofixedfloorptr.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattofixedfloorptr.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedfloorptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedfloorptr.x86&quot;"
+								Outputs="$(IntDir)floattofixedfloorptr.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattofixedfloorptr.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedfloorptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedfloorptr.x86&quot;"
+								Outputs="$(IntDir)floattofixedfloorptr.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattofixedfloorptr.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedfloorptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedfloorptr.x86&quot;"
+								Outputs="$(IntDir)floattofixedfloorptr.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm\floattofixedround.x86">
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattofixedround.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedround.obj&quot; /Ta&quot;../source/asm/masm/floattofixedround.x86&quot;"
+								Outputs="$(IntDir)floattofixedround.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattofixedround.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedround.obj&quot; /Ta&quot;../source/asm/masm/floattofixedround.x86&quot;"
+								Outputs="$(IntDir)floattofixedround.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattofixedround.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedround.obj&quot; /Ta&quot;../source/asm/masm/floattofixedround.x86&quot;"
+								Outputs="$(IntDir)floattofixedround.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattofixedround.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedround.obj&quot; /Ta&quot;../source/asm/masm/floattofixedround.x86&quot;"
+								Outputs="$(IntDir)floattofixedround.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm\floattofixedroundptr.x86">
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattofixedroundptr.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedroundptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedroundptr.x86&quot;"
+								Outputs="$(IntDir)floattofixedroundptr.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattofixedroundptr.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedroundptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedroundptr.x86&quot;"
+								Outputs="$(IntDir)floattofixedroundptr.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattofixedroundptr.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedroundptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedroundptr.x86&quot;"
+								Outputs="$(IntDir)floattofixedroundptr.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattofixedroundptr.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedroundptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedroundptr.x86&quot;"
+								Outputs="$(IntDir)floattofixedroundptr.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm\floattointceil.x86">
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattointceil.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointceil.obj&quot; /Ta&quot;../source/asm/masm/floattointceil.x86&quot;"
+								Outputs="$(IntDir)floattointceil.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattointceil.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointceil.obj&quot; /Ta&quot;../source/asm/masm/floattointceil.x86&quot;"
+								Outputs="$(IntDir)floattointceil.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattointceil.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointceil.obj&quot; /Ta&quot;../source/asm/masm/floattointceil.x86&quot;"
+								Outputs="$(IntDir)floattointceil.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattointceil.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointceil.obj&quot; /Ta&quot;../source/asm/masm/floattointceil.x86&quot;"
+								Outputs="$(IntDir)floattointceil.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm\floattointceilptr.x86">
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattointceilptr.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointceilptr.obj&quot; /Ta&quot;../source/asm/masm/floattointceilptr.x86&quot;"
+								Outputs="$(IntDir)floattointceilptr.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattointceilptr.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointceilptr.obj&quot; /Ta&quot;../source/asm/masm/floattointceilptr.x86&quot;"
+								Outputs="$(IntDir)floattointceilptr.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattointceilptr.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointceilptr.obj&quot; /Ta&quot;../source/asm/masm/floattointceilptr.x86&quot;"
+								Outputs="$(IntDir)floattointceilptr.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattointceilptr.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointceilptr.obj&quot; /Ta&quot;../source/asm/masm/floattointceilptr.x86&quot;"
+								Outputs="$(IntDir)floattointceilptr.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm\floattointfloor.x86">
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattointfloor.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointfloor.obj&quot; /Ta&quot;../source/asm/masm/floattointfloor.x86&quot;"
+								Outputs="$(IntDir)floattointfloor.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattointfloor.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointfloor.obj&quot; /Ta&quot;../source/asm/masm/floattointfloor.x86&quot;"
+								Outputs="$(IntDir)floattointfloor.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattointfloor.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointfloor.obj&quot; /Ta&quot;../source/asm/masm/floattointfloor.x86&quot;"
+								Outputs="$(IntDir)floattointfloor.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattointfloor.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointfloor.obj&quot; /Ta&quot;../source/asm/masm/floattointfloor.x86&quot;"
+								Outputs="$(IntDir)floattointfloor.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm\floattointfloorptr.x86">
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattointfloorptr.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointfloorptr.obj&quot; /Ta&quot;../source/asm/masm/floattointfloorptr.x86&quot;"
+								Outputs="$(IntDir)floattointfloorptr.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattointfloorptr.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointfloorptr.obj&quot; /Ta&quot;../source/asm/masm/floattointfloorptr.x86&quot;"
+								Outputs="$(IntDir)floattointfloorptr.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattointfloorptr.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointfloorptr.obj&quot; /Ta&quot;../source/asm/masm/floattointfloorptr.x86&quot;"
+								Outputs="$(IntDir)floattointfloorptr.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattointfloorptr.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointfloorptr.obj&quot; /Ta&quot;../source/asm/masm/floattointfloorptr.x86&quot;"
+								Outputs="$(IntDir)floattointfloorptr.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm\floattointround.x86">
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattointround.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointround.obj&quot; /Ta&quot;../source/asm/masm/floattointround.x86&quot;"
+								Outputs="$(IntDir)floattointround.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattointround.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointround.obj&quot; /Ta&quot;../source/asm/masm/floattointround.x86&quot;"
+								Outputs="$(IntDir)floattointround.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattointround.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointround.obj&quot; /Ta&quot;../source/asm/masm/floattointround.x86&quot;"
+								Outputs="$(IntDir)floattointround.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattointround.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointround.obj&quot; /Ta&quot;../source/asm/masm/floattointround.x86&quot;"
+								Outputs="$(IntDir)floattointround.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm\floattointroundptr.x86">
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattointroundptr.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointroundptr.obj&quot; /Ta&quot;../source/asm/masm/floattointroundptr.x86&quot;"
+								Outputs="$(IntDir)floattointroundptr.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattointroundptr.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointroundptr.obj&quot; /Ta&quot;../source/asm/masm/floattointroundptr.x86&quot;"
+								Outputs="$(IntDir)floattointroundptr.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattointroundptr.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointroundptr.obj&quot; /Ta&quot;../source/asm/masm/floattointroundptr.x86&quot;"
+								Outputs="$(IntDir)floattointroundptr.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling floattointroundptr.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointroundptr.obj&quot; /Ta&quot;../source/asm/masm/floattointroundptr.x86&quot;"
+								Outputs="$(IntDir)floattointroundptr.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
 						RelativePath="..\source\asm\masm\get8087precision.x86">
 						<FileConfiguration
 							Name="Debug|Win32">
@@ -778,6 +1198,76 @@
 								Description="Assembling modulo_radiansfloat.x86..."
 								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)modulo_radiansfloat.obj&quot; /Ta&quot;../source/asm/masm/modulo_radiansfloat.x86&quot;"
 								Outputs="$(IntDir)modulo_radiansfloat.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm\poweroftwo32.x86">
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling poweroftwo32.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)poweroftwo32.obj&quot; /Ta&quot;../source/asm/masm/poweroftwo32.x86&quot;"
+								Outputs="$(IntDir)poweroftwo32.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling poweroftwo32.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)poweroftwo32.obj&quot; /Ta&quot;../source/asm/masm/poweroftwo32.x86&quot;"
+								Outputs="$(IntDir)poweroftwo32.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling poweroftwo32.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)poweroftwo32.obj&quot; /Ta&quot;../source/asm/masm/poweroftwo32.x86&quot;"
+								Outputs="$(IntDir)poweroftwo32.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling poweroftwo32.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)poweroftwo32.obj&quot; /Ta&quot;../source/asm/masm/poweroftwo32.x86&quot;"
+								Outputs="$(IntDir)poweroftwo32.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm\poweroftwo64.x86">
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling poweroftwo64.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)poweroftwo64.obj&quot; /Ta&quot;../source/asm/masm/poweroftwo64.x86&quot;"
+								Outputs="$(IntDir)poweroftwo64.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling poweroftwo64.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)poweroftwo64.obj&quot; /Ta&quot;../source/asm/masm/poweroftwo64.x86&quot;"
+								Outputs="$(IntDir)poweroftwo64.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling poweroftwo64.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)poweroftwo64.obj&quot; /Ta&quot;../source/asm/masm/poweroftwo64.x86&quot;"
+								Outputs="$(IntDir)poweroftwo64.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32">
+							<Tool
+								Name="VCCustomBuildTool"
+								Description="Assembling poweroftwo64.x86..."
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)poweroftwo64.obj&quot; /Ta&quot;../source/asm/masm/poweroftwo64.x86&quot;"
+								Outputs="$(IntDir)poweroftwo64.obj"/>
 						</FileConfiguration>
 					</File>
 					<File
@@ -2505,9 +2995,6 @@
 					RelativePath="..\source\lowlevel\brguid.h">
 				</File>
 				<File
-					RelativePath="..\source\lowlevel\brintelcompiler.h">
-				</File>
-				<File
 					RelativePath="..\source\lowlevel\brintrinsics.cpp">
 				</File>
 				<File
@@ -2587,9 +3074,6 @@
 				</File>
 				<File
 					RelativePath="..\source\lowlevel\brsmartpointer.h">
-				</File>
-				<File
-					RelativePath="..\source\lowlevel\brsnsystems.h">
 				</File>
 				<File
 					RelativePath="..\source\lowlevel\brstaticrtti.cpp">
@@ -2734,6 +3218,12 @@
 				</File>
 				<File
 					RelativePath="..\source\math\brmatrix4d.h">
+				</File>
+				<File
+					RelativePath="..\source\math\brpoweroftwo.cpp">
+				</File>
+				<File
+					RelativePath="..\source\math\brpoweroftwo.h">
 				</File>
 				<File
 					RelativePath="..\source\math\brsinecosine.cpp">
@@ -3373,6 +3863,12 @@
 			</File>
 			<File
 				RelativePath="..\unittest\testbrnumberto.h">
+			</File>
+			<File
+				RelativePath="..\unittest\testbrpoweroftwo.cpp">
+			</File>
+			<File
+				RelativePath="..\unittest\testbrpoweroftwo.h">
 			</File>
 			<File
 				RelativePath="..\unittest\testbrprintf.cpp">

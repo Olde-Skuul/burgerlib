@@ -430,9 +430,6 @@
     <ClInclude Include="..\source\lowlevel\brguid.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\lowlevel\brintelcompiler.h">
-      <Filter>source\lowlevel</Filter>
-    </ClInclude>
     <ClInclude Include="..\source\lowlevel\brintrinsics.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
@@ -473,9 +470,6 @@
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brsmartpointer.h">
-      <Filter>source\lowlevel</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\lowlevel\brsnsystems.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brstaticrtti.h">
@@ -551,6 +545,9 @@
       <Filter>source\math</Filter>
     </ClInclude>
     <ClInclude Include="..\source\math\brmatrix4d.h">
+      <Filter>source\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\math\brpoweroftwo.h">
       <Filter>source\math</Filter>
     </ClInclude>
     <ClInclude Include="..\source\math\brvector2d.h">
@@ -1228,6 +1225,9 @@
     <ClCompile Include="..\source\math\brmatrix4d.cpp">
       <Filter>source\math</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\math\brpoweroftwo.cpp">
+      <Filter>source\math</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\math\brsinecosine.cpp">
       <Filter>source\math</Filter>
     </ClCompile>
@@ -1519,6 +1519,42 @@
     <MASM Include="..\source\asm\masm64\get_signfloat.x64">
       <Filter>source\asm\masm64</Filter>
     </MASM>
+    <MASM Include="..\source\asm\masm\floattofixedceil.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\floattofixedceilptr.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\floattofixedfloor.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\floattofixedfloorptr.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\floattofixedround.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\floattofixedroundptr.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\floattointceil.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\floattointceilptr.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\floattointfloor.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\floattointfloorptr.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\floattointround.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\floattointroundptr.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
     <MASM Include="..\source\asm\masm\get8087precision.x86">
       <Filter>source\asm\masm</Filter>
     </MASM>
@@ -1556,6 +1592,12 @@
       <Filter>source\asm\masm</Filter>
     </MASM>
     <MASM Include="..\source\asm\masm\modulo_radiansfloat.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\poweroftwo32.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\poweroftwo64.x86">
       <Filter>source\asm\masm</Filter>
     </MASM>
     <MASM Include="..\source\asm\masm\set8087precision.x86">

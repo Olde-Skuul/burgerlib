@@ -2,7 +2,7 @@
 
 	Unit tests for the Integer Math library
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -18,6 +18,8 @@
 #include "brnumberstringhex.h"
 #include "brstringfunctions.h"
 #include "common.h"
+
+using namespace Burger;
 
 struct WordTest32_t {
 	uint32_t m_uInput;  // Source value
@@ -55,8 +57,13 @@ struct IntTest64_t {
 };
 
 struct FloatToIntTest32_t {
-	Burger::uint32_float_t m_fInput; // Source value
-	int32_t m_iOutput;               // Expected output
+	uint32_float_t m_fInput; // Source value
+	int32_t m_iOutput;       // Expected output
+};
+
+struct FloatToUIntTest32_t {
+	uint32_float_t m_fInput; // Source value
+	uint32_t m_uOutput;      // Expected output
 };
 
 struct OldFloatToIntTest32_t {
@@ -76,104 +83,14 @@ struct IntTest64x64_t {
 	int64_t m_iOutput; // Expected output
 };
 
-/***************************************
-
-	Test Burger::PowerOf2(uint32_t)
-
-***************************************/
-
-static const WordTest32_t PowerOf2_32Table[] = {{0x00000000U, 0x00000000U},
-	{0x00000001U, 0x00000001U}, {0x00000002U, 0x00000002U},
-	{0x00000003U, 0x00000004U}, {0x00000004U, 0x00000004U},
-	{0x00000005U, 0x00000008U}, {0x00002000U, 0x00002000U},
-	{0x00002001U, 0x00004000U}, {0x20000001U, 0x40000000U},
-	{0x40000000U, 0x40000000U}, {0x40000001U, 0x80000000U},
-	{0x40004020U, 0x80000000U}, {0x7FFFFFFFU, 0x80000000U},
-	{0x80000000U, 0x80000000U}, {0x80000001U, 0x00000000U},
-	{0xC0000000U, 0x00000000U}, {0xE0000001U, 0x00000000U},
-	{0xFFFFFFFFU, 0x00000000U}};
-
-static uint_t BURGER_API TestPowerOf2_32(void) BURGER_NOEXCEPT
-{
-	uint_t uFailure = FALSE;
-	const WordTest32_t* pWork = PowerOf2_32Table;
-	uintptr_t uCount = BURGER_ARRAYSIZE(PowerOf2_32Table);
-	do {
-		const uint32_t uReturn = Burger::PowerOf2(pWork->m_uInput);
-		const uint_t uTest = uReturn != pWork->m_uOutput;
-		uFailure |= uTest;
-		ReportFailure("Burger::PowerOf2(0x%08X) = 0x%08X, expected 0x%08X",
-			uTest, pWork->m_uInput, uReturn, pWork->m_uOutput);
-		++pWork;
-	} while (--uCount);
-	return uFailure;
-}
+struct FloatToFloatTest_t {
+	uint32_float_t m_fInput;  // Source value
+	uint32_float_t m_fOutput; // Expected output
+};
 
 /***************************************
 
-	Test Burger::PowerOf2(uint64_t)
-
-***************************************/
-
-static const WordTest64_t PowerOf2_64Table[] = {
-	{0x0000000000000000ULL, 0x0000000000000000ULL},
-	{0x0000000000000001ULL, 0x0000000000000001ULL},
-	{0x0000000000000002ULL, 0x0000000000000002ULL},
-	{0x0000000000000003ULL, 0x0000000000000004ULL},
-	{0x0000000000000004ULL, 0x0000000000000004ULL},
-	{0x0000000000000005ULL, 0x0000000000000008ULL},
-	{0x0000000000002000ULL, 0x0000000000002000ULL},
-	{0x0000000000002001ULL, 0x0000000000004000ULL},
-	{0x0000000020000001ULL, 0x0000000040000000ULL},
-	{0x0000000040000000ULL, 0x0000000040000000ULL},
-	{0x0000000040000001ULL, 0x0000000080000000ULL},
-	{0x0000000040004020ULL, 0x0000000080000000ULL},
-	{0x000000007FFFFFFFULL, 0x0000000080000000ULL},
-	{0x0000000080000000ULL, 0x0000000080000000ULL},
-	{0x0000000080000001ULL, 0x0000000100000000ULL},
-	{0x00000000FFFFFFFFULL, 0x0000000100000000ULL},
-	{0x4000000000000000ULL, 0x4000000000000000ULL},
-	{0x4000000000000001ULL, 0x8000000000000000ULL},
-	{0x4000000000004020ULL, 0x8000000000000000ULL},
-	{0x8000000000000000ULL, 0x8000000000000000ULL},
-	{0x8000000000000001ULL, 0x0000000000000000ULL},
-	{0xC000000000000000ULL, 0x0000000000000000ULL},
-	{0xE000000000000001ULL, 0x0000000000000000ULL},
-	{0xFFFFFFFFFFFFFFFFULL, 0x0000000000000000ULL}};
-
-static uint_t BURGER_API TestPowerOf2_64(void) BURGER_NOEXCEPT
-{
-	uint_t uFailure = FALSE;
-	const WordTest64_t* pWork = PowerOf2_64Table;
-	uintptr_t uCount = BURGER_ARRAYSIZE(PowerOf2_64Table);
-	do {
-		const uint64_t uReturn = Burger::PowerOf2(pWork->m_uInput);
-		const uint_t uTest = uReturn != pWork->m_uOutput;
-		uFailure |= uTest;
-		if (uTest) {
-			const Burger::NumberStringHex Input(pWork->m_uInput);
-			const Burger::NumberStringHex Return(uReturn);
-			const Burger::NumberStringHex Output(pWork->m_uOutput);
-			ReportFailure("Burger::PowerOf2(0x%s) = 0x%s, expected 0x%s", uTest,
-				Input.c_str(), Return.c_str(), Output.c_str());
-		}
-		++pWork;
-	} while (--uCount);
-
-	// Should compile without warnings
-	Burger::PowerOf2(static_cast<uint8_t>(1));
-	Burger::PowerOf2(static_cast<uint16_t>(1));
-	Burger::PowerOf2(static_cast<uintptr_t>(1));
-	Burger::PowerOf2(static_cast<unsigned long>(1));
-	Burger::PowerOf2(static_cast<unsigned>(1));
-	Burger::PowerOf2(static_cast<unsigned long long>(1));
-	Burger::PowerOf2(static_cast<uintptr_t>(1));
-	return uFailure;
-}
-
-/***************************************
-
-	Test Burger::PowerOf2(uint32_t)
+	Test Burger::BCDToWord(uint32_t)
 
 ***************************************/
 
@@ -545,28 +462,28 @@ static uint_t BURGER_API TestFixedToIntFloor(void) BURGER_NOEXCEPT
 // Test fixed_to_int(int32_t)
 //
 
-static const IntTest32_t FixedToIntTestTable[] = {{BURGER_FLOAT_TO_FIXED(-4.0) + 1, -3},
-	{BURGER_FLOAT_TO_FIXED(-3.5f), -3}, {BURGER_FLOAT_TO_FIXED(-3.5f) + 1, -3},
-	{BURGER_FLOAT_TO_FIXED(-3.0f), -3}, {BURGER_FLOAT_TO_FIXED(-3.0f) + 1, -2},
-	{BURGER_FLOAT_TO_FIXED(-2.5f), -2}, {BURGER_FLOAT_TO_FIXED(-2.5f) + 1, -2},
-	{BURGER_FLOAT_TO_FIXED(-2.0f), -2}, {BURGER_FLOAT_TO_FIXED(-2.0f) + 1, -1},
-	{BURGER_FLOAT_TO_FIXED(-1.5f), -1}, {BURGER_FLOAT_TO_FIXED(-1.5f) + 1, -1},
-	{BURGER_FLOAT_TO_FIXED(-1.0f), -1}, {BURGER_FLOAT_TO_FIXED(-1.0f) + 1, -0},
-	{BURGER_FLOAT_TO_FIXED(-0.5f), -0}, {BURGER_FLOAT_TO_FIXED(-0.5f) + 1, -0},
-	{BURGER_FLOAT_TO_FIXED(-0.0f), 0}, {BURGER_FLOAT_TO_FIXED(0.0f), 0},
-	{BURGER_FLOAT_TO_FIXED(0.5f) - 1, 0}, {BURGER_FLOAT_TO_FIXED(0.5f), 0},
-	{BURGER_FLOAT_TO_FIXED(1.0f) - 1, 0}, {BURGER_FLOAT_TO_FIXED(1.0f), 1},
-	{BURGER_FLOAT_TO_FIXED(1.5f) - 1, 1}, {BURGER_FLOAT_TO_FIXED(1.5f), 1},
-	{BURGER_FLOAT_TO_FIXED(2.0f) - 1, 1}, {BURGER_FLOAT_TO_FIXED(2.0f), 2},
-	{BURGER_FLOAT_TO_FIXED(2.5f) - 1, 2}, {BURGER_FLOAT_TO_FIXED(2.5f), 2},
-	{BURGER_FLOAT_TO_FIXED(3.0f) - 1, 2}, {BURGER_FLOAT_TO_FIXED(3.0f), 3},
-	{BURGER_FLOAT_TO_FIXED(3.5f) - 1, 3}, {BURGER_FLOAT_TO_FIXED(3.5f), 3},
-	{BURGER_FLOAT_TO_FIXED(4.0f) - 1, 3},
+static const IntTest32_t FixedToIntTestTable[] = {
+	{BURGER_FLOAT_TO_FIXED(-4.0) + 1, -3}, {BURGER_FLOAT_TO_FIXED(-3.5f), -3},
+	{BURGER_FLOAT_TO_FIXED(-3.5f) + 1, -3}, {BURGER_FLOAT_TO_FIXED(-3.0f), -3},
+	{BURGER_FLOAT_TO_FIXED(-3.0f) + 1, -2}, {BURGER_FLOAT_TO_FIXED(-2.5f), -2},
+	{BURGER_FLOAT_TO_FIXED(-2.5f) + 1, -2}, {BURGER_FLOAT_TO_FIXED(-2.0f), -2},
+	{BURGER_FLOAT_TO_FIXED(-2.0f) + 1, -1}, {BURGER_FLOAT_TO_FIXED(-1.5f), -1},
+	{BURGER_FLOAT_TO_FIXED(-1.5f) + 1, -1}, {BURGER_FLOAT_TO_FIXED(-1.0f), -1},
+	{BURGER_FLOAT_TO_FIXED(-1.0f) + 1, -0}, {BURGER_FLOAT_TO_FIXED(-0.5f), -0},
+	{BURGER_FLOAT_TO_FIXED(-0.5f) + 1, -0}, {BURGER_FLOAT_TO_FIXED(-0.0f), 0},
+	{BURGER_FLOAT_TO_FIXED(0.0f), 0}, {BURGER_FLOAT_TO_FIXED(0.5f) - 1, 0},
+	{BURGER_FLOAT_TO_FIXED(0.5f), 0}, {BURGER_FLOAT_TO_FIXED(1.0f) - 1, 0},
+	{BURGER_FLOAT_TO_FIXED(1.0f), 1}, {BURGER_FLOAT_TO_FIXED(1.5f) - 1, 1},
+	{BURGER_FLOAT_TO_FIXED(1.5f), 1}, {BURGER_FLOAT_TO_FIXED(2.0f) - 1, 1},
+	{BURGER_FLOAT_TO_FIXED(2.0f), 2}, {BURGER_FLOAT_TO_FIXED(2.5f) - 1, 2},
+	{BURGER_FLOAT_TO_FIXED(2.5f), 2}, {BURGER_FLOAT_TO_FIXED(3.0f) - 1, 2},
+	{BURGER_FLOAT_TO_FIXED(3.0f), 3}, {BURGER_FLOAT_TO_FIXED(3.5f) - 1, 3},
+	{BURGER_FLOAT_TO_FIXED(3.5f), 3}, {BURGER_FLOAT_TO_FIXED(4.0f) - 1, 3},
 
 	{BURGER_FLOAT_TO_FIXED(1.1f), 1}, {BURGER_FLOAT_TO_FIXED(1.95f), 1},
 	{BURGER_FLOAT_TO_FIXED(-1.1f), -1}, {BURGER_FLOAT_TO_FIXED(-1.95f), -1},
-	{BURGER_FLOAT_TO_FIXED(0.1f), 0}, {BURGER_FLOAT_TO_FIXED(0.95f), 0}, {BURGER_FLOAT_TO_FIXED(-0.1f), 0},
-	{BURGER_FLOAT_TO_FIXED(-0.95f), 0}};
+	{BURGER_FLOAT_TO_FIXED(0.1f), 0}, {BURGER_FLOAT_TO_FIXED(0.95f), 0},
+	{BURGER_FLOAT_TO_FIXED(-0.1f), 0}, {BURGER_FLOAT_TO_FIXED(-0.95f), 0}};
 
 static uint_t BURGER_API TestFixedToInt(void) BURGER_NOEXCEPT
 {
@@ -608,8 +525,8 @@ static const IntTest32_t FixedToIntCeilTestTable[] = {
 
 	{BURGER_FLOAT_TO_FIXED(1.1f), 2}, {BURGER_FLOAT_TO_FIXED(1.95f), 2},
 	{BURGER_FLOAT_TO_FIXED(-1.1f), -1}, {BURGER_FLOAT_TO_FIXED(-1.95f), -1},
-	{BURGER_FLOAT_TO_FIXED(0.1f), 1}, {BURGER_FLOAT_TO_FIXED(0.95f), 1}, {BURGER_FLOAT_TO_FIXED(-0.1f), 0},
-	{BURGER_FLOAT_TO_FIXED(-0.95f), 0}};
+	{BURGER_FLOAT_TO_FIXED(0.1f), 1}, {BURGER_FLOAT_TO_FIXED(0.95f), 1},
+	{BURGER_FLOAT_TO_FIXED(-0.1f), 0}, {BURGER_FLOAT_TO_FIXED(-0.95f), 0}};
 
 static uint_t BURGER_API TestFixedToIntCeil(void) BURGER_NOEXCEPT
 {
@@ -621,8 +538,8 @@ static uint_t BURGER_API TestFixedToIntCeil(void) BURGER_NOEXCEPT
 		const uint_t uTest = iReturn != pWork->m_iOutput;
 		uFailure |= uTest;
 		ReportFailure(
-			"Burger::fixed_to_int_ceil(0x%08X) = 0x%08X, expected 0x%08X", uTest,
-			pWork->m_iInput, iReturn, pWork->m_iOutput);
+			"Burger::fixed_to_int_ceil(0x%08X) = 0x%08X, expected 0x%08X",
+			uTest, pWork->m_iInput, iReturn, pWork->m_iOutput);
 		++pWork;
 	} while (--uCount);
 	return uFailure;
@@ -652,8 +569,8 @@ static const IntTest32_t FixedToIntNearestTestTable[] = {
 
 	{BURGER_FLOAT_TO_FIXED(1.1f), 1}, {BURGER_FLOAT_TO_FIXED(1.95f), 2},
 	{BURGER_FLOAT_TO_FIXED(-1.1f), -1}, {BURGER_FLOAT_TO_FIXED(-1.95f), -2},
-	{BURGER_FLOAT_TO_FIXED(0.1f), 0}, {BURGER_FLOAT_TO_FIXED(0.95f), 1}, {BURGER_FLOAT_TO_FIXED(-0.1f), 0},
-	{BURGER_FLOAT_TO_FIXED(-0.95f), -1}};
+	{BURGER_FLOAT_TO_FIXED(0.1f), 0}, {BURGER_FLOAT_TO_FIXED(0.95f), 1},
+	{BURGER_FLOAT_TO_FIXED(-0.1f), 0}, {BURGER_FLOAT_TO_FIXED(-0.95f), -1}};
 
 static uint_t BURGER_API TestFixedToIntNearest(void) BURGER_NOEXCEPT
 {
@@ -697,8 +614,9 @@ static uint_t BURGER_API TestFloatToIntFloor(void) BURGER_NOEXCEPT
 		const int32_t iReturn = Burger::float_to_int_floor(pWork->m_fInput);
 		uint_t uTest = iReturn != pWork->m_iOutput;
 		uFailure |= uTest;
-		ReportFailure("Burger::float_to_int_floor(%g) = 0x%08X, expected 0x%08X",
-			uTest, pWork->m_fInput, iReturn, pWork->m_iOutput);
+		ReportFailure(
+			"Burger::float_to_int_floor(%g) = 0x%08X, expected 0x%08X", uTest,
+			pWork->m_fInput, iReturn, pWork->m_iOutput);
 
 		int32_t iReturnMemory;
 		Burger::float_to_int_floor(&iReturnMemory, pWork->m_fInput);
@@ -735,7 +653,8 @@ static uint_t BURGER_API TestFloatToIntRoundToZero(void) BURGER_NOEXCEPT
 	const OldFloatToIntTest32_t* pWork = FloatToIntTestTable;
 	uintptr_t uCount = BURGER_ARRAYSIZE(FloatToIntTestTable);
 	do {
-		const int32_t iReturn = Burger::float_to_int_round_to_zero(pWork->m_fInput);
+		const int32_t iReturn =
+			Burger::float_to_int_round_to_zero(pWork->m_fInput);
 		uint_t uTest = iReturn != pWork->m_iOutput;
 		uFailure |= uTest;
 		ReportFailure(
@@ -839,7 +758,7 @@ static uint_t BURGER_API TestFloatToIntRound(void) BURGER_NOEXCEPT
 }
 
 //
-// Test FloatToFixedFloor(float)
+// Test float_to_fixed_floor(float)
 //
 
 static const OldFloatToIntTest32_t FloatToFixedFloorTestTable[] = {
@@ -890,18 +809,19 @@ static uint_t BURGER_API TestFloatToFixedFloor(void) BURGER_NOEXCEPT
 	const OldFloatToIntTest32_t* pWork = FloatToFixedFloorTestTable;
 	uintptr_t uCount = BURGER_ARRAYSIZE(FloatToFixedFloorTestTable);
 	do {
-		const int32_t iReturn = Burger::FloatToFixedFloor(pWork->m_fInput);
+		const int32_t iReturn = Burger::float_to_fixed_floor(pWork->m_fInput);
 		uint_t uTest = iReturn != pWork->m_iOutput;
 		uFailure |= uTest;
-		ReportFailure("Burger::FloatToFixedFloor(%g) = 0x%08X, expected 0x%08X",
-			uTest, pWork->m_fInput, iReturn, pWork->m_iOutput);
+		ReportFailure(
+			"Burger::float_to_fixed_floor(%g) = 0x%08X, expected 0x%08X", uTest,
+			pWork->m_fInput, iReturn, pWork->m_iOutput);
 
 		int32_t iReturnMemory;
-		Burger::FloatToFixedFloor(&iReturnMemory, pWork->m_fInput);
+		Burger::float_to_fixed_floor(&iReturnMemory, pWork->m_fInput);
 		uTest = iReturnMemory != pWork->m_iOutput;
 		uFailure |= uTest;
 		ReportFailure(
-			"Burger::FloatToFixedFloor(int32_t *pOutput,%g) = 0x%08X, expected 0x%08X",
+			"Burger::float_to_fixed_floor(int32_t *pOutput,%g) = 0x%08X, expected 0x%08X",
 			uTest, pWork->m_fInput, iReturnMemory, pWork->m_iOutput);
 
 		++pWork;
@@ -910,7 +830,7 @@ static uint_t BURGER_API TestFloatToFixedFloor(void) BURGER_NOEXCEPT
 }
 
 //
-// Test FloatToFixed(float)
+// Test float_to_fixed_round_to_zero(float)
 //
 
 static const OldFloatToIntTest32_t FloatToFixedTestTable[] = {
@@ -926,18 +846,20 @@ static uint_t BURGER_API TestFloatToFixed(void) BURGER_NOEXCEPT
 	const OldFloatToIntTest32_t* pWork = FloatToFixedTestTable;
 	uintptr_t uCount = BURGER_ARRAYSIZE(FloatToFixedTestTable);
 	do {
-		const int32_t iReturn = Burger::FloatToFixed(pWork->m_fInput);
+		const int32_t iReturn =
+			Burger::float_to_fixed_round_to_zero(pWork->m_fInput);
 		uint_t uTest = iReturn != pWork->m_iOutput;
 		uFailure |= uTest;
-		ReportFailure("Burger::FloatToFixed(%g) = 0x%08X, expected 0x%08X",
+		ReportFailure(
+			"Burger::float_to_fixed_round_to_zero(%g) = 0x%08X, expected 0x%08X",
 			uTest, pWork->m_fInput, iReturn, pWork->m_iOutput);
 
 		int32_t iReturnMemory;
-		Burger::FloatToFixed(&iReturnMemory, pWork->m_fInput);
+		Burger::float_to_fixed_round_to_zero(&iReturnMemory, pWork->m_fInput);
 		uTest = iReturnMemory != pWork->m_iOutput;
 		uFailure |= uTest;
 		ReportFailure(
-			"Burger::FloatToFixed(int32_t *pOutput,%g) = 0x%08X, expected 0x%08X",
+			"Burger::float_to_fixed_round_to_zero(int32_t *pOutput,%g) = 0x%08X, expected 0x%08X",
 			uTest, pWork->m_fInput, iReturnMemory, pWork->m_iOutput);
 
 		++pWork;
@@ -946,7 +868,7 @@ static uint_t BURGER_API TestFloatToFixed(void) BURGER_NOEXCEPT
 }
 
 //
-// Test FloatToFixedCeil(float)
+// Test float_to_fixed_ceil(float)
 //
 
 static const OldFloatToIntTest32_t FloatToFixedCeilTestTable[] = {
@@ -962,18 +884,19 @@ static uint_t BURGER_API TestFloatToFixedCeil(void) BURGER_NOEXCEPT
 	const OldFloatToIntTest32_t* pWork = FloatToFixedCeilTestTable;
 	uintptr_t uCount = BURGER_ARRAYSIZE(FloatToFixedCeilTestTable);
 	do {
-		const int32_t iReturn = Burger::FloatToFixedCeil(pWork->m_fInput);
+		const int32_t iReturn = Burger::float_to_fixed_ceil(pWork->m_fInput);
 		uint_t uTest = iReturn != pWork->m_iOutput;
 		uFailure |= uTest;
-		ReportFailure("Burger::FloatToFixedCeil(%g) = 0x%08X, expected 0x%08X",
-			uTest, pWork->m_fInput, iReturn, pWork->m_iOutput);
+		ReportFailure(
+			"Burger::float_to_fixed_ceil(%g) = 0x%08X, expected 0x%08X", uTest,
+			pWork->m_fInput, iReturn, pWork->m_iOutput);
 
 		int32_t iReturnMemory;
-		Burger::FloatToFixedCeil(&iReturnMemory, pWork->m_fInput);
+		Burger::float_to_fixed_ceil(&iReturnMemory, pWork->m_fInput);
 		uTest = iReturnMemory != pWork->m_iOutput;
 		uFailure |= uTest;
 		ReportFailure(
-			"Burger::FloatToFixedCeil(int32_t *pOutput,%g) = 0x%08X, expected 0x%08X",
+			"Burger::float_to_fixed_ceil(int32_t *pOutput,%g) = 0x%08X, expected 0x%08X",
 			uTest, pWork->m_fInput, iReturnMemory, pWork->m_iOutput);
 
 		++pWork;
@@ -982,7 +905,7 @@ static uint_t BURGER_API TestFloatToFixedCeil(void) BURGER_NOEXCEPT
 }
 
 //
-// Test FloatToFixedNearest(float)
+// Test float_to_fixed_round(float)
 //
 
 static const OldFloatToIntTest32_t FloatToFixedNearestTestTable[] = {
@@ -998,19 +921,19 @@ static uint_t BURGER_API TestFloatToFixedNearest(void) BURGER_NOEXCEPT
 	const OldFloatToIntTest32_t* pWork = FloatToFixedNearestTestTable;
 	uintptr_t uCount = BURGER_ARRAYSIZE(FloatToFixedNearestTestTable);
 	do {
-		const int32_t iReturn = Burger::FloatToFixedNearest(pWork->m_fInput);
+		const int32_t iReturn = Burger::float_to_fixed_round(pWork->m_fInput);
 		uint_t uTest = iReturn != pWork->m_iOutput;
 		uFailure |= uTest;
 		ReportFailure(
-			"Burger::FloatToFixedNearest(%g) = 0x%08X, expected 0x%08X", uTest,
+			"Burger::float_to_fixed_round(%g) = 0x%08X, expected 0x%08X", uTest,
 			pWork->m_fInput, iReturn, pWork->m_iOutput);
 
 		int32_t iReturnMemory;
-		Burger::FloatToFixedNearest(&iReturnMemory, pWork->m_fInput);
+		Burger::float_to_fixed_round(&iReturnMemory, pWork->m_fInput);
 		uTest = iReturnMemory != pWork->m_iOutput;
 		uFailure |= uTest;
 		ReportFailure(
-			"Burger::FloatToFixedNearest(int32_t *pOutput,%g) = 0x%08X, expected 0x%08X",
+			"Burger::float_to_fixed_round(int32_t *pOutput,%g) = 0x%08X, expected 0x%08X",
 			uTest, pWork->m_fInput, iReturnMemory, pWork->m_iOutput);
 
 		++pWork;
@@ -1035,8 +958,9 @@ static uint_t BURGER_API TestAbs8(void) BURGER_NOEXCEPT
 		const int8_t iReturn = Burger::absolute(pWork->m_iInput);
 		const uint_t uTest = iReturn != pWork->m_iOutput;
 		uFailure |= uTest;
-		ReportFailure("Burger::absolute((int8_t)0x%08X) = 0x%08X, expected 0x%08X",
-			uTest, pWork->m_iInput, iReturn, pWork->m_iOutput);
+		ReportFailure(
+			"Burger::absolute((int8_t)0x%08X) = 0x%08X, expected 0x%08X", uTest,
+			pWork->m_iInput, iReturn, pWork->m_iOutput);
 		++pWork;
 	} while (--uCount);
 	return uFailure;
@@ -1059,7 +983,8 @@ static uint_t BURGER_API TestAbs16(void) BURGER_NOEXCEPT
 		const int16_t iReturn = Burger::absolute(pWork->m_iInput);
 		const uint_t uTest = iReturn != pWork->m_iOutput;
 		uFailure |= uTest;
-		ReportFailure("Burger::absolute((int16_t)0x%08X) = 0x%08X, expected 0x%08X",
+		ReportFailure(
+			"Burger::absolute((int16_t)0x%08X) = 0x%08X, expected 0x%08X",
 			uTest, pWork->m_iInput, iReturn, pWork->m_iOutput);
 		++pWork;
 	} while (--uCount);
@@ -1086,7 +1011,8 @@ static uint_t BURGER_API TestAbs32(void) BURGER_NOEXCEPT
 		const int32_t iReturn = Burger::absolute(pWork->m_iInput);
 		const uint_t uTest = iReturn != pWork->m_iOutput;
 		uFailure |= uTest;
-		ReportFailure("Burger::absolute((int32_t)0x%08X) = 0x%08X, expected 0x%08X",
+		ReportFailure(
+			"Burger::absolute((int32_t)0x%08X) = 0x%08X, expected 0x%08X",
 			uTest, pWork->m_iInput, iReturn, pWork->m_iOutput);
 		++pWork;
 	} while (--uCount);
@@ -1120,8 +1046,9 @@ static uint_t BURGER_API TestAbs64(void) BURGER_NOEXCEPT
 			const Burger::NumberStringHex Text1(pWork->m_iInput);
 			const Burger::NumberStringHex Text2(iReturn);
 			const Burger::NumberStringHex Text3(pWork->m_iOutput);
-			ReportFailure("Burger::absolute((int64_t)0x%s) = 0x%s, expected 0x%s",
-				uTest, Text1.c_str(), Text2.c_str(), Text3.c_str());
+			ReportFailure(
+				"Burger::absolute((int64_t)0x%s) = 0x%s, expected 0x%s", uTest,
+				Text1.c_str(), Text2.c_str(), Text3.c_str());
 		}
 		++pWork;
 	} while (--uCount);
@@ -1144,8 +1071,9 @@ static uint_t BURGER_API TestSign8(void) BURGER_NOEXCEPT
 		const int8_t iReturn = Burger::get_sign(pWork->m_iInput);
 		const uint_t uTest = iReturn != pWork->m_iOutput;
 		uFailure |= uTest;
-		ReportFailure("Burger::get_sign((int8_t)0x%08X) = 0x%08X, expected 0x%08X",
-			uTest, pWork->m_iInput, iReturn, pWork->m_iOutput);
+		ReportFailure(
+			"Burger::get_sign((int8_t)0x%08X) = 0x%08X, expected 0x%08X", uTest,
+			pWork->m_iInput, iReturn, pWork->m_iOutput);
 		++pWork;
 	} while (--uCount);
 	return uFailure;
@@ -1168,7 +1096,8 @@ static uint_t BURGER_API TestSign16(void) BURGER_NOEXCEPT
 		const int16_t iReturn = Burger::get_sign(pWork->m_iInput);
 		const uint_t uTest = iReturn != pWork->m_iOutput;
 		uFailure |= uTest;
-		ReportFailure("Burger::get_sign((int16_t)0x%08X) = 0x%08X, expected 0x%08X",
+		ReportFailure(
+			"Burger::get_sign((int16_t)0x%08X) = 0x%08X, expected 0x%08X",
 			uTest, pWork->m_iInput, iReturn, pWork->m_iOutput);
 		++pWork;
 	} while (--uCount);
@@ -1194,7 +1123,8 @@ static uint_t BURGER_API TestSign32(void) BURGER_NOEXCEPT
 		const int32_t iReturn = Burger::get_sign(pWork->m_iInput);
 		const uint_t uTest = iReturn != pWork->m_iOutput;
 		uFailure |= uTest;
-		ReportFailure("Burger::get_sign((int32_t)0x%08X) = 0x%08X, expected 0x%08X",
+		ReportFailure(
+			"Burger::get_sign((int32_t)0x%08X) = 0x%08X, expected 0x%08X",
 			uTest, pWork->m_iInput, iReturn, pWork->m_iOutput);
 		++pWork;
 	} while (--uCount);
@@ -1225,8 +1155,9 @@ static uint_t BURGER_API TestSign64(void) BURGER_NOEXCEPT
 			const Burger::NumberStringHex Text1(pWork->m_iInput);
 			const Burger::NumberStringHex Text2(iReturn);
 			const Burger::NumberStringHex Text3(pWork->m_iOutput);
-			ReportFailure("Burger::get_sign((int64_t)0x%s) = 0x%s, expected 0x%s",
-				uTest, Text1.c_str(), Text2.c_str(), Text3.c_str());
+			ReportFailure(
+				"Burger::get_sign((int64_t)0x%s) = 0x%s, expected 0x%s", uTest,
+				Text1.c_str(), Text2.c_str(), Text3.c_str());
 		}
 		++pWork;
 	} while (--uCount);
@@ -1258,8 +1189,8 @@ static uint_t BURGER_API TestSqrt32(void) BURGER_NOEXCEPT
 		const uint_t uTest = uReturn != pWork->m_uOutput;
 		uFailure |= uTest;
 		ReportFailure(
-			"Burger::square_root((uint32_t)0x%08X) = 0x%08X, expected 0x%08X", uTest,
-			pWork->m_uInput, uReturn, pWork->m_uOutput);
+			"Burger::square_root((uint32_t)0x%08X) = 0x%08X, expected 0x%08X",
+			uTest, pWork->m_uInput, uReturn, pWork->m_uOutput);
 		++pWork;
 	} while (--uCount);
 	return uFailure;
@@ -1332,7 +1263,8 @@ static uint_t BURGER_API TestSqrtFixed32(void) BURGER_NOEXCEPT
 		const Fixed32 iReturn = Burger::square_root(pWork->m_iInput);
 		const uint_t uTest = iReturn != pWork->m_iOutput;
 		uFailure |= uTest;
-		ReportFailure("Burger::square_root((Fixed32)0x%08X) = 0x%08X, expected 0x%08X",
+		ReportFailure(
+			"Burger::square_root((Fixed32)0x%08X) = 0x%08X, expected 0x%08X",
 			uTest, pWork->m_iInput, iReturn, pWork->m_iOutput);
 		++pWork;
 	} while (--uCount);
@@ -1351,9 +1283,7 @@ int BURGER_API TestBrfixedpoint(uint_t uVerbose) BURGER_NOEXCEPT
 		Message("Running Integer Math tests");
 	}
 
-	uint_t uResult = TestPowerOf2_32();
-	uResult |= TestPowerOf2_64();
-	uResult |= TestBCDWord();
+	uint_t uResult = TestBCDWord();
 
 	uResult |= TestBitReverse_32();
 	uResult |= TestBitReverse_64();

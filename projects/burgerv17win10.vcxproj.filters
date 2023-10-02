@@ -430,9 +430,6 @@
     <ClInclude Include="..\source\lowlevel\brguid.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\lowlevel\brintelcompiler.h">
-      <Filter>source\lowlevel</Filter>
-    </ClInclude>
     <ClInclude Include="..\source\lowlevel\brintrinsics.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
@@ -473,9 +470,6 @@
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brsmartpointer.h">
-      <Filter>source\lowlevel</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\lowlevel\brsnsystems.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brstaticrtti.h">
@@ -551,6 +545,9 @@
       <Filter>source\math</Filter>
     </ClInclude>
     <ClInclude Include="..\source\math\brmatrix4d.h">
+      <Filter>source\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\math\brpoweroftwo.h">
       <Filter>source\math</Filter>
     </ClInclude>
     <ClInclude Include="..\source\math\brvector2d.h">
@@ -1228,6 +1225,9 @@
     <ClCompile Include="..\source\math\brmatrix4d.cpp">
       <Filter>source\math</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\math\brpoweroftwo.cpp">
+      <Filter>source\math</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\math\brsinecosine.cpp">
       <Filter>source\math</Filter>
     </ClCompile>
@@ -1519,6 +1519,42 @@
     <MASM Include="..\source\asm\masm64\get_signfloat.x64">
       <Filter>source\asm\masm64</Filter>
     </MASM>
+    <MASM Include="..\source\asm\masm\floattofixedceil.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\floattofixedceilptr.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\floattofixedfloor.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\floattofixedfloorptr.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\floattofixedround.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\floattofixedroundptr.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\floattointceil.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\floattointceilptr.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\floattointfloor.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\floattointfloorptr.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\floattointround.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\floattointroundptr.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
     <MASM Include="..\source\asm\masm\get8087precision.x86">
       <Filter>source\asm\masm</Filter>
     </MASM>
@@ -1558,12 +1594,21 @@
     <MASM Include="..\source\asm\masm\modulo_radiansfloat.x86">
       <Filter>source\asm\masm</Filter>
     </MASM>
+    <MASM Include="..\source\asm\masm\poweroftwo32.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\poweroftwo64.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
     <MASM Include="..\source\asm\masm\set8087precision.x86">
       <Filter>source\asm\masm</Filter>
     </MASM>
     <MASM Include="..\source\asm\masm\set8087rounding.x86">
       <Filter>source\asm\masm</Filter>
     </MASM>
+    <MARMASM Include="..\source\asm\marmasm64\modulo_radiansdouble.arm64">
+      <Filter>source\asm\marmasm64</Filter>
+    </MARMASM>
     <HLSL Include="..\source\graphics\shadersdx9\pscclr4dx9.hlsl">
       <Filter>source\graphics\shadersdx9</Filter>
     </HLSL>
@@ -1623,6 +1668,9 @@
     </Filter>
     <Filter Include="source\asm">
       <UniqueIdentifier>ECEBAD38-AE50-3D06-A6B1-A359239E44C9</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\asm\marmasm64">
+      <UniqueIdentifier>D7E23870-06F0-3102-A9CC-25D277D32068</UniqueIdentifier>
     </Filter>
     <Filter Include="source\asm\masm">
       <UniqueIdentifier>E57C89FD-54AB-35C0-8C4D-6C970841E1ED</UniqueIdentifier>

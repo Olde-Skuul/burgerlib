@@ -403,9 +403,6 @@
     <ClInclude Include="..\source\lowlevel\brguid.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\lowlevel\brintelcompiler.h">
-      <Filter>source\lowlevel</Filter>
-    </ClInclude>
     <ClInclude Include="..\source\lowlevel\brintrinsics.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
@@ -446,9 +443,6 @@
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brsmartpointer.h">
-      <Filter>source\lowlevel</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\lowlevel\brsnsystems.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brstaticrtti.h">
@@ -524,6 +518,9 @@
       <Filter>source\math</Filter>
     </ClInclude>
     <ClInclude Include="..\source\math\brmatrix4d.h">
+      <Filter>source\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\math\brpoweroftwo.h">
       <Filter>source\math</Filter>
     </ClInclude>
     <ClInclude Include="..\source\math\brvector2d.h">
@@ -639,6 +636,24 @@
     </ClCompile>
     <ClCompile Include="..\source\ansi\brstdouthelpers.cpp">
       <Filter>source\ansi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\xbox360asm\floattointceil.cpp">
+      <Filter>source\asm\xbox360asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\xbox360asm\floattointceilptr.cpp">
+      <Filter>source\asm\xbox360asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\xbox360asm\floattointfloor.cpp">
+      <Filter>source\asm\xbox360asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\xbox360asm\floattointfloorptr.cpp">
+      <Filter>source\asm\xbox360asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\xbox360asm\floattointround.cpp">
+      <Filter>source\asm\xbox360asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\xbox360asm\floattointroundptr.cpp">
+      <Filter>source\asm\xbox360asm</Filter>
     </ClCompile>
     <ClCompile Include="..\source\asm\xbox360asm\get_ceilingdouble.cpp">
       <Filter>source\asm\xbox360asm</Filter>
@@ -1160,6 +1175,9 @@
       <Filter>source\math</Filter>
     </ClCompile>
     <ClCompile Include="..\source\math\brmatrix4d.cpp">
+      <Filter>source\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\math\brpoweroftwo.cpp">
       <Filter>source\math</Filter>
     </ClCompile>
     <ClCompile Include="..\source\math\brsinecosine.cpp">
