@@ -13,18 +13,18 @@
 
 	IMPORT g_fMinNoInteger__6Burger
 
-	EXPORT get_floor__6BurgerFd__6BurgerFf[DS]
-	EXPORT .get_floor__6BurgerFd__6BurgerFf[PR]
+	EXPORT get_floor__6BurgerFf[DS]
+	EXPORT .get_floor__6BurgerFf[PR]
 
 	TOC
-	tc		get_floor__6BurgerFd__6BurgerFf[TC], get_floor__6BurgerFd__6BurgerFf[DS]
+	tc		get_floor__6BurgerFf[TC], get_floor__6BurgerFf[DS]
 	tc		g_fMinNoInteger__6Burger[TC],g_fMinNoInteger__6Burger
 
-	CSECT	get_floor__6BurgerFd__6BurgerFf[DS]
-	dc.l	.get_floor__6BurgerFd__6BurgerFf[PR]
+	CSECT	get_floor__6BurgerFf[DS]
+	dc.l	.get_floor__6BurgerFf[PR]
 	dc.l	TOC[tc0]
 
-	CSECT	.get_floor__6BurgerFd__6BurgerFf[PR]
+	CSECT	.get_floor__6BurgerFf[PR]
 
 ; Get the address of g_fMinNoInteger
 	lwz		r3, g_fMinNoInteger__6Burger[TC](RTOC)

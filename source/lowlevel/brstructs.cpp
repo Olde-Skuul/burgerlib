@@ -279,6 +279,8 @@
 
 // 32 bit floating point constants
 
+const Burger::uint32_float_t Burger::g_fZero = {0x00000000U};
+const Burger::uint32_float_t Burger::g_fNegZero = {0x80000000U};
 const Burger::uint32_float_t Burger::g_fOne = {0x3F800000U};
 const Burger::uint32_float_t Burger::g_fNegOne = {0xBF800000U};
 const Burger::uint32_float_t Burger::g_fHalf = {0x3F000000U};
@@ -325,9 +327,15 @@ const Burger::uint32_float_t Burger::g_fLN2 = {0x3F317218};
 const Burger::uint32_float_t Burger::g_fNegLN2 = {0xBF317218};
 const Burger::uint32_float_t Burger::g_fLN10 = {0x40135D8E};
 const Burger::uint32_float_t Burger::g_fNegLN10 = {0xC0135D8E};
+const Burger::uint32_float_t Burger::g_f1Div255 = {0x3B808081};
+const Burger::uint32_float_t Burger::g_f1Div3 = {0x3EAAAAAB};
+const Burger::uint32_float_t Burger::g_f2Div3 = {0x3F2AAAAB};
+const Burger::uint32_float_t Burger::g_f65536 = {0x47800000};
 
 // 64 bit floating point constants
 
+const Burger::uint64_double_t Burger::g_dZero = {0x0000000000000000ULL};
+const Burger::uint64_double_t Burger::g_dNegZero = {0x8000000000000000ULL};
 const Burger::uint64_double_t Burger::g_dOne = {0x3FF0000000000000ULL};
 const Burger::uint64_double_t Burger::g_dNegOne = {0xBFF0000000000000ULL};
 const Burger::uint64_double_t Burger::g_dHalf = {0x3FE0000000000000ULL};
@@ -384,3 +392,20 @@ const Burger::uint64_double_t Burger::g_dLN2 = {0x3FE62E42FEFA39EFULL};
 const Burger::uint64_double_t Burger::g_dNegLN2 = {0xBFE62E42FEFA39EFULL};
 const Burger::uint64_double_t Burger::g_dLN10 = {0x40026BB1BBB55516ULL};
 const Burger::uint64_double_t Burger::g_dNegLN10 = {0xC0026BB1BBB55516ULL};
+const Burger::uint64_double_t Burger::g_d1Div255 = {0x3F70101010101010ULL};
+const Burger::uint64_double_t Burger::g_d1Div3 = {0x3FD5555555555555ULL};
+const Burger::uint64_double_t Burger::g_d2Div3 = {0x447696695DBD1CC3ULL};
+const Burger::uint64_double_t Burger::g_d65536 = {0x40f0000000000000ULL};
+
+#if defined(BURGER_X86) || defined(DOXYGEN)
+
+// 8087 control word to set rounding to zero
+const uint16_t Burger::g_u8087RoundToZero = 0x0F7F;
+
+// 8087 control word to set rounding to +infinity
+const uint16_t Burger::g_u8087RoundToInfinity = 0x0B7F;
+
+// 8087 control word to set rounding to -infinity
+const uint16_t Burger::g_u8087RoundToNegativeInfinity = 0x077F;
+
+#endif

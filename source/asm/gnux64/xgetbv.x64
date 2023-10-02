@@ -35,5 +35,5 @@ _xgetbv:
 
 	ret
 
-	.cfi_endproc
 	.size	_xgetbv, .-_xgetbv
+	.cfi_endproc

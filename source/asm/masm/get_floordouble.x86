@@ -16,8 +16,8 @@
 
 	.data
 
-; Actually Burger::g_fOne
-	EXTRN	?g_fOne@Burger@@3Tuint32_float_t@1@B:DWORD
+; Actually Burger::g_u8087RoundToNegativeInfinity
+	EXTRN	?g_u8087RoundToNegativeInfinity@Burger@@3GB:WORD
 
 _TEXT segment para 'CODE'
 
@@ -25,40 +25,20 @@ _TEXT segment para 'CODE'
 public ?get_floor@Burger@@YINN@Z
 ?get_floor@Burger@@YINN@Z proc
 
-; Load the value in an integer register
-	mov		eax, [esp + 8]
-
 ; Load the same value in the FPU
-	fld		qword ptr[esp + 4]
+	fld		qword ptr[esp+4]
 
-; Mask off the sign
-	and		eax, 07FFFFFFFH
+; Save the current 8087 control word
+	fstcw	word ptr[esp+4]
 
-; Compare to 4503599627370496.0
-	cmp		eax, 043300000H
+; Force round to negative infinity
+	fldcw	[?g_u8087RoundToNegativeInfinity@Burger@@3GB]
 
-; Out of range, return original value
-	jae		FloorExit
-
-; Convert the integer to float (It's in range)
+; Perform the rounding
 	frndint
 
-; Clear ax for flags
-	xor		eax, eax
-
-; Compare values for difference (Pop stack)
-	fcom	qword ptr[esp + 4]
-
-; Get the 8087 condition flags
-	fnstsw	ax
-
-; Was the new greater than or equal the original?
-	and		ax,	04100H
-	jnz		FloorExit
-
-; Subtract 1.0f to round down
-	fsub	dword ptr[?g_fOne@Burger@@3Tuint32_float_t@1@B]
-FloorExit:
+; Restore the old 8087 control word
+	fldcw	word ptr[esp+4]
 	ret		8
 
 ?get_floor@Burger@@YINN@Z endp

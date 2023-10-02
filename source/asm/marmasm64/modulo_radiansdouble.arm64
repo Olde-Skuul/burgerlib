@@ -1,0 +1,100 @@
+;
+; ARM64 assembly for Visual Studio
+;
+; Copyright 2021-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+;
+; Build with armasm64.exe
+;
+; double BURGER_API Burger::get_round(double dInput)
+; x0-x15, v0-v7, v16-v31 are volatile
+; dInput = v0
+; Result in v0
+;
+
+; Code area
+	AREA	|.text|,ALIGN=4,CODE,READONLY
+
+	EXPORT |?modulo_radians@Burger@@YANN@Z|
+|?modulo_radians@Burger@@YANN@Z|	PROC
+
+CodeStart
+
+; Fetch the pointers and constants
+; d1 = g_dReciprocalPi2, d2 = 0.5, d3 = 1.0, d4 = g_dPi2
+	mov		x8, #0xC883
+	mov		x9, #0x2D18
+	fmov	d2, #0.5
+	movk	x8, #0x6DC9, lsl #16
+	movk	x9, #0x5444, lsl #16
+	fmov	d3, #1.0
+	movk	x8, #0x5F30, lsl #32
+	movk	x9, #0x21FB, lsl #32
+	movk	x8, #0x3FC4, lsl #48
+	movk	x9, #0x4019, lsl #48
+
+; Get g_dReciprocalPi2
+	fmov	d1, x8
+
+; (fInput * g_dReciprocalPi2 + 0.5f
+; Do not use the fmadd instruction
+; It fails unit tests due to sign being flipped
+;	fmadd	d1, d0, d1, d2
+	fmul	d1, d0, d1
+	fadd	d1, d1, d2
+
+; Convert to integer and back again
+; dVar is d2
+	fcvtzs	d2, d1
+
+; Get g_dPi2
+	fmov	d4, x9
+	scvtf	d2, d2
+
+; Subtract 1.0f for next integer
+	fsub	d3, d2, d3
+
+; If (dVar > dTemp) dVar = d3
+	fcmp	d1, d2
+	fcselmi	d1, d3, d2
+
+; dInput - (dVar * g_dPi2)
+	fmsub	d0, d1, d4, d0
+	ret
+
+; End of the code
+CodeEnd
+	ENDP
+
+; .PDATA and .XDATA is documented here
+; https://learn.microsoft.com/en-us/cpp/build/arm64-exception-handling?view=msvc-170
+
+; Create the Procedure Data record
+; Records must be relative
+
+	AREA	|.pdata|,ALIGN=2,READONLY
+
+; Pointer to code
+	DCD		CodeStart
+	RELOC	2
+
+; Pointer to exception data
+	DCD		ExceptionData
+	RELOC	2
+
+; Create the Exception Data record
+
+	AREA	|.xdata|,ALIGN=2,READONLY
+	ALIGN	4
+
+; Create the exception data
+ExceptionData
+	DCD		(((ExceptionEnd - ExceptionStart)/4):SHL:27) :OR: ((CodeEnd - CodeStart)/4)
+
+ExceptionStart
+; 0xE4 is end of list
+	DCB		0xE4
+
+	ALIGN	4
+ExceptionEnd
+
+	END

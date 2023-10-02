@@ -885,7 +885,7 @@
 
 /*! ************************************
 
-	\fn void Burger::SwapVariables(T *pA,T *pB)
+	\fn void Burger::swap_variables(T* pA, T* pB)
 	\brief Swap two variables of the same kind
 
 	Given pointers to two like variables, swap the contents with each other.
@@ -895,6 +895,25 @@
 
 	\param pA Pointer to the first variable to swap.
 	\param pB Pointer to the second variable to swap.
+
+	\sa exchange(T&, T&)
+
+***************************************/
+
+/*! ************************************
+
+	\fn void Burger::exchange(T& __A, T& __B)
+	\brief Swap two plain old data variables of the same kind
+
+	Given references to two like variables, swap the contents with each other.
+
+	\note This class should only be used for plain old data, or copy
+		constructors could be invoked.
+
+	\param __A Reference to the first variable to swap.
+	\param __B Reference to the second variable to swap.
+
+	\sa swap_variables(T*, T*)
 
 ***************************************/
 

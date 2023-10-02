@@ -2,7 +2,7 @@
 
 	Fixed point math functions
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -18,152 +18,117 @@
 
 /*! ************************************
 
-	\def FLOATTOFIXED
+	\def BURGER_FLOAT_TO_FIXED
 	\brief Define to convert a float into a \ref Fixed32.
 
-	Macro to convert at compile time a floating point
-	value into 16.16 fixed point. Used for compile
-	assignment of \ref Fixed32 constants.
+	Macro to convert at compile time a floating point value into 16.16 fixed
+	point. Used for compile assignment of \ref Fixed32 constants.
 
-	\param x Floating point value to convert to a \ref Fixed32.
-
-	\note Due to the float to integer conversion, use
-	of this macro at runtime may be a performance
-	penalty on the Xbox 360 and PS3.
+	\note Due to the float to integer conversion, use of this macro at runtime
+		may be a performance penalty on the Xbox 360 and PS3 on non-constant
+		values.
 
 	\code
 	// Fast use
-	static const Fixed32 MyData = FLOATTOFIXED(4.503f);
+	static const Fixed32 MyData = BURGER_FLOAT_TO_FIXED(4.503f);
 	// Slow use
 	void Foo(float fInput)
 	{
-		Fixed32 iInput = FLOATTOFIXED(fInput);
+		Fixed32 iInput = BURGER_FLOAT_TO_FIXED(fInput);
 	}
 	\endcode
+
+	\param x Floating point value to convert to a \ref Fixed32.
 
 ***************************************/
 
 /*! ************************************
 
-	\def FIXEDTOFLOAT
+	\def BURGER_FIXED_TO_FLOAT
 	\brief Define to convert a \ref Fixed32 into a float.
 
-	Macro to convert at compile time a 16.16 fixed point
-	number into a floating point value
-	Used for compile assignment of float constants using
+	Macro to convert at compile time a 16.16 fixed point number into a floating
+	point value Used for compile assignment of float constants using
 	\ref Fixed32 constants..
 
-	\param x 16.16 fixed point value to convert to a float.
-
-	\note Due to the integer to float conversion, use
-	of this macro at runtime on non constant values may be a performance
-	penalty on the Xbox 360 and PS3.
+	\note Due to the integer to float conversion, use of this macro at runtime
+		on non constant values may be a performance penalty on the Xbox 360 and
+		PS3.
 
 	\code
 	// Fast use
-	static const float MyData = FIXEDTOFLOAT(Burger::PiFixed32);
+	static const float MyData = BURGER_FIXED_TO_FLOAT(Burger::kPiFixed32);
 	// Slow use
 	void Foo(Fixed32 iInput)
 	{
-		float fInput = FIXEDTOFLOAT(iInput);
+		float fInput = BURGER_FIXED_TO_FLOAT(iInput);
 	}
 	\endcode
 
+	\param x 16.16 fixed point value to convert to a float.
+
 ***************************************/
 
 /*! ************************************
 
-	\def INTTOFIXED
+	\def BURGER_INT_TO_FIXED
 	\brief Define to convert a integer into a \ref Fixed32.
 
-	Macro to convert at compile time an integer
-	value into 16.16 fixed point. Used for compile
-	assignment of \ref Fixed32 constants.
+	Macro to convert at compile time an integer value into 16.16 fixed point.
+	Used for compile assignment of \ref Fixed32 constants.
+
+	\note There is no bounds checking performed by this macro. As a result,
+		integers larger than 32767 or less than -32768 will cause undefined
+		behavior due to over/underflow.
+
+	\code
+	static const Fixed32 MyData = BURGER_INT_TO_FIXED(443);
+	\endcode
 
 	\param x Integer value to convert to a \ref Fixed32.
 
-	\note There is no bounds checking performed by this
-	macro. As a result, integers larger than 32767 or less
-	than -32768 will cause undefined behavior due to over/underflow.
-
-	\code
-	static const Fixed32 MyData = INTTOFIXED(443);
-	\endcode
-
 ***************************************/
 
 /*! ************************************
 
-	\def FIXEDTOINT
+	\def BURGER_FIXED_TO_INT
 	\brief Define to convert a \ref Fixed32 value to an integer.
 
-	Macro to convert at compile time a 16.16 fixed point
-	value into an integer. Used for compile time
-	assignment of integers using \ref Fixed32 constants.
+	Macro to convert at compile time a 16.16 fixed point value into an integer.
+	Used for compile time assignment of integers using \ref Fixed32 constants.
+
+	\note This macro uses round to zero in the removal of the fraction. Negative
+		numbers like -0.8 become 0, as well as 0.8 becomes 0.
+
+	\code
+	static const int MyData = BURGER_FIXED_TO_INT(Burger::kPiFixed32);
+	\endcode
 
 	\param x \ref Fixed32 value to convert to an integer.
 
-	\note This macro uses round to zero in the removal
-	of the fraction. Negative numbers like -0.8 become 0,
-	as well as 0.8 becomes 0.
-
-	\code
-	static const int MyData = FIXEDTOINT(Burger::PiFixed32);
-	\endcode
-
 ***************************************/
 
 /*! ************************************
 
-	\brief Helper constants for float to integer conversions.
-
-	These constants are used for the translation of
-	floats to ints using floor, ceil or zero.
-	The first constant is added to yield floor()
-	and the second is for getting ceil()
-	(1.0f/(65536.0f*256.0f)) is the 32-bit floating point
-	epsilon just under 1.0f
-
-	\sa Burger::FloatToIntRoundToZero(float) or Burger::FloatToIntFloor(float)
-
-***************************************/
-
-#if defined(BURGER_INTEL) || defined(DOXYGEN)
-extern "C" const float g_fBurgerIntMathNearesttable[2] = {
-	-0.5f, 0.5f - (1.0f / (65536.0f * 256.0f))};
-#endif
-
-/*! ************************************
-
-	\brief Floating point constant of 65536.0f
-
-***************************************/
-
-#if defined(BURGER_INTEL) || defined(DOXYGEN)
-extern "C" const float g_fBurgerMath65536 = 65536.0f;
-#endif
-
-/*! ************************************
-
-	\fn uint_t Burger::GetLoWord(uint32_t uInput)
+	\fn uint_t Burger::get_low_word(uint32_t uInput)
 	\brief Retrieves the low-order word from the specified value.
 
-	Mask off the upper 16 bit of the 32 bit input and set the
-	bits to zero. This is an equivalent to the function
-	[LOWORD(DWORD)](http://msdn.microsoft.com/en-us/library/windows/desktop/ms632659(v=vs.85).aspx)
+	Mask off the upper 16 bit of the 32 bit input and set the bits to zero. This
+	is an equivalent to the function
+	[LOWORD(DWORD)](https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms632659(v=vs.85))
 
 	\note This is a direct replacement of the MacOS macro LoWord().
 
 	\param uInput The value to be converted.
 	\return The low order 16 bits of uInput.
 
-	\sa GetHiWord(uint32_t)
+	\sa get_high_word(uint32_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn uint_t Burger::GetHiWord(uint32_t uInput)
+	\fn uint_t Burger::get_high_word(uint32_t uInput)
 	\brief Retrieves the low-order word from the specified value.
 
 	Shift the input 16 bits to the right and set the upper
@@ -175,23 +140,24 @@ extern "C" const float g_fBurgerMath65536 = 65536.0f;
 	\param uInput The value to be converted.
 	\return The high order 16 bits of uInput.
 
-	\sa GetLoWord(uint32_t)
+	\sa get_low_word(uint32_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Fixed32 Burger::IntToFixed(int32_t iInput)
+	\fn Fixed32 Burger::int_to_fixed(int32_t iInput)
 	\brief Convert an int32_t into a \ref Fixed32 value.
 
-	Convert an integer into a fixed point number. No bounds
-	checking is performed so values that exceed 32767 or are
-	less than -32768 will yield undefined results.
+	Convert an integer into a fixed point number. No bounds checking is
+	performed so values that exceed 32767 or are less than -32768 will yield
+	undefined results.
 
 	\param iInput Integer to convert
+
 	\return Result of the conversion without saturation
 
-	\sa IntToFixedSaturate(int32_t)
+	\sa int_to_fixed_saturate(int32_t)
 
 ***************************************/
 
@@ -199,9 +165,9 @@ extern "C" const float g_fBurgerMath65536 = 65536.0f;
 
 	\brief Convert an int32_t into a Fixed32 value with saturation.
 
-	Convert an integer into a fixed point number. Bounds
-	checking is performed so values that exceed 32767 or are
-	less than -32768 will yield max and min values..
+	Convert an integer into a fixed point number. Bounds checking is performed
+	so values that exceed 32767 or are less than -32768 will yield max and min
+	values.
 
 	Examples of clamping:
 	* * 0x8000 -> 0x7FFFFFFF
@@ -210,223 +176,188 @@ extern "C" const float g_fBurgerMath65536 = 65536.0f;
 	\param iInput Integer to convert
 	\return Result of the conversion with saturation
 
-	\sa IntToFixed(int32_t)
+	\sa int_to_fixed(int32_t)
 
 ***************************************/
 
-Fixed32 BURGER_API Burger::IntToFixedSaturate(int32_t iInput) BURGER_NOEXCEPT
+Fixed32 BURGER_API Burger::int_to_fixed_saturate(int32_t iInput) BURGER_NOEXCEPT
 {
 	Fixed32 iResult;
-	if (iInput >= 0x8000) {         // Not too big?
-		iResult = MaxFixed32;       // Return maximum
-	} else if (iInput <= -0x7FFF) { // Not too small?
-		iResult = MinFixed32;       // Return minimum
+
+	// Not too big?
+	if (iInput >= 0x8000) {
+		// Return maximum
+		iResult = kMaxFixed32;
+
+		// Not too small?
+	} else if (iInput <= -0x7FFF) {
+		// Return minimum
+		iResult = kMinFixed32;
+
 	} else {
-		iResult = static_cast<Fixed32>(
-			iInput << 16); // Convert to fixed (Signed shift)
+		// Convert to fixed (Signed shift)
+		iResult = static_cast<Fixed32>(iInput << 16);
 	}
 	return iResult;
 }
 
 /*! ************************************
 
-	\fn Burger::FixedToIntFloor(Fixed32 fInput)
+	\fn Burger::fixed_to_int_floor(Fixed32 fInput)
 	\brief Convert a fixed point value to an integer using round down.
 
 	Convert a \ref Fixed32 into an integer using the same formula as floor().
 
-	\param fInput Value to convert to an integer.
-	\return The input converted to an integer using the truth table below.
-
 	\code
 	int iResult;
-	iResult = Burger::FixedToIntFloor(FLOATTOFIXED(1.1f));		//1
-	iResult = Burger::FixedToIntFloor(FLOATTOFIXED(1.95f));		//1
-	iResult = Burger::FixedToIntFloor(FLOATTOFIXED(-1.1f));		//-2
-	iResult = Burger::FixedToIntFloor(FLOATTOFIXED(-1.95f));	//-2
-	iResult = Burger::FixedToIntFloor(FLOATTOFIXED(0.1f));		//0
-	iResult = Burger::FixedToIntFloor(FLOATTOFIXED(0.95f));		//0
-	iResult = Burger::FixedToIntFloor(FLOATTOFIXED(-0.1f));		//-1
-	iResult = Burger::FixedToIntFloor(FLOATTOFIXED(-0.95f));	//-1
+	iResult = Burger::fixed_to_int_floor(BURGER_FLOAT_TO_FIXED(1.1f));		//1
+	iResult = Burger::fixed_to_int_floor(BURGER_FLOAT_TO_FIXED(1.95f));		//1
+	iResult = Burger::fixed_to_int_floor(BURGER_FLOAT_TO_FIXED(-1.1f));		//-2
+	iResult = Burger::fixed_to_int_floor(BURGER_FLOAT_TO_FIXED(-1.95f));	//-2
+	iResult = Burger::fixed_to_int_floor(BURGER_FLOAT_TO_FIXED(0.1f));		//0
+	iResult = Burger::fixed_to_int_floor(BURGER_FLOAT_TO_FIXED(0.95f));		//0
+	iResult = Burger::fixed_to_int_floor(BURGER_FLOAT_TO_FIXED(-0.1f));		//-1
+	iResult = Burger::fixed_to_int_floor(BURGER_FLOAT_TO_FIXED(-0.95f));	//-1
 	\endcode
 
-	\sa get_floor(float), get_floor(double), FixedToInt(Fixed32),
-		FixedToIntCeil(Fixed32), or FixedToIntNearest(Fixed32)
+	\param fInput Value to convert to an integer.
+
+	\return The input converted to an integer using the truth table below.
+
+	\sa get_floor(float), get_floor(double), fixed_to_int(Fixed32),
+		fixed_to_int_ceil(Fixed32), or fixed_to_int_nearest(Fixed32)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::FixedToInt(Fixed32 fInput)
+	\fn Burger::fixed_to_int(Fixed32 fInput)
 	\brief Convert a fixed point value to an integer using round to zero.
 
 	Convert a \ref Fixed32 into an integer using round to zero.
 
+	\code
+	floorint = Burger::fixed_to_int(BURGER_FLOAT_TO_FIXED(1.1f));	//1
+	floorint = Burger::fixed_to_int(BURGER_FLOAT_TO_FIXED(1.95f));	//1
+	floorint = Burger::fixed_to_int(BURGER_FLOAT_TO_FIXED(-1.1f));	//-1
+	floorint = Burger::fixed_to_int(BURGER_FLOAT_TO_FIXED(-1.95f));	//-1
+	floorint = Burger::fixed_to_int(BURGER_FLOAT_TO_FIXED(0.1f));	//0
+	floorint = Burger::fixed_to_int(BURGER_FLOAT_TO_FIXED(0.95f));	//0
+	floorint = Burger::fixed_to_int(BURGER_FLOAT_TO_FIXED(-0.1f));	//0
+	floorint = Burger::fixed_to_int(BURGER_FLOAT_TO_FIXED(-0.95f));	//0
+	\endcode
+
 	\param fInput Value to convert to an integer.
 	\return The input converted to an integer using the truth table below.
 
-	\code
-	floorint = Burger::FixedToInt(FLOATTOFIXED(1.1f));		//1
-	floorint = Burger::FixedToInt(FLOATTOFIXED(1.95f));		//1
-	floorint = Burger::FixedToInt(FLOATTOFIXED(-1.1f));		//-1
-	floorint = Burger::FixedToInt(FLOATTOFIXED(-1.95f));	//-1
-	floorint = Burger::FixedToInt(FLOATTOFIXED(0.1f));		//0
-	floorint = Burger::FixedToInt(FLOATTOFIXED(0.95f));		//0
-	floorint = Burger::FixedToInt(FLOATTOFIXED(-0.1f));		//0
-	floorint = Burger::FixedToInt(FLOATTOFIXED(-0.95f));	//0
-	\endcode
-
-	\sa FixedToIntFloor(Fixed32), FixedToIntCeil(Fixed32), or
-		FixedToIntNearest(Fixed32)
+	\sa fixed_to_int_floor(Fixed32), fixed_to_int_ceil(Fixed32), or
+		fixed_to_int_nearest(Fixed32)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::FixedToIntCeil(Fixed32 fInput)
+	\fn Burger::fixed_to_int_ceil(Fixed32 fInput)
 	\brief Convert a fixed point value to an integer using round up.
 
 	Convert a \ref Fixed32 into an integer using the same formula as ceil().
 
-	\param fInput Value to convert to an integer.
-	\return The input converted to an integer using the truth table below.
-
 	\code
 	int iResult;
-	iResult = Burger::FixedToIntCeil(FLOATTOFIXED(1.1f));		//2
-	iResult = Burger::FixedToIntCeil(FLOATTOFIXED(1.95f));		//2
-	iResult = Burger::FixedToIntCeil(FLOATTOFIXED(-1.1f));		//-1
-	iResult = Burger::FixedToIntCeil(FLOATTOFIXED(-1.95f));	//-1
-	iResult = Burger::FixedToIntCeil(FLOATTOFIXED(0.1f));		//1
-	iResult = Burger::FixedToIntCeil(FLOATTOFIXED(0.95f));		//1
-	iResult = Burger::FixedToIntCeil(FLOATTOFIXED(-0.1f));		//0
-	iResult = Burger::FixedToIntCeil(FLOATTOFIXED(-0.95f));	//0
+	iResult = Burger::fixed_to_int_ceil(BURGER_FLOAT_TO_FIXED(1.1f));	//2
+	iResult = Burger::fixed_to_int_ceil(BURGER_FLOAT_TO_FIXED(1.95f));	//2
+	iResult = Burger::fixed_to_int_ceil(BURGER_FLOAT_TO_FIXED(-1.1f));	//-1
+	iResult = Burger::fixed_to_int_ceil(BURGER_FLOAT_TO_FIXED(-1.95f));	//-1
+	iResult = Burger::fixed_to_int_ceil(BURGER_FLOAT_TO_FIXED(0.1f));	//1
+	iResult = Burger::fixed_to_int_ceil(BURGER_FLOAT_TO_FIXED(0.95f));	//1
+	iResult = Burger::fixed_to_int_ceil(BURGER_FLOAT_TO_FIXED(-0.1f));	//0
+	iResult = Burger::fixed_to_int_ceil(BURGER_FLOAT_TO_FIXED(-0.95f));	//0
 	\endcode
 
-	\sa get_ceiling(float), get_ceiling(double), FixedToIntFloor(Fixed32),
-		FixedToInt(Fixed32), or FixedToIntNearest(Fixed32)
+	\param fInput Value to convert to an integer.
+
+	\return The input converted to an integer using the truth table below.
+
+	\sa get_ceiling(float), get_ceiling(double), fixed_to_int_floor(Fixed32),
+		fixed_to_int(Fixed32), or fixed_to_int_nearest(Fixed32)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::FixedToIntNearest(Fixed32 fInput)
+	\fn Burger::fixed_to_int_nearest(Fixed32 fInput)
 	\brief Convert a fixed point value to an integer using round to nearest.
 
 	Convert a \ref Fixed32 into an integer using round to nearest.
 
-	\param fInput Value to convert to an integer.
-	\return The input converted to an integer using the truth table below.
-
 	\code
 	int iResult;
-	iResult = Burger::FixedToIntNearest(FLOATTOFIXED(1.1f));	//1
-	iResult = Burger::FixedToIntNearest(FLOATTOFIXED(1.95f));	//2
-	iResult = Burger::FixedToIntNearest(FLOATTOFIXED(-1.1f));	//-1
-	iResult = Burger::FixedToIntNearest(FLOATTOFIXED(-1.95f));	//-2
-	iResult = Burger::FixedToIntNearest(FLOATTOFIXED(0.1f));	//0
-	iResult = Burger::FixedToIntNearest(FLOATTOFIXED(0.95f));	//1
-	iResult = Burger::FixedToIntNearest(FLOATTOFIXED(-0.1f));	//0
-	iResult = Burger::FixedToIntNearest(FLOATTOFIXED(-0.95f));	//-1
+	iResult = Burger::fixed_to_int_nearest(BURGER_FLOAT_TO_FIXED(1.1f));	//1
+	iResult = Burger::fixed_to_int_nearest(BURGER_FLOAT_TO_FIXED(1.95f));	//2
+	iResult = Burger::fixed_to_int_nearest(BURGER_FLOAT_TO_FIXED(-1.1f));	//-1
+	iResult = Burger::fixed_to_int_nearest(BURGER_FLOAT_TO_FIXED(-1.95f));	//-2
+	iResult = Burger::fixed_to_int_nearest(BURGER_FLOAT_TO_FIXED(0.1f));	//0
+	iResult = Burger::fixed_to_int_nearest(BURGER_FLOAT_TO_FIXED(0.95f));	//1
+	iResult = Burger::fixed_to_int_nearest(BURGER_FLOAT_TO_FIXED(-0.1f));	//0
+	iResult = Burger::fixed_to_int_nearest(BURGER_FLOAT_TO_FIXED(-0.95f));	//-1
 	\endcode
 
 	\note This can be used to replace FixRound() from MacOS.
 
-	\sa get_round(float), get_round(double), FixedToIntFloor(Fixed32),
-		FixedToInt(Fixed32), or FixedToIntCeil(Fixed32)
+	\param fInput Value to convert to an integer.
+
+	\return The input converted to an integer using the truth table below.
+
+	\sa get_round(float), get_round(double), fixed_to_int_floor(Fixed32),
+		fixed_to_int(Fixed32), or fixed_to_int_ceil(Fixed32)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn int32_t Burger::FloatToIntFloor(float fInput)
 	\brief Convert a 32 bit float to an integer using floor().
 
 	Convert a single precision floating point number to an integer
 	using the floor() form of fractional truncation (Round down)
 
 	\code
-	floorint = Burger::FloatToIntFloor(1.1f);	//1
-	floorint = Burger::FloatToIntFloor(1.95f);	//1
-	floorint = Burger::FloatToIntFloor(-1.1f);	//-2
-	floorint = Burger::FloatToIntFloor(-1.95f);	//-2
-	floorint = Burger::FloatToIntFloor(0.1f);	//0
-	floorint = Burger::FloatToIntFloor(0.95f);	//0
-	floorint = Burger::FloatToIntFloor(-0.1f);	//-1
-	floorint = Burger::FloatToIntFloor(-0.95f);	//-1
+	floorint = Burger::float_to_int_floor(1.1f);	//1
+	floorint = Burger::float_to_int_floor(1.95f);	//1
+	floorint = Burger::float_to_int_floor(-1.1f);	//-2
+	floorint = Burger::float_to_int_floor(-1.95f);	//-2
+	floorint = Burger::float_to_int_floor(0.1f);	//0
+	floorint = Burger::float_to_int_floor(0.95f);	//0
+	floorint = Burger::float_to_int_floor(-0.1f);	//-1
+	floorint = Burger::float_to_int_floor(-0.95f);	//-1
 	\endcode
 
 	\param fInput A valid single precision floating point number.
 	\return Signed integer equivalent value after applying floor() on the
 		floating point number.
 
-	\sa FloatToIntFloor(int32_t *,float), FloatToIntRoundToZero(float),
-		FloatToIntCeil(float), or FloatToIntRound(float)
+	\sa float_to_int_floor(int32_t *,float), float_to_int_round_to_zero(float),
+		float_to_int_ceil(float), or float_to_int_round(float)
 
 ***************************************/
 
-#if defined(BURGER_X86) && \
-	(defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || \
-		defined(BURGER_MSVC))
+#if ((defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
+	(defined(BURGER_METROWERKS) && \
+		(defined(BURGER_X86) || defined(BURGER_PPC))) || \
+	(defined(BURGER_MSVC) && (defined(BURGER_X86) || defined(BURGER_PPC))) || \
+	((defined(BURGER_CLANG) || defined(BURGER_GNUC)) && \
+		(defined(BURGER_INTEL) || defined(BURGER_PPC))) || \
+	(defined(BURGER_GHS) && defined(BURGER_PPC)) || \
+	(defined(BURGER_SNSYSTEMS) && defined(BURGER_PPC))) && \
+	!defined(DOXYGEN)
 
-BURGER_DECLSPECNAKED int32_t BURGER_API Burger::FloatToIntFloor(
-	float /* fInput */) BURGER_NOEXCEPT
-{
-	BURGER_ASM
-	{
-		// clang-format off
-	fld dword ptr[esp + 4]   // Get the input value
-	fld st(0)            // Load the same value in the FPU
-	frndint              // Convert the integer to float
-	fist dword ptr[esp + 4] // Store the integer (Leave a copy in the FPU)
-	fcomip st(0), st(1)                // Compare the integer to the input and pop
-	mov eax, dword ptr[esp + 4]   // Get the integer
-	jbe NoExtra          // Need to update the rounding?
-	dec eax          // --1
-NoExtra: fstp st(0) // Clean up the FP stack
-	ret 4
-		// clang-format on
-	}
-}
-
-BURGER_DECLSPECNAKED void BURGER_API Burger::FloatToIntFloor(
-	int32_t* /* pOutput */, float /* fInput */) BURGER_NOEXCEPT
-{
-	BURGER_ASM
-	{
-		// clang-format off
-	fld dword ptr[esp + 4]   // Get the input value
-	fld st(0)            // Load the same value in the FPU
-	frndint              // Convert the integer to float
-	fist dword ptr[esp + 4] // Store the integer (Leave a copy in the FPU)
-	fcomip st(0), st(1)                // Compare the integer and pop
-	fstp st(0)           // Clean up the FP stack
-
-#if defined(BURGER_WATCOM)
-	push ecx                     // Save registers
-	mov ecx, dword ptr[esp + 4 + 4]       // Get the integer
-	jbe NoExtra                  // Overflow? (Negative)
-	dec ecx                  // Round to zero
-NoExtra: mov dword ptr[eax], ecx         // Store in the pointer
-	pop ecx // Restore registers
+// Done in assembly
 
 #else
-	mov eax, dword ptr[esp + 4]   // Get the integer
-	jbe NoExtra          // Overflow? (Negative)
-	dec eax          // Round to zero
-NoExtra: mov dword ptr[ecx], eax // Store in the pointer
 
-#endif
-	ret 4 // Clean up and exit
-										   // clang-format on
-	}
-}
-
-#elif defined(BURGER_AMD64) || \
-	(defined(BURGER_INTEL) && (defined(BURGER_MACOSX) || defined(BURGER_IOS)))
-
-int32_t BURGER_API Burger::FloatToIntFloor(float fInput) BURGER_NOEXCEPT
+int32_t BURGER_API Burger::float_to_int_floor(float fInput) BURGER_NOEXCEPT
 {
+	// Let's SSE this shit
+#if defined(BURGER_AMD64)
 	// Convert to SSE register
 	__m128 vInput = _mm_set_ss(fInput);
 	// Convert to int with round to zero
@@ -438,11 +369,63 @@ int32_t BURGER_API Burger::FloatToIntFloor(float fInput) BURGER_NOEXCEPT
 	// Add 0 or -1
 	iVar = _mm_add_epi32(iVar, _mm_castps_si128(fVar));
 	return _mm_cvtsi128_si32(iVar);
-}
 
-void BURGER_API Burger::FloatToIntFloor(
+#else
+	int iVar = static_cast<int>(fInput); // Convert to int but rounded!
+	float fVar = static_cast<float>(iVar);
+	if (fVar > fInput) { // Did I round up?
+		--iVar;          // Fix it
+	}
+	return iVar;
+#endif
+}
+#endif
+
+/*! ************************************
+
+	\brief Convert a 32 bit float to an integer using floor().
+
+	Convert a single precision floating point number to an integer
+	using the floor() form of fractional truncation and store it to memory
+
+	\code
+	Burger::float_to_int_floor(&floorint,1.1f);	//1
+	Burger::float_to_int_floor(&floorint,1.95f);	//1
+	Burger::float_to_int_floor(&floorint,-1.1f);	//-2
+	Burger::float_to_int_floor(&floorint,-1.95f);	//-2
+	Burger::float_to_int_floor(&floorint,0.1f);	//0
+	Burger::float_to_int_floor(&floorint,0.95f);	//0
+	Burger::float_to_int_floor(&floorint,-0.1f);	//-1
+	Burger::float_to_int_floor(&floorint,-0.95f);	//-1
+	\endcode
+
+	\param pOutput A valid pointer to a 32-bit integer to receive the result.
+	\param fInput A valid single precision floating point number.
+
+	\sa float_to_int_floor(float), float_to_int_round_to_zero(int32_t *,float),
+		float_to_int_ceil(int32_t *,float), or float_to_int_round(int32_t
+*,float)
+
+***************************************/
+
+#if ((defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
+	(defined(BURGER_METROWERKS) && \
+		(defined(BURGER_X86) || defined(BURGER_PPC))) || \
+	(defined(BURGER_MSVC) && (defined(BURGER_X86) || defined(BURGER_PPC))) || \
+	((defined(BURGER_CLANG) || defined(BURGER_GNUC)) && \
+		(defined(BURGER_INTEL) || defined(BURGER_PPC))) || \
+	(defined(BURGER_GHS) && defined(BURGER_PPC)) || \
+	(defined(BURGER_SNSYSTEMS) && defined(BURGER_PPC))) && \
+	!defined(DOXYGEN)
+
+#else
+// Done in assembly
+
+void BURGER_API Burger::float_to_int_floor(
 	int32_t* pOutput, float fInput) BURGER_NOEXCEPT
 {
+	// Let's SSE this shit
+#if defined(BURGER_AMD64)
 	// Convert to SSE register
 	__m128 vInput = _mm_set_ss(fInput);
 	// Convert to int with round to zero
@@ -456,226 +439,62 @@ void BURGER_API Burger::FloatToIntFloor(
 	// Store the result
 	_mm_store_ss(static_cast<float*>(static_cast<void*>(pOutput)),
 		_mm_castsi128_ps(iVar));
-}
-
-#elif defined(BURGER_XBOX360) || \
-	(defined(BURGER_POWERPC64) && defined(BURGER_MACOSX))
-
-int32_t Burger::FloatToIntFloor(float fInput) BURGER_NOEXCEPT
-{
-	// Convert to the input to an integer
-	double dVar = __fcfid(__fctidz(fInput));
-
-	// Floor the value to - infinity
-	dVar = __fsel(fInput - dVar, dVar, dVar - 1.0f);
-
-	// Return as an integer (Load/Hit/Store)
-	int32_t iResult;
-	__stfiwx(__fctiw(dVar), 0, &iResult);
-	return iResult;
-}
-
-void Burger::FloatToIntFloor(int32_t* pOutput, float fInput) BURGER_NOEXCEPT
-{
-	// Convert to the input to an integer
-	double dVar = __fcfid(__fctidz(fInput));
-
-	// Floor the value to - infinity
-	dVar = __fsel(fInput - dVar, dVar, dVar - 1.0f);
-	// Return floored value
-	__stfiwx(__fctiw(dVar), 0, pOutput);
-}
-
-#elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
-
-BURGER_ASM int32_t BURGER_API Burger::FloatToIntFloor(
-	float /* fInput */) BURGER_NOEXCEPT{
-
-	// clang-format off
-	lwz r3, g_fMinNoInteger
-	mffs fp4 // Save the rounding register
-	lfs fp2, 0(r3)                    // Load 8388608.0f
-	mtfsfi 7, 0x03                     // Set bits 30 and 31 to Round toward -infinity
-	fadds fp3, fp1, fp2 // Push the positive number to highest value without fraction (Removes
-	// fraction)
-	fsubs fp0, fp1, fp2 // Push the negative number to the lowest value without fraction
-		// (Removes fraction)
-
-	fsubs fp3, fp3, fp2 // Undo the push (Fraction is gone)
-	fadds fp0, fp0, fp2 // Undo the push (Fraction is gone)
-	fsel fp1, fp1, fp3, fp0 // Which one to use? Positive or negative?
-	mtfsf 255, fp4 // Restore rounding
-	fctiwz fp1, fp1 // Convert to integer
-	subi r3, r1, 8 // Pointer to temp on the stack
-	stfiwx fp1,	0, r3    // Store the integer
-	lwz r3, 0(r3) // Return the integer
-	blr
-	// clang-format on
-}
-
-BURGER_ASM void BURGER_API Burger::FloatToIntFloor(
-	int32_t* /* pOutput */, float /* fInput */) BURGER_NOEXCEPT{
-	// clang-format off
-	lwz r4, g_fMinNoInteger
-	mffs fp4 // Save the rounding register
-	lfs fp2, 0(r4)                    // Load 8388608.0f
-	mtfsfi 7, 0x03                     // Set bits 30 and 31 to Round toward -infinity
-	fadds fp3, fp1, fp2 // Push the positive number to highest value without fraction (Removes
-		// fraction)
-	fsubs fp0, fp1, fp2 // Push the negative number to the lowest value without fraction
-		// (Removes fraction)
-
-	fsubs fp3, fp3, fp2 // Undo the push (Fraction is gone)
-	fadds fp0, fp0, fp2 // Undo the push (Fraction is gone)
-
-	fsel fp1, fp1, fp3, fp0 // Which one to use? Positive or negative?
-	mtfsf 255, fp4 // Restore rounding
-	fctiwz fp1, fp1 // Convert to integer
-	stfiwx fp1, 0, r3 // Store the integer
-	blr
-	// clang-format off
-}
-
 #else
-
-int32_t BURGER_API Burger::FloatToIntFloor(float fInput) BURGER_NOEXCEPT
-{
 	int iVar = static_cast<int>(fInput); // Convert to int but rounded!
 	float fVar = static_cast<float>(iVar);
-	if (fVar > fInput) {                 // Did I round up?
-		--iVar;                          // Fix it
-	}
-	return iVar;
-}
-
-/*! ************************************
-
-	\brief Convert a 32 bit float to an integer using floor().
-
-	Convert a single precision floating point number to an integer
-	using the floor() form of fractional truncation and store it to memory
-
-	\code
-	Burger::FloatToIntFloor(&floorint,1.1f);	//1
-	Burger::FloatToIntFloor(&floorint,1.95f);	//1
-	Burger::FloatToIntFloor(&floorint,-1.1f);	//-2
-	Burger::FloatToIntFloor(&floorint,-1.95f);	//-2
-	Burger::FloatToIntFloor(&floorint,0.1f);	//0
-	Burger::FloatToIntFloor(&floorint,0.95f);	//0
-	Burger::FloatToIntFloor(&floorint,-0.1f);	//-1
-	Burger::FloatToIntFloor(&floorint,-0.95f);	//-1
-	\endcode
-
-
-	\param pOutput A valid pointer to a 32-bit integer to receive the result.
-	\param fInput A valid single precision floating point number.
-	\sa FloatToIntFloor(float), FloatToIntRoundToZero(int32_t *,float),
-		FloatToIntCeil(int32_t *,float), or FloatToIntRound(int32_t *,float)
-
-***************************************/
-
-void BURGER_API Burger::FloatToIntFloor(
-	int32_t* pOutput, float fInput) BURGER_NOEXCEPT
-{
-	int iVar = static_cast<int>(fInput); // Convert to int but rounded!
-	float fVar = static_cast<float>(iVar);
-	if (fVar > fInput) {                 // Did I round up?
-		--iVar;                          // Fix it
+	if (fVar > fInput) { // Did I round up?
+		--iVar;          // Fix it
 	}
 	pOutput[0] = iVar;
+#endif
 }
 
 #endif
 
 /*! ************************************
 
-	\fn int32_t Burger::FloatToIntCeil(float fInput)
+	\fn int32_t Burger::float_to_int_ceil(float fInput)
 	\brief Convert a 32 bit float to an integer using ceil().
 
 	Convert a single precision floating point number to an integer
 	using the ceil() form of fractional truncation
 
 	\code
-	floorint = Burger::FloatToIntCeil(1.1f);	//2
-	floorint = Burger::FloatToIntCeil(1.95f);	//2
-	floorint = Burger::FloatToIntCeil(-1.1f);	//-1
-	floorint = Burger::FloatToIntCeil(-1.95f);	//-1
-	floorint = Burger::FloatToIntCeil(0.1f);	//1
-	floorint = Burger::FloatToIntCeil(0.95f);	//1
-	floorint = Burger::FloatToIntCeil(-0.1f);	//0
-	floorint = Burger::FloatToIntCeil(-0.95f);	//0
+	floorint = Burger::float_to_int_ceil(1.1f);	//2
+	floorint = Burger::float_to_int_ceil(1.95f);	//2
+	floorint = Burger::float_to_int_ceil(-1.1f);	//-1
+	floorint = Burger::float_to_int_ceil(-1.95f);	//-1
+	floorint = Burger::float_to_int_ceil(0.1f);	//1
+	floorint = Burger::float_to_int_ceil(0.95f);	//1
+	floorint = Burger::float_to_int_ceil(-0.1f);	//0
+	floorint = Burger::float_to_int_ceil(-0.95f);	//0
 	\endcode
 
 	\param fInput A valid single precision floating point number.
 	\return Signed integer equivalent value after applying ceil() on the
 		floating point number.
 
-	\sa FloatToIntCeil(int32_t *,float), FloatToIntFloor(float),
-		FloatToIntRoundToZero(float), or FloatToIntRound(float)
+	\sa float_to_int_ceil(int32_t *,float), float_to_int_floor(float),
+		float_to_int_round_to_zero(float), or float_to_int_round(float)
 
 ***************************************/
 
-#if defined(BURGER_X86) && \
-	(defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || \
-		defined(BURGER_MSVC))
-
-BURGER_DECLSPECNAKED int32_t BURGER_API Burger::FloatToIntCeil(
-	float /* fInput */) BURGER_NOEXCEPT
-{
-	BURGER_ASM
-	{
-		// clang-format off
-	fld dword ptr[esp + 4]   // Get the input value
-	fld st(0)            // Load the same value in the FPU
-	frndint              // Convert the integer to float
-	fist dword ptr[esp + 4] // Store the integer (Leave a copy in the FPU)
-	fcomip st(0), st(1)                // Compare the integer to the input and pop
-	mov eax, dword ptr[esp + 4]   // Get the integer
-	jae NoExtra          // Need to update the rounding?
-	inc eax          // ++1
-NoExtra: fstp st(0) // Clean up the FP stack
-	ret 4
-		// clang-format on
-	}
-}
-
-BURGER_DECLSPECNAKED void BURGER_API Burger::FloatToIntCeil(
-	int32_t* /* pOutput */, float /* fInput */) BURGER_NOEXCEPT
-{
-	BURGER_ASM
-	{
-		// clang-format off
-	fld dword ptr[esp + 4]   // Get the input value
-	fld st(0)            // Load the same value in the FPU
-	frndint              // Convert the integer to float
-	fist dword ptr[esp + 4] // Store the integer (Leave a copy in the FPU)
-	fcomip st(0), st(1)                // Compare the integer to the input and pop
-	fstp st(0)           // Clean up the FP stack
-
-#if defined(BURGER_WATCOM)
-	push ecx                     // Save registers
-	mov ecx, dword ptr[esp + 4 + 4]       // Get the integer
-	jae NoExtra                  // Need to update the rounding?
-	inc ecx                  // ++1
-NoExtra: mov dword ptr[eax], ecx         // Store in the pointer
-	pop ecx // Restore registers
+#if (defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
+	(defined(BURGER_METROWERKS) && \
+		(defined(BURGER_X86) || defined(BURGER_PPC))) || \
+	(defined(BURGER_MSVC) && (defined(BURGER_X86) || defined(BURGER_PPC))) || \
+	((defined(BURGER_CLANG) || defined(BURGER_GNUC)) && \
+		(defined(BURGER_INTEL) || defined(BURGER_PPC))) || \
+	(defined(BURGER_GHS) && defined(BURGER_PPC)) || \
+	(defined(BURGER_SNSYSTEMS) && defined(BURGER_PPC))
 
 #else
-	mov eax, dword ptr[esp + 4]   // Get the integer
-	jae NoExtra          // Need to update the rounding?
-	inc eax          // --1
-NoExtra: mov dword ptr[ecx], eax // Store in the pointer
-#endif
-	ret 4
-		// clang-format on
-	}
-}
 
-#elif defined(BURGER_AMD64) || \
-	(defined(BURGER_INTEL) && (defined(BURGER_MACOSX) || defined(BURGER_IOS)))
-
-int32_t BURGER_API Burger::FloatToIntCeil(float fInput) BURGER_NOEXCEPT
+int32_t BURGER_API Burger::float_to_int_ceil(float fInput) BURGER_NOEXCEPT
 {
+
+#if defined(BURGER_AMD64)
+
 	// Convert to SSE register
 	__m128 vInput = _mm_set_ss(fInput);
 	// Convert to int with round to zero
@@ -687,11 +506,62 @@ int32_t BURGER_API Burger::FloatToIntCeil(float fInput) BURGER_NOEXCEPT
 	// Subtract 0 or -1
 	iVar = _mm_sub_epi32(iVar, _mm_castps_si128(fVar));
 	return _mm_cvtsi128_si32(iVar);
-}
+#else
 
-void BURGER_API Burger::FloatToIntCeil(
+	int iVar = static_cast<int>(fInput); // Convert to an int
+	float fVar = static_cast<float>(iVar);
+	if (fVar < fInput) { // Was there a change?
+		++iVar;          // Round up
+	}
+	return iVar;
+
+#endif
+}
+#endif
+
+/*! ************************************
+
+	\brief Convert a 32 bit float to an integer using ceil().
+
+	Convert a single precision floating point number to an integer
+	using the ceil() form of fractional truncation and store it to memory
+
+	\code
+	Burger::float_to_int_ceil(&floorint,1.1f);		//2
+	Burger::float_to_int_ceil(&floorint,1.95f);	//2
+	Burger::float_to_int_ceil(&floorint,-1.1f);	//-1
+	Burger::float_to_int_ceil(&floorint,-1.95f);	//-1
+	Burger::float_to_int_ceil(&floorint,0.1f);		//1
+	Burger::float_to_int_ceil(&floorint,0.95f);	//1
+	Burger::float_to_int_ceil(&floorint,-0.1f);	//0
+	Burger::float_to_int_ceil(&floorint,-0.95f);	//0
+	\endcode
+
+	\param pOutput A valid pointer to a 32-bit integer to receive the result.
+	\param fInput A valid single precision floating point number.
+
+	\sa float_to_int_ceil(float), float_to_int_floor(int32_t *,float),
+		float_to_int_round_to_zero(int32_t *,float), or
+		float_to_int_round(int32_t*, float)
+
+***************************************/
+
+#if (defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
+	(defined(BURGER_METROWERKS) && \
+		(defined(BURGER_X86) || defined(BURGER_PPC))) || \
+	(defined(BURGER_MSVC) && (defined(BURGER_X86) || defined(BURGER_PPC))) || \
+	((defined(BURGER_CLANG) || defined(BURGER_GNUC)) && \
+		(defined(BURGER_INTEL) || defined(BURGER_PPC))) || \
+	(defined(BURGER_GHS) && defined(BURGER_PPC)) || \
+	(defined(BURGER_SNSYSTEMS) && defined(BURGER_PPC))
+
+#else
+
+void BURGER_API Burger::float_to_int_ceil(
 	int32_t* pOutput, float fInput) BURGER_NOEXCEPT
 {
+
+#if defined(BURGER_AMD64)
 	// Convert to SSE register
 	__m128 vInput = _mm_set_ss(fInput);
 	// Convert to int with round to zero
@@ -705,134 +575,17 @@ void BURGER_API Burger::FloatToIntCeil(
 	// Store the result
 	_mm_store_ss(static_cast<float*>(static_cast<void*>(pOutput)),
 		_mm_castsi128_ps(iVar));
-}
-
-#elif defined(BURGER_XBOX360) || \
-	(defined(BURGER_POWERPC64) && defined(BURGER_MACOSX))
-
-int32_t Burger::FloatToIntCeil(float fInput) BURGER_NOEXCEPT
-{
-	// Convert to the input to an integer
-	double dVar = __fcfid(__fctidz(fInput));
-
-	// Floor the value to - infinity
-	dVar = __fsel(dVar - fInput, dVar, dVar + 1.0f);
-
-	// Return as an integer (Load/Hit/Store)
-	int32_t iResult;
-	__stfiwx(__fctiw(dVar), 0, &iResult);
-	return iResult;
-}
-
-void Burger::FloatToIntCeil(int32_t* pOutput, float fInput) BURGER_NOEXCEPT
-{
-	// Convert to the input to an integer
-	double dVar = __fcfid(__fctidz(fInput));
-
-	// Floor the value to - infinity
-	dVar = __fsel(dVar - fInput, dVar, dVar + 1.0f);
-	// Return floored value
-	__stfiwx(__fctiw(dVar), 0, pOutput);
-}
-
-#elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
-
-BURGER_ASM int32_t BURGER_API Burger::FloatToIntCeil(
-	float /* fInput */) BURGER_NOEXCEPT{
-	// clang-format off
-	lwz r3, g_fMinNoInteger
-	mffs fp4 // Save the rounding register
-	lfs fp2, 0(r3)                    // Load 8388608.0f
-	mtfsfi 7, 0x02                     // Set bits 30 and 31 to Round toward +infinity
-	fadds fp3, fp1, fp2 // Push the positive number to highest value without fraction (Removes
-		// fraction)
-	fsubs fp0, fp1, fp2 // Push the negative number to the lowest value without fraction
-		// (Removes fraction)
-
-	fsubs fp3, fp3, fp2 // Undo the push (Fraction is gone)
-	fadds fp0, fp0, fp2 // Undo the push (Fraction is gone)
-
-	fsel fp1, fp1, fp3, fp0 // Which one to use? Positive or negative?
-	mtfsf 255, fp4 // Restore rounding
-	fctiwz fp1, fp1 // Convert to integer
-	subi r3, r1, 8 // Pointer to temp on the stack
-	stfiwx fp1, 0, r3    // Store the integer
-	lwz r3, 0(r3) // Return the integer
-	blr
-	// clang-format on
-}
-
-BURGER_ASM void BURGER_API Burger::FloatToIntCeil(
-	int32_t* /* pOutput */, float /* fInput */) BURGER_NOEXCEPT{
-	// clang-format off
-	lwz r4, g_fMinNoInteger
-	mffs fp4 // Save the rounding register
-	lfs fp2, 0(r4)                    // Load 8388608.0f
-	mtfsfi 7, 0x02                     // Set bits 30 and 31 to Round toward +infinity
-	fadds fp3, fp1, fp2 // Push the positive number to highest value without fraction (Removes
-		// fraction)
-	fsubs fp0, fp1, fp2 // Push the negative number to the lowest value without fraction
-		// (Removes fraction)
-
-	fsubs fp3, fp3, fp2 // Undo the push (Fraction is gone)
-	fadds fp0, fp0, fp2 // Undo the push (Fraction is gone)
-
-	fsel fp1, fp1, fp3, fp0 // Which one to use? Positive or negative?
-	mtfsf 255, fp4 // Restore rounding
-	fctiwz fp1, fp1 // Conver to integer
-	stfiwx fp1, 0, r3 // Store the integer
-	blr
-	// clang-format on
-}
 
 #else
 
-int32_t BURGER_API Burger::FloatToIntCeil(float fInput) BURGER_NOEXCEPT
-{
-	int iVar = static_cast<int>(fInput); // Convert to an int
-	float fVar = static_cast<float>(iVar);
-	if (fVar < fInput) { // Was there a change?
-		++iVar;          // Round up
-	}
-	return iVar;
-}
-
-/*! ************************************
-
-	\brief Convert a 32 bit float to an integer using ceil().
-
-	Convert a single precision floating point number to an integer
-	using the ceil() form of fractional truncation and store it to memory
-
-	\code
-	Burger::FloatToIntCeil(&floorint,1.1f);		//2
-	Burger::FloatToIntCeil(&floorint,1.95f);	//2
-	Burger::FloatToIntCeil(&floorint,-1.1f);	//-1
-	Burger::FloatToIntCeil(&floorint,-1.95f);	//-1
-	Burger::FloatToIntCeil(&floorint,0.1f);		//1
-	Burger::FloatToIntCeil(&floorint,0.95f);	//1
-	Burger::FloatToIntCeil(&floorint,-0.1f);	//0
-	Burger::FloatToIntCeil(&floorint,-0.95f);	//0
-	\endcode
-
-	\param pOutput A valid pointer to a 32-bit integer to receive the result.
-	\param fInput A valid single precision floating point number.
-
-	\sa FloatToIntCeil(float), FloatToIntFloor(int32_t *,float),
-		FloatToIntRoundToZero(int32_t *,float), or
-		FloatToIntRound(int32_t*, float)
-
-***************************************/
-
-void BURGER_API Burger::FloatToIntCeil(
-	int32_t* pOutput, float fInput) BURGER_NOEXCEPT
-{
 	int iVar = static_cast<int>(fInput); // Convert to an int
 	float fVar = static_cast<float>(iVar);
 	if (fVar < fInput) { // Was there a change?
 		++iVar;          // Round up
 	}
 	pOutput[0] = iVar;
+
+#endif
 }
 
 #endif
@@ -845,94 +598,40 @@ void BURGER_API Burger::FloatToIntCeil(
 	using the round to nearest fractional truncation
 
 	\code
-	floorint = Burger::FloatToIntRound(1.1f);		//1
-	floorint = Burger::FloatToIntRound(1.95f);		//2
-	floorint = Burger::FloatToIntRound(-1.1f);		//-1
-	floorint = Burger::FloatToIntRound(-1.95f);		//-2
-	floorint = Burger::FloatToIntRound(0.1f);		//0
-	floorint = Burger::FloatToIntRound(0.95f);		//1
-	floorint = Burger::FloatToIntRound(-0.1f);		//0
-	floorint = Burger::FloatToIntRound(-0.95f);		//-1
+	floorint = Burger::float_to_int_round(1.1f);		//1
+	floorint = Burger::float_to_int_round(1.95f);		//2
+	floorint = Burger::float_to_int_round(-1.1f);		//-1
+	floorint = Burger::float_to_int_round(-1.95f);		//-2
+	floorint = Burger::float_to_int_round(0.1f);		//0
+	floorint = Burger::float_to_int_round(0.95f);		//1
+	floorint = Burger::float_to_int_round(-0.1f);		//0
+	floorint = Burger::float_to_int_round(-0.95f);		//-1
 	\endcode
 
 	\param fInput A valid single precision floating point number.
 	\return Signed integer equivalent value after applying round to nearest on
 		the floating point number.
 
-	\sa FloatToIntRound(int32_t *,float), FloatToIntFloor(float),
-		FloatToIntRoundToZero(float), or FloatToIntCeil(float)
+	\sa float_to_int_round(int32_t *,float), float_to_int_floor(float),
+		float_to_int_round_to_zero(float), or float_to_int_ceil(float)
 
 ***************************************/
 
-#if defined(BURGER_X86) && \
-	(defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || \
-		defined(BURGER_MSVC))
-
-BURGER_DECLSPECNAKED int32_t BURGER_API Burger::FloatToIntRound(
-	float /* fInput */) BURGER_NOEXCEPT
-{
-	// clang-format off
-	BURGER_ASM
-	{
-		mov eax, dword ptr[esp + 4]                 // Get the sign bit
-		fld dword ptr[esp + 4]             // Load into the FPU
-		shr eax, 31                                 // 1 for negative, 0 for positive
-		fstcw[esp + 4]                     // Save state
-		fldcw word ptr[g_X86RoundDownFlag] // Set round down
-		fadd dword ptr[g_X86OneAndNegOne + eax * 4] // Add or subtract 0.5f
-		frndint                                     // Round
-		fldcw[esp + 4]                          // Restore rounding
-		fistp dword ptr[esp + 4]                    // Store integer
-		mov eax, dword ptr[esp + 4]                          // Get the result
-		ret 4
-		// clang-format on
-	}
-}
-
-BURGER_DECLSPECNAKED void BURGER_API Burger::FloatToIntRound(
-	int32_t* /* pOutput */, float /* fInput */) BURGER_NOEXCEPT
-{
-	BURGER_ASM
-	{
-		// clang-format off
-#if defined(BURGER_WATCOM)
-
-		push eax               // Watcom passes pOutput in eax instead of ecx
-		mov eax, dword ptr[esp + 8] // Get the sign bit
-		fld dword ptr[esp + 8]             // Load into the FPU
-		shr eax, 31                                 // 1 for negative, 0 for positive
-		fstcw[esp + 8]                     // Save state
-		fldcw word ptr[g_X86RoundDownFlag] // Set round down
-		fadd dword ptr[g_X86OneAndNegOne + eax * 4] // Add or subtract 0.5f
-		frndint                                     // Round
-		fldcw[esp + 8]                          // Restore rounding
-		pop eax
-		fistp dword ptr[eax]                // Store in pOutput[0]
+#if ((defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
+	(defined(BURGER_METROWERKS) && \
+		(defined(BURGER_X86) || defined(BURGER_PPC))) || \
+	(defined(BURGER_MSVC) && (defined(BURGER_X86) || defined(BURGER_PPC))) || \
+	((defined(BURGER_CLANG) || defined(BURGER_GNUC)) && \
+		(defined(BURGER_INTEL) || defined(BURGER_PPC))) || \
+	(defined(BURGER_GHS) && defined(BURGER_PPC)) || \
+	(defined(BURGER_SNSYSTEMS) && defined(BURGER_PPC))) && \
+	!defined(DOXYGEN)
 
 #else
 
-		mov eax, dword ptr[esp + 4]                 // Get the sign bit
-		fld dword ptr[esp + 4]             // Load into the FPU
-		shr eax, 31                                 // 1 for negative, 0 for positive
-		fstcw[esp + 4]                     // Save state
-		fldcw word ptr[g_X86RoundDownFlag] // Set round down
-		fadd dword ptr[g_X86OneAndNegOne + eax * 4] // Add or subtract 0.5f
-		frndint                                     // Round
-		fldcw[esp + 4]                          // Restore rounding
-		fistp dword ptr[ecx]                        // Store in pOutput[0]
-
-#endif
-
-		ret 4 // Clean up and exit
-		// clang-format on
-	}
-}
-
-#elif defined(BURGER_AMD64) || \
-	(defined(BURGER_INTEL) && (defined(BURGER_MACOSX) || defined(BURGER_IOS)))
-
-int32_t BURGER_API Burger::FloatToIntRound(float fInput) BURGER_NOEXCEPT
+int32_t BURGER_API Burger::float_to_int_round(float fInput) BURGER_NOEXCEPT
 {
+#if defined(BURGER_AMD64)
 	// Convert to SSE register
 	__m128 vInput = _mm_set_ss(fInput);
 
@@ -969,11 +668,67 @@ int32_t BURGER_API Burger::FloatToIntRound(float fInput) BURGER_NOEXCEPT
 	// Add -1, 0 or 1 for final adjustment
 	iVar = _mm_add_epi32(iVar, _mm_castps_si128(fVar));
 	return _mm_cvtsi128_si32(iVar);
+
+#else
+	int32_t iVal = static_cast<int32_t>(fInput);
+	float fVal = static_cast<float>(iVal);
+	float fDiff = absolute(fInput - fVal);
+	if (fDiff >= 0.5f) {
+		if (fInput >= 0.0f) {
+			iVal += 1;
+		} else {
+			iVal -= 1;
+		}
+	}
+	return iVal; // Round to zero
+#endif
 }
 
-void BURGER_API Burger::FloatToIntRound(
+#endif
+
+/*! ************************************
+
+	\brief Convert a 32 bit float to an integer using round to nearest.
+
+	Convert a single precision floating point number to an integer
+	using the round to nearest fractional truncation and store it to memory
+
+	\code
+	Burger::float_to_int_round(&floorint,1.1f);		//1
+	Burger::float_to_int_round(&floorint,1.95f);		//2
+	Burger::float_to_int_round(&floorint,-1.1f);		//-1
+	Burger::float_to_int_round(&floorint,-1.95f);		//-2
+	Burger::float_to_int_round(&floorint,0.1f);		//0
+	Burger::float_to_int_round(&floorint,0.95f);		//1
+	Burger::float_to_int_round(&floorint,-0.1f);		//0
+	Burger::float_to_int_round(&floorint,-0.95f);		//-1
+	\endcode
+
+	\param pOutput A valid pointer to a 32-bit integer to receive the result.
+	\param fInput A valid single precision floating point number.
+
+	\sa float_to_int_round(float), float_to_int_floor(int32_t *,float),
+		float_to_int_round_to_zero(int32_t *,float), or
+		float_to_int_ceil(int32_t *,float)
+
+***************************************/
+
+#if ((defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
+	(defined(BURGER_METROWERKS) && \
+		(defined(BURGER_X86) || defined(BURGER_PPC))) || \
+	(defined(BURGER_MSVC) && (defined(BURGER_X86) || defined(BURGER_PPC))) || \
+	((defined(BURGER_CLANG) || defined(BURGER_GNUC)) && \
+		(defined(BURGER_INTEL) || defined(BURGER_PPC))) || \
+	(defined(BURGER_GHS) && defined(BURGER_PPC)) || \
+	(defined(BURGER_SNSYSTEMS) && defined(BURGER_PPC))) && \
+	!defined(DOXYGEN)
+
+#else
+
+void BURGER_API Burger::float_to_int_round(
 	int32_t* pOutput, float fInput) BURGER_NOEXCEPT
 {
+#if defined(BURGER_AMD64)
 	// Convert to SSE register
 	__m128 vInput = _mm_set_ss(fInput);
 
@@ -1012,161 +767,8 @@ void BURGER_API Burger::FloatToIntRound(
 	// Store the result
 	_mm_store_ss(static_cast<float*>(static_cast<void*>(pOutput)),
 		_mm_castsi128_ps(iVar));
-}
-
-#elif defined(BURGER_XBOX360) || \
-	(defined(BURGER_POWERPC64) && defined(BURGER_MACOSX))
-
-int32_t BURGER_API Burger::FloatToIntRound(float fInput) BURGER_NOEXCEPT
-{
-	// Get the absolute value
-	double dAbs = fabs(fInput);
-
-	// Convert to the input to an integer (Can fail on large numbers)
-	double dVar = __fcfid(__fctidz(dAbs));
-
-	// Get the fraction
-	double dFraction = dAbs - dVar;
-
-	// Test for rounding and add 1 if it needs to round up
-	dVar += __fsel(dFraction - 0.5, 1.0, 0.0);
-
-	// Restore the sign
-	dVar = __fsel(static_cast<double>(fInput), dVar, -dVar);
-
-	// Return as an integer (Load/Hit/Store)
-	int32_t iResult;
-	__stfiwx(__fctiw(dVar), 0, &iResult);
-	return iResult;
-}
-
-void BURGER_API Burger::FloatToIntRound(
-	int32_t* pOutput, float fInput) BURGER_NOEXCEPT
-{
-	// Get the absolute value
-	double dAbs = fabs(fInput);
-
-	// Convert to the input to an integer (Can fail on large numbers)
-	double dVar = __fcfid(__fctidz(dAbs));
-
-	// Get the fraction
-	double dFraction = dAbs - dVar;
-
-	// Test for rounding and add 1 if it needs to round up
-	dVar += __fsel(dFraction - 0.5, 1.0, 0.0);
-
-	// Restore the sign
-	dVar = __fsel(static_cast<double>(fInput), dVar, -dVar);
-
-	// Return as an integer
-	__stfiwx(__fctiw(dVar), 0, pOutput);
-}
-
-#elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
-
-BURGER_ASM int32_t BURGER_API Burger::FloatToIntRound(
-	float /* fInput */) BURGER_NOEXCEPT{
-	// clang-format off
-	lwz r3, g_fMinNoInteger
-	fabs fp0, fp1   // Get the abs value to test
-	lfs fp2, 0(r3) // Load 8388608.0f
-
-	lwz r3, g_fHalf // Pointer to 0.5f
-	fadds fp5, fp0, fp2   // Push the positive number to highest value without fraction (Removes
-		  // fraction)
-	lfs fp3, 0(r3) // Load 0.5f
-	fsubs fp5, fp5, fp2 // Undo the push (Fraction is gone)
-	fsubs fp6, fp0, fp5 // Subtract original from rounded to get the fraction
-	fsubs fp6, fp6, fp3 // Test against 0.5
-	fadds fp3, fp3, fp3 // Set to one
-	fsubs fp4, fp5, fp5 // Set to zero
-	fsel fp0, fp6, fp3,	fp4 // Set to zero or one depending on the test
-	fadds fp5, fp5, fp0 // Add 0 for no rounding, 1 for round up
-	fnabs fp2, fp5 // Get the negative value
-	fsel fp1, fp1, fp5, fp2 // Which one to use? Positive or negative?
-
-	fctiwz fp1, fp1 // Convert to integer
-	subi r3, r1, 8 // Pointer to temp on the stack
-	stfiwx fp1, 0, r3    // Store the integer
-	lwz r3, 0(r3) // Return the integer
-	blr
-	// clang-format on
-}
-
-BURGER_ASM void BURGER_API Burger::FloatToIntRound(
-	int32_t* /* pOutput */, float /* fInput */) BURGER_NOEXCEPT{
-	// clang-format off
-	lwz r4, g_fMinNoInteger
-	fabs fp0, fp1   // Get the abs value to test
-	lfs fp2, 0(r4) // Load 8388608.0f
-
-	lwz r4, g_fHalf // Pointer to 0.5f
-	fadds fp5, fp0, fp2   // Push the positive number to highest value without fraction (Removes
-		  // fraction)
-	lfs fp3, 0(r4) // Load 0.5f
-	fsubs fp5, fp5, fp2 // Undo the push (Fraction is gone)
-	fsubs fp6, fp0,	fp5 // Subtract original from rounded to get the fraction
-	fsubs fp6, fp6,	fp3 // Test against 0.5
-	fadds fp3, fp3,	fp3 // Set to one
-	fsubs fp4, fp5,	fp5 // Set to zero
-	fsel fp0, fp6, fp3, fp4 // Set to zero or one depending on the test
-	fadds fp5, fp5,	fp0 // Add 0 for no rounding, 1 for round up
-	fnabs fp2, fp5 // Get the negative value
-	fsel fp1, fp1, fp5, fp2 // Which one to use? Positive or negative?
-
-	fctiwz fp1, fp1 // Convert to integer
-	stfiwx fp1, 0, r3 // Store the integer
-	blr
-	// clang-format on
-}
 
 #else
-
-int32_t BURGER_API Burger::FloatToIntRound(float fInput) BURGER_NOEXCEPT
-{
-	int32_t iVal = static_cast<int32_t>(fInput);
-	float fVal = static_cast<float>(iVal);
-	float fDiff = absolute(fInput - fVal);
-	if (fDiff >= 0.5f) {
-		if (fInput >= 0.0f) {
-			iVal += 1;
-		} else {
-			iVal -= 1;
-		}
-	}
-	return iVal; // Round to zero
-}
-
-/*! ************************************
-
-	\brief Convert a 32 bit float to an integer using round to nearest.
-
-	Convert a single precision floating point number to an integer
-	using the round to nearest fractional truncation and store it to memory
-
-	\code
-	Burger::FloatToIntRound(&floorint,1.1f);		//1
-	Burger::FloatToIntRound(&floorint,1.95f);		//2
-	Burger::FloatToIntRound(&floorint,-1.1f);		//-1
-	Burger::FloatToIntRound(&floorint,-1.95f);		//-2
-	Burger::FloatToIntRound(&floorint,0.1f);		//0
-	Burger::FloatToIntRound(&floorint,0.95f);		//1
-	Burger::FloatToIntRound(&floorint,-0.1f);		//0
-	Burger::FloatToIntRound(&floorint,-0.95f);		//-1
-	\endcode
-
-	\param pOutput A valid pointer to a 32-bit integer to receive the result.
-	\param fInput A valid single precision floating point number.
-
-	\sa FloatToIntRound(float), FloatToIntFloor(int32_t *,float),
-		FloatToIntRoundToZero(int32_t *,float), or
-		FloatToIntCeil(int32_t *,float)
-
-***************************************/
-
-void BURGER_API Burger::FloatToIntRound(
-	int32_t* pOutput, float fInput) BURGER_NOEXCEPT
-{
 	int32_t iVal = static_cast<int32_t>(fInput);
 	float fVal = static_cast<float>(iVal);
 	float fDiff = absolute(fInput - fVal);
@@ -1178,71 +780,74 @@ void BURGER_API Burger::FloatToIntRound(
 		}
 	}
 	pOutput[0] = iVal; // Round to zero
+#endif
 }
 
 #endif
 
 /*! ************************************
 
-	\fn int32_t Burger::FloatToIntRoundToZero(float fInput)
+	\fn int32_t Burger::float_to_int_round_to_zero(float fInput)
 	\brief Convert a 32 bit float to an integer using round to zero.
 
 	Convert a single precision floating point number to an integer
 	using the round to zero fractional truncation
 
 	\code
-	floorint = Burger::FloatToIntRoundToZero(1.1f);	//1
-	floorint = Burger::FloatToIntRoundToZero(1.95f);	//1
-	floorint = Burger::FloatToIntRoundToZero(-1.1f);	//-1
-	floorint = Burger::FloatToIntRoundToZero(-1.95f);	//-1
-	floorint = Burger::FloatToIntRoundToZero(0.1f);	//0
-	floorint = Burger::FloatToIntRoundToZero(0.95f);	//0
-	floorint = Burger::FloatToIntRoundToZero(-0.1f);	//0
-	floorint = Burger::FloatToIntRoundToZero(-0.95f);	//0
+	floorint = Burger::float_to_int_round_to_zero(1.1f);	//1
+	floorint = Burger::float_to_int_round_to_zero(1.95f);	//1
+	floorint = Burger::float_to_int_round_to_zero(-1.1f);	//-1
+	floorint = Burger::float_to_int_round_to_zero(-1.95f);	//-1
+	floorint = Burger::float_to_int_round_to_zero(0.1f);	//0
+	floorint = Burger::float_to_int_round_to_zero(0.95f);	//0
+	floorint = Burger::float_to_int_round_to_zero(-0.1f);	//0
+	floorint = Burger::float_to_int_round_to_zero(-0.95f);	//0
 	\endcode
 
 	\param fInput A valid single precision floating point number.
 	\return Signed integer equivalent value after applying round to zero on the
 		floating point number.
 
-	\sa FloatToIntRoundToZero(int32_t *,float), FloatToIntFloor(float),
-		FloatToIntCeil(float), or FloatToIntRound(float)
+	\sa float_to_int_round_to_zero(int32_t *,float), float_to_int_floor(float),
+		float_to_int_ceil(float), or float_to_int_round(float)
 
 ***************************************/
 
-int32_t BURGER_API Burger::FloatToIntRoundToZero(float fInput) BURGER_NOEXCEPT
+int32_t BURGER_API Burger::float_to_int_round_to_zero(
+	float fInput) BURGER_NOEXCEPT
 {
 	return static_cast<int32_t>(fInput); // Round to zero
 }
 
 /*! ************************************
 
-	\fn void Burger::FloatToIntRoundToZero(int32_t *pOutput,float fInput)
+	\fn void Burger::float_to_int_round_to_zero(int32_t *pOutput,float fInput)
 	\brief Convert a 32 bit float to an integer using round to zero.
 
 	Convert a single precision floating point number to an integer
 	using the round to zero fractional truncation and store it to memory
 
 	\code
-	Burger::FloatToIntRoundToZero(&floorint,1.1f);		//1
-	Burger::FloatToIntRoundToZero(&floorint,1.95f);	//1
-	Burger::FloatToIntRoundToZero(&floorint,-1.1f);	//-1
-	Burger::FloatToIntRoundToZero(&floorint,-1.95f);	//-1
-	Burger::FloatToIntRoundToZero(&floorint,0.1f);		//0
-	Burger::FloatToIntRoundToZero(&floorint,0.95f);	//0
-	Burger::FloatToIntRoundToZero(&floorint,-0.1f);	//0
-	Burger::FloatToIntRoundToZero(&floorint,-0.95f);	//0
+	Burger::float_to_int_round_to_zero(&floorint,1.1f);		//1
+	Burger::float_to_int_round_to_zero(&floorint,1.95f);	//1
+	Burger::float_to_int_round_to_zero(&floorint,-1.1f);	//-1
+	Burger::float_to_int_round_to_zero(&floorint,-1.95f);	//-1
+	Burger::float_to_int_round_to_zero(&floorint,0.1f);		//0
+	Burger::float_to_int_round_to_zero(&floorint,0.95f);	//0
+	Burger::float_to_int_round_to_zero(&floorint,-0.1f);	//0
+	Burger::float_to_int_round_to_zero(&floorint,-0.95f);	//0
 	\endcode
 
 	\param pOutput A valid pointer to a 32-bit integer to receive the result.
 	\param fInput A valid single precision floating point number.
 
-	\sa FloatToIntRoundToZero(float), FloatToIntFloor(int32_t *,float),
-		FloatToIntCeil(int32_t *,float), or FloatToIntRound(int32_t *,float)
+	\sa float_to_int_round_to_zero(float), float_to_int_floor(int32_t *,float),
+		float_to_int_ceil(int32_t *,float), or float_to_int_round(int32_t
+*,float)
 
 ***************************************/
 
-void BURGER_API Burger::FloatToIntRoundToZero(
+void BURGER_API Burger::float_to_int_round_to_zero(
 	int32_t* pOutput, float fInput) BURGER_NOEXCEPT
 {
 	pOutput[0] = static_cast<int32_t>(fInput); // Round to zero
@@ -1250,7 +855,6 @@ void BURGER_API Burger::FloatToIntRoundToZero(
 
 /*! ************************************
 
-	\fn Fixed32 Burger::FloatToFixedFloor(float fInput)
 	\brief Convert a 32 bit float to a \ref Fixed32 using floor().
 
 	Convert a single precision floating point number to a \ref Fixed32
@@ -1261,14 +865,26 @@ void BURGER_API Burger::FloatToIntRoundToZero(
 	\return a \ref Fixed32 equivalent value after applying floor() on the
 		floating point number.
 
-	\sa FloatToFixedFloor(Fixed32 *,float), FloatToFixed(float),
-		FloatToFixedCeil(float), or FloatToFixedNearest(float)
+	\sa float_to_fixed_floor(Fixed32 *,float),
+		float_to_fixed_round_to_zero(float),
+		float_to_fixed_ceil(float), or
+		float_to_fixed_round(float)
 
 ***************************************/
 
+#if (defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
+	(defined(BURGER_METROWERKS) && defined(BURGER_X86)) || \
+	(defined(BURGER_MSVC) && defined(BURGER_X86))
+// Assembly
+#else
+Fixed32 BURGER_API Burger::float_to_fixed_floor(float fInput) BURGER_NOEXCEPT
+{
+	return static_cast<Fixed32>(float_to_int_floor(fInput * 65536.0f));
+}
+#endif
+
 /*! ************************************
 
-	\fn Fixed32 Burger::FloatToFixed(float fInput)
 	\brief Convert a 32 bit float to a \ref Fixed32 using round to zero.
 
 	Convert a single precision floating point number to a \ref Fixed32
@@ -1279,14 +895,22 @@ void BURGER_API Burger::FloatToIntRoundToZero(
 	\return a \ref Fixed32 equivalent value after applying round to zero on the
 		floating point number.
 
-	\sa FloatToFixed(Fixed32 *,float), FloatToFixedFloor(float),
-		FloatToFixedCeil(float), or FloatToFixedNearest(float)
+	\sa float_to_fixed_round_to_zero(Fixed32 *,float),
+		float_to_fixed_floor(float), float_to_fixed_ceil(float), or
+		float_to_fixed_round(float)
 
 ***************************************/
 
+Fixed32 BURGER_API Burger::float_to_fixed_round_to_zero(
+	float fInput) BURGER_NOEXCEPT
+{
+	return static_cast<Fixed32>(
+		float_to_int_round_to_zero(fInput * g_f65536.f));
+}
+
 /*! ************************************
 
-	\fn Fixed32 Burger::FloatToFixedCeil(float fInput)
+	\fn Fixed32 Burger::float_to_fixed_ceil(float fInput)
 	\brief Convert a 32 bit float to a \ref Fixed32 using ceil().
 
 	Convert a single precision floating point number to a \ref Fixed32
@@ -1297,14 +921,24 @@ void BURGER_API Burger::FloatToIntRoundToZero(
 	\return a \ref Fixed32 equivalent value after applying ceil() on the
 		floating point number.
 
-	\sa FloatToFixedCeil(Fixed32 *,float), FloatToFixedFloor(float),
-		FloatToFixed(float), or FloatToFixedNearest(float)
+	\sa float_to_fixed_ceil(Fixed32 *,float), float_to_fixed_floor(float),
+		float_to_fixed_round_to_zero(float), or float_to_fixed_round(float)
 
 ***************************************/
 
+#if (defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
+	(defined(BURGER_METROWERKS) && defined(BURGER_X86)) || \
+	(defined(BURGER_MSVC) && defined(BURGER_X86))
+// Assembly
+#else
+Fixed32 BURGER_API Burger::float_to_fixed_ceil(float fInput) BURGER_NOEXCEPT
+{
+	return static_cast<Fixed32>(float_to_int_ceil(fInput * 65536.0f));
+}
+#endif
+
 /*! ************************************
 
-	\fn Fixed32 Burger::FloatToFixedNearest(float fInput)
 	\brief Convert a 32 bit float to a \ref Fixed32 using round to nearest.
 
 	Convert a single precision floating point number to a \ref Fixed32
@@ -1314,14 +948,24 @@ void BURGER_API Burger::FloatToIntRoundToZero(
 	\return a \ref Fixed32 equivalent value after applying round to nearest on
 		the floating point number.
 
-	\sa FloatToFixedNearest(Fixed32 *,float), FloatToFixedFloor(float),
-		FloatToFixed(float), or FloatToFixedCeil(float)
+	\sa float_to_fixed_round(Fixed32 *,float), float_to_fixed_floor(float),
+		float_to_fixed_round_to_zero(float), or float_to_fixed_ceil(float)
 
 ***************************************/
 
+#if (defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
+	(defined(BURGER_METROWERKS) && defined(BURGER_X86)) || \
+	(defined(BURGER_MSVC) && defined(BURGER_X86))
+// Assembly
+#else
+Fixed32 BURGER_API Burger::float_to_fixed_round(float fInput) BURGER_NOEXCEPT
+{
+	return static_cast<Fixed32>(float_to_int_round(fInput * 65536.0f));
+}
+#endif
+
 /*! ************************************
 
-	\fn void Burger::FloatToFixedFloor(Fixed32 *pOutput,float fInput)
 	\brief Convert a 32 bit float to a \ref Fixed32 using floor().
 
 	Convert a single precision floating point number to a \ref Fixed32
@@ -1329,15 +973,27 @@ void BURGER_API Burger::FloatToIntRoundToZero(
 
 	\param pOutput A valid pointer to a \ref Fixed32 to receive the result.
 	\param fInput A valid single precision floating point number.
-	\sa FloatToFixedFloor(float), FloatToFixed(Fixed32 *,float),
-		FloatToFixedCeil(Fixed32 *,float), or
-		FloatToFixedNearest(Fixed32 *,float)
+	\sa float_to_fixed_floor(float),
+		float_to_fixed_round_to_zero(Fixed32*,float),
+		float_to_fixed_ceil(Fixed32 *,float),
+		or float_to_fixed_round(Fixed32*,float)
 
 ***************************************/
 
+#if (defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
+	(defined(BURGER_METROWERKS) && defined(BURGER_X86)) || \
+	(defined(BURGER_MSVC) && defined(BURGER_X86))
+// Assembly
+#else
+void BURGER_API Burger::float_to_fixed_floor(
+	Fixed32* pOutput, float fInput) BURGER_NOEXCEPT
+{
+	float_to_int_floor(reinterpret_cast<int32_t*>(pOutput), fInput * 65536.0f);
+}
+#endif
+
 /*! ************************************
 
-	\fn void Burger::FloatToFixed(Fixed32 *pOutput,float fInput)
 	\brief Convert a 32 bit float to a \ref Fixed32 using round to zero.
 
 	Convert a single precision floating point number to a \ref Fixed32
@@ -1345,15 +1001,22 @@ void BURGER_API Burger::FloatToIntRoundToZero(
 
 	\param pOutput A valid pointer to a \ref Fixed32 to receive the result.
 	\param fInput A valid single precision floating point number.
-	\sa FloatToFixed(float), FloatToFixedFloor(Fixed32 *,float),
-		FloatToFixedCeil(Fixed32 *,float), or
-		FloatToFixedNearest(Fixed32*, float)
+	\sa float_to_fixed_round_to_zero(float),
+		float_to_fixed_floor(Fixed32*, float),
+		float_to_fixed_ceil(Fixed32*, float), or
+		float_to_fixed_round(Fixed32*, float)
 
 ***************************************/
 
+void BURGER_API Burger::float_to_fixed_round_to_zero(
+	Fixed32* pOutput, float fInput) BURGER_NOEXCEPT
+{
+	float_to_int_round_to_zero(
+		reinterpret_cast<int32_t*>(pOutput), fInput * g_f65536.f);
+}
+
 /*! ************************************
 
-	\fn void Burger::FloatToFixedCeil(Fixed32 *pOutput,float fInput)
 	\brief Convert a 32 bit float to a \ref Fixed32 using ceil().
 
 	Convert a single precision floating point number to a \ref Fixed32
@@ -1362,14 +1025,26 @@ void BURGER_API Burger::FloatToIntRoundToZero(
 	\param pOutput A valid pointer to a \ref Fixed32 to receive the result.
 	\param fInput A valid single precision floating point number.
 
-	\sa FloatToFixedCeil(float), FloatToFixedFloor(Fixed32 *,float),
-		FloatToFixed(Fixed32 *,float), or FloatToFixedNearest(Fixed32 *,float)
+	\sa float_to_fixed_ceil(float), float_to_fixed_floor(Fixed32 *,float),
+		float_to_fixed_round_to_zero(Fixed32 *,float),
+		or float_to_fixed_round(Fixed32 *,float)
 
 ***************************************/
 
+#if (defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
+	(defined(BURGER_METROWERKS) && defined(BURGER_X86)) || \
+	(defined(BURGER_MSVC) && defined(BURGER_X86))
+// Assembly
+#else
+void BURGER_API Burger::float_to_fixed_ceil(
+	Fixed32* pOutput, float fInput) BURGER_NOEXCEPT
+{
+	float_to_int_ceil(reinterpret_cast<int32_t*>(pOutput), fInput * 65536.0f);
+}
+#endif
+
 /*! ************************************
 
-	\fn void Burger::FloatToFixedNearest(Fixed32 *pOutput,float fInput)
 	\brief Convert a 32 bit float to a \ref Fixed32 using round to nearest.
 
 	Convert a single precision floating point number to a \ref Fixed32
@@ -1378,10 +1053,23 @@ void BURGER_API Burger::FloatToIntRoundToZero(
 	\param pOutput A valid pointer to a \ref Fixed32 to receive the result.
 	\param fInput A valid single precision floating point number.
 
-	\sa FloatToFixedNearest(float), FloatToFixedFloor(Fixed32 *,float),
-		FloatToFixed(Fixed32 *,float), or FloatToFixedCeil(Fixed32 *,float)
+	\sa float_to_fixed_round(float), float_to_fixed_floor(Fixed32 *,float),
+		float_to_fixed_round_to_zero(Fixed32 *,float),
+		or float_to_fixed_ceil(Fixed32 *,float)
 
 ***************************************/
+
+#if (defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
+	(defined(BURGER_METROWERKS) && defined(BURGER_X86)) || \
+	(defined(BURGER_MSVC) && defined(BURGER_X86))
+// Assembly
+#else
+void BURGER_API Burger::float_to_fixed_round(
+	Fixed32* pOutput, float fInput) BURGER_NOEXCEPT
+{
+	float_to_int_round(reinterpret_cast<int32_t*>(pOutput), fInput * 65536.0f);
+}
+#endif
 
 /*! ************************************
 
@@ -1569,90 +1257,6 @@ void BURGER_API Burger::FloatToIntRoundToZero(
 
 /*! ************************************
 
-	\fn int32_t Burger::clamp(int32_t iInput,int32_t iMin,int32_t iMax)
-	\brief Clamp the input between a bounds
-
-	If the input value is less than the minimum, return the minimum
-	or if the input value is greater than the maximum, return
-	the maximum, otherwise return the input value. No
-	checking is performed to determine if the minimum is
-	less than the maximum.
-
-	\param iInput First value to test
-	\param iMin Minimum allowed value
-	\param iMax Maximum allowed value
-	\return The value clamped between the bounds
-
-	\sa clamp(uint64_t,uint64_t,uint64_t), clamp(int64_t,int64_t,int64_t), or
-		clamp(uint32_t,uint32_t,uint32_t)
-
-***************************************/
-
-/*! ************************************
-
-	\fn int64_t Burger::clamp(int64_t iInput,int64_t iMin,int64_t iMax)
-	\brief Clamp the input between a bounds
-
-	If the input value is less than the minimum, return the minimum
-	or if the input value is greater than the maximum, return
-	the maximum, otherwise return the input value. No
-	checking is performed to determine if the minimum is
-	less than the maximum.
-
-	\param iInput First value to test
-	\param iMin Minimum allowed value
-	\param iMax Maximum allowed value
-	\return The value clamped between the bounds
-
-	\sa clamp(uint32_t,uint32_t,uint32_t), clamp(int32_t,int32_t,int32_t), or
-		clamp(uint64_t,uint64_t,uint64_t)
-
-***************************************/
-
-/*! ************************************
-
-	\fn uint32_t Burger::clamp(uint32_t uInput,uint32_t uMin,uint32_t uMax)
-	\brief Clamp the input between a bounds
-
-	If the input value is less than the minimum, return the minimum
-	or if the input value is greater than the maximum, return
-	the maximum, otherwise return the input value. No
-	checking is performed to determine if the minimum is
-	less than the maximum.
-
-	\param uInput First value to test
-	\param uMin Minimum allowed value
-	\param uMax Maximum allowed value
-	\return The value clamped between the bounds
-
-	\sa clamp(int64_t,int64_t,int64_t), clamp(uint64_t,uint64_t,uint64_t), or
-		clamp(int32_t,int32_t,int32_t)
-
-***************************************/
-
-/*! ************************************
-
-	\fn uint64_t Burger::clamp(uint64_t uInput,uint64_t uMin,uint64_t uMax)
-	\brief Clamp the input between a bounds
-
-	If the input value is less than the minimum, return the minimum
-	or if the input value is greater than the maximum, return
-	the maximum, otherwise return the input value. No
-	checking is performed to determine if the minimum is
-	less than the maximum.
-
-	\param uInput First value to test
-	\param uMin Minimum allowed value
-	\param uMax Maximum allowed value
-	\return The value clamped between the bounds
-
-	\sa clamp(int32_t,int32_t,int32_t), clamp(uint32_t,uint32_t,uint32_t), or
-		clamp(int64_t,int64_t,int64_t)
-
-***************************************/
-
-/*! ************************************
-
 	\fn Fixed32 Burger::FixedMultiply(Fixed32 fInput1,Fixed32 fInput2)
 	\brief Multiply two 16.16 fixed point numbers.
 
@@ -1722,14 +1326,14 @@ Fixed32 BURGER_API Burger::FixedDivide(
 	\fn Fixed32 Burger::FixedReciprocal(Fixed32 fInput)
 	\brief Return the reciprocal of a fixed point number.
 
-	Divide a 16.16 fixed point number by \ref FLOATTOFIXED(1.0f) in fixed point.
-	If the input value is negative epsilon (0xFFFFFFFF), return 0x8000000. If
-	the input is equal to 0 or positive epsilon (0x1), then return 0x7ffffff.
-	This has the effect of saturating the output and leaving no output
-	as undefined.
+	Divide a 16.16 fixed point number by \ref BURGER_FLOAT_TO_FIXED(1.0f) in
+fixed point. If the input value is negative epsilon (0xFFFFFFFF), return
+0x8000000. If the input is equal to 0 or positive epsilon (0x1), then return
+0x7ffffff. This has the effect of saturating the output and leaving no output as
+undefined.
 
 	\param fInput \ref Fixed32 value to convert to a reciprocal.
-	\return Result of \ref FLOATTOFIXED(1.0f) / fInput with saturation
+	\return Result of \ref BURGER_FLOAT_TO_FIXED(1.0f) / fInput with saturation
 
 	\note It's not recommended to input epsilon or 0 due to
 	saturation.
@@ -1754,9 +1358,9 @@ Fixed32 BURGER_API Burger::FixedReciprocal(Fixed32 fInput)
 			}
 			return static_cast<Fixed32>(uFoo);
 		}
-		return MaxFixed32;
+		return kMaxFixed32;
 	}
-	return MinFixed32;
+	return kMinFixed32;
 }
 #endif
 

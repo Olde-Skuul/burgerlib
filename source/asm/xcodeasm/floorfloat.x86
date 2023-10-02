@@ -89,39 +89,20 @@ __ZN6Burger9get_floorEf:
 	.globl __ZN6Burger9get_floorEf
 __ZN6Burger9get_floorEf:
 
-/* Load the value in an integer register */
-	movl	4(%esp), %eax
-
 /* Load the same value in the FPU */
 	flds	4(%esp)
 
-/* Mask off the sign */
-	andl	$0x7FFFFFFF, %eax
+/* Save the current 8087 control word */
+	fstcw	4(%esp)
 
-/* Compare to 8388608.0f */
-	cmpl	$0x4B000000, %eax
+/* Force round to negative infinity */
+	fldcw	(__ZN6Burger30g_u8087RoundToNegativeInfinityE)
 
-/* Out of range, return original value */
-	jae		1f
-
-/* Convert the integer to float (It's in range) */
+/* Perform the rounding */
 	frndint
 
-/* Clear ax for flags */
-	xorl	%eax, %eax
-
-/* Compare values for difference (Pop stack) */
-	fcoms	4(%esp)
-
-/* Get the 8087 condition flags */
-	fnstsw	%ax
-
-/* Was the new greater than or equal the original? */
-	andl	$0x4100, %eax
-	jnz		1f
-
-/* Subtract 1.0f to round down */
-	fsubs	(__ZN6Burger6g_fOneE)
-1:	ret
+/* Restore the old 8087 control word */
+	fldcw	4(%esp)
+	ret
 
 #endif

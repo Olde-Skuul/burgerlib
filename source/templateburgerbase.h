@@ -44,9 +44,11 @@
 /* DIR: "platforms:wiiu" */
 /* DIR: "platforms:switch" */
 /* IGNORE: "burgermac.h" */
+/* IGNORE: "burgermacosx.h" */
 /* IGNORE: "burgermsdos.h" */
 /* IGNORE: "burgerps4.h" */
 /* IGNORE: "burgerwindows.h" */
+/* IGNORE: "burgerdarwin.h" */
 /* IGNORE: "burgerunix.h" */
 /* IGNORE: "burgerswitch.h" */
 /* IGNORE: "burgerxbox360.h" */
@@ -99,8 +101,6 @@
 #include "brstructs.h"
 #include "brwatcom.h"
 #include "brvisualstudio.h"
-#include "brintelcompiler.h"
-#include "brsnsystems.h"
 #include "brxcode.h"
 #include "brintrinsics.h"
 #include "brmacros.h"
@@ -110,6 +110,7 @@
 #include "brguid.h"
 #include "brstaticrtti.h"
 #include "brbase.h"
+#include "brpoweroftwo.h"
 #include "brmemorymanager.h"
 #include "brglobalmemorymanager.h"
 #include "brmemoryansi.h"
@@ -146,8 +147,10 @@
 #include "brdjb2hash.h"
 #include "brendian.h"
 #include "brfloatingpoint.h"
-#include "brmemoryhandle.h"
+#include "brfixedpoint.h"
 
+#include "brmemoryfunctions.h"
+#include "brmemoryhandle.h"
 #include "brlocalization.h"
 #include "brdebug.h"
 #include "brwindowstypes.h"
@@ -157,12 +160,9 @@
 #include "brmactypes.h"
 #include "briostypes.h"
 #include "brlinuxtypes.h"
-#include "brps3types.h"
-#include "brps4types.h"
 #include "brandroidtypes.h"
 #include "brshieldtypes.h"
 #include "brvitatypes.h"
-#include "brwiiutypes.h"
 #include "bralgorithm.h"
 #include "brargumenttype.h"
 #include "brcodelibrary.h"
@@ -170,7 +170,6 @@
 #include "bratomic.h"
 #include "brasciito.h"
 #include "brnumberto.h"
-#include "brmemoryfunctions.h"
 #include "brstringfunctions.h"
 #include "brutf8.h"
 #include "brutf16.h"
@@ -189,7 +188,6 @@
 #include "brglobals.h"
 #include "brosstringfunctions.h"
 #include "brhashmap.h"
-#include "brfixedpoint.h"
 #include "brvector2d.h"
 #include "brvector3d.h"
 #include "brvector4d.h"
@@ -366,6 +364,10 @@ typedef VertexBuffer VertexBufferDefault;
 #include "burgerunix.h"
 #endif
 
+#if defined(BURGER_DARWIN)
+#include "burgerdarwin.h"
+#endif
+
 #if defined(BURGER_WINDOWS)
 #include "burgerwindows.h"
 #elif defined(BURGER_MSDOS)
@@ -378,6 +380,8 @@ typedef VertexBuffer VertexBufferDefault;
 #include "burgerswitch.h"
 #elif defined(BURGER_MAC)
 #include "burgermac.h"
+#elif defined(BURGER_MACOSX)
+#include "burgermacosx.h"
 #elif defined(BURGER_LINUX)
 #include "burgerlinux.h"
 #endif

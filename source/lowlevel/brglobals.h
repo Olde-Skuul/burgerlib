@@ -147,10 +147,6 @@ public:
 		const __CFDictionary* pDictionary, const char* pKey);
 #endif
 
-#if defined(BURGER_MACOSX) || defined(DOXYGEN)
-	static uint_t BURGER_API GetMacOSVersion(void);
-#endif
-
 #if defined(BURGER_MACOSX) || defined(BURGER_WINDOWS) || defined(DOXYGEN)
 	static uint_t BURGER_API GetQuickTimeVersion(void) BURGER_NOEXCEPT;
 #endif

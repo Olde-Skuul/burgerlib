@@ -70,8 +70,8 @@ void BURGER_API Burger::ChooseGridSize(uint_t* pXCellCount,uint_t* pYCellCount,c
 			}
 		}
 		// Force bounds to 1 through 256
-		uXCellCount = clamp(static_cast<uint32_t>(uXCellCount),1U,256U);
-		uYCellCount = clamp(static_cast<uint32_t>(uYCellCount),1U,256U);
+		uXCellCount = clamp(uXCellCount,1U,256U);
+		uYCellCount = clamp(uYCellCount,1U,256U);
 	}
 	pXCellCount[0] = uXCellCount;
 	pYCellCount[0] = uYCellCount;

@@ -125,7 +125,8 @@ BURGER_LIB_WIIU = (
 # Nintendo Switch specific code
 BURGER_LIB_SWITCH = (
     "../source/platforms/switch",
-    "../source/graphics/vulkan"
+    "../source/graphics/vulkan",
+    "../source/asm/switch_asm"
 )
 
 # Microsoft Xbox 360 specific code
@@ -883,9 +884,8 @@ def project_settings(project):
     # Apple platforms
     if platform.is_macosx():
         project.source_folders_list.extend(BURGER_LIB_MACOSX)
-        if ide is IDETypes.xcode3:
-            project.source_folders_list.append(
-                "../source/asm/xcodeasm")
+        project.source_folders_list.append(
+            "../source/asm/xcodeasm")
 
     if platform.is_ios():
         project.source_folders_list.extend(BURGER_LIB_IOS)
@@ -1032,6 +1032,10 @@ def project_settings(project):
             if ide is not IDETypes.vs2003:
                 project.source_folders_list.append(
                     "../source/asm/masm64")
+            # ARM code is available on Visual Studio 2017+
+            if ide >= IDETypes.vs2017:
+                project.source_folders_list.append(
+                    "../source/asm/marmasm64")
 
     project.custom_rules = {
         "ps*.hlsl":
@@ -1112,6 +1116,16 @@ def configuration_settings(configuration):
     if ide is IDETypes.vs2017 and \
             (platform in (PlatformTypes.win32, PlatformTypes.win64)):
         configuration.include_folders_list.append("$(DXSDK_DIR)/Include")
+
+    # Switch for unittests needs metadata, add it here
+    if platform.is_switch():
+        if configuration.project.name == "unittests":
+            if platform is PlatformTypes.switch64:
+                configuration.switch_meta_source = (
+                    "..\\unittest\\switch\\switch.arm64.nmeta")
+            else:
+                configuration.switch_meta_source = (
+                    "..\\unittest\\switch\\switch.arm32.nmeta")
     return 0
 
 ########################################

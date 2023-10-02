@@ -21,40 +21,20 @@ __declspec(naked) double BURGER_API Burger::get_floor(
 	// clang-format off
 	asm {
 
-; Load the value in an integer register
-	mov		eax, [esp + 8]
-
 ; Load the same value in the FPU
-	fld		qword ptr[esp + 4]
+	fld		qword ptr[esp+4]
 
-; Mask off the sign
-	and		eax, 0x7FFFFFFF
+; Save the current 8087 control word
+	fstcw	word ptr[esp+4]
 
-; Compare to 4503599627370496.0
-	cmp		eax, 0x43300000
+; Force round to negative infinity
+	fldcw	[g_u8087RoundToNegativeInfinity]
 
-; Out of range, return original value
-	jae		FloorExit
-
-; Convert the integer to float (It is in range)
+; Perform the rounding
 	frndint
 
-; Clear ax for flags
-	xor		eax, eax
-
-; Compare values for difference (Pop stack)
-	fcom	qword ptr[esp + 4]
-
-; Get the 8087 condition flags
-	fnstsw	ax
-
-; Was the new greater than or equal the original?
-	and		ax, 0x4100
-	jnz		FloorExit
-
-; Subtract 1.0f to round down
-	fsub	dword ptr[g_fOne]
-FloorExit:
+; Restore the old 8087 control word
+	fldcw	word ptr[esp+4]
 	ret		8
 	}
 	// clang-format on

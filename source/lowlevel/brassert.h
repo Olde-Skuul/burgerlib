@@ -19,10 +19,6 @@
 #include "brtypes.h"
 #endif
 
-#ifndef __BRWATCOM_H__
-#include "brwatcom.h"
-#endif
-
 /* BEGIN */
 
 namespace Burger {
@@ -54,6 +50,11 @@ extern void BURGER_API invoke_debugger(void) BURGER_NOEXCEPT;
 // Use WatcomAssertNothing() as a null function to shut up Watcom's warnings
 // Clang requires a pragma to get rid of a compiler warning triggered by
 // constant folding
+
+#if defined(BURGER_WATCOM) && !defined(DOXYGEN)
+extern void WatcomAssertNothing(void);
+#pragma aux WatcomAssertNothing = modify exact[] nomemory;
+#endif
 
 #if defined(_DEBUG) || defined(DOXYGEN)
 

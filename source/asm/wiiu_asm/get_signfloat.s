@@ -21,7 +21,6 @@
 get_sign__6BurgerFf:
 	.type get_sign__6BurgerFf, @function
 
-
 ; Test for NaN first, to avoid stalls later
 	fcmpu	cr1, fp1, fp1
 
@@ -45,16 +44,20 @@ get_sign__6BurgerFf:
 ; If not NaN, return now
 	beqlr	cr1
 
+; WiiU stack frame
+	stwu	sp, -24(sp)
+
 ; NaN detected, you are boned
 ; Store the -NaN
-	stfs	fp2, -8(sp)
+	stfs	fp2, 8(sp)
 
 ; Assume result is 1.0f (0.5*2)
 	fadds	fp1, fp3, fp3
 
 ; Test for negative with integer registers
-	lwz		r3, -8(sp)
+	lwz		r3, 8(sp)
 	andis.	r3, r3, 0x8000
+	addi	sp, sp, 24
 
 ; Note: Testing on -NaN so not equal is positive
 	bnelr

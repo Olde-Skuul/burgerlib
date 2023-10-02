@@ -1,0 +1,281 @@
+/***************************************
+
+	Assembly for MacOSX Darwin
+
+	Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+
+	Build with XCode tool chain
+
+	XCode uses a C++ parser and will try to assemble this file on all
+	CPU types, so test for the proper CPU type before invoking any cpu
+	instructions.
+
+	void BURGER_API Burger::float_to_int_round(int32_t* pOutput, float fInput) BURGER_NOEXCEPT
+
+***************************************/
+
+/***************************************
+
+	PowerPC 32 version
+
+	r0, r3-12, fp0-fp13 are volatile
+	pOutput = r3
+	fInput = fp1
+
+***************************************/
+
+#if defined(__ppc__)
+	.align 2
+	.text
+
+	.globl __ZN6Burger18float_to_int_roundEPif
+__ZN6Burger18float_to_int_roundEPif:
+
+/* Get the address of g_fMinNoInteger */
+	lis		r4, ha16(__ZN6Burger15g_fMinNoIntegerE)
+
+/* Get the abs value to test */
+	fabs	f0, f1
+
+/* Load 8388608.0f */
+	lfs		f2, lo16(__ZN6Burger15g_fMinNoIntegerE)(r4)
+
+/* Pointer to 0.5f */
+	lis		r4, ha16(__ZN6Burger7g_fHalfE)
+
+/* Push the positive number to highest value without fraction */
+/* (Removes fraction) */
+	fadds	f5, f0, f2
+
+/* Load 0.5f */
+	lfs		f3, lo16(__ZN6Burger7g_fHalfE)(r4)
+
+/* Undo the push (Fraction is gone) */
+	fsubs	f5, f5, f2
+
+/* Subtract original from rounded to get the fraction */
+	fsubs	f6, f0, f5
+
+/* Test against 0.5 */
+	fsubs	f6, f6, f3
+
+/* Set to one */
+	fadds	f3, f3, f3
+
+/* Set to zero */
+	fsubs	f4, f5, f5
+
+/* Set to zero or one depending on the test */
+	fsel	f0, f6, f3, f4
+
+/* Add 0 for no rounding, 1 for round up */
+	fadds	f5, f5, f0
+
+/* Get the negative value */
+	fnabs	f2, f5
+
+/* Which one to use? Positive or negative? */
+	fsel	f1, f1, f5, f2
+
+/* Convert to integer */
+	fctiwz	f1, f1
+
+/* Store the integer */
+	stfiwx	f1, 0, r3
+	blr
+
+#endif
+
+/***************************************
+
+	PowerPC 64 version
+	
+	r0, r3-12, fp0-fp13 are volatile
+	pOutput in r3
+	fInput = fp1
+
+***************************************/
+
+#if defined(__ppc64__)
+	.align 2
+	.text
+
+	.globl __ZN6Burger18float_to_int_roundEPif
+__ZN6Burger18float_to_int_roundEPif:
+
+/* Get the absolute value */
+	fabs	f4, f1
+
+/* Load 0.5 */
+	lis		r4, ha16(__ZN6Burger7g_fHalfE)
+
+/* Convert the input into an integer */
+	fctidz	f2, f4
+
+/* f0 = 0.5 */
+	lfs		f0,	lo16(__ZN6Burger7g_fHalfE)(r4)
+
+/* Convert back to a double */
+	fcfid	f2, f2
+
+/* Pointer to temp */
+	subi	r4, r1, 8
+
+/* f5 = 1.0 */
+	fadd	f5, f0, f0
+	
+/* f6 = 0.0 */
+	fsub	f6, f0, f0
+
+/* Get the fraction */
+	fsub	f4, f4, f2
+	
+/* Test for rounding */
+	fsub	f0, f4, f0
+	fsel	f0, f0, f5, f6
+	fadd	f2, f2, f0
+
+/* Restore the sign */
+	fneg	f3, f2
+	fsel	f1, f1, f2, f3
+
+/* Convert to integer again */
+	fctiw	f1, f1
+
+/* Store result */
+	stfiwx	f1, 0, r3
+	blr
+
+#endif
+
+
+/***************************************
+
+	Intel 32 bit version
+
+	eax, ecx and edx are volatile
+	pOutput = edi
+	fInput = 4(%esp)
+
+***************************************/
+
+#if defined(__i386__)
+	.align	4,0x90
+	.globl __ZN6Burger18float_to_int_roundEPif
+__ZN6Burger18float_to_int_roundEPif:
+
+/* Load in an SSE register */
+	movss		4(%esp), %xmm0
+
+/* Convert to integer with round to zero */
+	cvttps2dq	%xmm0, %xmm2
+	
+/* Save the sign for later */
+	movd		%xmm0, %ecx
+
+/* Convert back to float */
+	cvtdq2ps	%xmm2, %xmm1
+
+/* Move sign to bit 0x01 */
+	shrl		$31, %ecx
+		
+/* Get the difference */
+	subss		%xmm1, %xmm0
+
+/* 0/1 -> 0/2 */
+	shll		$1, %ecx
+
+/* Get the absolute value */
+	pand		(__ZN6Burger7g_fQNanE), %xmm0
+
+/* 0/2 -> -1, 1 */
+	decl		%ecx
+
+/* Move the difference to integer register */
+	cmpnltss	(__ZN6Burger7g_fHalfE), %xmm0
+	
+/* Get the mask */
+	movd		%xmm0, %eax
+	
+/* Mask off the adjustment */
+	andl		%eax, %ecx
+	
+/* Return the result */
+	movd		%xmm2, %eax
+	subl		%ecx, %eax
+
+/* Move to integer register */
+	movl		%eax, (%edi)
+	ret
+
+#endif
+
+/***************************************
+
+	Intel 64 bit version
+
+	eax, ecx and edx are volatile
+	pOutput = rdi
+	fInput = xmm0
+
+***************************************/
+
+#if defined(__x86_64__)
+	.align	4,0x90
+	.globl __ZN6Burger18float_to_int_roundEPif
+__ZN6Burger18float_to_int_roundEPif:
+
+/* Convert to integer with round to zero */
+	cvttps2dq	%xmm0, %xmm2
+	
+/* Save the sign for later */
+	movd		%xmm0, %ecx
+
+/* Convert back to float */
+	cvtdq2ps	%xmm2, %xmm1
+
+/* Move sign to bit 0x01 */
+	shrl		$31, %ecx
+		
+/* Get the difference */
+	subss		%xmm1, %xmm0
+
+/* 0/1 -> 0/2 */
+	shll		$1, %ecx
+
+/* Get the absolute value mask */
+	movd		LC0(%rip), %xmm3
+	
+/* 0/2 -> -1, 1 */
+	decl		%ecx
+
+/* Get the absolute value */
+	pand		%xmm3, %xmm0
+
+/* Move the difference to integer register */
+	cmpnltss	LC1(%rip), %xmm0
+	
+/* Get the mask */
+	movd		%xmm0, %eax
+	
+/* Mask off the adjustment */
+	andl		%eax, %ecx
+	
+/* Return the result */
+	movd		%xmm2, %eax
+	subl		%ecx, %eax
+	movl		%eax, (%rdi)
+	ret
+
+	.literal4	
+	.align	2
+LC0:
+	.long	0x7FFFFFFF
+	
+LC1:
+	.long	0x3F000000		/* 0.5f */
+
+	ret
+
+#endif
+

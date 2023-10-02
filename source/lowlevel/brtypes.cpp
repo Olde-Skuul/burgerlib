@@ -777,6 +777,20 @@
 
 /*! ************************************
 
+	\def __GNUC_PREREQ
+	\brief GNUC version test macro
+
+	On GNUC compilers, this compiles to 0. This was taken from features.h
+
+	[features.h documentation for this macro]
+	(https://sites.uclouvain.be/SystInfo/usr/include/features.h.html)
+
+	\sa BURGER_GNUC
+
+***************************************/
+
+/*! ************************************
+
 	\def BURGER_X86
 	\brief Define to determine if code is being built for 32 bit Intel
 		processors.
@@ -3991,7 +4005,7 @@ default constructors.
 	integer of the range of -32768 through 32767 and the lower 16 bits is a
 	fraction of x/65536.
 
-	\sa \ref FLOATTOFIXED, \ref FIXEDTOFLOAT, Int32 or Frac32.
+	\sa \ref BURGER_FLOAT_TO_FIXED, \ref BURGER_FIXED_TO_FLOAT, Int32 or Frac32.
 
 ***************************************/
 

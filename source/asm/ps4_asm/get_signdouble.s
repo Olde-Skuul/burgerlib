@@ -47,5 +47,5 @@ _ZN6Burger8get_signEd:
 	vmovd %rcx, %xmm0
 	ret
 
-	.cfi_endproc
 	.size	_ZN6Burger8get_signEd, .-_ZN6Burger8get_signEd
+	.cfi_endproc

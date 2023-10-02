@@ -34,10 +34,10 @@ __declspec(naked) float BURGER_API Burger::get_round(
 	fstcw	[esp + 4]
 
 ; Set round down
-	fldcw	word ptr[g_X86RoundDownFlag]
+	fldcw	word ptr[g_u8087RoundToZero]
 
 ; Add or subtract 0.5f
-	fadd	dword ptr[g_X86OneAndNegOne + eax * 4]
+	fadd	dword ptr[g_X86HalfAndNegHalf + eax * 4]
 
 ; Round
 	frndint

@@ -18,17 +18,21 @@
 get_PowerPC_rounding__6BurgerFv:
 	.type get_PowerPC_rounding__6BurgerFv, @function
 
+; WiiU stack frame
+	stwu	sp, -24(sp)
+
 ; Get the floating point control register
 	mffs	f0
 
 ; Store it in memory
-	stfd	f0, -8(r1)
+	stfd	f0, 8(sp)
 
 ; Load into an integer register
-	lwz		r3, -4(r1)
+	lwz		r3, 12(sp)
 
 ; Mask off the lowest 2 bits (AND & 3)
 	clrlwi	r3, r3, 30
+	addi	sp, sp, 24
 	blr
 
 	.size	get_PowerPC_rounding__6BurgerFv,$-get_PowerPC_rounding__6BurgerFv

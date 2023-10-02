@@ -28,21 +28,74 @@
 #pragma volatile_asm off
 #endif
 
+// None of this is to be documented
+#if !defined(DOXYGEN)
+
+// Compiler built ins (__builtin__*)
+
+#if defined(BURGER_GNUC) || defined(BURGER_CLANG) || defined(BURGER_SNSYSTEMS)
+extern float __builtin_fabsf(float);
+extern double __builtin_fabs(double val);
+extern float __builtin_sqrtf(float);
+extern double __builtin_sqrt(double);
+#endif
+
+// Of cource SN Systems would define it differently
+#if (defined(BURGER_CLANG) || defined(BURGER_GNUC)) || \
+	(defined(BURGER_SNSYSTEMS) && defined(BURGER_PPC))
+extern int __builtin_clz(unsigned int);
+#elif defined(BURGER_SNSYSTEMS)
+extern uint32_t __builtin_clz(uint32_t);
+#endif
+
+#if defined(BURGER_GNUC) || defined(BURGER_CLANG) || \
+	(defined(BURGER_SNSYSTEMS) && !defined(BURGER_PPC))
+extern uint32_t __builtin_rol(uint32_t, const uint32_t);
+extern uint32_t __builtin_ror(uint32_t, const uint32_t);
+#endif
+
 // Inline assembly prototypes, all are done as "C"
 
 extern "C" {
 
-// Compiler prototypes
+#if defined(BURGER_CLANG) || defined(BURGER_GNUC)
+#if __GNUC_PREREQ(2, 8) && !defined(BURGER_DARWIN)
+extern float fabsf(float) throw();
+extern double fabs(double) throw();
+extern float sqrtf(float) throw();
+extern double sqrt(double) throw();
+#else
+extern float fabsf(float);
+extern double fabs(double);
+extern float sqrtf(float);
+extern double sqrt(double);
+#endif
+#endif
 
-#if !defined(DOXYGEN)
 // Supported by all versions of Visual Studio 7-2022
 #if defined(BURGER_MSVC)
+
+extern double __cdecl fabs(double);
+extern double __cdecl sqrt(double);
+#pragma intrinsic(fabs, sqrt)
+
+#if defined(BURGER_AMD64) || defined(BURGER_ARM)
+extern float __cdecl sqrtf(float);
+#pragma intrinsic(sqrtf)
+#endif
+
+#if defined(BURGER_ARM)
+extern float __cdecl fabsf(float);
+#pragma intrinsic(fabsf)
+#endif
+
 extern unsigned short __cdecl _byteswap_ushort(unsigned short);
 extern unsigned long __cdecl _byteswap_ulong(unsigned long);
 extern unsigned __int64 __cdecl _byteswap_uint64(unsigned __int64);
 #pragma intrinsic(_byteswap_ushort, _byteswap_ulong, _byteswap_uint64)
 
-#if defined(BURGER_XBOXONE)
+// Supported by Visual Studio 2015 or higher
+#if (BURGER_MSVC >= 190000000) && defined(BURGER_INTEL)
 extern unsigned short __cdecl _load_be_u16(void const*);
 extern unsigned int __cdecl _load_be_u32(void const*);
 extern unsigned __int64 __cdecl _load_be_u64(void const*);
@@ -57,6 +110,10 @@ extern "C" uint64_t BURGER_API _xgetbv(unsigned int uInput);
 #endif
 
 #elif defined(BURGER_WATCOM) && defined(BURGER_X86)
+
+extern float sqrtf(float);
+#pragma aux sqrtf = "fsqrt" parm[8087] value[8087] modify[8087] nomemory;
+
 extern uint64_t _xgetbv(unsigned int uInput);
 #pragma aux _xgetbv = "db 0x0F, 0x01, 0xD0" parm[ecx] value[eax edx] modify \
 	exact[eax edx] nomemory;
@@ -220,6 +277,10 @@ extern unsigned int __builtin___rotate_right32(unsigned int, int)
 #elif (defined(BURGER_SNSYSTEMS) && defined(BURGER_ARM32))
 extern uint32_t __builtin_rev(uint32_t);
 
+#elif (defined(BURGER_SNSYSTEMS) && defined(BURGER_PPC))
+extern float sqrtf(float);
+extern double sqrt(double);
+
 #elif defined(BURGER_GHS) && defined(BURGER_PPC)
 int __RLWINM(int, int, int, int);
 int __RLWNM(int, int, int, int);
@@ -229,11 +290,11 @@ int __RLWIMI(int, int, int, int, int);
 #define __rlwimi __RLWIMI
 
 #elif defined(BURGER_INTEL_COMPILER)
+extern double __cdecl fabs(double);
+extern double __cdecl sqrt(double);
+extern float __cdecl sqrtf(float);
 extern int __cdecl _bswap(int);
 extern __int64 __cdecl _bswap64(__int64);
-
-#elif defined(BURGER_PS3)
-#include <ppu_intrinsics.h>
 
 #elif (defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_PPC)
 
@@ -301,8 +362,8 @@ extern uint64_t _xgetbv(uint_t xcr) BURGER_NOEXCEPT;
 #endif
 
 #endif
-#endif
 }
+#endif
 
 #if (defined(BURGER_METROWERKS) && defined(BURGER_X86))
 #pragma volatile_asm reset

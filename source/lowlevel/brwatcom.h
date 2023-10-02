@@ -24,19 +24,6 @@
 
 #if !defined(DOXYGEN)
 
-// Disable nested comment found in comment (Direct X headers trigger this)
-#pragma disable_message(15)
-// Disable user-defined conversion cannot convert to its own class or base class
-#pragma disable_message(446)
-// Disable 'sizeof' operand contains compiler generated information
-#pragma disable_message(549)
-// Disable redefinition of the typedef name (DirectX headers trigger this)
-#pragma disable_message(583)
-// Disable assuming unary 'operator &' not overloaded for type
-#pragma disable_message(666)
-// Disable '//' style comment continues on next line
-#pragma disable_message(735)
-
 extern "C" {
 namespace std {
 
@@ -73,15 +60,6 @@ __declspec(__watcall) extern long int labs(long int);
 __declspec(__watcall) extern unsigned int _rotl(unsigned int, unsigned int);
 __declspec(__watcall) extern unsigned int _rotr(unsigned int, unsigned int);
 #pragma intrinsic(_rotl, _rotr)
-
-extern float sqrtf(float);
-#pragma aux sqrtf = "fsqrt" parm[8087] value[8087] modify[8087] nomemory;
-
-extern const float g_fBurgerIntMathNearesttable[2];
-extern const float g_fBurgerMath65536;
-
-extern void WatcomAssertNothing(void);
-#pragma aux WatcomAssertNothing = modify exact[] nomemory;
 
 // Modern intrinsics
 extern long _InterlockedExchange(long volatile*, long);
@@ -144,67 +122,6 @@ extern Fixed32 BurgerFixedMathReciprocal(Fixed32 fInput);
 	"mov edx,1" \
 	"idiv ecx" \
 	"Done:" parm[ecx] value[eax] modify exact[eax edx] nomemory;
-
-extern Fixed32 BurgerFixedMathFromFloatFloor(float fInput);
-#pragma aux BurgerFixedMathFromFloatFloor = \
-	"sub esp,4" \
-	"fmul dword ptr [g_fBurgerMath65536]" \
-	"fadd dword ptr [g_fBurgerIntMathNearesttable]" \
-	"fistp dword ptr [esp]" \
-	"pop eax" parm[8087] value[eax] modify exact[eax] nomemory;
-
-extern Fixed32 BurgerFixedMathFromFloat(float fInput);
-#pragma aux BurgerFixedMathFromFloat = \
-	"sub esp,4" \
-	"fst dword ptr [esp]" \
-	"fmul dword ptr [g_fBurgerMath65536]" \
-	"mov eax,[esp]" \
-	"shr eax,31" \
-	"fadd dword ptr [g_fBurgerIntMathNearesttable+eax*4]" \
-	"fistp dword ptr [esp]" \
-	"pop eax" parm[8087] value[eax] modify exact[eax] nomemory;
-
-extern Fixed32 BurgerFixedMathFromFloatCeil(float fInput);
-#pragma aux BurgerFixedMathFromFloatCeil = \
-	"sub esp,4" \
-	"fmul dword ptr [g_fBurgerMath65536]" \
-	"fadd dword ptr [g_fBurgerIntMathNearesttable+4]" \
-	"fistp dword ptr [esp]" \
-	"pop eax" parm[8087] value[eax] modify exact[eax] nomemory;
-
-extern Fixed32 BurgerFixedMathFromFloatNearest(float fInput);
-#pragma aux BurgerFixedMathFromFloatNearest = \
-	"sub esp,4" \
-	"fmul dword ptr [g_fBurgerMath65536]" \
-	"fistp dword ptr [esp]" \
-	"pop eax" parm[8087] value[eax] modify exact[eax] nomemory;
-
-extern void BurgerFixedMathFromFloatFloor2(Fixed32* pOutput, float fInput);
-#pragma aux BurgerFixedMathFromFloatFloor2 = \
-	"fmul dword ptr [g_fBurgerMath65536]" \
-	"fadd dword ptr [g_fBurgerIntMathNearesttable]" \
-	"fistp dword ptr [eax]" parm[eax][8087] modify exact[];
-
-extern void BurgerFixedMathFromFloat2(Fixed32* pOutput, float fInput);
-#pragma aux BurgerFixedMathFromFloat2 = \
-	"sub esp,4" \
-	"fst dword ptr [esp]" \
-	"fmul dword ptr [g_fBurgerMath65536]" \
-	"pop ecx" \
-	"shr ecx,31" \
-	"fadd dword ptr [g_fBurgerIntMathNearesttable+ecx*4]" \
-	"fistp dword ptr [eax]" parm[eax][8087] modify[ecx];
-
-extern void BurgerFixedMathFromFloatCeil2(Fixed32* pOutput, float fInput);
-#pragma aux BurgerFixedMathFromFloatCeil2 = \
-	"fmul dword ptr [g_fBurgerMath65536]" \
-	"fadd dword ptr [g_fBurgerIntMathNearesttable+4]" \
-	"fistp dword ptr [eax]" parm[eax][8087] modify exact[];
-
-extern void BurgerFixedMathFromFloatNearest2(Fixed32* pOutput, float fInput);
-#pragma aux BurgerFixedMathFromFloatNearest2 = \
-	"fmul dword ptr [g_fBurgerMath65536]" \
-	"fistp dword ptr [eax]" parm[eax][8087] modify exact[];
 
 // Intrinsics from Visual Studio
 extern void __watcall __cpuid(int a[4], int b);

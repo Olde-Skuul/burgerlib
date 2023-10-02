@@ -128,6 +128,12 @@ union uint64_double_t {
 
 // 32 bit floating point constants
 
+/** Constant for 0.0f in the float format. */
+extern const uint32_float_t g_fZero;
+
+/** Constant for -0.0f in the float format. */
+extern const uint32_float_t g_fNegZero;
+
 /** Constant for 1.0f in the float format. */
 extern const uint32_float_t g_fOne;
 
@@ -267,7 +273,25 @@ extern const uint32_float_t g_fLN10;
 /** Constant for -ln(10) in the float format. */
 extern const uint32_float_t g_fNegLN10;
 
+/** Constant for 1.0f/255.f in the float format. */
+extern const uint32_float_t g_f1Div255;
+
+/** Constant for 1.0f/3.f in the float format. */
+extern const uint32_float_t g_f1Div3;
+
+/** Constant for 2.0f/3.f in the float format. */
+extern const uint32_float_t g_f2Div3;
+
+/** Constant for 65536.f in the float float */
+extern const uint32_float_t g_f65536;
+
 // 64 bit floating point constants
+
+/** Constant for 0.0 in the double format. */
+extern const uint64_double_t g_dZero;
+
+/** Constant for -0.0 in the double format. */
+extern const uint64_double_t g_dNegZero;
 
 /** Constant for 1.0 in the double format. */
 extern const uint64_double_t g_dOne;
@@ -410,6 +434,31 @@ extern const uint64_double_t g_dLN10;
 
 /** Constant for -ln(10) in the double format. */
 extern const uint64_double_t g_dNegLN10;
+
+/** Constant for 1.0/255.0 in the double format. */
+extern const uint64_double_t g_d1Div255;
+
+/** Constant for 1.0/3.0 in the double format. */
+extern const uint64_double_t g_d1Div3;
+
+/** Constant for 2.0/3.0 in the double format. */
+extern const uint64_double_t g_d2Div3;
+
+/** Constant for 65536.0 in the double format. */
+extern const uint64_double_t g_d65536;
+
+#if defined(BURGER_X86) || defined(DOXYGEN)
+
+/** 8087 control word to set rounding to zero */
+extern const uint16_t g_u8087RoundToZero;
+
+/** 8087 control word to set rounding to +infinity */
+extern const uint16_t g_u8087RoundToInfinity;
+
+/** 8087 control word to set rounding to -infinity */
+extern const uint16_t g_u8087RoundToNegativeInfinity;
+
+#endif
 
 }
 /* END */

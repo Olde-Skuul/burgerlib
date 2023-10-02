@@ -16,7 +16,6 @@
 
 	.data
 
-; Actually Burger::g_X86RoundDownFlag
 	EXTRN	`W?g_dReciprocalPi2$:Burger$nx$uint64_double_t$:1$`:QWORD
 	EXTRN	`W?g_dHalf$:Burger$nx$uint64_double_t$:1$`:QWORD
 	EXTRN	`W?g_dOne$:Burger$nx$uint64_double_t$:1$`:QWORD

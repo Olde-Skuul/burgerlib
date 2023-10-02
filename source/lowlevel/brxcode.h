@@ -22,11 +22,6 @@
 /* BEGIN */
 #if defined(BURGER_DARWIN) && (defined(BURGER_GNUC) || defined(BURGER_CLANG))
 
-extern "C" float sqrtf(float);
-extern "C" double sqrt(double);
-extern "C" float fabsf(float);
-extern "C" double fabs(double);
-
 #if defined(BURGER_PPC)
 
 BURGER_INLINE float __sqrt(float fA)

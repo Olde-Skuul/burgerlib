@@ -16,6 +16,11 @@
 #include "brendian.h"
 #include "brfixedpoint.h"
 
+#if defined(BURGER_WATCOM)
+// Disable 'sizeof' operand contains compiler generated information
+#pragma disable_message(549)
+#endif
+
 #if !defined(DOXYGEN)
 BURGER_CREATE_STATICRTTI_PARENT(
 	Burger::DecompressALaw, Burger::DecompressAudio);

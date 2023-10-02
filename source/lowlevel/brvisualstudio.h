@@ -46,20 +46,6 @@
 extern "C" {
 
 // Ensure these are intrinsics
-extern double __cdecl fabs(double);
-extern double __cdecl sqrt(double);
-#pragma intrinsic(fabs, sqrt)
-
-#if defined(BURGER_AMD64) || defined(BURGER_ARM)
-extern float __cdecl sqrtf(float);
-#pragma intrinsic(sqrtf)
-#endif
-
-#if defined(BURGER_ARM)
-extern float __cdecl fabsf(float);
-#pragma intrinsic(fabsf)
-#endif
-
 extern unsigned int __cdecl _rotl(unsigned int, int);
 extern unsigned __int64 __cdecl _rotl64(unsigned __int64, int);
 extern unsigned int __cdecl _rotr(unsigned int, int);

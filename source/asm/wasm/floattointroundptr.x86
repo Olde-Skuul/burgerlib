@@ -1,0 +1,66 @@
+;
+; X86 assembly for Open Watcom
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+;
+; Build with wasm.exe
+;
+; void BURGER_API Burger::float_to_int_round(int32_t* pOutput, float fInput) BURGER_NOEXCEPT
+; all registers are non-volatile
+; Result in 8087 FPU
+; pOutput = eax
+; fInput = [esp+4]
+;
+
+	.686
+	.MODEL FLAT,SYSCALL
+
+	.data
+
+; Actually Burger::g_u8087RoundToZero
+	EXTRN	`W?g_u8087RoundToZero$:Burger$nxus`:WORD
+	EXTRN	`W?g_X86HalfAndNegHalf$:Burger$n[]x$uint32_float_t$:1$`:DWORD
+
+_TEXT segment para 'CODE'
+
+	align 16
+public `W?float_to_int_round$:Burger$n(pnib)v`
+`W?float_to_int_round$:Burger$n(pnib)v` proc
+
+; Save the output pointer
+	push	eax
+
+; Get the sign bit
+	mov		eax, dword ptr[esp + 8]
+
+; Load into the FPU
+	fld		dword ptr[esp + 8]
+
+; 1 for negative, 0 for positive
+	shr		eax, 31
+
+; Save state
+	fstcw	[esp + 8]
+
+; Set round down
+	fldcw 	[`W?g_u8087RoundToZero$:Burger$nxus`]
+
+; Add or subtract 0.5f
+	fadd	[`W?g_X86HalfAndNegHalf$:Burger$n[]x$uint32_float_t$:1$` + eax * 4]
+
+; Round
+	frndint
+
+; Restore rounding
+	fldcw	[esp + 8]
+
+; Store in pOutput[0]
+	pop		eax
+	fistp	dword ptr[eax]
+	ret		4
+
+`W?float_to_int_round$:Burger$n(pnib)v` endp
+
+_TEXT	ends
+
+	end

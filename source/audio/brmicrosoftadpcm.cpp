@@ -18,6 +18,12 @@
 #include "brendian.h"
 
 #if !defined(DOXYGEN)
+
+#if defined(BURGER_WATCOM)
+// Disable 'sizeof' operand contains compiler generated information
+#pragma disable_message(549)
+#endif
+
 BURGER_CREATE_STATICRTTI_PARENT(Burger::DecompressMicrosoftADPCM,Burger::DecompressAudio);
 #endif
 

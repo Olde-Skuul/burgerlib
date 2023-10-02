@@ -36,8 +36,9 @@ TARGETFOLDERS = (
     "windows", "msdos",
     "mac", "macosx", "linux", "beos",
     "ps2", "ps3", "ps4", "ps5", "psvita",
-    "gamecube", "wii", "dsi", "switch",
+    "gamecube", "wii", "wiiu", "dsi", "switch",
     "xbox", "xbox360", "xboxone",
+    "stadia",
     "ios", "android", "shield", "ouya"
 
 )
@@ -67,6 +68,10 @@ SUPER_HEADERS = (
     ("templateburgerbase.h", "burger.h", "burger_stripped.h"),
     ("platforms" + os.sep + "mac" + os.sep + "templatemac.h",
      "burgermac.h", "burgermac_stripped.h"),
+    ("platforms" + os.sep + "macosx" + os.sep + "templatemacosx.h",
+     "burgermacosx.h", "burgermacosx_stripped.h"),
+    ("platforms" + os.sep + "darwin" + os.sep + "templatedarwin.h",
+     "burgerdarwin.h", "burgerdarwin_stripped.h"),
     ("platforms" + os.sep + "ps4" + os.sep + "templateps4.h",
      "burgerps4.h", "burgerps4_stripped.h"),
     ("platforms" + os.sep + "windows" + os.sep + "templatewindows.h",
@@ -102,6 +107,10 @@ UNIQUE_HEADERS = (
     ("bin" + os.sep + "burgermac_stripped.h",
         "mac" + os.sep + "burgerlib" + os.sep + "burgermac.h"),
 
+    # MacOSX
+    ("bin" + os.sep + "burgermacosx_stripped.h",
+        "macosx" + os.sep + "burgerlib" + os.sep + "burgermacosx.h"),
+
     # PS4
     ("bin" + os.sep + "burgerps4_stripped.h",
         "ps4" + os.sep + "burgerlib" + os.sep + "burgerps4.h"),
@@ -115,6 +124,12 @@ UNIQUE_HEADERS = (
     # Linux
     ("bin" + os.sep + "burgerlinux_stripped.h",
         "linux" + os.sep + "burgerlib" + os.sep + "burgerlinux.h"),
+
+    # Darwin
+    ("bin" + os.sep + "burgerdarwin_stripped.h",
+        "macosx" + os.sep + "burgerlib" + os.sep + "burgerdarwin.h"),
+    ("bin" + os.sep + "burgerdarwin_stripped.h",
+        "ios" + os.sep + "burgerlib" + os.sep + "burgerdarwin.h"),
 
     # Unix
     ("bin" + os.sep + "burgerunix_stripped.h",

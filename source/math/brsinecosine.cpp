@@ -55,14 +55,16 @@
 ***************************************/
 
 // Written in assembly
-#if (defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
+#if ((defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
 	((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
-		(defined(BURGER_X86) || defined(BURGER_PPC))) || \
+		(defined(BURGER_X86) || defined(BURGER_PPC) || \
+			defined(BURGER_ARM))) || \
 	(defined(BURGER_METROWERKS) && \
 		(defined(BURGER_PPC) || defined(BURGER_X86))) || \
 	((defined(BURGER_SNSYSTEMS) || defined(BURGER_GHS)) && \
 		defined(BURGER_PPC)) || \
-	(defined(BURGER_MSVC) && (defined(BURGER_X86) || defined(BURGER_PPC)))
+	(defined(BURGER_MSVC) && (defined(BURGER_X86) || defined(BURGER_PPC)))) \
+	&& !(defined(BURGER_MACOSX) && defined(BURGER_ARM))
 
 #else
 
@@ -105,12 +107,14 @@ float BURGER_API Burger::modulo_radians(float fInput) BURGER_NOEXCEPT
 // Written in assembly
 #if (defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
 	((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
-		(defined(BURGER_X86) || defined(BURGER_PPC))) || \
+		(defined(BURGER_X86) || defined(BURGER_PPC) || \
+			defined(BURGER_ARM))) || \
 	(defined(BURGER_METROWERKS) && \
 		(defined(BURGER_PPC) || defined(BURGER_X86))) || \
 	((defined(BURGER_SNSYSTEMS) || defined(BURGER_GHS)) && \
 		defined(BURGER_PPC)) || \
-	(defined(BURGER_MSVC) && (defined(BURGER_X86) || defined(BURGER_PPC)))
+	(defined(BURGER_MSVC) && \
+		(defined(BURGER_X86) || defined(BURGER_PPC) || defined(BURGER_ARM64)))
 
 #else
 
@@ -264,7 +268,7 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::sine_387(
         fprem                   // Get the remainder
         fstsw[esp + 4]
         fwait
-        mov ah, byte ptr[esp + 5]   
+        mov ah, byte ptr[esp + 5]
         sahf
         jp Looper               // Still needs reduction?
         fstp st(1)              // Fix the FPU
@@ -437,7 +441,8 @@ __asm__(
 	"	ret\n" // Clean up and exit
 );
 
-// __ZN6Burger10cosine_387Ed = double BURGER_API Burger::cosine_387(double dInput)
+// __ZN6Burger10cosine_387Ed = double BURGER_API Burger::cosine_387(double
+// dInput)
 __asm__(
 	".globl __ZN6Burger10cosine_387Ed\n"
 	"__ZN6Burger10cosine_387Ed:\n"
@@ -1124,7 +1129,7 @@ BURGER_DECLSPECNAKED float BURGER_API Burger::get_cosine(
         faddp st(1), st(0)
         ret 4 // Clean up and exit
     }
-    // clang-format on 
+    // clang-format on
 }
 #elif defined(BURGER_X86) && (defined(BURGER_MACOSX) || defined(BURGER_IOS))
 // __ZN6Burger10get_cosineEf = float BURGER_API Burger::get_cosine(float fInput)

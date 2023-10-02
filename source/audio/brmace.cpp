@@ -17,6 +17,12 @@
 #include "brfixedpoint.h"
 
 #if !defined(DOXYGEN)
+
+#if defined(BURGER_WATCOM)
+// Disable 'sizeof' operand contains compiler generated information
+#pragma disable_message(549)
+#endif
+
 BURGER_CREATE_STATICRTTI_PARENT(Burger::DecompressMace3,Burger::DecompressAudio);
 BURGER_CREATE_STATICRTTI_PARENT(Burger::DecompressMace6,Burger::DecompressAudio);
 #endif

@@ -1662,11 +1662,19 @@ struct default_delete_array {
 
 // Swap the contents of two memory variables
 template<class T>
-BURGER_INLINE void SwapVariables(T* pA, T* pB)
+BURGER_INLINE void swap_variables(T* pA, T* pB)
 {
 	T tTemp(*pA);
 	*pA = *pB;
 	*pB = tTemp;
+}
+
+template<class T>
+BURGER_INLINE void exchange(T& __A, T& __B)
+{
+	T tTemp = __A;
+	__A = __B;
+	__B = tTemp;
 }
 
 // Return the minimum value

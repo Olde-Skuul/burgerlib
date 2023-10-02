@@ -25,6 +25,11 @@
 #include "brstringfunctions.h"
 #include "common.h"
 
+#if defined(BURGER_WATCOM)
+// Disable 'sizeof' operand contains compiler generated information
+#pragma disable_message(549)
+#endif
+
 using namespace Burger;
 
 static const uint8_t RawData[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,

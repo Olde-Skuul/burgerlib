@@ -378,3 +378,10 @@ int BURGER_ANSIAPI main(int argc, const char** argv)
 	MyApp.PauseOnError();
 	return iResult;
 }
+
+#if defined(BURGER_SWITCH)
+extern "C" void nnMain()
+{
+	main(0, nullptr);
+}
+#endif

@@ -114,23 +114,12 @@ BURGER_ALIGN(extern const uint8_t, g_AsciiTestTable[256], 16);
 BURGER_ALIGN(extern const char, g_NibbleToAsciiUppercase[16], 16);
 BURGER_ALIGN(extern const char, g_NibbleToAsciiLowercase[16], 16);
 BURGER_ALIGN(extern const uint8_t, g_AsciiToWord8Table[256], 16);
-BURGER_ALIGN(extern const uint8_t, g_ReverseBits[256], 16);
+BURGER_ALIGN(extern const uint8_t, g_reverse_bits[256], 16);
 
 extern const uint32_t g_TensTable32[10];
 extern const uint64_t g_TensTable64[20];
 extern uint32_t BURGER_API BCDToWord(uint32_t uInput) BURGER_NOEXCEPT;
 extern uint32_t BURGER_API WordToBCD(uint32_t uInput) BURGER_NOEXCEPT;
-extern uint32_t BURGER_API PowerOf2(uint32_t uInput) BURGER_NOEXCEPT;
-extern uint64_t BURGER_API PowerOf2(uint64_t uInput) BURGER_NOEXCEPT;
-
-template<class T>
-BURGER_INLINE T PowerOf2(T input) BURGER_NOEXCEPT
-{
-	BURGER_STATIC_ASSERT(is_unsigned<T>::value);
-	return static_cast<T>(PowerOf2(static_cast<
-		typename conditional<sizeof(T) <= 4, uint32_t, uint64_t>::type>(
-		input)));
-}
 
 BURGER_INLINE BURGER_CONSTEXPR uint32_t ToLower(uint32_t uInput) BURGER_NOEXCEPT
 {
@@ -337,7 +326,8 @@ extern char* BURGER_API StringCharacterReverse(
 	const char* pInput, int iChar) BURGER_NOEXCEPT;
 extern uint16_t* BURGER_API StringCharacterReverse(
 	const uint16_t* pInput, uint_t uChar) BURGER_NOEXCEPT;
-extern uint_t BURGER_API StringEndsWith(char* pInput, int iChar) BURGER_NOEXCEPT;
+extern uint_t BURGER_API StringEndsWith(
+	char* pInput, int iChar) BURGER_NOEXCEPT;
 extern uint_t BURGER_API StringEndsWith(
 	uint16_t* pInput, uint_t uChar) BURGER_NOEXCEPT;
 

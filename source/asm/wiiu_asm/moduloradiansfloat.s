@@ -23,6 +23,9 @@
 modulo_radians__6BurgerFf:
 	.type modulo_radians__6BurgerFf, @function
 
+; WiiU stack frame
+	stwu	sp, -24(sp)
+
 ; Fetch the pointers
 	lis		r3, %hiadj(g_fReciprocalPi2__6Burger)
 
@@ -45,32 +48,32 @@ modulo_radians__6BurgerFf:
 	fmadds	fp3, fp1, fp3, fp4
 
 ; Store 0x4330000080000000
-	stw		r6, -16(SP)
-	stw		r7, -12(SP)
+	stw		r6, 8(sp)
+	stw		r7, 12(sp)
 
 ; Load 0x4330000080000000 in FPU
-	lfd		fp2, -16(SP)
+	lfd		fp2, 8(sp)
 
 ; Convert to integer
 	fctiwz	fp0, fp3
 
 ; Store the integer in memory (64 bit)
-	stfd	fp0, -8(SP)
+	stfd	fp0, 16(sp)
 
 ; Extract the low word
-	lwz		r0, -4(SP)
+	lwz		r0, 20(sp)
 
 ; Flip the bit
 	xor		r0, r0, r7
 
 ; Create a fake double
-	stw		r6, -8(SP)
+	stw		r6, 16(sp)
 
 ; Store the integer
-	stw		r0, -4(SP)
+	stw		r0, 20(sp)
 
 ; Load the rounded double
-	lfd		fp0, -8(SP)
+	lfd		fp0, 16(sp)
 
 ; Complete the int to float conversion
 	fsubs	fp2, fp0, fp2
@@ -89,6 +92,7 @@ modulo_radians__6BurgerFf:
 ; (fVar*-g_fPi2) + fInput
 FModule1:
 	fmadds	fp1, fp2, fp5, fp1
+	addi	sp, sp, 24
 	blr
 
 	.size	modulo_radians__6BurgerFf,$-modulo_radians__6BurgerFf

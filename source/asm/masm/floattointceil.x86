@@ -1,0 +1,58 @@
+;
+; X86 assembly for Visual Studio
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+;
+; Build with ml.exe
+;
+; int32_t BURGER_API Burger::float_to_int_ceil(float fInput)
+; eax, ecx and edx are volatile
+; fInput = [esp+4]
+; Result in eax
+;
+
+	.686
+	.MODEL FLAT
+
+	.data
+
+_TEXT segment para 'CODE'
+
+	align 16
+public ?float_to_int_ceil@Burger@@YIHM@Z
+?float_to_int_ceil@Burger@@YIHM@Z proc
+
+; Get the input value
+	fld		dword ptr[esp + 4]
+
+; Load the same value in the FPU
+	fld		st(0)
+
+; Convert the float to integer
+	frndint
+
+; Store the integer (Leave a copy in the FPU)
+	fist	dword ptr[esp + 4]
+
+; Compare the integer to the input and pop
+	fcomip	st(0), st(1)
+
+; Get the integer
+	mov		eax, dword ptr[esp + 4]
+
+; Need to update the rounding?
+	jae		NoExtra
+
+; ++1
+	inc		eax
+NoExtra:
+
+; Clean up the FP stack
+	fstp	st(0)
+	ret		4
+
+?float_to_int_ceil@Burger@@YIHM@Z endp
+
+_TEXT ends
+
+	end

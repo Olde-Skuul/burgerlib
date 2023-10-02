@@ -782,6 +782,15 @@
 #define __has_include_next(x) 0
 #endif
 
+#if !defined(__GNUC_PREREQ)
+#if defined(__GNUC__) && defined(__GNUC_MINOR__)
+#define __GNUC_PREREQ(maj, min) \
+	((__GNUC__ << 16) + __GNUC_MINOR__ >= ((maj) << 16) + (min))
+#else
+#define __GNUC_PREREQ(maj, min) 0
+#endif
+#endif
+
 /***************************************
 
 	API macros
@@ -1038,7 +1047,9 @@
 #define BURGER_EQUALS_DELETE
 #define BURGER_EQUALS_DEFAULT
 #define BURGER_DEFAULT_CONSTRUCTOR \
-	BURGER_NOEXCEPT {}
+	BURGER_NOEXCEPT \
+	{ \
+	}
 #define BURGER_DEFAULT_DESTRUCTOR \
 	{ \
 	}

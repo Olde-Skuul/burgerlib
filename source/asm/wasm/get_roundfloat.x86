@@ -16,9 +16,9 @@
 
 	.data
 
-; Actually Burger::g_X86RoundDownFlag
-	EXTRN	`W?g_X86RoundDownFlag$:Burger$nxus`:WORD
-	EXTRN	`W?g_X86OneAndNegOne$:Burger$n[]x$uint32_float_t$:1$`:DWORD
+; Actually Burger::g_u8087RoundToZero
+	EXTRN	`W?g_u8087RoundToZero$:Burger$nxus`:WORD
+	EXTRN	`W?g_X86HalfAndNegHalf$:Burger$n[]x$uint32_float_t$:1$`:DWORD
 
 _TEXT segment para 'CODE'
 
@@ -41,10 +41,10 @@ public `W?get_round$:Burger$n(b)b`
 	fstcw	[esp + 8]
 
 ; Set round down
-	fldcw	[`W?g_X86RoundDownFlag$:Burger$nxus`]
+	fldcw	[`W?g_u8087RoundToZero$:Burger$nxus`]
 
 ; Add or subtract 0.5f
-	fadd	[`W?g_X86OneAndNegOne$:Burger$n[]x$uint32_float_t$:1$` + eax * 4]
+	fadd	[`W?g_X86HalfAndNegHalf$:Burger$n[]x$uint32_float_t$:1$` + eax * 4]
 
 ; Round
 	frndint

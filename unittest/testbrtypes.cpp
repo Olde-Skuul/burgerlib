@@ -39,6 +39,10 @@
 #include "win_version.h"
 #endif
 
+#if defined(BURGER_MACOSX)
+#include "macosx_version.h"
+#endif
+
 #include <stdio.h>
 
 #if defined(BURGER_STRUCT_ALIGN)
@@ -626,11 +630,9 @@ static void BURGER_API ShowCPUFeatures(uint_t uVerbose) BURGER_NOEXCEPT
 #if defined(BURGER_68881)
 	if (uVerbose & VERBOSE_MSG) {
 		uint32_t uFPCR = Burger::get_68881_FPCR();
-		Message("Burger::get_68881_FPCR() = %08X",
-			static_cast<uint_t>(uFPCR));		
+		Message("Burger::get_68881_FPCR() = %08X", static_cast<uint_t>(uFPCR));
 	}
 #endif
-
 }
 
 /***************************************
@@ -771,8 +773,8 @@ static void BURGER_API ShowPlatformFeatures(uint_t uVerbose) BURGER_NOEXCEPT
 
 #if defined(BURGER_MACOSX)
 	if (uVerbose & VERBOSE_MSG) {
-		uTest = Burger::Globals::GetMacOSVersion();
-		Message("Burger::Globals::GetMacOSVersion() = %04X", uTest);
+		uTest = Burger::MacOSX::get_os_version();
+		Message("Burger::MacOSX::get_os_version() = %08X", uTest);
 	}
 #endif
 

@@ -47,5 +47,5 @@ _ZN6Burger8get_signEf:
 	vmovd	%ecx, %xmm0
 	ret
 
-	.cfi_endproc
 	.size	_ZN6Burger8get_signEf, .-_ZN6Burger8get_signEf
+	.cfi_endproc

@@ -1,0 +1,90 @@
+;
+; X86 assembly for Open Watcom
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+;
+; Build with wasm.exe
+;
+; uint64_t Burger::power_of_two(uint64_t uInput)
+; all registers are non-volatile
+; Result in edx, eax
+; uInput = edx, eax
+;
+
+	.386
+
+_TEXT segment para 'CODE'
+
+	align 16
+	PUBLIC `W?power_of_two$:Burger$n(uz)uz`
+`W?power_of_two$:Burger$n(uz)uz` proc
+
+; Save registers
+	push	ecx
+	push	ebx
+
+; Force 0x40000000 to be 0x3FFFFFFF so in the end
+; it's changed back to 0x40000000 (64 bit)
+
+	sub		eax, 1
+	sbb		edx, 0
+
+; Implement the C code, but use shrd
+; uInput |= uInput>>1
+	mov		ecx, eax
+	mov		ebx, edx
+	shr		edx, 1
+	rcr		eax, 1
+	or		ecx, eax
+	or		ebx, edx
+
+; uInput |= uInput>>2
+	mov		eax, ecx
+	mov		edx, ebx
+	shrd	eax, ebx, 2
+	shr		edx, 2
+	or		ecx, eax
+	or		ebx, edx
+
+; uInput |= uInput>>4
+	mov		eax, ecx
+	mov		edx, ebx
+	shrd	eax, ebx, 4
+	shr		edx, 4
+	or		ecx, eax
+	or		ebx, edx
+
+; uInput |= uInput>>8
+	mov		eax, ecx
+	mov		edx, ebx
+	shrd	eax, ebx, 8
+	shr		edx, 8
+	or		ecx, eax
+	or		ebx, edx
+
+; uInput |= uInput>>16
+	mov		eax, ecx
+	mov		edx, ebx
+	shrd	eax, ebx, 16
+	shr		edx, 16
+	or		eax, ecx
+	or		edx, ebx
+
+; Perform the final or in one instruction
+; uInput |= uInput>>32
+	or		eax, edx
+
+; Increment to get the final power of 2
+	add		eax, 1
+	adc		edx, 0
+
+; Restore registers
+	pop		ebx
+	pop		ecx
+	ret
+
+`W?power_of_two$:Burger$n(uz)uz` endp
+
+_TEXT ends
+
+	end

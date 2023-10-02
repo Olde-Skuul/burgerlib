@@ -16,7 +16,6 @@
 
 	.data
 
-; Actually Burger::g_X86RoundDownFlag
 	EXTRN	?g_fReciprocalPi2@Burger@@3Tuint32_float_t@1@B:DWORD
 	EXTRN	?g_fHalf@Burger@@3Tuint32_float_t@1@B:DWORD
 	EXTRN	?g_fOne@Burger@@3Tuint32_float_t@1@B:DWORD
