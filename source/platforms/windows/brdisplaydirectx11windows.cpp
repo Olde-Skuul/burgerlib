@@ -25,11 +25,21 @@
 #pragma warn_impl_s2u_conv off
 #endif
 
+#if defined(BURGER_WATCOM)
+// Disable user-defined conversion cannot convert to its own class or base class
+#pragma disable_message(446)
+#endif
+
 #include <d3d11.h>
 #include <ddraw.h>
 
 #if defined(BURGER_METROWERKS)
 #pragma warn_impl_s2u_conv reset
+#endif
+
+#if defined(BURGER_WATCOM)
+// Disable user-defined conversion cannot convert to its own class or base class
+#pragma enable_message(446)
 #endif
 
 // Available on the Windows SDK 8.0 or higher

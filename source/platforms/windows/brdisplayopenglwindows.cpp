@@ -27,11 +27,19 @@
 
 #include "win_windows.h"
 
+#if defined(BURGER_WATCOM)
+// Disable redefinition of the typedef name (DInput.h headers trigger this)
+#pragma disable_message(583)
+#endif
+
 #include <gl/gl.h>
 #undef GL_EXT_paletted_texture
 #include <gl/glext.h>
 
+
 #if defined(BURGER_WATCOM)
+// Disable redefinition of the typedef name (DInput.h headers trigger this)
+#pragma enable_message(583)
 #pragma library ("opengl32.lib");
 #else
 #pragma comment(lib,"opengl32.lib")

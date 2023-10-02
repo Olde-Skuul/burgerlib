@@ -13,7 +13,7 @@
 ***************************************/
 
 #include "brflashutils.h"
-#include "brstringfunctions.h"
+#include "brpoweroftwo.h"
 
 /*! ************************************
 
@@ -133,14 +133,14 @@ void BURGER_API Burger::Flash::PixelsToTwips(Vector2D_t *pInput)
 	power of two.
 	
 	\param uInput Value to convert
-	\sa PowerOf2(uint32_t)
+	\sa power_of_two(uint32_t)
 
 ***************************************/
 
 uint32_t BURGER_API Burger::Flash::TextureSizePower2(uint32_t uInput)
 {
 	// Convert to the next power of 2
-	uint32_t uResult = PowerOf2(uInput);
+	uint32_t uResult = power_of_two(uInput);
 	// If the ratio of uResult/uInput is greater than 3/5, scale down one shift
 	if ((uInput*5U) < (uResult*3U)) {
 		uResult>>=1;

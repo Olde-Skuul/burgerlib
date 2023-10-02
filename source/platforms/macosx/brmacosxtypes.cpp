@@ -23,7 +23,7 @@ typedef int (*getattrlistbulkPtr)(int dirfd, attrlist* attrList, void* attrBuf,
 	uintptr_t attrBufSize, uint64_t options);
 
 /// Singleton instance of the macOS global variables
-Burger::MacOSX Burger::MacOSX::g_Globals;
+Burger::MacOSXOld Burger::MacOSXOld::g_Globals;
 
 /***************************************
 
@@ -36,23 +36,23 @@ Burger::MacOSX Burger::MacOSX::g_Globals;
 // These filenames MUST match eDLLIndex
 //
 
-static const char* s_LibaryNames[Burger::MacOSX::DLL_COUNT] = {"libdl.dylib"};
+static const char* s_LibaryNames[Burger::MacOSXOld::DLL_COUNT] = {"libdl.dylib"};
 
 //
 // Internal structure for DLL function lookup
 //
 
 struct CallNames_t {
-	Burger::MacOSX::eDLLIndex eDLL; // Enumeration for the DLL
+	Burger::MacOSXOld::eDLLIndex eDLL; // Enumeration for the DLL
 	const char* m_pName;			// Function name
 };
 
-static const CallNames_t g_CallNames[Burger::MacOSX::CALL_COUNT] = {
-	{Burger::MacOSX::LIBDL_DLL, "getattrlistbulk"}};
+static const CallNames_t g_CallNames[Burger::MacOSXOld::CALL_COUNT] = {
+	{Burger::MacOSXOld::LIBDL_DLL, "getattrlistbulk"}};
 
 /*! ************************************
 
-	\struct Burger::MacOSX
+	\struct Burger::MacOSXOld
 	\brief Functions exclusive to Apple macOS
 
 	\macosxonly
@@ -63,7 +63,7 @@ static const CallNames_t g_CallNames[Burger::MacOSX::CALL_COUNT] = {
 
 /*! ************************************
 
-	\enum Burger::MacOSX::eDLLIndex
+	\enum Burger::MacOSXOld::eDLLIndex
 	\brief DLL enumeration for loading in system DLLs
 
 	\macosxonly
@@ -74,7 +74,7 @@ static const CallNames_t g_CallNames[Burger::MacOSX::CALL_COUNT] = {
 
 /*! ************************************
 
-	\enum Burger::MacOSX::eCallIndex
+	\enum Burger::MacOSXOld::eCallIndex
 	\brief Function enumeration for loading in system calls
 
 	\macosxonly
@@ -94,7 +94,7 @@ static const CallNames_t g_CallNames[Burger::MacOSX::CALL_COUNT] = {
 
 ***************************************/
 
-Burger::MacOSX::~MacOSX()
+Burger::MacOSXOld::~MacOSXOld()
 {
 	// Dispose of all resolved calls to Windows
 	MemoryClear(m_pMacOSXCalls, sizeof(m_pMacOSXCalls));
@@ -129,7 +129,7 @@ Burger::MacOSX::~MacOSX()
 
 ***************************************/
 
-void* BURGER_API Burger::MacOSX::LoadLibraryIndex(eDLLIndex eIndex)
+void* BURGER_API Burger::MacOSXOld::LoadLibraryIndex(eDLLIndex eIndex)
 {
 	void* pResult = nullptr;
 	// Valid index?
@@ -175,7 +175,7 @@ void* BURGER_API Burger::MacOSX::LoadLibraryIndex(eDLLIndex eIndex)
 
 ***************************************/
 
-void* BURGER_API Burger::MacOSX::LoadFunctionIndex(eCallIndex eIndex)
+void* BURGER_API Burger::MacOSXOld::LoadFunctionIndex(eCallIndex eIndex)
 {
 	void* pResult = nullptr;
 	// Valid index?
@@ -223,7 +223,7 @@ void* BURGER_API Burger::MacOSX::LoadFunctionIndex(eCallIndex eIndex)
 
 ***************************************/
 
-int BURGER_API Burger::MacOSX::getattrlistbulk(int dirfd, attrlist* attrList,
+int BURGER_API Burger::MacOSXOld::getattrlistbulk(int dirfd, attrlist* attrList,
 	void* attrBuf, uintptr_t attrBufSize, uint64_t options)
 {
 	void* pgetattrlistbulk = LoadFunctionIndex(CALL_getattrlistbulk);

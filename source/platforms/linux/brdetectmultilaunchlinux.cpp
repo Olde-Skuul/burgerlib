@@ -14,10 +14,12 @@
 
 #include "brdetectmultilaunch.h"
 
-#if defined(BURGER_WINDOWS)
-#include "brstring16.h"
+#if defined(BURGER_LINUX)
+#include "brglobalmemorymanager.h"
+#include "brstringfunctions.h"
 
-#include "win_windows.h"
+#include <fcntl.h>
+#include <semaphore.h>
 
 /***************************************
 
@@ -27,26 +29,30 @@
 
 ***************************************/
 
-Burger::DetectMultiLaunch::DetectMultiLaunch() BURGER_NOEXCEPT
-	: m_hInstanceLock(INVALID_HANDLE_VALUE)
+Burger::DetectMultiLaunch::DetectMultiLaunch() BURGER_NOEXCEPT: m_pName(nullptr)
 {
 }
 
 /***************************************
 
-	\brief Tear down on exit
+	\brief Teardown on exit
 
-	If is_multi_launched() is called, a global object exists.
-	Once the class is destroyed, so is the object.
+	If is_multi_launched() is called, a global object exists. Once the class is
+	destroyed, so is the object.
 
 ***************************************/
 
 Burger::DetectMultiLaunch::~DetectMultiLaunch()
 {
-	if (m_hInstanceLock != INVALID_HANDLE_VALUE) {
-		CloseHandle(m_hInstanceLock);
-		// Clean up
-		m_hInstanceLock = INVALID_HANDLE_VALUE;
+	// Is there a name stored?
+	if (m_pName) {
+
+		// Release the global semaphore by name
+		sem_unlink(m_pName);
+
+		// Release the name
+		Free(m_pName);
+		m_pName = nullptr;
 	}
 }
 
@@ -72,39 +78,36 @@ Burger::DetectMultiLaunch::~DetectMultiLaunch()
 		already running, \ref FALSE if this is the only instance.
 
 ***************************************/
-
+#include <stdio.h>
 uint_t Burger::DetectMultiLaunch::is_multi_launched(
 	const char* pSignature) BURGER_NOEXCEPT
 {
+	// Assume success
 	uint_t uResult = FALSE;
 
-	// Did I run already?
-	if (m_hInstanceLock == INVALID_HANDLE_VALUE) {
+	// If already connected, this is the primary process
+	if (!m_pName) {
 
-		// Convert signature to UTF-16
-		String16 NewName(pSignature);
-
-		// Create a global instance of a file mapper that's 32 bytes in size
-		HANDLE hLock = CreateFileMappingW(INVALID_HANDLE_VALUE, nullptr,
-			PAGE_READONLY, 0, 32, reinterpret_cast<LPCWSTR>(NewName.c_str()));
-
+		// Assume this is not the primary process
 		uResult = TRUE;
-		if (hLock != nullptr) {
 
-			// Got the mapping object?
-			// Create and not already present?
+		// See if it already exists
+		sem_t* pSemaphore = sem_open(pSignature, O_CREAT, S_IRWXU, 1);
 
-			// Note: If already exists, don't dispose of it, because it would
-			// cause the GLOBAL object to be released.
-			if (GetLastError() != ERROR_ALREADY_EXISTS) {
-				m_hInstanceLock = hLock;
-				// No error
+		// Got the semaphore
+		if (pSemaphore != SEM_FAILED) {
+
+			// Try to lock it
+			int iResult = sem_trywait(pSemaphore);
+			if (!iResult) {
+				// Got the lock! Keep it around
+				m_pName = StringDuplicate(pSignature);
 				uResult = FALSE;
 			}
 		}
 	}
 
-	// Error! Either the file couldn't be made or it already exists
+	// Error! Either the name couldn't be registered or it already exists
 	return uResult;
 }
 

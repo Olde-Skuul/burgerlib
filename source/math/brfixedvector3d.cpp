@@ -160,9 +160,9 @@
 
 void BURGER_API Burger::FixedVector3D_t::Set(const Vector3D_t *pInput)
 {
-	FloatToFixedNearest(&x,pInput->x);
-	FloatToFixedNearest(&y,pInput->y);
-	FloatToFixedNearest(&z,pInput->z);
+	float_to_fixed_round(&x,pInput->x);
+	float_to_fixed_round(&y,pInput->y);
+	float_to_fixed_round(&z,pInput->z);
 }
 
 /*! ************************************
@@ -185,9 +185,9 @@ void BURGER_API Burger::FixedVector3D_t::Set(const Vector3D_t *pInput)
 
 void BURGER_API Burger::FixedVector3D_t::SetAsInt(const Vector3D_t *pInput)
 {
-	FloatToIntRound(reinterpret_cast<int32_t*>(&x),pInput->x);
-	FloatToIntRound(reinterpret_cast<int32_t*>(&y),pInput->y);
-	FloatToIntRound(reinterpret_cast<int32_t*>(&z),pInput->z);
+	float_to_int_round(reinterpret_cast<int32_t*>(&x),pInput->x);
+	float_to_int_round(reinterpret_cast<int32_t*>(&y),pInput->y);
+	float_to_int_round(reinterpret_cast<int32_t*>(&z),pInput->z);
 }
 
 /*! ************************************
@@ -340,9 +340,9 @@ void BURGER_API Burger::FixedVector3D_t::Cross(const FixedVector3D_t *pInput1,co
 	z = fz;
 }
 
-const Burger::FixedVector3D_t Burger::s_FixedVector3DZero = {FLOATTOFIXED(0.0f),FLOATTOFIXED(0.0f),FLOATTOFIXED(0.0f)};	///< Constant of 0.0f,0.0f,0.0f in fixed point
-const Burger::FixedVector3D_t Burger::s_FixedVector3DOne = {FLOATTOFIXED(1.0f),FLOATTOFIXED(1.0f),FLOATTOFIXED(1.0f)};	///< Constant of 1.0f,1.0f,1.0f in fixed point
-const Burger::FixedVector3D_t Burger::s_FixedVector3DOneX = {FLOATTOFIXED(1.0f),FLOATTOFIXED(0.0f),FLOATTOFIXED(0.0f)};	///< Constant of 1.0f,0.0f,0.0f in fixed point
-const Burger::FixedVector3D_t Burger::s_FixedVector3DOneY = {FLOATTOFIXED(0.0f),FLOATTOFIXED(1.0f),FLOATTOFIXED(0.0f)};	///< Constant of 0.0f,1.0f,0.0f in fixed point
-const Burger::FixedVector3D_t Burger::s_FixedVector3DOneZ = {FLOATTOFIXED(0.0f),FLOATTOFIXED(0.0f),FLOATTOFIXED(1.0f)};	///< Constant of 0.0f,0.0f,1.0f in fixed point
+const Burger::FixedVector3D_t Burger::s_FixedVector3DZero = {BURGER_FLOAT_TO_FIXED(0.0f),BURGER_FLOAT_TO_FIXED(0.0f),BURGER_FLOAT_TO_FIXED(0.0f)};	///< Constant of 0.0f,0.0f,0.0f in fixed point
+const Burger::FixedVector3D_t Burger::s_FixedVector3DOne = {BURGER_FLOAT_TO_FIXED(1.0f),BURGER_FLOAT_TO_FIXED(1.0f),BURGER_FLOAT_TO_FIXED(1.0f)};	///< Constant of 1.0f,1.0f,1.0f in fixed point
+const Burger::FixedVector3D_t Burger::s_FixedVector3DOneX = {BURGER_FLOAT_TO_FIXED(1.0f),BURGER_FLOAT_TO_FIXED(0.0f),BURGER_FLOAT_TO_FIXED(0.0f)};	///< Constant of 1.0f,0.0f,0.0f in fixed point
+const Burger::FixedVector3D_t Burger::s_FixedVector3DOneY = {BURGER_FLOAT_TO_FIXED(0.0f),BURGER_FLOAT_TO_FIXED(1.0f),BURGER_FLOAT_TO_FIXED(0.0f)};	///< Constant of 0.0f,1.0f,0.0f in fixed point
+const Burger::FixedVector3D_t Burger::s_FixedVector3DOneZ = {BURGER_FLOAT_TO_FIXED(0.0f),BURGER_FLOAT_TO_FIXED(0.0f),BURGER_FLOAT_TO_FIXED(1.0f)};	///< Constant of 0.0f,0.0f,1.0f in fixed point
 

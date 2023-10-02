@@ -976,6 +976,7 @@ FILE_PATTERNS          = *.c \
                          *.h \
                          *.cpp \
                          *.hpp \
+                         *.mm \
                          *.md
 
 # The RECURSIVE tag can be used to specify whether or not subdirectories should
@@ -994,6 +995,8 @@ RECURSIVE              = YES
 EXCLUDE                = ../source/version.h \
                          ../source/templateburgerbase.h \
                          ../source/platforms/mac/templatemac.h \
+                         ../source/platforms/macosx/templatemacosx.h \
+                         ../source/platforms/darwin/templatedarwin.h \
                          ../source/platforms/ps4/templateps4.h \
                          ../source/platforms/unix/templateunix.h \
                          ../source/platforms/linux/templatelinux.h \
@@ -1017,6 +1020,7 @@ EXCLUDE_SYMLINKS       = NO
 
 EXCLUDE_PATTERNS       = temp \
                          unittest \
+                         asm \
                          dplay \
                          directx9 \
                          vc7compat \
@@ -1028,12 +1032,17 @@ EXCLUDE_PATTERNS       = temp \
                          unix_*.h \
                          linux_*.h \
                          switch_*.h \
+                         ps3_*.h \
                          ps4_*.h \
+                         ps5_*.h \
                          win_*.h \
                          mac_*.h \
+                         macosx_*.h \
                          ios_*.h \
                          osx_*.h \
+                         darwin_*.h \
                          x360_*.h \
+                         one_*.h \
                          msdos_*.h \
                          template*.h \
                          *_stripped.h

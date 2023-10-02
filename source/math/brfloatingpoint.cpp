@@ -47,11 +47,8 @@ extern const Burger::Float80Bit Pi280bit = {
 
 #if defined(BURGER_X86) || defined(DOXYGEN)
 
-// 8087 control word to round down with 64 bit precision
-const uint16_t Burger::g_X86RoundDownFlag = 0x0F7F;
-
-// 1 and -1.0 for some x86 assembly
-const Burger::uint32_float_t Burger::g_X86OneAndNegOne[2] = {
+// 0.5f and -0.5 for some x86 assembly
+const Burger::uint32_float_t Burger::g_X86HalfAndNegHalf[2] = {
 	{0x3F000000U}, {0xBF000000U}};
 
 #endif
@@ -286,7 +283,15 @@ uint32_t BURGER_API Burger::set_mxcsr_flags(
 
 float BURGER_API Burger::get_sign(float fInput) BURGER_NOEXCEPT
 {
-	return ((fInput > 0.0f) ? 1.0f : ((fInput < 0.0f) ? -1.0f : 0.0f));
+	if (fInput == 0.0f) {
+		return 0.0f;
+	}
+	uint32_float_t Temp;
+	Temp.f = fInput;
+	if (Temp.w & 0x80000000U) {
+		return -1.0f;
+	}
+	return 1.0f;
 }
 #endif
 
@@ -318,7 +323,15 @@ float BURGER_API Burger::get_sign(float fInput) BURGER_NOEXCEPT
 #else
 double BURGER_API Burger::get_sign(double dInput) BURGER_NOEXCEPT
 {
-	return ((dInput > 0.0) ? 1.0 : ((dInput < 0.0) ? -1.0 : 0.0));
+	if (dInput == 0.0) {
+		return 0.0;
+	}
+	uint64_double_t Temp;
+	Temp.d = dInput;
+	if (Temp.w32[BURGER_ENDIANINDEX_HIGH] & 0x80000000U) {
+		return -1.0;
+	}
+	return 1.0;
 }
 #endif
 
@@ -1444,7 +1457,7 @@ double BURGER_API Burger::square_root(double dInput) BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\fn float Burger::clamp(float fInput,float fMin,float fMax)
+	\fn T Burger::clamp(T Input, T Min, T Max)
 	\brief Clamp the input between a bounds
 
 	If the input value is less than the minimum, return the minimum or if the
@@ -1452,33 +1465,12 @@ double BURGER_API Burger::square_root(double dInput) BURGER_NOEXCEPT
 	return the input value. No checking is performed to determine if the minimum
 	is less than the maximum.
 
-	\param fInput First value to test
-	\param fMin Minimum allowed value
-	\param fMax Maximum allowed value
+	\tparam T Input data type
+	\param Input First value to test
+	\param Min Minimum allowed value
+	\param Max Maximum allowed value
 
 	\return The value clamped between the bounds
-
-	\sa clamp(double,double,double)
-
-***************************************/
-
-/*! ************************************
-
-	\fn double Burger::clamp(double dInput,double dMin,double dMax)
-	\brief Clamp the input between a bounds
-
-	If the input value is less than the minimum, return the minimum or if the
-	input value is greater than the maximum, return the maximum, otherwise
-	return the input value. No checking is performed to determine if the minimum
-	is less than the maximum.
-
-	\param dInput First value to test
-	\param dMin Minimum allowed value
-	\param dMax Maximum allowed value
-
-	\return The value clamped between the bounds
-
-	\sa clamp(float,float,float)
 
 ***************************************/
 
@@ -2044,7 +2036,7 @@ uint_t BURGER_API Burger::equal_with_epsilon(
 	\endcode
 
 	\sa get_floor(double), get_ceiling(float), get_round(float),
-		round_to_zero(float), or FixedToIntFloor(Fixed32)
+		round_to_zero(float), or fixed_to_int_floor(Fixed32)
 
 ***************************************/
 
@@ -2104,7 +2096,7 @@ float BURGER_API Burger::get_floor(float fInput) BURGER_NOEXCEPT
 	\endcode
 
 	\sa get_floor(float), get_ceiling(double), get_round(double),
-		round_to_zero(double), or FixedToIntFloor(Fixed32)
+		round_to_zero(double), or fixed_to_int_floor(Fixed32)
 
 ***************************************/
 
@@ -2163,7 +2155,7 @@ double BURGER_API Burger::get_floor(double dInput) BURGER_NOEXCEPT
 	\endcode
 
 	\sa get_ceiling(double), get_floor(float), get_round(float),
-		round_to_zero(float), or FixedToIntCeil(Fixed32)
+		round_to_zero(float), or fixed_to_int_ceil(Fixed32)
 
 ***************************************/
 
@@ -2221,7 +2213,7 @@ float BURGER_API Burger::get_ceiling(float fInput) BURGER_NOEXCEPT
 	\endcode
 
 	\sa get_ceiling(float), get_floor(double), get_round(double),
-		round_to_zero(double), or FixedToIntCeil(Fixed32)
+		round_to_zero(double), or fixed_to_int_ceil(Fixed32)
 
 ***************************************/
 
@@ -2282,7 +2274,7 @@ double BURGER_API Burger::get_ceiling(double dInput) BURGER_NOEXCEPT
 	\endcode
 
 	\sa get_round(double), get_floor(float), get_ceiling(float),
-		round_to_zero(float), or FixedToIntNearest(Fixed32)
+		round_to_zero(float), or fixed_to_int_nearest(Fixed32)
 
 ***************************************/
 
@@ -2416,7 +2408,7 @@ float BURGER_API Burger::get_round(float fInput) BURGER_NOEXCEPT
 	\endcode
 
 	\sa get_round(float), get_floor(double), get_ceiling(double),
-		round_to_zero(double), or FixedToIntNearest(Fixed32)
+		round_to_zero(double), or fixed_to_int_nearest(Fixed32)
 
 ***************************************/
 
@@ -2566,7 +2558,7 @@ double BURGER_API Burger::get_round(double dInput) BURGER_NOEXCEPT
 	\endcode
 
 	\sa round_to_zero(double), get_floor(float), get_ceiling(float),
-		get_round(float), or FixedToInt(Fixed32)
+		get_round(float), or fixed_to_int(Fixed32)
 
 ***************************************/
 
@@ -2603,7 +2595,7 @@ float BURGER_API Burger::round_to_zero(float fInput) BURGER_NOEXCEPT
 	\endcode
 
 	\sa round_to_zero(float), get_floor(double), get_ceiling(double),
-		get_round(double), or FixedToInt(Fixed32)
+		get_round(double), or fixed_to_int(Fixed32)
 
 ***************************************/
 

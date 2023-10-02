@@ -27,6 +27,11 @@
 #include "brgl.h"
 #include "brglext.h"
 
+#if defined(BURGER_WATCOM)
+// Disable 'sizeof' operand contains compiler generated information
+#pragma disable_message(549)
+#endif
+
 // Detect if OpenGL or OpenGL ES version 2.0 is available
 
 #if defined(GL_VERSION_2_0)	|| defined(GL_ES_VERSION_2_0)

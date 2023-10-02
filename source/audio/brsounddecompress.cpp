@@ -17,6 +17,11 @@
 #include "brfilelbm.h"
 #include "brfixedpoint.h"
 
+#if defined(BURGER_WATCOM)
+// Disable 'sizeof' operand contains compiler generated information
+#pragma disable_message(549)
+#endif
+
 #if !defined(DOXYGEN)
 BURGER_CREATE_STATICRTTI_PARENT(Burger::DecompressAudio,Burger::Decompress);
 BURGER_CREATE_STATICRTTI_PARENT(Burger::DecompressUnsigned8BitAudio,Burger::DecompressAudio);

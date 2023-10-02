@@ -206,8 +206,8 @@ void BURGER_API Burger::Flash::Matrix23::Read(Stream* pStream)
 
 	if (pStream->GetWord(1)) {
 		uint_t uBitCount = pStream->GetWord(5);
-		m_fScaleX = FIXEDTOFLOAT(pStream->GetInt(uBitCount));
-		m_fScaleY = FIXEDTOFLOAT(pStream->GetInt(uBitCount));
+		m_fScaleX = BURGER_FIXED_TO_FLOAT(pStream->GetInt(uBitCount));
+		m_fScaleY = BURGER_FIXED_TO_FLOAT(pStream->GetInt(uBitCount));
 	} else {
 		m_fScaleX = 1.0f;
 		m_fScaleY = 1.0f;
@@ -215,8 +215,8 @@ void BURGER_API Burger::Flash::Matrix23::Read(Stream* pStream)
 
 	if (pStream->GetWord(1)) {
 		uint_t uBitCount2 = pStream->GetWord(5);
-		m_fRotateSkew1 = FIXEDTOFLOAT(pStream->GetInt(uBitCount2));
-		m_fRotateSkew0 = FIXEDTOFLOAT(pStream->GetInt(uBitCount2));
+		m_fRotateSkew1 = BURGER_FIXED_TO_FLOAT(pStream->GetInt(uBitCount2));
+		m_fRotateSkew0 = BURGER_FIXED_TO_FLOAT(pStream->GetInt(uBitCount2));
 	} else {
 		m_fRotateSkew0 = 0.0f;
 		m_fRotateSkew1 = 0.0f;

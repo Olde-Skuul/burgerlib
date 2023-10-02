@@ -32,6 +32,11 @@
 #pragma warn_emptydecl off
 #endif
 
+#if defined(BURGER_WATCOM)
+// Disable redefinition of the typedef name (DInput.h headers trigger this)
+#pragma disable_message(583)
+#endif
+
 #include <dinput.h>
 #include <stdio.h>
 #include <winreg.h>
@@ -40,6 +45,11 @@
 
 #if defined(BURGER_METROWERKS)
 #pragma warn_emptydecl reset
+#endif
+
+#if defined(BURGER_WATCOM)
+// Disable redefinition of the typedef name (DInput.h headers trigger this)
+#pragma enable_message(583)
 #endif
 
 // Size of the mouse buffer for reading events from DirectInput

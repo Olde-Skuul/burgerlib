@@ -182,19 +182,35 @@
 #endif
 
 #if !defined(GAA_FLAG_SKIP_MULTICAST)
+#if defined(BURGER_WATCOM)
+#define GAA_FLAG_SKIP_MULTICAST 0x00000004L
+#else
 #define GAA_FLAG_SKIP_MULTICAST 0x0004
+#endif
 #endif
 
 #if !defined(GAA_FLAG_SKIP_DNS_SERVER)
+#if defined(BURGER_WATCOM)
+#define GAA_FLAG_SKIP_DNS_SERVER 0x00000008L
+#else
 #define GAA_FLAG_SKIP_DNS_SERVER 0x0008
+#endif
 #endif
 
 #if !defined(GAA_FLAG_INCLUDE_PREFIX)
+#if defined(BURGER_WATCOM)
+#define GAA_FLAG_INCLUDE_PREFIX 0x00000010L
+#else
 #define GAA_FLAG_INCLUDE_PREFIX 0x0010
+#endif
 #endif
 
 #if !defined(GAA_FLAG_SKIP_FRIENDLY_NAME)
+#if defined(BURGER_WATCOM)
+#define GAA_FLAG_SKIP_FRIENDLY_NAME 0x00000020L
+#else
 #define GAA_FLAG_SKIP_FRIENDLY_NAME 0x0020
+#endif
 #endif
 
 #if !defined(_WIN32_WINNT_VISTA) && !defined(_WIN32_WINNT_LONGHORN)

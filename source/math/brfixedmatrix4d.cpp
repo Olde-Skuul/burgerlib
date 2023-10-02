@@ -45,7 +45,7 @@
 
 void BURGER_API Burger::FixedMatrix4D_t::Zero(void)
 {
-	Fixed32 fTemp = FLOATTOFIXED(0.0f);		// Force the compiler to use a register
+	Fixed32 fTemp = BURGER_FLOAT_TO_FIXED(0.0f);		// Force the compiler to use a register
 	x.x = fTemp;		// Fill all the elements with zero
 	x.y = fTemp;
 	x.z = fTemp;
@@ -68,7 +68,7 @@ void BURGER_API Burger::FixedMatrix4D_t::Zero(void)
 
 	\brief Initialize a 4D matrix so that it is inert
 
-	Sets the x.x, y.y, z.z and w.w components to \ref FLOATTOFIXED(1.0f), all others to \ref FLOATTOFIXED(0.0f)
+	Sets the x.x, y.y, z.z and w.w components to \ref BURGER_FLOAT_TO_FIXED(1.0f), all others to \ref BURGER_FLOAT_TO_FIXED(0.0f)
 
 	\sa Zero(void)
 
@@ -76,22 +76,22 @@ void BURGER_API Burger::FixedMatrix4D_t::Zero(void)
 
 void BURGER_API Burger::FixedMatrix4D_t::Identity(void)
 {
-	x.x = FLOATTOFIXED(1.0f);	// Leave X alone
-	x.y = FLOATTOFIXED(0.0f);
-	x.z = FLOATTOFIXED(0.0f);
-	x.w = FLOATTOFIXED(0.0f);
-	y.x = FLOATTOFIXED(0.0f);
-	y.y = FLOATTOFIXED(1.0f);	// Leave Y alone
-	y.z = FLOATTOFIXED(0.0f);
-	y.w = FLOATTOFIXED(0.0f);
-	z.x = FLOATTOFIXED(0.0f);
-	z.y = FLOATTOFIXED(0.0f);
-	z.z = FLOATTOFIXED(1.0f);	// Leave Z alone
-	z.w = FLOATTOFIXED(0.0f);
-	w.x = FLOATTOFIXED(0.0f);
-	w.y = FLOATTOFIXED(0.0f);
-	w.z = FLOATTOFIXED(0.0f);	
-	w.w = FLOATTOFIXED(1.0f);	// Leave W alone
+	x.x = BURGER_FLOAT_TO_FIXED(1.0f);	// Leave X alone
+	x.y = BURGER_FLOAT_TO_FIXED(0.0f);
+	x.z = BURGER_FLOAT_TO_FIXED(0.0f);
+	x.w = BURGER_FLOAT_TO_FIXED(0.0f);
+	y.x = BURGER_FLOAT_TO_FIXED(0.0f);
+	y.y = BURGER_FLOAT_TO_FIXED(1.0f);	// Leave Y alone
+	y.z = BURGER_FLOAT_TO_FIXED(0.0f);
+	y.w = BURGER_FLOAT_TO_FIXED(0.0f);
+	z.x = BURGER_FLOAT_TO_FIXED(0.0f);
+	z.y = BURGER_FLOAT_TO_FIXED(0.0f);
+	z.z = BURGER_FLOAT_TO_FIXED(1.0f);	// Leave Z alone
+	z.w = BURGER_FLOAT_TO_FIXED(0.0f);
+	w.x = BURGER_FLOAT_TO_FIXED(0.0f);
+	w.y = BURGER_FLOAT_TO_FIXED(0.0f);
+	w.z = BURGER_FLOAT_TO_FIXED(0.0f);	
+	w.w = BURGER_FLOAT_TO_FIXED(1.0f);	// Leave W alone
 }
 
 /*! ************************************
@@ -103,28 +103,28 @@ void BURGER_API Burger::FixedMatrix4D_t::Identity(void)
 	The destination matrix is assumed to be uninitialized.
 
 	\param pInput Pointer to a valid Matrix4D_t
-	\sa Set(const FixedMatrix4D_t *) or FloatToFixedNearest(Fixed32 *,float)
+	\sa Set(const FixedMatrix4D_t *) or float_to_fixed_round(Fixed32 *,float)
 
 ***************************************/
 
 void BURGER_API Burger::FixedMatrix4D_t::Set(const Matrix4D_t *pInput)
 {
-	FloatToFixedNearest(&x.x,pInput->x.x);
-	FloatToFixedNearest(&x.y,pInput->x.y);
-	FloatToFixedNearest(&x.z,pInput->x.z);
-	FloatToFixedNearest(&x.w,pInput->x.w);
-	FloatToFixedNearest(&y.x,pInput->y.x);
-	FloatToFixedNearest(&y.y,pInput->y.y);
-	FloatToFixedNearest(&y.z,pInput->y.z);
-	FloatToFixedNearest(&y.w,pInput->y.w);
-	FloatToFixedNearest(&z.x,pInput->z.x);
-	FloatToFixedNearest(&z.y,pInput->z.y);
-	FloatToFixedNearest(&z.z,pInput->z.z);
-	FloatToFixedNearest(&z.w,pInput->z.w);
-	FloatToFixedNearest(&w.x,pInput->w.x);
-	FloatToFixedNearest(&w.y,pInput->w.y);
-	FloatToFixedNearest(&w.z,pInput->w.z);
-	FloatToFixedNearest(&w.w,pInput->w.w);
+	float_to_fixed_round(&x.x,pInput->x.x);
+	float_to_fixed_round(&x.y,pInput->x.y);
+	float_to_fixed_round(&x.z,pInput->x.z);
+	float_to_fixed_round(&x.w,pInput->x.w);
+	float_to_fixed_round(&y.x,pInput->y.x);
+	float_to_fixed_round(&y.y,pInput->y.y);
+	float_to_fixed_round(&y.z,pInput->y.z);
+	float_to_fixed_round(&y.w,pInput->y.w);
+	float_to_fixed_round(&z.x,pInput->z.x);
+	float_to_fixed_round(&z.y,pInput->z.y);
+	float_to_fixed_round(&z.z,pInput->z.z);
+	float_to_fixed_round(&z.w,pInput->z.w);
+	float_to_fixed_round(&w.x,pInput->w.x);
+	float_to_fixed_round(&w.y,pInput->w.y);
+	float_to_fixed_round(&w.z,pInput->w.z);
+	float_to_fixed_round(&w.w,pInput->w.w);
 }
 
 /*! ************************************
@@ -177,19 +177,19 @@ void BURGER_API Burger::FixedMatrix4D_t::SetTranslate(Fixed32 fX,Fixed32 fY,Fixe
 	w.x = fX;
 	w.y = fY;
 	w.z = fZ;
-	w.w = FLOATTOFIXED(1.0f);
-	x.x = FLOATTOFIXED(1.0f);
-	x.y = FLOATTOFIXED(0.0f);
-	x.z = FLOATTOFIXED(0.0f);
-	x.w = FLOATTOFIXED(0.0f);
-	y.x = FLOATTOFIXED(0.0f);
-	y.y = FLOATTOFIXED(1.0f);
-	y.z = FLOATTOFIXED(0.0f);
-	y.w = FLOATTOFIXED(0.0f);
-	z.x = FLOATTOFIXED(0.0f);
-	z.y = FLOATTOFIXED(0.0f);
-	z.z = FLOATTOFIXED(1.0f);
-	z.w = FLOATTOFIXED(0.0f);
+	w.w = BURGER_FLOAT_TO_FIXED(1.0f);
+	x.x = BURGER_FLOAT_TO_FIXED(1.0f);
+	x.y = BURGER_FLOAT_TO_FIXED(0.0f);
+	x.z = BURGER_FLOAT_TO_FIXED(0.0f);
+	x.w = BURGER_FLOAT_TO_FIXED(0.0f);
+	y.x = BURGER_FLOAT_TO_FIXED(0.0f);
+	y.y = BURGER_FLOAT_TO_FIXED(1.0f);
+	y.z = BURGER_FLOAT_TO_FIXED(0.0f);
+	y.w = BURGER_FLOAT_TO_FIXED(0.0f);
+	z.x = BURGER_FLOAT_TO_FIXED(0.0f);
+	z.y = BURGER_FLOAT_TO_FIXED(0.0f);
+	z.z = BURGER_FLOAT_TO_FIXED(1.0f);
+	z.w = BURGER_FLOAT_TO_FIXED(0.0f);
 }
 
 /*! ************************************
@@ -197,7 +197,7 @@ void BURGER_API Burger::FixedMatrix4D_t::SetTranslate(Fixed32 fX,Fixed32 fY,Fixe
 	\brief Create a 4D scale matrix
 
 	Sets the x.x, y.y and z.z components to the input values, w.w
-	is set to \ref FLOATTOFIXED(1.0f) and all others are set to \ref FLOATTOFIXED(0.0f)
+	is set to \ref BURGER_FLOAT_TO_FIXED(1.0f) and all others are set to \ref BURGER_FLOAT_TO_FIXED(0.0f)
 
 	\param fX new x.x component
 	\param fY new y.y component
@@ -209,21 +209,21 @@ void BURGER_API Burger::FixedMatrix4D_t::SetTranslate(Fixed32 fX,Fixed32 fY,Fixe
 void BURGER_API Burger::FixedMatrix4D_t::SetScale(Fixed32 fX,Fixed32 fY,Fixed32 fZ)
 {
 	x.x = fX;
-	x.y = FLOATTOFIXED(0.0f);
-	x.z = FLOATTOFIXED(0.0f);
-	x.w = FLOATTOFIXED(0.0f);
-	y.x = FLOATTOFIXED(0.0f);
+	x.y = BURGER_FLOAT_TO_FIXED(0.0f);
+	x.z = BURGER_FLOAT_TO_FIXED(0.0f);
+	x.w = BURGER_FLOAT_TO_FIXED(0.0f);
+	y.x = BURGER_FLOAT_TO_FIXED(0.0f);
 	y.y = fY;
-	y.z = FLOATTOFIXED(0.0f);
-	y.w = FLOATTOFIXED(0.0f);
-	z.x = FLOATTOFIXED(0.0f);
-	z.y = FLOATTOFIXED(0.0f);
+	y.z = BURGER_FLOAT_TO_FIXED(0.0f);
+	y.w = BURGER_FLOAT_TO_FIXED(0.0f);
+	z.x = BURGER_FLOAT_TO_FIXED(0.0f);
+	z.y = BURGER_FLOAT_TO_FIXED(0.0f);
 	z.z = fZ;
-	z.w = FLOATTOFIXED(0.0f);
-	w.x = FLOATTOFIXED(0.0f);
-	w.y = FLOATTOFIXED(0.0f);
-	w.z = FLOATTOFIXED(0.0f);
-	w.w = FLOATTOFIXED(1.0f);
+	z.w = BURGER_FLOAT_TO_FIXED(0.0f);
+	w.x = BURGER_FLOAT_TO_FIXED(0.0f);
+	w.y = BURGER_FLOAT_TO_FIXED(0.0f);
+	w.z = BURGER_FLOAT_TO_FIXED(0.0f);
+	w.w = BURGER_FLOAT_TO_FIXED(1.0f);
 }
 
 /*! ************************************
@@ -231,7 +231,7 @@ void BURGER_API Burger::FixedMatrix4D_t::SetScale(Fixed32 fX,Fixed32 fY,Fixed32 
 	\brief Create a 4D scale matrix
 
 	Sets the x.x, y.y, z.z and w.w components to the input values
-	and all others are set to \ref FLOATTOFIXED(0.0f)
+	and all others are set to \ref BURGER_FLOAT_TO_FIXED(0.0f)
 
 	\param fX new x.x component
 	\param fY new y.y component
@@ -244,20 +244,20 @@ void BURGER_API Burger::FixedMatrix4D_t::SetScale(Fixed32 fX,Fixed32 fY,Fixed32 
 void BURGER_API Burger::FixedMatrix4D_t::SetScale(Fixed32 fX,Fixed32 fY,Fixed32 fZ,Fixed32 fW)
 {
 	x.x = fX;
-	x.y = FLOATTOFIXED(0.0f);
-	x.z = FLOATTOFIXED(0.0f);
-	x.w = FLOATTOFIXED(0.0f);
-	y.x = FLOATTOFIXED(0.0f);
+	x.y = BURGER_FLOAT_TO_FIXED(0.0f);
+	x.z = BURGER_FLOAT_TO_FIXED(0.0f);
+	x.w = BURGER_FLOAT_TO_FIXED(0.0f);
+	y.x = BURGER_FLOAT_TO_FIXED(0.0f);
 	y.y = fY;
-	y.z = FLOATTOFIXED(0.0f);
-	y.w = FLOATTOFIXED(0.0f);
-	z.x = FLOATTOFIXED(0.0f);
-	z.y = FLOATTOFIXED(0.0f);
+	y.z = BURGER_FLOAT_TO_FIXED(0.0f);
+	y.w = BURGER_FLOAT_TO_FIXED(0.0f);
+	z.x = BURGER_FLOAT_TO_FIXED(0.0f);
+	z.y = BURGER_FLOAT_TO_FIXED(0.0f);
 	z.z = fZ;
-	z.w = FLOATTOFIXED(0.0f);
-	w.x = FLOATTOFIXED(0.0f);
-	w.y = FLOATTOFIXED(0.0f);
-	w.z = FLOATTOFIXED(0.0f);
+	z.w = BURGER_FLOAT_TO_FIXED(0.0f);
+	w.x = BURGER_FLOAT_TO_FIXED(0.0f);
+	w.y = BURGER_FLOAT_TO_FIXED(0.0f);
+	w.z = BURGER_FLOAT_TO_FIXED(0.0f);
 	w.w = fW;
 }
 
@@ -268,8 +268,8 @@ void BURGER_API Burger::FixedMatrix4D_t::SetScale(Fixed32 fX,Fixed32 fY,Fixed32 
 ***************************************/
 
 const Burger::FixedMatrix4D_t Burger::s_FixedMatrix4DIdentity = {
-	{FLOATTOFIXED(1.0f),FLOATTOFIXED(0.0f),FLOATTOFIXED(0.0f),FLOATTOFIXED(0.0f)},
-	{FLOATTOFIXED(0.0f),FLOATTOFIXED(1.0f),FLOATTOFIXED(0.0f),FLOATTOFIXED(0.0f)},
-	{FLOATTOFIXED(0.0f),FLOATTOFIXED(0.0f),FLOATTOFIXED(1.0f),FLOATTOFIXED(0.0f)},
-	{FLOATTOFIXED(0.0f),FLOATTOFIXED(0.0f),FLOATTOFIXED(0.0f),FLOATTOFIXED(1.0f)}
+	{BURGER_FLOAT_TO_FIXED(1.0f),BURGER_FLOAT_TO_FIXED(0.0f),BURGER_FLOAT_TO_FIXED(0.0f),BURGER_FLOAT_TO_FIXED(0.0f)},
+	{BURGER_FLOAT_TO_FIXED(0.0f),BURGER_FLOAT_TO_FIXED(1.0f),BURGER_FLOAT_TO_FIXED(0.0f),BURGER_FLOAT_TO_FIXED(0.0f)},
+	{BURGER_FLOAT_TO_FIXED(0.0f),BURGER_FLOAT_TO_FIXED(0.0f),BURGER_FLOAT_TO_FIXED(1.0f),BURGER_FLOAT_TO_FIXED(0.0f)},
+	{BURGER_FLOAT_TO_FIXED(0.0f),BURGER_FLOAT_TO_FIXED(0.0f),BURGER_FLOAT_TO_FIXED(0.0f),BURGER_FLOAT_TO_FIXED(1.0f)}
 };

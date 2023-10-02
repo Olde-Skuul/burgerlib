@@ -20,7 +20,7 @@
 #include "brglobalmemorymanager.h"
 #include "brsdbmhash.h"
 #include "brstring.h"
-#include "brstringfunctions.h"
+#include "brpoweroftwo.h"
 
 /*! ************************************
 
@@ -446,7 +446,7 @@ void BURGER_API Burger::HashMapShared::CreateHashBuffer(
 	} else {
 
 		// Force new_size to be a power of two.
-		const uintptr_t uRoundedUp = PowerOf2(uNewSize);
+		const uintptr_t uRoundedUp = power_of_two(uNewSize);
 		BURGER_ASSERT(uRoundedUp >= uNewSize);
 
 		uNewSize = uRoundedUp;

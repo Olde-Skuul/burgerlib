@@ -57,7 +57,7 @@ int BURGER_ANSIAPI main(int /* argc */, const char** /* argv */)
     // Singular instance enabled?
 #if defined(GAMELOCK)
     Burger::DetectMultiLaunch OneShot;
-    if (!OneShot.IsMultiLaunched(GAMELOCK)) {
+    if (!OneShot.is_multi_launched(GAMELOCK)) {
 #endif
         // Create an application instance
 

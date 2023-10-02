@@ -32,7 +32,7 @@ struct FixedVector4D_t {
 	Fixed32 w;			///< 32 bit fixed point W value for the 4D Vector
 	BURGER_INLINE void Zero(void) { x = 0; y = 0; z = 0; w = 0; }
 	BURGER_INLINE void One(void) { x = 65536; y = 65536; z = 65536; w = 65536; }
-	BURGER_INLINE void Identity(void) { x = 0; y = 0; z = 0; w = FLOATTOFIXED(1.0f); }
+	BURGER_INLINE void Identity(void) { x = 0; y = 0; z = 0; w = BURGER_FLOAT_TO_FIXED(1.0f); }
 	BURGER_INLINE Fixed32 GetX(void) const { return x; }
 	BURGER_INLINE Fixed32 GetY(void) const { return y; }
 	BURGER_INLINE Fixed32 GetZ(void) const { return z; }
@@ -41,7 +41,7 @@ struct FixedVector4D_t {
 	BURGER_INLINE void SetY(Fixed32 fY) { y=fY; }
 	BURGER_INLINE void SetZ(Fixed32 fZ) { z=fZ; }
 	BURGER_INLINE void SetW(Fixed32 fW) { z=fW; }
-	BURGER_INLINE void Set(Fixed32 fX,Fixed32 fY,Fixed32 fZ) { x = fX; y = fY; z = fZ; w = FLOATTOFIXED(1.0f); };
+	BURGER_INLINE void Set(Fixed32 fX,Fixed32 fY,Fixed32 fZ) { x = fX; y = fY; z = fZ; w = BURGER_FLOAT_TO_FIXED(1.0f); };
 	BURGER_INLINE void Set(Fixed32 fX,Fixed32 fY,Fixed32 fZ,Fixed32 fW) { x=fX; y=fY; z=fZ; w=fW; }
 	BURGER_INLINE void Set(const FixedVector4D_t *pInput) { *this = *pInput; }
 	BURGER_INLINE void Negate(void) { x = -x; y = -y; z = -z; w = -w; }

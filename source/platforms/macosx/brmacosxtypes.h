@@ -45,9 +45,9 @@ struct AudioBufferList;
 struct OpaqueAUGraph;
 struct attrlist;
 
+#if defined(__OBJC__)
 @class NSApplication;
 @class NSApplicationDelegate;
-@class NSConnection;
 @class NSEvent;
 @class NSMenu;
 @class NSMenuItem;
@@ -58,11 +58,25 @@ struct attrlist;
 @class NSView;
 @class NSWindow;
 @class NSWindowController;
+#else
+class NSApplication;
+class NSApplicationDelegate;
+class NSEvent;
+class NSMenu;
+class NSMenuItem;
+class NSOpenGLView;
+class NSResponder;
+class NSScreen;
+class NSString;
+class NSView;
+class NSWindow;
+class NSWindowController;
+#endif
 
 #endif
 
 namespace Burger {
-class MacOSX {
+class MacOSXOld {
 public:
 	enum eDLLIndex {
 		/** Index for libdl.dylib */
@@ -88,10 +102,10 @@ private:
 	/** Flags to determine if a function was tested for loading \macosxonly */
 	uint8_t m_bFunctionsTested[CALL_COUNT];
 
-	static MacOSX g_Globals;
+	static MacOSXOld g_Globals;
 
 public:
-	~MacOSX();
+	~MacOSXOld();
 
 	static void* BURGER_API LoadLibraryIndex(eDLLIndex eIndex);
 	static void* BURGER_API LoadFunctionIndex(eCallIndex eIndex);

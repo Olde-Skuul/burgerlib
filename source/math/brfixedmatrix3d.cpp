@@ -60,7 +60,7 @@ void BURGER_API Burger::FixedMatrix3D_t::Zero(void)
 	\brief Initialize the matrix to identity.
 	
 	Fill in all entries with zero except x,x, y.y and z.z.
-	Those three will be filled in with \ref FLOATTOFIXED(1.0f)
+	Those three will be filled in with \ref BURGER_FLOAT_TO_FIXED(1.0f)
 	The destination matrix is assumed to be uninitialized.
 
 	\sa Zero(void)
@@ -69,15 +69,15 @@ void BURGER_API Burger::FixedMatrix3D_t::Zero(void)
 
 void BURGER_API Burger::FixedMatrix3D_t::Identity(void)
 {
-	x.x = FLOATTOFIXED(1.0f);	// Leave X alone
+	x.x = BURGER_FLOAT_TO_FIXED(1.0f);	// Leave X alone
 	x.y = 0;
 	x.z = 0;
 	y.x = 0;
-	y.y = FLOATTOFIXED(1.0f);	// Leave Y alone
+	y.y = BURGER_FLOAT_TO_FIXED(1.0f);	// Leave Y alone
 	y.z = 0;
 	z.x = 0;
 	z.y = 0;
-	z.z = FLOATTOFIXED(1.0f);	// Leave Z alone
+	z.z = BURGER_FLOAT_TO_FIXED(1.0f);	// Leave Z alone
 }
 
 /*! ************************************
@@ -89,21 +89,21 @@ void BURGER_API Burger::FixedMatrix3D_t::Identity(void)
 	The destination matrix is assumed to be uninitialized.
 
 	\param pInput Pointer to a valid Matrix3D_t
-	\sa FloatToFixedNearest(Fixed32 *,float)
+	\sa float_to_fixed_round(Fixed32 *,float)
 
 ***************************************/
 
 void BURGER_API Burger::FixedMatrix3D_t::Set(const Matrix3D_t *pInput)
 {
-	FloatToFixedNearest(&x.x,pInput->x.x);
-	FloatToFixedNearest(&x.y,pInput->x.y);
-	FloatToFixedNearest(&x.z,pInput->x.z);
-	FloatToFixedNearest(&y.x,pInput->y.x);
-	FloatToFixedNearest(&y.y,pInput->y.y);
-	FloatToFixedNearest(&y.z,pInput->y.z);
-	FloatToFixedNearest(&z.x,pInput->z.x);
-	FloatToFixedNearest(&z.y,pInput->z.y);
-	FloatToFixedNearest(&z.z,pInput->z.z);
+	float_to_fixed_round(&x.x,pInput->x.x);
+	float_to_fixed_round(&x.y,pInput->x.y);
+	float_to_fixed_round(&x.z,pInput->x.z);
+	float_to_fixed_round(&y.x,pInput->y.x);
+	float_to_fixed_round(&y.y,pInput->y.y);
+	float_to_fixed_round(&y.z,pInput->y.z);
+	float_to_fixed_round(&z.x,pInput->z.x);
+	float_to_fixed_round(&z.y,pInput->z.y);
+	float_to_fixed_round(&z.z,pInput->z.z);
 }
 
 /*! ************************************
@@ -486,7 +486,7 @@ void BURGER_API Burger::FixedMatrix3D_t::Multiply(const FixedMatrix3D_t *pInput,
 ***************************************/
 
 const Burger::FixedMatrix3D_t Burger::s_FixedMatrix3DIdentity = {
-	{FLOATTOFIXED(1.0f),FLOATTOFIXED(0.0f),FLOATTOFIXED(0.0f)},
-	{FLOATTOFIXED(0.0f),FLOATTOFIXED(1.0f),FLOATTOFIXED(0.0f)},
-	{FLOATTOFIXED(0.0f),FLOATTOFIXED(0.0f),FLOATTOFIXED(1.0f)}
+	{BURGER_FLOAT_TO_FIXED(1.0f),BURGER_FLOAT_TO_FIXED(0.0f),BURGER_FLOAT_TO_FIXED(0.0f)},
+	{BURGER_FLOAT_TO_FIXED(0.0f),BURGER_FLOAT_TO_FIXED(1.0f),BURGER_FLOAT_TO_FIXED(0.0f)},
+	{BURGER_FLOAT_TO_FIXED(0.0f),BURGER_FLOAT_TO_FIXED(0.0f),BURGER_FLOAT_TO_FIXED(1.0f)}
 };

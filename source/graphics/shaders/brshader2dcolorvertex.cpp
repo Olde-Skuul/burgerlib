@@ -23,10 +23,20 @@
 #pragma warn_emptydecl off
 #endif
 
+#if defined(BURGER_WATCOM)
+// Disable nested comment found in comment (Direct X headers trigger this)
+#pragma disable_message(15)
+#endif
+
 #include <d3d9.h>
 
 #if defined(BURGER_METROWERKS)
 #pragma warn_emptydecl reset
+#endif
+
+#if defined(BURGER_WATCOM)
+// Disable nested comment found in comment (Direct X headers trigger this)
+#pragma enable_message(15)
 #endif
 
 BURGER_CREATE_STATICRTTI_PARENT(Burger::Shader2DColorVertexDX9,Burger::Shader2DColorVertex);

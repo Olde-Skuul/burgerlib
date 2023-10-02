@@ -23,6 +23,8 @@
 #if !defined(BURGER_DARWIN)
 #include "brfilemanager.h"
 #include "brmemoryfunctions.h"
+#else
+#include "darwin_autorelease.h"
 #endif
 
 #if defined(BURGER_IOS)

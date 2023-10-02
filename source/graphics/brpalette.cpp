@@ -168,10 +168,10 @@ const Burger::RGBWord8_t Burger::RGBWord8_t::Yellow = {255,255,0};
 
 void BURGER_API Burger::RGBWord8_t::Interpolate(const RGBWord8_t *pFrom,const RGBWord8_t *pTo,float fFactor)
 {
-	Fixed32 lFactor = FLOATTOFIXED(fFactor);
-	m_uRed = static_cast<uint8_t>(FixedToIntNearest((pFrom->m_uRed-pTo->m_uRed)*lFactor)+pFrom->m_uRed);
-	m_uGreen = static_cast<uint8_t>(FixedToIntNearest((pFrom->m_uGreen-pTo->m_uGreen)*lFactor)+pFrom->m_uGreen);
-	m_uBlue = static_cast<uint8_t>(FixedToIntNearest((pFrom->m_uBlue-pTo->m_uBlue)*lFactor)+pFrom->m_uBlue);
+	Fixed32 lFactor = BURGER_FLOAT_TO_FIXED(fFactor);
+	m_uRed = static_cast<uint8_t>(fixed_to_int_nearest((pFrom->m_uRed-pTo->m_uRed)*lFactor)+pFrom->m_uRed);
+	m_uGreen = static_cast<uint8_t>(fixed_to_int_nearest((pFrom->m_uGreen-pTo->m_uGreen)*lFactor)+pFrom->m_uGreen);
+	m_uBlue = static_cast<uint8_t>(fixed_to_int_nearest((pFrom->m_uBlue-pTo->m_uBlue)*lFactor)+pFrom->m_uBlue);
 }
 
 /*! ************************************
@@ -326,11 +326,11 @@ const Burger::RGBAWord8_t Burger::RGBAWord8_t::Yellow = {255,255,0,255};
 
 void BURGER_API Burger::RGBAWord8_t::Interpolate(const RGBAWord8_t *pFrom,const RGBAWord8_t *pTo,float fFactor)
 {
-	Fixed32 lFactor = FLOATTOFIXED(fFactor);
-	m_uRed = static_cast<uint8_t>(FixedToIntNearest((pFrom->m_uRed-pTo->m_uRed)*lFactor)+pFrom->m_uRed);
-	m_uGreen = static_cast<uint8_t>(FixedToIntNearest((pFrom->m_uGreen-pTo->m_uGreen)*lFactor)+pFrom->m_uGreen);
-	m_uBlue = static_cast<uint8_t>(FixedToIntNearest((pFrom->m_uBlue-pTo->m_uBlue)*lFactor)+pFrom->m_uBlue);
-	m_uAlpha = static_cast<uint8_t>(FixedToIntNearest((pFrom->m_uAlpha-pTo->m_uAlpha)*lFactor)+pFrom->m_uAlpha);
+	Fixed32 lFactor = BURGER_FLOAT_TO_FIXED(fFactor);
+	m_uRed = static_cast<uint8_t>(fixed_to_int_nearest((pFrom->m_uRed-pTo->m_uRed)*lFactor)+pFrom->m_uRed);
+	m_uGreen = static_cast<uint8_t>(fixed_to_int_nearest((pFrom->m_uGreen-pTo->m_uGreen)*lFactor)+pFrom->m_uGreen);
+	m_uBlue = static_cast<uint8_t>(fixed_to_int_nearest((pFrom->m_uBlue-pTo->m_uBlue)*lFactor)+pFrom->m_uBlue);
+	m_uAlpha = static_cast<uint8_t>(fixed_to_int_nearest((pFrom->m_uAlpha-pTo->m_uAlpha)*lFactor)+pFrom->m_uAlpha);
 }
 
 /*! ************************************

@@ -34,6 +34,11 @@
 #pragma warn_emptydecl off
 #endif
 
+#if defined(BURGER_WATCOM)
+// Disable redefinition of the typedef name (DInput.h headers trigger this)
+#pragma disable_message(583)
+#endif
+
 #include <WbemCli.h>
 #include <Xinput.h>
 #include <dinput.h>
@@ -41,6 +46,11 @@
 
 #if defined(BURGER_METROWERKS)
 #pragma warn_emptydecl reset
+#endif
+
+#if defined(BURGER_WATCOM)
+// Disable redefinition of the typedef name (DInput.h headers trigger this)
+#pragma enable_message(583)
 #endif
 
 // Needed for Code Warrior

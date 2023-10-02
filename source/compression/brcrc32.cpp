@@ -287,7 +287,7 @@ void BURGER_API Burger::generate_crc_table(
 		// Start with the value in the upper 8 bits
 		uint32_t uValue;
 		if (bBitReverse) {
-			uValue = static_cast<uint32_t>(g_ReverseBits[uCount]) << 24U;
+			uValue = static_cast<uint32_t>(g_reverse_bits[uCount]) << 24U;
 		} else {
 			uValue = uCount << 24U;
 		}

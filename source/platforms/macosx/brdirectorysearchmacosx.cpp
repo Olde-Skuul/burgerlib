@@ -18,6 +18,7 @@
 #include "brfile.h"
 #include "brglobals.h"
 #include "brmemoryfunctions.h"
+#include "macosx_version.h"
 
 #include <dlfcn.h>
 #include <errno.h>
@@ -237,7 +238,7 @@ static Burger::eError BURGER_API NewWay(int fp, attrlist* pAttrlist,
 	do {
 
 		// Load the entries
-		int iError = Burger::MacOSX::getattrlistbulk(
+		int iError = Burger::MacOSXOld::getattrlistbulk(
 			fp, pAttrlist, Buffer, sizeof(Buffer), FSOPT_PACK_INVAL_ATTRS);
 
 		// Error? Abort.
@@ -407,7 +408,7 @@ Burger::eError Burger::DirectorySearch::open(Filename* pDirName) BURGER_NOEXCEPT
 #if !defined(BURGER_PPC)
 		// MacOSX Version 10.10 or higher uses a new API
 		// Only available for Intel or ARM
-		const uint_t uOSVersion = Globals::GetMacOSVersion();
+		const uint32_t uOSVersion = MacOSX::get_os_version();
 #endif
 
 		// Since PowerPC only goes to macOS 10.5, no need to implement the 10.10

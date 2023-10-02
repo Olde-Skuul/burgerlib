@@ -205,7 +205,7 @@ uint32_t BURGER_API Burger::MacOS::get_control_strip_version(
 	if (uVersion == UINT32_MAX) {
 		// Code even present?
 		uVersion = 0;
-		
+
 		long gestaltAnswer;
 		if (!Gestalt(gestaltControlStripVersion, &gestaltAnswer)) {
 			uVersion = static_cast<uint32_t>(gestaltAnswer);

@@ -62,7 +62,7 @@
 	\fn void Burger::FixedVector4D_t::Identity(void)
 	\brief Initialize the vector elements to identity for a quaternion
 	
-	Fills x, y, and z with \ref FLOATTOFIXED(0.0f) and w is filled in with \ref FLOATTOFIXED(1.0f).
+	Fills x, y, and z with \ref BURGER_FLOAT_TO_FIXED(0.0f) and w is filled in with \ref BURGER_FLOAT_TO_FIXED(1.0f).
 	Thereby initializing the structure to the equivalant of a quaternion identity..
 	
 	\sa Zero(void) or Set(Fixed32,Fixed32,Fixed32,Fixed32)
@@ -162,7 +162,7 @@
 	\fn void Burger::FixedVector4D_t::Set(Fixed32 fX,Fixed32 fY,Fixed32 fZ)
 	\brief Set the values to specific values
 
-	Sets the x, y and z values to specific values. w is set to \ref FLOATTOFIXED(1.0f)
+	Sets the x, y and z values to specific values. w is set to \ref BURGER_FLOAT_TO_FIXED(1.0f)
 
 	\param fX New x value
 	\param fY New y value
@@ -235,9 +235,9 @@
 
 ***************************************/
 
-const Burger::FixedVector4D_t Burger::s_FixedVector4DZero = {FLOATTOFIXED(0.0f),FLOATTOFIXED(0.0f),FLOATTOFIXED(0.0f),FLOATTOFIXED(0.0f)};	///< Constant of 0.0f,0.0f,0.0f,0.0f in fixed point
-const Burger::FixedVector4D_t Burger::s_FixedVector4DOne = {FLOATTOFIXED(1.0f),FLOATTOFIXED(1.0f),FLOATTOFIXED(1.0f),FLOATTOFIXED(1.0f)};	///< Constant of 1.0f,1.0f,1.0f,1.0f in fixed point
-const Burger::FixedVector4D_t Burger::s_FixedVector4DOneX = {FLOATTOFIXED(1.0f),FLOATTOFIXED(0.0f),FLOATTOFIXED(0.0f),FLOATTOFIXED(0.0f)};	///< Constant of 1.0f,0.0f,0.0f,0.0f in fixed point
-const Burger::FixedVector4D_t Burger::s_FixedVector4DOneY = {FLOATTOFIXED(0.0f),FLOATTOFIXED(1.0f),FLOATTOFIXED(0.0f),FLOATTOFIXED(0.0f)};	///< Constant of 0.0f,1.0f,0.0f,0.0f in fixed point
-const Burger::FixedVector4D_t Burger::s_FixedVector4DOneZ = {FLOATTOFIXED(0.0f),FLOATTOFIXED(0.0f),FLOATTOFIXED(1.0f),FLOATTOFIXED(0.0f)};	///< Constant of 0.0f,0.0f,1.0f,0.0f in fixed point
-const Burger::FixedVector4D_t Burger::s_FixedVector4DOneW = {FLOATTOFIXED(0.0f),FLOATTOFIXED(0.0f),FLOATTOFIXED(0.0f),FLOATTOFIXED(1.0f)};	///< Constant of 0.0f,0.0f,0.0f,1.0f in fixed point
+const Burger::FixedVector4D_t Burger::s_FixedVector4DZero = {BURGER_FLOAT_TO_FIXED(0.0f),BURGER_FLOAT_TO_FIXED(0.0f),BURGER_FLOAT_TO_FIXED(0.0f),BURGER_FLOAT_TO_FIXED(0.0f)};	///< Constant of 0.0f,0.0f,0.0f,0.0f in fixed point
+const Burger::FixedVector4D_t Burger::s_FixedVector4DOne = {BURGER_FLOAT_TO_FIXED(1.0f),BURGER_FLOAT_TO_FIXED(1.0f),BURGER_FLOAT_TO_FIXED(1.0f),BURGER_FLOAT_TO_FIXED(1.0f)};	///< Constant of 1.0f,1.0f,1.0f,1.0f in fixed point
+const Burger::FixedVector4D_t Burger::s_FixedVector4DOneX = {BURGER_FLOAT_TO_FIXED(1.0f),BURGER_FLOAT_TO_FIXED(0.0f),BURGER_FLOAT_TO_FIXED(0.0f),BURGER_FLOAT_TO_FIXED(0.0f)};	///< Constant of 1.0f,0.0f,0.0f,0.0f in fixed point
+const Burger::FixedVector4D_t Burger::s_FixedVector4DOneY = {BURGER_FLOAT_TO_FIXED(0.0f),BURGER_FLOAT_TO_FIXED(1.0f),BURGER_FLOAT_TO_FIXED(0.0f),BURGER_FLOAT_TO_FIXED(0.0f)};	///< Constant of 0.0f,1.0f,0.0f,0.0f in fixed point
+const Burger::FixedVector4D_t Burger::s_FixedVector4DOneZ = {BURGER_FLOAT_TO_FIXED(0.0f),BURGER_FLOAT_TO_FIXED(0.0f),BURGER_FLOAT_TO_FIXED(1.0f),BURGER_FLOAT_TO_FIXED(0.0f)};	///< Constant of 0.0f,0.0f,1.0f,0.0f in fixed point
+const Burger::FixedVector4D_t Burger::s_FixedVector4DOneW = {BURGER_FLOAT_TO_FIXED(0.0f),BURGER_FLOAT_TO_FIXED(0.0f),BURGER_FLOAT_TO_FIXED(0.0f),BURGER_FLOAT_TO_FIXED(1.0f)};	///< Constant of 0.0f,0.0f,0.0f,1.0f in fixed point

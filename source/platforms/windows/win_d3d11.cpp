@@ -30,10 +30,20 @@
 #pragma warn_impl_s2u_conv off
 #endif
 
+#if defined(BURGER_WATCOM)
+// Disable user-defined conversion cannot convert to its own class or base class
+#pragma disable_message(446)
+#endif
+
 #include <d3d11.h>
 
 #if defined(BURGER_METROWERKS)
 #pragma warn_impl_s2u_conv reset
+#endif
+
+#if defined(BURGER_WATCOM)
+// Disable user-defined conversion cannot convert to its own class or base class
+#pragma enable_message(446)
 #endif
 
 // Function prototypes, lovingly stolen from d3d11.h and dxgi.h

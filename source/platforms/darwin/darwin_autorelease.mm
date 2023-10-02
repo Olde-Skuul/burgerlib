@@ -1,6 +1,6 @@
 /***************************************
 
-	Typedefs specific to Darwin (iOS/macOS)
+	Autorelease class for Darwin
 
 	Copyright (c) 2021-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
@@ -12,7 +12,7 @@
 
 ***************************************/
 
-#include "brdarwintypes.h"
+#include "darwin_autorelease.h"
 #include <Foundation/NSAutoreleasePool.h>
 
 /*! ************************************
@@ -70,9 +70,9 @@
 
 ***************************************/
 
-Burger::AutoreleasePool::AutoreleasePool()
+Burger::AutoreleasePool::AutoreleasePool() BURGER_NOEXCEPT
 {
-	m_pAutoPool = [[NSAutoreleasePool alloc] init];
+	m_pNSAutoreleasePool = [[NSAutoreleasePool alloc] init];
 }
 
 /*! ************************************
@@ -87,7 +87,7 @@ Burger::AutoreleasePool::AutoreleasePool()
 
 Burger::AutoreleasePool::~AutoreleasePool()
 {
-	[m_pAutoPool release];
+	[static_cast<NSAutoreleasePool*>(m_pNSAutoreleasePool) release];
 }
 
 #endif

@@ -48,11 +48,8 @@ namespace Burger {
 
 #if defined(BURGER_X86) || defined(DOXYGEN)
 
-/** 8087 control word to round down with 64 bit precision */
-extern const uint16_t g_X86RoundDownFlag;
-
-/** 1.0f,-1.0f for roundup / rounddown */
-extern const uint32_float_t g_X86OneAndNegOne[2];
+/** 0.5f,-0.5f for roundup / rounddown */
+extern const uint32_float_t g_X86HalfAndNegHalf[2];
 
 enum e8087Precision {
 	/** Use 24 bit / float precision (DirectX default) */
@@ -438,14 +435,10 @@ BURGER_INLINE BURGER_CONSTEXPR double interpolate(
 	return ((dTo - dFrom) * dFactor) + dFrom;
 }
 
-BURGER_INLINE float clamp(float fIn, float fMin, float fMax) BURGER_NOEXCEPT
+template<typename T>
+BURGER_INLINE T clamp(T Input, T Min, T Max) BURGER_NOEXCEPT
 {
-	return minimum(maximum(fIn, fMin), fMax);
-}
-
-BURGER_INLINE double clamp(double dIn, double dMin, double dMax) BURGER_NOEXCEPT
-{
-	return minimum(maximum(dIn, dMin), dMax);
+	return minimum(maximum(Input, Min), Max);
 }
 
 extern uint_t BURGER_API is_NaN(float fInput) BURGER_NOEXCEPT;

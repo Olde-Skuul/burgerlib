@@ -66,7 +66,7 @@ int __stdcall WinMain(HINSTANCE__* /* hInstance */,
     // Singular instance enabled?
 #if defined(GAMELOCK)
     Burger::DetectMultiLaunch OneShot;
-    if (!OneShot.IsMultiLaunched(GAMELOCK)) {
+    if (!OneShot.is_multi_launched(GAMELOCK)) {
 #endif
         // Create the game instance
         Burger::GameApp MyApp(MEMORYSIZE, HANDLECOUNT, MINIMUMRESERVE);

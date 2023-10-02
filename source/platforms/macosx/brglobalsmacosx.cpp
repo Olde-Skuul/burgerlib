@@ -493,61 +493,6 @@ int Burger::Globals::NumberFromKey(
 
 /***************************************
 
-	\brief Return the version of MacOS.
-
-	Ask MacOS what version it is and return that value.
-
-	\return Version in the format of 0x0102 -> 1.2
-
-***************************************/
-
-uint_t BURGER_API Burger::Globals::GetMacOSVersion(void)
-{
-	int selector[2];
-
-	// Create a machine information block
-
-	selector[0] = CTL_KERN;
-	selector[1] = KERN_OSRELEASE;
-	size_t uLength = 0;
-
-	// Get the size of the string
-	int iError = sysctl(selector, 2, NULL, &uLength, NULL, 0);
-	uint_t uResult = 0;
-	if (!iError) {
-		//
-		// Space for the string
-		//
-		String Buffer;
-		Buffer.resize(uLength);
-		// Make sure the buffer was allocated
-		if (Buffer.length() == uLength) {
-			// Get the string
-			iError = sysctl(selector, 2, Buffer.c_str(), &uLength, NULL, 0);
-
-			//
-			// String is in the format of 9.8.0 where
-			// 10 is assumed, 9 is the minor version (+4) and
-			// 8 is the patch version. 9.8.0 translates
-			// to 1058 (10.5.8)
-
-			const char* pBuffer = Buffer.c_str();
-			const char* pEnd;
-			uint32_t uMajor = AsciiToInteger(pBuffer, &pEnd);
-			if (pEnd != pBuffer) {
-				pBuffer = pEnd + 1;
-				uint32_t uMinor = AsciiToInteger(pBuffer, &pEnd);
-				if (pEnd != pBuffer) {
-					uResult = 0x1000 + ((uMajor - 4) << 4) + uMinor;
-				}
-			}
-		}
-	}
-	return uResult;
-}
-
-/***************************************
-
 	Load and launch a web page from an address string
 
 ***************************************/

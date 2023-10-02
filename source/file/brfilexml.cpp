@@ -27,6 +27,11 @@
 #pragma warning(disable:4355)		// "this" pointer used in initializer
 #endif
 
+#if defined(BURGER_WATCOM)
+// Disable 'sizeof' operand contains compiler generated information
+#pragma disable_message(549)
+#endif
+
 /*! ************************************
 
 	\class Burger::FileXML::Generic
@@ -1860,10 +1865,10 @@ uint_t Burger::FileXML::Declaration::Save(OutputMemoryStream *pOutput,uint_t uDe
 
 		// Force the value to be in the format of x.xx
 		float fInt = round_to_zero(m_fVersion);
-		uResult |= pOutput->AppendAscii(FloatToIntRound(fInt));
+		uResult |= pOutput->AppendAscii(float_to_int_round(fInt));
 		uResult |= pOutput->Append('.');
 		float fFrac = round_to_zero((m_fVersion-fInt)*10.f);		// 10 gets 1 digits of fraction
-		uResult |= pOutput->AppendAscii(FloatToIntRound(fFrac));
+		uResult |= pOutput->AppendAscii(float_to_int_round(fFrac));
 		uResult |= pOutput->Append('"');
 	}
 

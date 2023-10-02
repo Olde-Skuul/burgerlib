@@ -35,8 +35,13 @@ struct __CFString;
 struct __CFDictionary;
 struct __CFBundle;
 
+#if defined(__OBJC__)
 @class NSAutoreleasePool;
 @class NSObject;
+#else
+class NSAutoreleasePool;
+class NSObject;
+#endif
 
 #if defined(BURGER_64BITCPU)
 struct Burgerpthread_mutex_t {
@@ -57,24 +62,6 @@ struct Burgerpthread_cond_t {
 #endif
 #endif
 
-#if (defined(BURGER_DARWIN) && defined(__OBJC__)) || defined(DOXYGEN)
-#define BURGER_SCOPED_AUTORELEASE \
-	const Burger::AutoreleasePool BURGER_JOIN2(TempPool, __LINE__)
-
-namespace Burger {
-class AutoreleasePool {
-	/** Pointer to the allocated NSAutoreleasePool */
-	NSAutoreleasePool* m_pAutoPool;
-
-public:
-	AutoreleasePool();
-	~AutoreleasePool();
-};
-}
-#else
-
-#define BURGER_SCOPED_AUTORELEASE ((void)0)
-#endif
 /* END */
 
 #endif

@@ -32,12 +32,31 @@
 #pragma warn_emptydecl off
 #endif
 
+#if defined(BURGER_WATCOM)
+// Disable nested comment found in comment (Direct X headers trigger this)
+#pragma disable_message(15)
+// Disable '//' style comment continues on next line
+#pragma disable_message(735)
+#endif
+
 #include <d3d9.h>
 #include <d3dx9math.h>
 #include <ddraw.h>
 
 #if defined(BURGER_METROWERKS)
 #pragma warn_emptydecl reset
+#endif
+
+#if defined(BURGER_WATCOM)
+// Disable nested comment found in comment (Direct X headers trigger this)
+#pragma enable_message(15)
+// Disable '//' style comment continues on next line
+#pragma enable_message(735)
+#endif
+
+#if defined(BURGER_WATCOM)
+// Disable 'sizeof' operand contains compiler generated information
+#pragma disable_message(549)
 #endif
 
 #ifdef _DEBUG

@@ -26,14 +26,23 @@
 /* BEGIN */
 #if defined(BURGER_IOS) && !defined(DOXYGEN)
 
+#if defined(__OBJC__)
 @class EAGLContext;
 @class UIView;
 @class UIWindow;
 @class UIImage;
 @class UIImageView;
 @class UIViewController;
-
+#else
+class EAGLContext;
+class UIView;
+class UIWindow;
+class UIImage;
+class UIImageView;
+class UIViewController;
 #endif
+#endif
+
 /* END */
 
 #endif
