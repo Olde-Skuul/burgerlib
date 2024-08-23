@@ -1,0 +1,4 @@
+[submodule "directplay"]
+	path = sdks/windows/dplay
+	url = https://github.com/Olde-Skuul/directplay
+	branch = main
