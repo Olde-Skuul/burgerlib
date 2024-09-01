@@ -22,6 +22,7 @@ import subprocess
 import os
 import sys
 import errno
+import shutil
 import sphinx_rtd_theme
 
 # Determine if running on "ReadTheDocs.org"
@@ -261,32 +262,28 @@ def copy_docs(app, exception):
 
     # pylint: disable=unused-argument
 
-    print("copy_docs", flush=True)
-
-    t = os.environ.get(
-        "READTHEDOCS_OUTPUT", "Not found")
-    print("READTHEDOCS_OUTPUT " + t, flush=True)
-
     # If on ReadTheDocs.org, copy doxygen to public folder
     if _ON_RTD:
+
+        # Find the destination folder
+        output_dir = os.environ.get(
+            "READTHEDOCS_OUTPUT", ".")
+        output_dir = os.path.join(output_dir, "html")
+
         try:
             retcode = subprocess.call(
-                "cp -r temp/burgerlibdoxygenraw ../_readthedocs/html",
-                cwd=CWD,
+                "cp -r . " + output_dir,
+                cwd=os.path.join(CWD, "temp", "burgerlibdoxygenraw"),
                 shell=True)
             if retcode < 0:
                 sys.stderr.write("cp terminated by signal %s" % (-retcode))
         except OSError as error:
             sys.stderr.write("cp execution failed: %s" % error)
 
-    subprocess.call(
-        "ls -al temp/burgerlibdoxygenraw",
-        cwd=CWD,
-        shell=True)
-    subprocess.call(
-        "ls -al ../_readthedocs/html",
-        cwd=CWD,
-        shell=True)
+        # Copy over the Sphinx index
+        src_file = os.path.join(output_dir, "index.htm")
+        dest_file = os.path.join(output_dir, "index.html")
+        shutil.copy(src_file, dest_file)
 
 
 ########################################
