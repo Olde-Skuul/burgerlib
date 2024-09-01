@@ -234,10 +234,10 @@ def generate_doxygen_xml(app):
             try:
                 subprocess.call(
                     ("curl -O "
-                     "http://logicware.com/downloads/linux/doxygen-1.11.0.tgz"),
+                     "http://logicware.com/downloads/linux/doxygen-1.12.0.tgz"),
                     cwd=CWD,
                     shell=True)
-                subprocess.call("tar -xvf doxygen-1.11.0.tgz", cwd=CWD,
+                subprocess.call("tar -xvf doxygen-1.12.0.tgz", cwd=CWD,
                                 shell=True)
             except OSError as error:
                 sys.stderr.write("doxygen download error: %s" % error)

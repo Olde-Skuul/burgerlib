@@ -12,7 +12,7 @@ sphinx:
   configuration: docs/conf.py
 
 # Build all sphinx docs
-formats: all
+formats: []
 
 # Set up all the requirements for python building
 python:
