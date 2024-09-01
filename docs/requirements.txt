@@ -1,0 +1,7 @@
+breathe
+doxypypy
+sphinx_rtd_theme
+pypandoc
+recommonmark
+burger
+makeprojects

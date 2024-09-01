@@ -1,0 +1,37 @@
+# .readthedocs.yaml
+# Read the Docs configuration file
+# See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
+
+# burgerlib needs graphviz, and doxygen to build the docs.
+
+# Required
+version: 2
+
+# Point to the conf.py file
+sphinx:
+  configuration: docs/conf.py
+
+# Build all sphinx docs
+formats: all
+
+# Set up all the requirements for python building
+python:
+  install:
+    - requirements: docs/requirements.txt
+
+# Use latest Ubuntu, python and graphviz
+build:
+  os: ubuntu-22.04
+  tools:
+    python: "3"
+  apt_packages:
+    - graphviz
+  jobs:
+    post_checkout:
+      - git clone https://github.com/Feneric/doxypypy.git
+
+    # Python requires these modules updated
+    # doxypypy needs to be updated manually
+    post_install:
+      - /home/docs/checkouts/readthedocs.org/user_builds/${READTHEDOCS_PROJECT}/envs/latest/bin/python -m pip install -U setuptools distlib commonmark recommonmark
+      - /home/docs/checkouts/readthedocs.org/user_builds/${READTHEDOCS_PROJECT}/envs/latest/bin/python -m pip install ./doxypypy
