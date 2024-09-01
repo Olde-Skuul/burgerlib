@@ -16,6 +16,7 @@
 # pylint: disable=missing-module-docstring
 # pylint: disable=invalid-name
 # pylint: disable=redefined-builtin
+# pylint: disable=consider-using-f-string
 
 import subprocess
 import os
@@ -29,9 +30,6 @@ CWD = os.path.dirname(os.path.abspath(__file__))
 
 # Add this folder to python so it can find the new file
 sys.path.insert(0, CWD)
-
-# run doxygen first for code doc xml generation
-subprocess.call("doxygen", shell=True)
 
 html_theme = "sphinx_rtd_theme"
 
@@ -220,7 +218,7 @@ def generate_doxygen_xml(app):
     # Doxygen can't create a nested folder. Help it by
     # creating the first folder
 
-    print("generate_doxygen_xml")
+    print("generate_doxygen_xml", flush=True)
     try:
         os.makedirs(os.path.join(CWD, "temp"))
     except OSError as error:
@@ -254,6 +252,18 @@ def generate_doxygen_xml(app):
     except OSError as error:
         sys.stderr.write("doxygen execution failed: %s" % error)
 
+
+########################################
+
+def copy_docs(app, exception):
+    """
+    Sphinx is done, copy the docs
+    """
+
+    # pylint: disable=unused-argument
+
+    print("copy_docs", flush=True)
+
     # If on ReadTheDocs.org, copy doxygen to public folder
     if _ON_RTD:
         try:
@@ -266,6 +276,7 @@ def generate_doxygen_xml(app):
         except OSError as error:
             sys.stderr.write("cp execution failed: %s" % error)
 
+
 ########################################
 
 
@@ -276,3 +287,6 @@ def setup(app):
 
     # Add hook for building doxygen xml when needed
     app.connect("builder-inited", generate_doxygen_xml)
+
+    # Add hook for building doxygen xml when needed
+    app.connect("builder-finished", copy_docs)
