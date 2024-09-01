@@ -218,7 +218,6 @@ def generate_doxygen_xml(app):
     # Doxygen can't create a nested folder. Help it by
     # creating the first folder
 
-    print("generate_doxygen_xml", flush=True)
     try:
         os.makedirs(os.path.join(CWD, "temp"))
     except OSError as error:
@@ -264,17 +263,30 @@ def copy_docs(app, exception):
 
     print("copy_docs", flush=True)
 
+    t = os.environ.get(
+        "READTHEDOCS_OUTPUT", "Not found")
+    print("READTHEDOCS_OUTPUT " + t, flush=True)
+
     # If on ReadTheDocs.org, copy doxygen to public folder
     if _ON_RTD:
         try:
             retcode = subprocess.call(
                 "cp -r temp/burgerlibdoxygenraw ../_readthedocs/html",
-                cwd=".",
+                cwd=CWD,
                 shell=True)
             if retcode < 0:
                 sys.stderr.write("cp terminated by signal %s" % (-retcode))
         except OSError as error:
             sys.stderr.write("cp execution failed: %s" % error)
+
+    subprocess.call(
+        "ls -al temp/burgerlibdoxygenraw",
+        cwd=CWD,
+        shell=True)
+    subprocess.call(
+        "ls -al ../_readthedocs/html",
+        cwd=CWD,
+        shell=True)
 
 
 ########################################
