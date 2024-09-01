@@ -270,6 +270,9 @@ def copy_docs(app, exception):
             "READTHEDOCS_OUTPUT", ".")
         output_dir = os.path.join(output_dir, "html")
 
+        print("output_dir " + output_dir, flush=True)
+        print("CWD " + CWD, flush=True)
+
         try:
             retcode = subprocess.call(
                 "cp -r . " + output_dir,
@@ -285,6 +288,15 @@ def copy_docs(app, exception):
         dest_file = os.path.join(output_dir, "index.html")
         shutil.copy(src_file, dest_file)
 
+        subprocess.call(
+            "pwd",
+            cwd=CWD,
+            shell=True)
+
+        subprocess.call(
+            "ls -al ../_readthedocs/html",
+            cwd=CWD,
+            shell=True)
 
 ########################################
 
