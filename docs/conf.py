@@ -289,4 +289,4 @@ def setup(app):
     app.connect("builder-inited", generate_doxygen_xml)
 
     # Add hook for building doxygen xml when needed
-    app.connect("builder-finished", copy_docs)
+    app.connect("build-finished", copy_docs)
