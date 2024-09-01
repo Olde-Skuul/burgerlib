@@ -17,9 +17,11 @@
 # pylint: disable=invalid-name
 # pylint: disable=redefined-builtin
 
+import subprocess
 import os
 import sys
-import subprocess
+import errno
+import sphinx_rtd_theme
 
 # Determine if running on "ReadTheDocs.org"
 _ON_RTD = os.environ.get("READTHEDOCS", None) == "True"
@@ -32,7 +34,9 @@ sys.path.insert(0, CWD)
 subprocess.call("doxygen", shell=True)
 
 html_theme = "sphinx_rtd_theme"
-html_theme_path = []
+
+# Add any paths that contain custom themes here, relative to this directory.
+html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 # -- Project information -----------------------------------------------------
 
@@ -91,7 +95,7 @@ language = "en"
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = []
-#html_extra_path = ["temp/sphinx/html"]
+# html_extra_path = ["temp/sphinx/html"]
 html_extra_path = []
 
 # The name of the Pygments (syntax highlighting) style to use.
@@ -202,3 +206,73 @@ epub_exclude_files = ["search.html"]
 
 
 # -- Extension configuration -------------------------------------------------
+
+########################################
+
+
+def generate_doxygen_xml(app):
+    """
+    Run the doxygen make commands if we're on the ReadTheDocs server
+    """
+
+    # pylint: disable=unused-argument
+
+    # Doxygen can't create a nested folder. Help it by
+    # creating the first folder
+
+    print("generate_doxygen_xml")
+    try:
+        os.makedirs(os.path.join(CWD, "temp"))
+    except OSError as error:
+        if error.errno != errno.EEXIST:
+            raise
+
+    # Read the docs has an old version of doxygen, upgrade it.
+    if _ON_RTD:
+        doxygen = os.path.join(CWD, "doxygen")
+        if not os.path.isfile(doxygen):
+            try:
+                subprocess.call(
+                    ("curl -O "
+                     "http://logicware.com/downloads/linux/doxygen-1.11.0.tgz"),
+                    cwd=CWD,
+                    shell=True)
+                subprocess.call("tar -xvf doxygen-1.11.0.tgz", cwd=CWD,
+                                shell=True)
+            except OSError as error:
+                sys.stderr.write("doxygen download error: %s" % error)
+    else:
+        doxygen = "doxygen"
+
+    # Call Doxygen to build the documentation
+    try:
+        # Log the Doxygen version number
+        subprocess.call(doxygen + " -v", cwd=CWD, shell=True)
+        retcode = subprocess.call(doxygen, cwd=CWD, shell=True)
+        if retcode < 0:
+            sys.stderr.write("doxygen terminated by signal %s" % (-retcode))
+    except OSError as error:
+        sys.stderr.write("doxygen execution failed: %s" % error)
+
+    # If on ReadTheDocs.org, copy doxygen to public folder
+    if _ON_RTD:
+        try:
+            retcode = subprocess.call(
+                "cp -r temp/burgerlibdoxygenraw ../_readthedocs/html",
+                cwd=".",
+                shell=True)
+            if retcode < 0:
+                sys.stderr.write("cp terminated by signal %s" % (-retcode))
+        except OSError as error:
+            sys.stderr.write("cp execution failed: %s" % error)
+
+########################################
+
+
+def setup(app):
+    """
+    Called by breathe to create the doxygen docs
+    """
+
+    # Add hook for building doxygen xml when needed
+    app.connect("builder-inited", generate_doxygen_xml)
