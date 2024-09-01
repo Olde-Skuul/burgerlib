@@ -258,6 +258,8 @@ def generate_doxygen_xml(app):
 def copy_docs(app, exception):
     """
     Sphinx is done, copy the docs
+
+    Replace the Sphinx docs with the Doxygen docs
     """
 
     # pylint: disable=unused-argument
@@ -270,9 +272,6 @@ def copy_docs(app, exception):
             "READTHEDOCS_OUTPUT", ".")
         output_dir = os.path.join(output_dir, "html")
 
-        print("output_dir " + output_dir, flush=True)
-        print("CWD " + CWD, flush=True)
-
         try:
             retcode = subprocess.call(
                 "cp -r . " + output_dir,
@@ -283,20 +282,10 @@ def copy_docs(app, exception):
         except OSError as error:
             sys.stderr.write("cp execution failed: %s" % error)
 
-        # Copy over the Sphinx index
+        # Copy over the Sphinx index with the Doxygen file
         src_file = os.path.join(output_dir, "index.htm")
         dest_file = os.path.join(output_dir, "index.html")
         shutil.copy(src_file, dest_file)
-
-        subprocess.call(
-            "pwd",
-            cwd=CWD,
-            shell=True)
-
-        subprocess.call(
-            "ls -al ../_readthedocs/html",
-            cwd=CWD,
-            shell=True)
 
 ########################################
 
