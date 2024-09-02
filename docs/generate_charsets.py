@@ -1024,6 +1024,8 @@ def create_top(lines, table):
 
     lines.append("<body bgcolor=\"#FFFFFF\">")
     lines.append("<center><h1>" + table[0] + " Unicode table</h1></center>")
+    lines.append(
+        "<center><h3>Generated with <i>generate_charsets.py</i></h3></center>")
     lines.append("<table width=\"100%\" border=\"1\" cellspacing=\"0\" "
         "cellpadding=\"2\" summary=\"This is the Unicode mapping of " +
         table[0] + "\">")

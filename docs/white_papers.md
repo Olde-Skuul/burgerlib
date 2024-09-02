@@ -16,14 +16,6 @@ File formats {#sect_file_formats}
 * [AIFF-C File format](aiff-c.9.26.91.pdf)
 * [Creative Labs VOC File format](creative%20voice%20file%20format.txt)
 
-Character sets {#sect_chararacter_sets}
---------------
-
-* [ISO Latin 1 character set.](isolatin1.htm)
-* [MacOS Roman US character set.](macromanus.htm)
-* [Windows 437 character set.](windows437.htm)
-* [Windows 1252 character set.](windows1252.htm)
-
 CPU instruction sets {#sect_cpu_docs}
 --------------------
 
