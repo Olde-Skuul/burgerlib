@@ -10,8 +10,8 @@
       <tab type="modulelist" visible="yes" title="" intro=""/>
       <tab type="modulemembers" visible="yes" title="" intro=""/>
     </tab>
-    <tab type="user" url="@ref page_defines" title="Defines"/>
-    <tab type="user" url="@ref page_platform_types" title="Typedefs"/>
+    <tab type="user" url="md_defines.htm" title="Defines"/>
+    <tab type="user" url="md_platform__types.htm" title="Typedefs"/>
     <tab type="namespaces" visible="yes" title="">
       <tab type="namespacelist" visible="yes" title="" intro=""/>
       <tab type="namespacemembers" visible="yes" title="" intro=""/>

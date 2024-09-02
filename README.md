@@ -1,5 +1,7 @@
 # Welcome to Burgerlib
 
+[![License](https://img.shields.io/pypi/l/burger.svg "License")](https://github.com/Olde-Skuul/burgerlib/blob/master/LICENSE)
+
 ## The only low level library you'll ever need
 
 Burgerlib is a low level *operating system* library that presents a common API that operates the same on numerous mobile, desktop, and video game platforms. By using the library, it will allow near instant porting of an application written on one platform to another.
