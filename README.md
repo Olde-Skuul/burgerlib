@@ -2,17 +2,27 @@
 
 ## The only low level library you'll ever need
 
-Copyright 1995-2023 by Rebecca Ann Heineman [becky@burgerbecky.com](mailto:becky@burgerbecky.com). Email all suggestions, corrections, optimizations and insults to her and she'll be eternally grateful.
+Burgerlib is a low level *operating system* library that presents a common API that operates the same on numerous mobile, desktop, and video game platforms. By using the library, it will allow near instant porting of an application written on one platform to another.
 
-It is released under an MIT Open Source license. Please see [**LICENSE**](https://raw.githubusercontent.com/Olde-Skuul/burgerlib/master/LICENSE) for license details. Yes, you can use it in a commercial title without paying anything, just give me a credit.
+Burgerlib is not meant to be considered an engine, it's a framework on to which an engine can be created on top of and by using the common API, be compatible on dozens of platforms.
 
-Please? It's not like I'm asking you for money!
+Filenames and paths are standardized, all text is UTF-8 regardless of platform. Display, input, audio, music, math, timers, atomics, and typedefs operate the same.
 
 ---
 
+## Sections of interest
+
+* [What is Burgerlib?](docs/what_is_burgerlib.md)
+* [Building Burgerlib](docs/building.md)
+* [Using Burgerlib](docs/using_burgerlib.md)
+* [Compiler issues](docs/compiler_issues.md)
+* [Platform defines](docs/defines.md)
+* [Platform types](docs/platform_types.md)
+* [White Papers](docs/white_papers.md)
+
 ## Online Doxygen Documentation
 
-[Documentation is found here.](http://www.burgerbecky.com/burgerlib/docs)
+[Documentation is found here.](https://burgerlib.readthedocs.io/en/latest/index.htm)
 
 **Yes, click the link above. DO IT! BOOKMARK IT!**
 
@@ -106,18 +116,6 @@ Needed for Windows builds.
 
 ---
 
-## Sections of interest
-
-* \ref page_what_is_burgerlib
-* \ref page_building
-* \ref page_using_burgerlib
-* \ref page_compiler_issues
-* \ref page_defines
-* \ref page_platform_types
-* \ref page_white_papers
-
----
-
 ## Credits
 
 * Rebecca Ann Heineman - most of the codebase
@@ -127,3 +125,10 @@ Needed for Windows builds.
 * Thatcher Ulrich - Hash template
 * Daniel Julius Bernstein - djb2 hash algorithm
 * Matt Pritchard - SafePrint
+
+## License
+Copyright 1995-2024 by Rebecca Ann Heineman [becky@burgerbecky.com](mailto:becky@burgerbecky.com). Email all suggestions, corrections, optimizations and insults to her and she'll be eternally grateful.
+
+It is released under an MIT Open Source license. Please see [**LICENSE**](https://raw.githubusercontent.com/Olde-Skuul/burgerlib/master/LICENSE) for license details. Yes, you can use it in a commercial title without paying anything, just give me a credit.
+
+Please? It's not like I'm asking you for money!

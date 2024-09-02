@@ -1,4 +1,4 @@
-Compiler issues {#page_compiler_issues}
+Compiler issues
 ===============
 
 Burgerlib is compiled on a myriad of compilers, and as always, not all compilers are the same.

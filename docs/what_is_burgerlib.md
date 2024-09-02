@@ -1,4 +1,4 @@
-What is Burgerlib {#page_what_is_burgerlib}
+What is Burgerlib
 =================
 
 Burgerlib is a low level "Operating System" like library that provides a standardized Application Programmer's Interface (API) so the application can run unmodified on over a dozen operating systems. It's been used in over 75 commercial video games.

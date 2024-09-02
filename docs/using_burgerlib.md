@@ -1,4 +1,4 @@
-Using Burgerlib {#page_using_burgerlib}
+Using Burgerlib
 ===============
 
 \section introduction Introduction

@@ -1,4 +1,4 @@
-White Papers {#page_white_papers}
+White Papers
 ============
 
 These white papers were used to generate some of the code in Burgerlib

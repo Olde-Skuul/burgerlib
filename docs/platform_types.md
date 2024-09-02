@@ -1,4 +1,4 @@
-Platform types {#page_platform_types}
+Platform types
 ==============
 
 These data types are stable and will generate the exact same size on any platform.

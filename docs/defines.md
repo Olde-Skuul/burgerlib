@@ -1,4 +1,4 @@
-Platform defines {#page_defines}
+Platform defines
 ================
 
 This is the mainstay of all of Burgerlib. You include the file burger.h in your project which will determine the compiler, target, CPU, and system specific features so you can write platform neutral code.

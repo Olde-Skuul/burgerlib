@@ -28,7 +28,7 @@
 
 	Please? It's not like I'm asking you for money!
 
-	Documentation can be found at http://www.burgerbecky.com/burgerlib/docs
+	Documentation can be found at https://burgerlib.readthedocs.io/en/latest/index.htm
 
 	Comments, suggestions, bug fixes, email me at becky@burgerbecky.com
 

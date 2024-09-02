@@ -1,4 +1,4 @@
-Building Burgerlib {#page_building}
+Building Burgerlib
 ==================
 
 Windows host {#page_windows}
