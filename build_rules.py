@@ -30,6 +30,9 @@ CLEANME_PROCESS_PROJECT_FILES = False
 # Check if git is around
 _GIT_FOUND = None
 
+# Check if running on Readthedocs
+_ON_RTD = os.environ.get("READTHEDOCS", None) == "True"
+
 # Folders for all the target operating systems supported
 
 TARGETFOLDERS = (
@@ -189,9 +192,12 @@ def find_makeheader():
 
     """
 
-    if not is_git():
+    # Read the docs has it in the docs folder
+    if _ON_RTD:
+        return "docs/makeheader"
 
-        # At Olde Skuul, this is in the path
+    if not is_git():
+        # At Olde Skuul, it's on the path
         return "makeheader"
 
     # Select the right binary for the host OS and use the local copy

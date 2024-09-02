@@ -25,6 +25,8 @@ import errno
 import shutil
 import sphinx_rtd_theme
 
+from burger import import_py_script
+
 # Determine if running on "ReadTheDocs.org"
 _ON_RTD = os.environ.get("READTHEDOCS", None) == "True"
 CWD = os.path.dirname(os.path.abspath(__file__))
@@ -208,6 +210,83 @@ epub_exclude_files = ["search.html"]
 
 ########################################
 
+def locate_doxygen():
+    """
+    Return the location of doxygen
+
+    If on ReadTheDocs, load in doxygen from logicware.com to
+    get the latest version.
+
+    Returns:
+        String with the path to doxygen
+    """
+
+    # Read the docs has an old version of doxygen, upgrade it.
+    if not _ON_RTD:
+        return "doxygen"
+
+    # Put it at this folder
+    doxygen = os.path.join(CWD, "doxygen")
+
+    # Check if already present
+    if not os.path.isfile(doxygen):
+
+        # Load it from a remote site
+        try:
+            subprocess.call(
+                ("curl -O "
+                    "http://logicware.com/downloads/linux/doxygen-1.12.0.tgz"),
+                cwd=CWD,
+                shell=True)
+
+            # Decompress it in this folder
+            subprocess.call("tar -xvf doxygen-1.12.0.tgz", cwd=CWD,
+                            shell=True)
+        except OSError as error:
+            sys.stderr.write("doxygen download error: %s" % error)
+
+    # Return the full path
+    return doxygen
+
+
+########################################
+
+def load_makeheader():
+    """
+    Download makeheader
+
+    If on ReadTheDocs, load in makeheader from logicware.com to
+    get the latest version.
+
+    """
+
+    # Readthedocs needs to load in makeheader
+    if not _ON_RTD:
+        return
+
+    # Put it at this folder
+    makeheader = os.path.join(CWD, "makeheader")
+
+    # Check if already present
+    if not os.path.isfile(makeheader):
+
+        # Load it from a remote site
+        try:
+            subprocess.call(
+                ("curl -O "
+                    "http://logicware.com/downloads/linux/makeheader.tgz"),
+                cwd=CWD,
+                shell=True)
+
+            # Decompress it in this folder
+            subprocess.call("tar -xvf makeheader.tgz", cwd=CWD,
+                            shell=True)
+        except OSError as error:
+            sys.stderr.write("makeheader download error: %s" % error)
+
+
+########################################
+
 
 def generate_doxygen_xml(app):
     """
@@ -225,22 +304,17 @@ def generate_doxygen_xml(app):
         if error.errno != errno.EEXIST:
             raise
 
+    # The tools need makeheader, make sure it's present
+    load_makeheader()
+
+    # Invoke the prebuild python script to create the super headers
+    # that are needed by doxygen
+    build_rules = import_py_script(
+        os.path.join(CWD, "build_rules.py"))
+    build_rules.prebuild(CWD, "all")
+
     # Read the docs has an old version of doxygen, upgrade it.
-    if _ON_RTD:
-        doxygen = os.path.join(CWD, "doxygen")
-        if not os.path.isfile(doxygen):
-            try:
-                subprocess.call(
-                    ("curl -O "
-                     "http://logicware.com/downloads/linux/doxygen-1.12.0.tgz"),
-                    cwd=CWD,
-                    shell=True)
-                subprocess.call("tar -xvf doxygen-1.12.0.tgz", cwd=CWD,
-                                shell=True)
-            except OSError as error:
-                sys.stderr.write("doxygen download error: %s" % error)
-    else:
-        doxygen = "doxygen"
+    doxygen = locate_doxygen()
 
     # Call Doxygen to build the documentation
     try:

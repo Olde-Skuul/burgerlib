@@ -28,6 +28,43 @@ from burger import import_py_script, clean_directories, clean_files, \
 # If set to True, ``buildme -r``` will not parse directories in this folder.
 NO_RECURSE = True
 
+# List of files to remove write protection
+DOXYGEN_FILE_LIST = (
+    "docs.css",
+    "burger.png",
+    "oldeskuul.png",
+    "sourceforge.jpg",
+    "twitter.jpg",
+    "facebook.png",
+    "linkedin.png",
+    "github.png",
+    "burgerbackground.png",
+    "spec-gif89a.txt",
+    "swf-file-format-spec.pdf",
+    "avm2overview.pdf",
+    "qtff-2001.pdf",
+    "mpeg-2_audio_is.pdf",
+    "11172-3.pdf",
+    "aiff-1.3.pdf",
+    "aiff-c.9.26.91.pdf",
+    "creative voice file format.txt",
+    "3dnow.pdf",
+    "avx.pdf",
+    "m68000prm.pdf",
+    "powerpc-cwg.pdf",
+    "qt6apiref.pdf",
+    "qt4reference-extract.pdf",
+    "MacintoshToolboxEssentials.pdf",
+    "Sound_Manager.pdf",
+    "macos_sound-extract.pdf",
+    "mp3_theory.pdf",
+    "lfsr04.pdf",
+    "is138181.pdf",
+    "is138182.pdf"
+)
+
+_ON_RTD = os.environ.get("READTHEDOCS", None) == "True"
+
 ########################################
 
 
@@ -178,42 +215,8 @@ def postbuild(working_directory, configuration):
     # Get the directory where the cleanup must occur
     raw_dir = os.path.join(working_directory, "temp", "burgerlibdoxygenraw")
 
-    file_list = (
-        "docs.css",
-        "burger.png",
-        "oldeskuul.png",
-        "sourceforge.jpg",
-        "twitter.jpg",
-        "facebook.png",
-        "linkedin.png",
-        "github.png",
-        "burgerbackground.png",
-        "spec-gif89a.txt",
-        "swf-file-format-spec.pdf",
-        "avm2overview.pdf",
-        "qtff-2001.pdf",
-        "mpeg-2_audio_is.pdf",
-        "11172-3.pdf",
-        "aiff-1.3.pdf",
-        "aiff-c.9.26.91.pdf",
-        "creative voice file format.txt",
-        "3dnow.pdf",
-        "avx.pdf",
-        "m68000prm.pdf",
-        "powerpc-cwg.pdf",
-        "qt6apiref.pdf",
-        "qt4reference-extract.pdf",
-        "MacintoshToolboxEssentials.pdf",
-        "Sound_Manager.pdf",
-        "macos_sound-extract.pdf",
-        "mp3_theory.pdf",
-        "lfsr04.pdf",
-        "is138181.pdf",
-        "is138182.pdf"
-    )
-
     # Allow writing on these files.
-    for item in file_list:
+    for item in DOXYGEN_FILE_LIST:
         filename = os.path.join(raw_dir, item)
         try:
             os.chmod(filename, stat.S_IMODE(os.stat(filename).st_mode) |
@@ -237,6 +240,7 @@ def postbuild(working_directory, configuration):
     # Check if files are to be deleted
     copy_if_changed(html_dir, raw_dir)
     copy_if_changed(html_source, raw_source)
+
     return 0
 
 ########################################

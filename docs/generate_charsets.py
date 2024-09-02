@@ -17,6 +17,12 @@ from burger import create_folder_if_needed, save_text_file_if_newer, \
     is_string, escape_xml_cdata
 
 #
+# Directory this script resides in
+#
+
+WORKING_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
+
+#
 # Unicode descriptions for all valid characters
 #
 
@@ -978,10 +984,10 @@ WINDOWS_1252 = (
 )
 
 TABLE_NAMES = (
-    ('ISOLatin1', 'isolatin1', ISO_LATIN1),
-    ('MacRoman US', 'macromanus', MAC_ROMAN_US),
-    ('Windows 437', 'windows437', WINDOWS_437),
-    ('Windows 1252', 'windows1252', WINDOWS_1252)
+    ("ISOLatin1", "isolatin1", ISO_LATIN1),
+    ("MacRoman US", "macromanus", MAC_ROMAN_US),
+    ("Windows 437", "windows437", WINDOWS_437),
+    ("Windows 1252", "windows1252", WINDOWS_1252)
 )
 
 ########################################
@@ -991,21 +997,22 @@ def create_header(lines, table):
     """
     Create the HTML header and HEAD record
     """
-    lines.append('<!DOCTYPE HTML PUBLIC '
-        '"-//W3C//DTD HTML 4.01 Transitional//EN"')
-    lines.append('   "http://www.w3.org/TR/html4/loose.dtd">')
-    lines.append('<html lang="en-US">')
-    lines.append('<head>')
-    lines.append('<title>' + table[0] + ' Unicode table</title>')
-    lines.append('<meta name="Author" content="Rebecca Heineman">')
-    lines.append('<meta name="description" content="' + table[0] +
-        ' Unicode table">')
-    lines.append('<meta name="keywords" content="burgerlib, xbox, ps3, ps2, '
-        'wii, ds, ipod, mac, vista, xp, c, c++, assembly, arm, ppc, intel, '
-        'amd, nvidia, ati, sony, microsoft, nintendo, sega">')
-    lines.append('<meta http-equiv="Content-Type" content="text/html; '
-        'charset=utf-8">')
-    lines.append('</head>')
+    lines.append("<!DOCTYPE HTML PUBLIC "
+        "\"-//W3C//DTD HTML 4.01 Transitional//EN\"")
+    lines.append("   \"http://www.w3.org/TR/html4/loose.dtd\">")
+    lines.append("<html lang=\"en-US\">")
+    lines.append("<head>")
+    lines.append("<title>" + table[0] + " Unicode table</title>")
+    lines.append("<meta name=\"Author\" content=\"Rebecca Heineman\">")
+    lines.append("<meta name=\"description\" content=\"" + table[0] +
+        " Unicode table\">")
+    lines.append("<meta name=\"keywords\" content=\"burgerlib, xbox, ps3, ps2, "
+        "wii, ds, ipod, mac, vista, xp, c, c++, assembly, arm, ppc, intel, "
+        "amd, nvidia, ati, sony, microsoft, nintendo, sega, playstation, "
+        "ps4, ps5\">")
+    lines.append("<meta http-equiv=\"Content-Type\" content=\"text/html; "
+        "charset=utf-8\">")
+    lines.append("</head>")
 
 ########################################
 
@@ -1015,30 +1022,34 @@ def create_top(lines, table):
     Create the beginning of the body
     """
 
-    lines.append('<body bgcolor="#FFFFFF">')
-    lines.append('<center><h1>' + table[0] + ' Unicode table</h1></center>')
-    lines.append('<table width="100%" border="1" cellspacing="0" '
-        'cellpadding="2" summary="This is the Unicode mapping of ' +
-        table[0] + '">')
-    lines.append('<tr bgcolor="#555555">')
-    lines.append('<td></td>')
+    lines.append("<body bgcolor=\"#FFFFFF\">")
+    lines.append("<center><h1>" + table[0] + " Unicode table</h1></center>")
+    lines.append("<table width=\"100%\" border=\"1\" cellspacing=\"0\" "
+        "cellpadding=\"2\" summary=\"This is the Unicode mapping of " +
+        table[0] + "\">")
+    lines.append("<tr bgcolor=\"#555555\">")
+    lines.append("<td></td>")
     for i in range(16):
-        lines.append('<th><font color="white">' + '%02X' % i +
-        '</font></th>')
-    lines.append('<td></td>')
-    lines.append('</tr>')
+        lines.append("<th><font color=\"white\">" + "%02X" % i +
+        "</font></th>")
+    lines.append("<td></td>")
+    lines.append("</tr>")
+
+########################################
 
 
 def create_bottom(lines, table):
     """
     Create the bottom row of the table
     """
-    lines.append('<tr bgcolor="#555555">')
-    lines.append('<td></td>')
+    lines.append("<tr bgcolor=\"#555555\">")
+    lines.append("<td></td>")
     for i in range(16):
-        lines.append('<th><font color="white">' + '%02X' % i + '</font></th>')
-    lines.append('<td></td>')
-    lines.append('</tr>')
+        lines.append("<th><font color=\"white\">" + "%02X" % i + "</font></th>")
+    lines.append("<td></td>")
+    lines.append("</tr>")
+
+########################################
 
 
 def create_entry(lines, utf32):
@@ -1046,7 +1057,7 @@ def create_entry(lines, utf32):
     Generate the HTML for a single table cell
     """
 
-    hexstring = '%04X' % utf32
+    hexstring = "%04X" % utf32
     description = UNICODE_DESCRIPTIONS.get(utf32, None)
     if description:
         if is_string(description):
@@ -1057,17 +1068,20 @@ def create_entry(lines, utf32):
             desc = description[1]
     else:
         print("Code " + hex(utf32) + " is not found")
-        title = 'UNKNOWN'
-        desc = 'NULL'
+        title = "UNKNOWN"
+        desc = "NULL"
 
     if len(desc) == 1:
-        entry = ('<td align="center" title="{}"><font size="+2">{}</font><br>'
-            '<font size="-2">{}</font></td>').format(
+        entry = (
+            "<td align=\"center\" title=\"{}\"><font size=\"+2\">{}</font><br>"
+            "<font size=\"-2\">{}</font></td>").format(
             title, escape_xml_cdata(desc), hexstring)
     else:
-        entry = ('<td align="center" title="{}">{}<br><font size="-2">'
-            '{}</font></td>').format(title, desc, hexstring)
+        entry = ("<td align=\"center\" title=\"{}\">{}<br><font size=\"-2\">"
+            "{}</font></td>").format(title, desc, hexstring)
     lines.append(entry)
+
+########################################
 
 
 def create_table(lines, table):
@@ -1077,20 +1091,20 @@ def create_table(lines, table):
     create_top(lines, table)
     for i in range(16):
         if (i % 2) == 0:
-            lines.append('<tr>')
+            lines.append("<tr>")
         else:
-            lines.append('<tr bgcolor="#dddddd">')
-        lines.append('<th bgcolor="#555555"><font color="white">' +
-            '%X0' % i + '</font></th>')
+            lines.append("<tr bgcolor=\"#dddddd\">")
+        lines.append("<th bgcolor=\"#555555\"><font color=\"white\">" +
+            "%X0" % i + "</font></th>")
         for j in range(16):
             index = (i * 16) + j
             if index < 128:
                 create_entry(lines, index)
             else:
                 create_entry(lines, table[2][index - 128])
-        lines.append('<th bgcolor="#555555"><font color="white">' +
-            '%X0' % i + '</font></th>')
-        lines.append('</tr>')
+        lines.append("<th bgcolor=\"#555555\"><font color=\"white\">" +
+            "%X0" % i + "</font></th>")
+        lines.append("</tr>")
 
     create_bottom(lines, table)
 
@@ -1101,9 +1115,9 @@ def create_footer(lines, table):
     """
     Close up the HTML file
     """
-    lines.append('</table>')
-    lines.append('</body>')
-    lines.append('</html>')
+    lines.append("</table>")
+    lines.append("</body>")
+    lines.append("</html>")
 
 
 ########################################
@@ -1121,7 +1135,8 @@ def main(working_directory):
         0
     """
 
-    dest_folder = os.path.join(working_directory, 'temp', 'charsets')
+    dest_folder = os.path.join(
+        working_directory, "temp", "charsets")
     create_folder_if_needed(dest_folder)
 
     # Prepare to output the tables
@@ -1130,7 +1145,8 @@ def main(working_directory):
         create_header(lines, table)
         create_table(lines, table)
         create_footer(lines, table)
-        dest_file = os.path.join(dest_folder, table[1] + '.htm')
+
+        dest_file = os.path.join(dest_folder, table[1] + ".htm")
         save_text_file_if_newer(dest_file, lines,
             bom=True, perforce=False, verbose=True)
 
@@ -1140,5 +1156,4 @@ def main(working_directory):
 
 # If called as a command line and not a class, perform the build
 if __name__ == "__main__":
-    WORKING_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
     sys.exit(main(WORKING_DIRECTORY))
