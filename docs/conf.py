@@ -234,7 +234,7 @@ def locate_doxygen():
         # Load it from a remote site
         try:
             subprocess.call(
-                ("curl -O "
+                ("curl --no-progress-meter -O "
                     "http://logicware.com/downloads/linux/doxygen-1.12.0.tgz"),
                 cwd=CWD,
                 shell=True)
@@ -273,7 +273,7 @@ def load_makeheader():
         # Load it from a remote site
         try:
             subprocess.call(
-                ("curl -O "
+                ("curl --no-progress-meter -O "
                     "http://logicware.com/downloads/linux/makeheader.tgz"),
                 cwd=CWD,
                 shell=True)

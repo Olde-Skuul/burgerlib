@@ -1,6 +1,6 @@
 # Welcome to Burgerlib
 
-[![License](https://img.shields.io/pypi/l/burger.svg "License")](https://github.com/Olde-Skuul/burgerlib/blob/master/LICENSE)
+[![License](https://img.shields.io/badge/License-MIT%20License-blue "License")](https://github.com/Olde-Skuul/burgerlib/blob/master/LICENSE) [![Docs](https://img.shields.io/readthedocs/burgerlib.svg "Documentation Status")](http://burgerlib.readthedocs.io)
 
 ## The only low level library you'll ever need
 
