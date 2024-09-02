@@ -1,4 +1,4 @@
-# Character Encoding rules
+ï»¿# Character Encoding rules
 
 ## UTF-8
 
@@ -8,7 +8,7 @@ This also is enforced with filenames and interaction with environment variables,
 
 ## Examples of use
 
-Normally, characters such as © (Copyright) and ¿ (Spanish question) are stored as standandard UTF-8 encoded characters. But if used for filenames or text for the host's dialogs or console output, they don't show up properly due to differences in character encoding on the host platform. Any function that handles filenames or console/window output in Burgerlib will automatically translate to the native character set, if the character is available.
+Normally, characters such as Â© (Copyright) and Â¿ (Spanish question) are stored as standandard UTF-8 encoded characters. But if used for filenames or text for the host's dialogs or console output, they don't show up properly due to differences in character encoding on the host platform. Any function that handles filenames or console/window output in Burgerlib will automatically translate to the native character set, if the character is available.
 
 ```cpp
     // Output a text file with a copyright symbol
@@ -25,7 +25,7 @@ Normally, characters such as © (Copyright) and ¿ (Spanish question) are stored a
     // written, will be written as is.
 
     Burger::FileManager::save_file(
-        "My good stuff©", "Good stuff", 10);
+        "My good stuffÂ©", "Good stuff", 10);
 ```
 
 ## Character encoding tables
