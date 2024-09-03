@@ -650,7 +650,7 @@ INTERNAL_DOCS          = NO
 # Possible values are: SYSTEM, NO and YES.
 # The default value is: SYSTEM.
 
-CASE_SENSE_NAMES       = NO
+CASE_SENSE_NAMES       = SYSTEM
 
 # If the HIDE_SCOPE_NAMES tag is set to NO then Doxygen will show members with
 # their full class and namespace scopes in the documentation. If set to YES, the
@@ -1066,7 +1066,13 @@ EXCLUDE_SYMLINKS       = NO
 # Note that the wildcards are matched against the file with absolute path, so to
 # exclude all test directories for example use the pattern */test/*
 
-EXCLUDE_PATTERNS       = temp \
+EXCLUDE_PATTERNS       = data \
+                         deploy \
+                         ide_plugins \
+                         projects \
+                         temp \
+                         samples \
+                         tools \
                          unittest \
                          asm \
                          dplay \
@@ -1939,7 +1945,7 @@ MATHJAX_FORMAT         = HTML-CSS
 # - in case of MathJax version 3: https://cdn.jsdelivr.net/npm/mathjax@3
 # This tag requires that the tag USE_MATHJAX is set to YES.
 
-MATHJAX_RELPATH        = https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/
+MATHJAX_RELPATH        =
 
 # The MATHJAX_EXTENSIONS tag can be used to specify one or more MathJax
 # extension names that should be enabled during MathJax rendering. For example
@@ -2663,7 +2669,7 @@ DOT_NODE_ATTR          = "shape=box,height=0.2,width=0.4"
 # DOT_COMMON_ATTR and others dot attributes.
 # This tag requires that the tag HAVE_DOT is set to YES.
 
-DOT_FONTPATH           = $(BURGER_SDKS)/fonts
+DOT_FONTPATH           = ./fonts
 
 # If the CLASS_GRAPH tag is set to YES or GRAPH or BUILTIN then Doxygen will
 # generate a graph for each documented class showing the direct and indirect

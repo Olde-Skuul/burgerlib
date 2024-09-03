@@ -41,6 +41,8 @@ PROJECT_TYPE = ProjectTypes.library
 # If set to True, ``buildme -r``` will not parse directories in this folder.
 NO_RECURSE = True
 
+# ``cleanme`` will assume only the function ``clean()`` is used if False.
+# Overrides PROCESS_PROJECT_FILES
 CLEANME_PROCESS_PROJECT_FILES = False
 
 # Build folder

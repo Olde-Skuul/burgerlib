@@ -23,11 +23,7 @@ Filenames and paths are standardized, all text is UTF-8 regardless of platform. 
 * [Platform types](docs/platform_types.md)
 * [White Papers](docs/white_papers.md)
 
-## Online Doxygen Documentation
-
-[Documentation is found here.](https://burgerlib.readthedocs.io/en/latest/index.htm)
-
-**Yes, click the link above. DO IT! BOOKMARK IT!**
+## Building Documentation
 
 To build documentation locally, in the ``docs`` folder, type "``buildme -docs``". Make sure that ``doxygen``, ``dot``, and ``pandoc`` are in the path. The HTML documentation will be found in **docs/temp/burgerlibdoxygen/index.htm**
 
