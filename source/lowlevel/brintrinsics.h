@@ -59,7 +59,8 @@ extern uint32_t __builtin_ror(uint32_t, const uint32_t);
 extern "C" {
 
 #if defined(BURGER_CLANG) || defined(BURGER_GNUC)
-#if __GNUC_PREREQ(2, 8) && !defined(BURGER_DARWIN)
+#if __GNUC_PREREQ(2, 8) && \
+	!(defined(BURGER_DARWIN) || defined(BURGER_PS4) || defined(BURGER_SWITCH))
 extern float fabsf(float) throw();
 extern double fabs(double) throw();
 extern float sqrtf(float) throw();
@@ -241,13 +242,20 @@ extern void __fastcall __cpuidex(int a[4], int b, int c);
 // muls.l d1,d1:d0
 #pragma parameter __D1 BurgerIntMathMul32GetUpper32(__D0, __D1)
 int32_t BurgerIntMathMul32GetUpper32(int32_t iInputMulA, int32_t iInputMulB) = {
-	0x4c01, 0xc01};
+	0x4c01,
+	0xc01
+};
 
 // muls.l d1,d1:d0
 // divs.l d2,d1:d0
 #pragma parameter __D0 BurgerIntMathMul32x32To64Div32(__D0, __D1, __D2)
-int32_t BurgerIntMathMul32x32To64Div32(int32_t iInputMulA, int32_t iInputMulB,
-	int32_t iInputDiv) = {0x4c01, 0xc01, 0x4c42, 0xc01};
+int32_t BurgerIntMathMul32x32To64Div32(
+	int32_t iInputMulA, int32_t iInputMulB, int32_t iInputDiv) = {
+	0x4c01,
+	0xc01,
+	0x4c42,
+	0xc01
+};
 
 extern double __fabs(double x);
 extern void* __alloca(unsigned x);

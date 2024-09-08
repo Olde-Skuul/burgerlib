@@ -14,7 +14,7 @@ Filenames and paths are standardized, all text is UTF-8 regardless of platform. 
 
 ## Sections of interest
 
-* [Character encoding and standardizing on UTF-8.](docs/character_encoding.md)
+* [Character encoding and standardizing on UTF-8.](docs/markdowns/character_encoding.md)
 * [What is Burgerlib?](docs/what_is_burgerlib.md)
 * [Building Burgerlib](docs/building.md)
 * [Using Burgerlib](docs/using_burgerlib.md)

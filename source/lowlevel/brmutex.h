@@ -64,7 +64,7 @@ protected:
 	uint32_t m_PlatformMutex[11];
 
 #elif defined(BURGER_SWITCH) && defined(BURGER_64BITCPU)
-	void* m_PlatformMutex[40 / sizeof(void*)];
+	void* m_PlatformMutex[8 / sizeof(void*)];
 
 #elif defined(BURGER_SWITCH)
 	void* m_PlatformMutex[24 / sizeof(void*)];

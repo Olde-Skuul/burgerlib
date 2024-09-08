@@ -40,6 +40,15 @@ BURGER_INLINE T power_of_two(T input) BURGER_NOEXCEPT
 		input)));
 }
 
+extern uint32_t BURGER_API convert_from_BCD(uint32_t uInput) BURGER_NOEXCEPT;
+extern uint32_t BURGER_API convert_to_BCD(uint32_t uInput) BURGER_NOEXCEPT;
+extern uint32_t BURGER_API bit_reverse(
+	uint32_t uInput, uint_t uBitLength) BURGER_NOEXCEPT;
+extern uint64_t BURGER_API bit_reverse(
+	uint64_t uInput, uint_t uBitLength) BURGER_NOEXCEPT;
+extern uint_t BURGER_API count_set_bits(uint32_t uInput) BURGER_NOEXCEPT;
+extern uint_t BURGER_API count_set_bits(uint64_t uInput) BURGER_NOEXCEPT;
+
 }
 /* END */
 

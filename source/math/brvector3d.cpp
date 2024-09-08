@@ -526,9 +526,9 @@ BURGER_DECLSPECNAKED float BURGER_API Burger::Vector3D_t::Dot(const Vector3D_t *
     \param pMul Vector to multiply
     \param fInput Scalar to multiply by all members of the vector pMul
     \param pAdd Vector to add
-    \sa MulAdd(const Vector3D_t *,const Vector3D_t *,const Vector3D_t *),
-        MulAdd(const Vector3D_t *,const Vector3D_t *) or MulAdd(float,const
-        Vector3D_t*)
+    \sa MulAdd(const Vector3D_t* ,const Vector3D_t* ,const Vector3D_t*),
+        MulAdd(const Vector3D_t* ,const Vector3D_t*) or 
+        MulAdd(float ,const Vector3D_t*)
 
 ***************************************/
 

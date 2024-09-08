@@ -25,8 +25,6 @@ struct GetVolParmsInfoBuffer;
 struct AEDesc;
 struct ControlRecord;
 struct MenuInfo;
-struct Point;
-struct Rect;
 struct MacRegion;
 struct BitMap;
 struct PixMap;

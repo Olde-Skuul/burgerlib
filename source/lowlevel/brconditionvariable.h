@@ -41,7 +41,7 @@ protected:
 #if defined(BURGER_UNIX) || defined(BURGER_SWITCH)
 	/** Condition variable instance */
 #if defined(BURGER_SWITCH)
-	uint32_t m_ConditionVariable[12 / sizeof(uint32_t)];
+	uint32_t m_ConditionVariable[8 / sizeof(uint32_t)];
 #elif defined(BURGER_DARWIN) && defined(BURGER_64BITCPU)
 	uint64_t m_ConditionVariable[48 / sizeof(uint64_t)];
 #elif defined(BURGER_DARWIN)

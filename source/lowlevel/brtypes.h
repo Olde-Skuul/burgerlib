@@ -1047,9 +1047,7 @@
 #define BURGER_EQUALS_DELETE
 #define BURGER_EQUALS_DEFAULT
 #define BURGER_DEFAULT_CONSTRUCTOR \
-	BURGER_NOEXCEPT \
-	{ \
-	}
+	BURGER_NOEXCEPT {}
 #define BURGER_DEFAULT_DESTRUCTOR \
 	{ \
 	}
@@ -1169,7 +1167,7 @@
 
 // Round a value up to the nearest power of 2
 #define BURGER_ROUNDUP(__value, __alignment) \
-	(((__value) + (__alignment)-1) & ~((__alignment)-1))
+	(((__value) + (__alignment) - 1) & ~((__alignment) - 1))
 
 // Suppress warnings in Visual Studio (VS2005 or higher)
 #if (BURGER_MSVC >= 140000000)
@@ -1443,18 +1441,19 @@ BURGER_INLINE void* operator new(__typeof__(sizeof(0)), void* x) BURGER_NOEXCEPT
 BURGER_INLINE void* BURGER_ANSIAPI operator new(size_t, void* x) BURGER_NOEXCEPT { return x;}
 
 #elif defined(BURGER_DJGPP) || defined(BURGER_INTEL_COMPILER) || \
-    (defined(BURGER_GNUC) && defined(__MACH__) && \
-        (defined(__APPLE_CPP__) || defined(__APPLE_CC__) || \
-            defined(__NEXT_CPP__)))
+	(defined(BURGER_GNUC) && defined(__MACH__) && \
+		(defined(__APPLE_CPP__) || defined(__APPLE_CC__) || \
+			defined(__NEXT_CPP__)))
 BURGER_INLINE void* operator new(unsigned long int, void* x) BURGER_NOEXCEPT { return x; }
 
-#elif defined(BURGER_PS4) || defined(BURGER_PS5) || defined(BURGER_BPF) || \
-    defined(BURGER_POWERPC64) || \
+#elif (defined(BURGER_SWITCH) && defined(BURGER_64BITCPU)) || \
+	defined(BURGER_PS4) || defined(BURGER_PS5) || defined(BURGER_BPF) || \
+	defined(BURGER_POWERPC64) || \
 	((defined(BURGER_ANDROID) || defined(BURGER_MIPS)) && defined(BURGER_64BITCPU))
 BURGER_INLINE void* operator new(unsigned long, void* x) BURGER_NOEXCEPT { return x; }
 
 #elif defined(BURGER_ANDROID) || defined(BURGER_SNSYSTEMS) || \
-    defined(BURGER_GHS) || defined(BURGER_ARM_COMPILER)
+	defined(BURGER_GHS) || defined(BURGER_ARM_COMPILER)
 BURGER_INLINE void* operator new(unsigned int, void* x) BURGER_NOEXCEPT { return x; }
 
 #else

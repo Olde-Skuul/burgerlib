@@ -20,6 +20,12 @@
 #endif
 
 /* BEGIN */
+/** Forward declaration for MacOS Point */
+struct Point;
+
+/** Forward declaration for MacOS Rect */
+struct Rect;
+
 namespace Burger {
 
 /** 80 bit float(Extended) */

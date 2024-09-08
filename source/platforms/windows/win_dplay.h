@@ -29,7 +29,7 @@
 
 /* BEGIN */
 namespace Burger { namespace Win32 {
-extern long BURGER_API DirectPlayCreate(GUID* pGuidSrc, IDirectPlay** ppOutput,
+extern long BURGER_API DirectPlayCreate(GUID* pGuidSrc, IUnknown** ppOutput,
 	IUnknown* pOuter = nullptr) BURGER_NOEXCEPT;
 extern long BURGER_API CallDirectPlayEnumerate(
 	void* pCallback, void* pContext) BURGER_NOEXCEPT;

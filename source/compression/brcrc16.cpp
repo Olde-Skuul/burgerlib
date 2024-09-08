@@ -28,6 +28,7 @@
 
 #include "brcrc16.h"
 #include "brendian.h"
+#include "brpoweroftwo.h"
 #include "brstringfunctions.h"
 
 //
@@ -151,7 +152,7 @@ void BURGER_API Burger::generate_crc_table(
 
 		// Store the final result (Bit reversed)
 		if (bBitReverse) {
-			uValue = BitReverse(uValue, 16);
+			uValue = bit_reverse(uValue, 16);
 		}
 		pOutput[uCount] = static_cast<uint16_t>(uValue);
 	} while (++uCount < 256U);

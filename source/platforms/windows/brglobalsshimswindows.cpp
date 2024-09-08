@@ -1,17 +1,17 @@
 /***************************************
 
-    Windows Shim functions
+	Windows Shim functions
 
-    Functions that will allow calling Windows Vista/7/8/10 functions
-    from a program that can be loaded on Windows XP.
+	Functions that will allow calling Windows Vista/7/8/10 functions
+	from a program that can be loaded on Windows XP.
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -22,9 +22,10 @@
 #include "brstring16.h"
 #include "brstringfunctions.h"
 #include "brwindowstypes.h"
-#include "win_version.h"
 #include "win_loadlibrary.h"
 #include "win_registry.h"
+#include "win_version.h"
+
 
 #if !defined(DOXYGEN)
 
@@ -58,10 +59,6 @@
 #include <d3dcommon.h>
 #include <ddraw.h>
 #include <dinput.h>
-#include <dplay.h>
-#include <dplay8.h>
-#include <dplobby.h>
-#include <dplobby8.h>
 #include <dsound.h>
 #include <io.h>
 #include <shellapi.h>

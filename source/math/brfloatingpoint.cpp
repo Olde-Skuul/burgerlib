@@ -1311,8 +1311,8 @@ double BURGER_API Burger::square_root(double dInput) BURGER_NOEXCEPT
 	\param iInput 32 bit integer to convert
 	\return Floating point representation of the integer input
 
-	\sa int_to_float(const int32_t *), int_to_float(float *,int32_t) or
-		int_to_float(float*,const int32_t *)
+	\sa int_to_float(const int32_t*), int_to_float(float* ,int32_t) or
+		int_to_float(float* ,const int32_t*)
 
 ***************************************/
 
@@ -1324,8 +1324,8 @@ double BURGER_API Burger::square_root(double dInput) BURGER_NOEXCEPT
 	\param pInput Pointer to a 32 bit integer to convert
 	\return Floating point representation of the integer input
 
-	\sa int_to_float(int32_t), int_to_float(float *,int32_t) or
-		int_to_float(float*,const int32_t *)
+	\sa int_to_float(int32_t), int_to_float(float* ,int32_t) or
+		int_to_float(float* ,const int32_t*)
 
 ***************************************/
 

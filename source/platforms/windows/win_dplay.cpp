@@ -2,7 +2,7 @@
 
 	Shims for dplayx.dll
 
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2024 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -25,6 +25,8 @@
 
 #include "win_windows.h"
 
+// Only available on 32 bit intel
+#if defined(BURGER_X86)
 #include <dplay.h>
 #include <dplay8.h>
 #include <dplobby.h>
@@ -47,6 +49,7 @@ typedef HRESULT(WINAPI* DirectPlayLobbyCreateAPtr)(
 // DirectPlayLobbyCreateWPtr gDirectPlayLobbyCreateW = ::DirectPlayLobbyCreateW;
 // DirectPlayLobbyCreateAPtr gDirectPlayLobbyCreateA = ::DirectPlayLobbyCreateA;
 
+#endif
 #endif
 
 //
@@ -73,8 +76,9 @@ typedef HRESULT(WINAPI* DirectPlayLobbyCreateAPtr)(
 ***************************************/
 
 HRESULT BURGER_API Burger::Win32::DirectPlayCreate(
-	GUID* pGuidSrc, IDirectPlay** ppOutput, IUnknown* pOuter) BURGER_NOEXCEPT
+	GUID* pGuidSrc, IUnknown** ppOutput, IUnknown* pOuter) BURGER_NOEXCEPT
 {
+#if defined(BURGER_X86)
 	// Get the function pointer
 	void* pDirectPlayCreate = load_function(kCall_DirectPlayCreate);
 	HRESULT lResult = DPERR_UNSUPPORTED;
@@ -83,6 +87,12 @@ HRESULT BURGER_API Burger::Win32::DirectPlayCreate(
 			pGuidSrc, ppOutput, pOuter);
 	}
 	return lResult;
+#else
+	BURGER_UNUSED(pGuidSrc);
+	BURGER_UNUSED(ppOutput);
+	BURGER_UNUSED(pOuter);
+	return E_NOTIMPL;
+#endif
 }
 
 /*! ************************************
@@ -111,6 +121,7 @@ HRESULT BURGER_API Burger::Win32::DirectPlayCreate(
 HRESULT BURGER_API Burger::Win32::CallDirectPlayEnumerate(
 	void* pCallback, void* pContext) BURGER_NOEXCEPT
 {
+#if defined(BURGER_X86)
 	// Get the function pointer
 	void* pDirectPlayEnumerate = load_function(kCall_DirectPlayEnumerate);
 	HRESULT lResult = DPERR_UNSUPPORTED;
@@ -119,6 +130,11 @@ HRESULT BURGER_API Burger::Win32::CallDirectPlayEnumerate(
 			static_cast<LPDPENUMDPCALLBACKA>(pCallback), pContext);
 	}
 	return lResult;
+#else
+	BURGER_UNUSED(pCallback);
+	BURGER_UNUSED(pContext);
+	return E_NOTIMPL;
+#endif
 }
 
 /*! ************************************
@@ -141,6 +157,7 @@ HRESULT BURGER_API Burger::Win32::CallDirectPlayEnumerate(
 HRESULT BURGER_API Burger::Win32::DirectPlayEnumerateA(
 	void* pCallback, void* pContext) BURGER_NOEXCEPT
 {
+#if defined(BURGER_X86)
 	// Get the function pointer
 	void* pDirectPlayEnumerateA = load_function(kCall_DirectPlayEnumerateA);
 	HRESULT lResult = DPERR_UNSUPPORTED;
@@ -149,6 +166,11 @@ HRESULT BURGER_API Burger::Win32::DirectPlayEnumerateA(
 			static_cast<LPDPENUMDPCALLBACKA>(pCallback), pContext);
 	}
 	return lResult;
+#else
+	BURGER_UNUSED(pCallback);
+	BURGER_UNUSED(pContext);
+	return E_NOTIMPL;
+#endif
 }
 
 /*! ************************************
@@ -170,6 +192,7 @@ HRESULT BURGER_API Burger::Win32::DirectPlayEnumerateA(
 HRESULT BURGER_API Burger::Win32::DirectPlayEnumerateW(
 	void* pCallback, void* pContext) BURGER_NOEXCEPT
 {
+#if defined(BURGER_X86)
 	// Get the function pointer
 	void* pDirectPlayEnumerateW = load_function(kCall_DirectPlayEnumerateW);
 	HRESULT lResult = DPERR_UNSUPPORTED;
@@ -178,6 +201,11 @@ HRESULT BURGER_API Burger::Win32::DirectPlayEnumerateW(
 			static_cast<LPDPENUMDPCALLBACK>(pCallback), pContext);
 	}
 	return lResult;
+#else
+	BURGER_UNUSED(pCallback);
+	BURGER_UNUSED(pContext);
+	return E_NOTIMPL;
+#endif
 }
 
 /*! ************************************
@@ -204,6 +232,7 @@ HRESULT BURGER_API Burger::Win32::DirectPlayLobbyCreateA(GUID* pGuidSrc,
 	IDirectPlayLobby** ppOutput, IUnknown* pOuter, void* pData,
 	uint_t uDataSize) BURGER_NOEXCEPT
 {
+#if defined(BURGER_X86)
 	// Get the function pointer
 	void* pDirectPlayLobbyCreateA = load_function(kCall_DirectPlayLobbyCreateA);
 	HRESULT lResult = DPERR_UNSUPPORTED;
@@ -213,6 +242,14 @@ HRESULT BURGER_API Burger::Win32::DirectPlayLobbyCreateA(GUID* pGuidSrc,
 				pGuidSrc, ppOutput, pOuter, pData, uDataSize);
 	}
 	return lResult;
+#else
+	BURGER_UNUSED(pGuidSrc);
+	BURGER_UNUSED(ppOutput);
+	BURGER_UNUSED(pOuter);
+	BURGER_UNUSED(pData);
+	BURGER_UNUSED(uDataSize);
+	return E_NOTIMPL;
+#endif
 }
 
 /*! ************************************
@@ -240,6 +277,7 @@ HRESULT BURGER_API Burger::Win32::DirectPlayLobbyCreateW(GUID* pGuidSrc,
 	IDirectPlayLobby** ppOutput, IUnknown* pOuter, void* pData,
 	uint_t uDataSize) BURGER_NOEXCEPT
 {
+#if defined(BURGER_X86)
 	// Get the function pointer
 	void* pDirectPlayLobbyCreateW = load_function(kCall_DirectPlayLobbyCreateW);
 	HRESULT lResult = DPERR_UNSUPPORTED;
@@ -249,6 +287,14 @@ HRESULT BURGER_API Burger::Win32::DirectPlayLobbyCreateW(GUID* pGuidSrc,
 				pGuidSrc, ppOutput, pOuter, pData, uDataSize);
 	}
 	return lResult;
+#else
+	BURGER_UNUSED(pGuidSrc);
+	BURGER_UNUSED(ppOutput);
+	BURGER_UNUSED(pOuter);
+	BURGER_UNUSED(pData);
+	BURGER_UNUSED(uDataSize);
+	return E_NOTIMPL;
+#endif
 }
 
 #endif

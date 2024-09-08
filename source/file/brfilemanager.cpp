@@ -1026,9 +1026,9 @@ Burger::eError BURGER_API Burger::FileManager::get_creator_and_file_type(
 	\return Non-zero if the file doesn't exist, the function isn't implemented
 		of if the file doesn't have extended information. Zero if successful.
 
-	\sa set_creator_type(Filename *,uint32_t), set_file_type(
-		const char*, uint32_t) or set_creator_and_file_type(
-		const char*, uint32_t, uint32_t)
+	\sa set_creator_type(Filename* ,uint32_t),
+		set_file_type(const char* ,uint32_t) or
+		set_creator_and_file_type(const char* ,uint32_t,uint32_t)
 
 ***************************************/
 
@@ -1115,9 +1115,9 @@ Burger::eError BURGER_API Burger::FileManager::set_file_type(
 	\return Non-zero if the file doesn't exist, the function isn't implemented
 		of if the file doesn't have extended information. Zero if successful.
 
-	\sa set_file_type(const char*, uint32_t), set_creator_type(
-		const char *,uint32_t) or set_creator_and_file_type(
-		const char*, uint32_t, uint32_t)
+	\sa set_file_type(const char* ,uint32_t),
+		set_creator_type(const char*, uint32_t) or
+		set_creator_and_file_type(const char* ,uint32_t,uint32_t)
 
 ***************************************/
 

@@ -1697,7 +1697,7 @@ GetMixedVertexProcessingFlag(void) const
 	After Enumerate(IDirect3D9 *,IsDeviceOkayProc,void *) is called, a list of
 	presentation flags is generated. If the presentation flag is not in this
 	list, the device cannot be set to that type. The values contained are
-	DirectX 9 D3DPRESENT_INTERVAL_* flags.
+	DirectX 9 D3DPRESENT_INTERVAL_\* flags.
 
 	\return Pointer to the list for presentation flags in D3DPRESENT_INTERVAL_*
 		values.

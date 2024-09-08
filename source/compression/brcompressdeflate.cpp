@@ -15,7 +15,7 @@
 
 #include "brcompressdeflate.h"
 #include "bradler32.h"
-#include "brstringfunctions.h"
+#include "brpoweroftwo.h"
 
 #if !defined(DOXYGEN)
 BURGER_CREATE_STATICRTTI_PARENT(Burger::CompressDeflate,Burger::Compress);
@@ -831,7 +831,7 @@ void Burger::CompressDeflate::GenerateCodes(CodeData_t *tree, int max_code, uint
 		uint_t len = tree[n].m_DataLength.m_uLength;
 		if (len) {
 			/* Now reverse the bits */
-			tree[n].m_FrequencyCount.m_uCode = static_cast<uint16_t>(BitReverse(static_cast<uint32_t>(next_code[len]++),len));
+			tree[n].m_FrequencyCount.m_uCode = static_cast<uint16_t>(bit_reverse(static_cast<uint32_t>(next_code[len]++),len));
 		}
 	}
 }

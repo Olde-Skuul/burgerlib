@@ -214,8 +214,8 @@ uint64_t BURGER_API _swapendian64(uint64_t uInput) BURGER_NOEXCEPT
 	\param pOutput Pointer to 64 bit aligned memory
 	\param uInput The value to store endian swapped
 
-	\sa _swapendianstore16(void *, uint16_t),
-		_swapendianstore32(void *, uint32_t), or
+	\sa _swapendianstore16(void* , uint16_t),
+		_swapendianstore32(void* , uint32_t), or
 		_swapendian64ptr(const void* pInput)
 
 ***************************************/

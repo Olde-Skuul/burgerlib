@@ -22,8 +22,6 @@
 /* BEGIN */
 #if defined(BURGER_DARWIN) && !defined(DOXYGEN)
 
-struct Point;
-struct Rect;
 struct FSRef;
 struct UTCDateTime;
 struct CGPoint;

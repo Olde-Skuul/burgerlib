@@ -540,20 +540,22 @@ int32_t BURGER_API Burger::float_to_int_ceil(float fInput) BURGER_NOEXCEPT
 	\param pOutput A valid pointer to a 32-bit integer to receive the result.
 	\param fInput A valid single precision floating point number.
 
-	\sa float_to_int_ceil(float), float_to_int_floor(int32_t *,float),
-		float_to_int_round_to_zero(int32_t *,float), or
-		float_to_int_round(int32_t*, float)
+	\sa float_to_int_ceil(float),
+		float_to_int_floor(int32_t* ,float),
+		float_to_int_round_to_zero(int32_t* ,float), or
+		float_to_int_round(int32_t* ,float)
 
 ***************************************/
 
-#if (defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
+#if ((defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
 	(defined(BURGER_METROWERKS) && \
 		(defined(BURGER_X86) || defined(BURGER_PPC))) || \
 	(defined(BURGER_MSVC) && (defined(BURGER_X86) || defined(BURGER_PPC))) || \
 	((defined(BURGER_CLANG) || defined(BURGER_GNUC)) && \
 		(defined(BURGER_INTEL) || defined(BURGER_PPC))) || \
 	(defined(BURGER_GHS) && defined(BURGER_PPC)) || \
-	(defined(BURGER_SNSYSTEMS) && defined(BURGER_PPC))
+	(defined(BURGER_SNSYSTEMS) && defined(BURGER_PPC))) \
+	&& !defined(DOXYGEN)
 
 #else
 
@@ -973,10 +975,11 @@ Fixed32 BURGER_API Burger::float_to_fixed_round(float fInput) BURGER_NOEXCEPT
 
 	\param pOutput A valid pointer to a \ref Fixed32 to receive the result.
 	\param fInput A valid single precision floating point number.
+
 	\sa float_to_fixed_floor(float),
-		float_to_fixed_round_to_zero(Fixed32*,float),
-		float_to_fixed_ceil(Fixed32 *,float),
-		or float_to_fixed_round(Fixed32*,float)
+		float_to_fixed_round_to_zero(Fixed32* ,float),
+		float_to_fixed_ceil(Fixed32* ,float), or
+		float_to_fixed_round(Fixed32* ,float)
 
 ***************************************/
 
