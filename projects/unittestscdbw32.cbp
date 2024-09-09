@@ -26,6 +26,7 @@
 					<Add option="-dWIN32_LEAN_AND_MEAN" />
 					<Add option="-dWIN32" />
 					<Add option="-d_CONSOLE" />
+					<Add option="-dIDIRECTPLAY2_OR_GREATER" />
 					<Add option="-dGLUT_DISABLE_ATEXIT_HACK" />
 					<Add option="-d_CRT_NONSTDC_NO_WARNINGS" />
 					<Add option="-d_CRT_SECURE_NO_WARNINGS" />
@@ -54,6 +55,7 @@
 					<Add option="-dWIN32_LEAN_AND_MEAN" />
 					<Add option="-dWIN32" />
 					<Add option="-d_CONSOLE" />
+					<Add option="-dIDIRECTPLAY2_OR_GREATER" />
 					<Add option="-dGLUT_DISABLE_ATEXIT_HACK" />
 					<Add option="-d_CRT_NONSTDC_NO_WARNINGS" />
 					<Add option="-d_CRT_SECURE_NO_WARNINGS" />
@@ -81,6 +83,7 @@
 					<Add option="-dWIN32_LEAN_AND_MEAN" />
 					<Add option="-dWIN32" />
 					<Add option="-d_CONSOLE" />
+					<Add option="-dIDIRECTPLAY2_OR_GREATER" />
 					<Add option="-dGLUT_DISABLE_ATEXIT_HACK" />
 					<Add option="-d_CRT_NONSTDC_NO_WARNINGS" />
 					<Add option="-d_CRT_SECURE_NO_WARNINGS" />
@@ -99,8 +102,8 @@
 			<Add directory='&quot;$(BURGER_SDKS)/windows/directx9&quot;' />
 			<Add directory='&quot;$(BURGER_SDKS)/windows/windows5&quot;' />
 			<Add directory='&quot;../sdks/steamworks/public/steam&quot;' />
-			<Add directory='&quot;../sdks/windows/dplay/include&quot;' />
 			<Add directory='&quot;../sdks/windows/opengl&quot;' />
+			<Add directory='&quot;../sdks/windows/dplay/Include&quot;' />
 			<Add directory='&quot;../source&quot;' />
 			<Add directory='&quot;../source/ansi&quot;' />
 			<Add directory='&quot;../source/audio&quot;' />

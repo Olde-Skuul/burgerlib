@@ -1519,6 +1519,12 @@
     <MASM Include="..\source\asm\masm64\get_signfloat.x64">
       <Filter>source\asm\masm64</Filter>
     </MASM>
+    <MASM Include="..\source\asm\masm\bitreverse32.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm\bitreverse64.x86">
+      <Filter>source\asm\masm</Filter>
+    </MASM>
     <MASM Include="..\source\asm\masm\floattofixedceil.x86">
       <Filter>source\asm\masm</Filter>
     </MASM>

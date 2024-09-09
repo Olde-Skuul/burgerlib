@@ -2,16 +2,40 @@
 # Build burger with WMAKE
 # Generated with makeprojects.watcom
 #
-# Require the environment variable WATCOM set to the OpenWatcom folder
+# This file requires the environment variable WATCOM set to the OpenWatcom
+# folder
 # Example: WATCOM=C:\WATCOM
 #
 
-# This speeds up the building process for Watcom because it
-# keeps the apps in memory and doesn't have to reload for every source file
+#
+# Test for required environment variables
+#
+
+!ifndef %DXSDK_DIR
+!error The environment variable DXSDK_DIR was not declared
+!endif
+
+!ifndef %WATCOM
+!error The environment variable WATCOM was not declared
+!endif
+
+#
+# Set the set of known files supported
+# Note: They are in the reverse order of building. .x86 is built first, then .c
+# until the .exe or .lib files are built
+#
+
+.extensions:
+.extensions: .exe .exp .lib .obj .cpp .c .x86 .i86 .h .res .rc
+
+#
+# This speeds up the building process for Watcom because it keeps the apps in
+# memory and doesn't have to reload for every source file
 # Note: There is a bug that if the wlib app is loaded, it will not
 # get the proper WOW file if a full build is performed
-
+#
 # The bug is gone from Watcom 1.2
+#
 
 !ifdef %WATCOM
 !ifdef __LOADDLL__
@@ -154,18 +178,6 @@ burgerwatw32.wmk:
 	@%null
 
 #
-# Required environment variables
-#
-
-!ifndef %DXSDK_DIR
-!error the environment variable DXSDK_DIR was not declared
-!endif
-
-!ifndef %WATCOM
-!error the environment variable WATCOM was not declared
-!endif
-
-#
 # Default configuration
 #
 
@@ -198,15 +210,6 @@ CONFIG_SUFFIX_Release = rel
 BASE_TEMP_DIR = temp\burger
 BASE_SUFFIX = wat$(TARGET_SUFFIX_$(%TARGET))$(CONFIG_SUFFIX_$(%CONFIG))
 TEMP_DIR = temp\burger$(BASE_SUFFIX)
-
-#
-# Set the set of known files supported
-# Note: They are in the reverse order of building. .c is built first, then .x86
-# until the .exe or .lib files are built
-#
-
-.extensions:
-.extensions: .exe .exp .lib .obj .h .cpp .x86 .c .i86
 
 #
 # SOURCE_DIRS = Work directories for the source code
@@ -243,7 +246,7 @@ SOURCE_DIRS +=;../source/text
 #
 
 INCLUDE_DIRS = $(SOURCE_DIRS)
-INCLUDE_DIRS +=;../sdks/windows/dplay/include
+INCLUDE_DIRS +=;../sdks/windows/dplay/Include
 INCLUDE_DIRS +=;../sdks/windows/ddraw/include
 INCLUDE_DIRS +=;$(%DXSDK_DIR)/Include
 INCLUDE_DIRS +=;../sdks/windows/opengl
@@ -257,22 +260,23 @@ INCLUDE_DIRS +=;../sdks/steamworks/public/steam
 .cpp: $(SOURCE_DIRS)
 .x86: $(SOURCE_DIRS)
 .i86: $(SOURCE_DIRS)
+.rc: $(SOURCE_DIRS)
 
 #
 # Set the compiler flags for each of the build types
 #
 
-CFlagsDebugw32= -bm -bt=NT -dTYPE_BOOL=1 -dTARGET_CPU_X86=1 -dTARGET_OS_WIN32=1 -i="$(%WATCOM)/h;$(%WATCOM)/h/nt" -d0 -od -D_DEBUG -D_WINDOWS -DWIN32_LEAN_AND_MEAN -DWIN32 -DWINVER=0x0600 -D_WIN32_WINNT=0x0600 -DNTDDI_VERSION=0x05010000 -DD3D11_NO_HELPERS -DGLUT_DISABLE_ATEXIT_HACK
-CFlagsInternalw32= -bm -bt=NT -dTYPE_BOOL=1 -dTARGET_CPU_X86=1 -dTARGET_OS_WIN32=1 -i="$(%WATCOM)/h;$(%WATCOM)/h/nt" -d0 -oaxsh -D_DEBUG -D_WINDOWS -DWIN32_LEAN_AND_MEAN -DWIN32 -DWINVER=0x0600 -D_WIN32_WINNT=0x0600 -DNTDDI_VERSION=0x05010000 -DD3D11_NO_HELPERS -DGLUT_DISABLE_ATEXIT_HACK
-CFlagsReleasew32= -bm -bt=NT -dTYPE_BOOL=1 -dTARGET_CPU_X86=1 -dTARGET_OS_WIN32=1 -i="$(%WATCOM)/h;$(%WATCOM)/h/nt" -d0 -oaxsh -DNDEBUG -D_WINDOWS -DWIN32_LEAN_AND_MEAN -DWIN32 -DWINVER=0x0600 -D_WIN32_WINNT=0x0600 -DNTDDI_VERSION=0x05010000 -DD3D11_NO_HELPERS -DGLUT_DISABLE_ATEXIT_HACK
+CFlagsDebugw32= -bm -bt=NT -dTYPE_BOOL=1 -dTARGET_CPU_X86=1 -dTARGET_OS_WIN32=1 -i="$(%WATCOM)/h;$(%WATCOM)/h/nt;$(%WATCOM)/h/nt/directx" -d0 -od -D_DEBUG -D_WINDOWS -DWIN32_LEAN_AND_MEAN -DWIN32 -DIDIRECTPLAY2_OR_GREATER -DWINVER=0x0600 -D_WIN32_WINNT=0x0600 -DNTDDI_VERSION=0x05010000 -DD3D11_NO_HELPERS -DGLUT_DISABLE_ATEXIT_HACK
+CFlagsInternalw32= -bm -bt=NT -dTYPE_BOOL=1 -dTARGET_CPU_X86=1 -dTARGET_OS_WIN32=1 -i="$(%WATCOM)/h;$(%WATCOM)/h/nt;$(%WATCOM)/h/nt/directx" -d0 -oaxsh -D_DEBUG -D_WINDOWS -DWIN32_LEAN_AND_MEAN -DWIN32 -DIDIRECTPLAY2_OR_GREATER -DWINVER=0x0600 -D_WIN32_WINNT=0x0600 -DNTDDI_VERSION=0x05010000 -DD3D11_NO_HELPERS -DGLUT_DISABLE_ATEXIT_HACK
+CFlagsReleasew32= -bm -bt=NT -dTYPE_BOOL=1 -dTARGET_CPU_X86=1 -dTARGET_OS_WIN32=1 -i="$(%WATCOM)/h;$(%WATCOM)/h/nt;$(%WATCOM)/h/nt/directx" -d0 -oaxsh -DNDEBUG -D_WINDOWS -DWIN32_LEAN_AND_MEAN -DWIN32 -DIDIRECTPLAY2_OR_GREATER -DWINVER=0x0600 -D_WIN32_WINNT=0x0600 -DNTDDI_VERSION=0x05010000 -DD3D11_NO_HELPERS -DGLUT_DISABLE_ATEXIT_HACK
 
 #
 # Set the assembler flags for each of the build types
 #
 
-AFlagsDebugw32= -d__WIN32__=1 -D_DEBUG -D_WINDOWS -DWIN32_LEAN_AND_MEAN -DWIN32 -DWINVER=0x0600 -D_WIN32_WINNT=0x0600 -DNTDDI_VERSION=0x05010000 -DD3D11_NO_HELPERS -DGLUT_DISABLE_ATEXIT_HACK
-AFlagsInternalw32= -d__WIN32__=1 -D_DEBUG -D_WINDOWS -DWIN32_LEAN_AND_MEAN -DWIN32 -DWINVER=0x0600 -D_WIN32_WINNT=0x0600 -DNTDDI_VERSION=0x05010000 -DD3D11_NO_HELPERS -DGLUT_DISABLE_ATEXIT_HACK
-AFlagsReleasew32= -d__WIN32__=1 -DNDEBUG -D_WINDOWS -DWIN32_LEAN_AND_MEAN -DWIN32 -DWINVER=0x0600 -D_WIN32_WINNT=0x0600 -DNTDDI_VERSION=0x05010000 -DD3D11_NO_HELPERS -DGLUT_DISABLE_ATEXIT_HACK
+AFlagsDebugw32= -d__WIN32__=1 -D_DEBUG -D_WINDOWS -DWIN32_LEAN_AND_MEAN -DWIN32 -DIDIRECTPLAY2_OR_GREATER -DWINVER=0x0600 -D_WIN32_WINNT=0x0600 -DNTDDI_VERSION=0x05010000 -DD3D11_NO_HELPERS -DGLUT_DISABLE_ATEXIT_HACK
+AFlagsInternalw32= -d__WIN32__=1 -D_DEBUG -D_WINDOWS -DWIN32_LEAN_AND_MEAN -DWIN32 -DIDIRECTPLAY2_OR_GREATER -DWINVER=0x0600 -D_WIN32_WINNT=0x0600 -DNTDDI_VERSION=0x05010000 -DD3D11_NO_HELPERS -DGLUT_DISABLE_ATEXIT_HACK
+AFlagsReleasew32= -d__WIN32__=1 -DNDEBUG -D_WINDOWS -DWIN32_LEAN_AND_MEAN -DWIN32 -DIDIRECTPLAY2_OR_GREATER -DWINVER=0x0600 -D_WIN32_WINNT=0x0600 -DNTDDI_VERSION=0x05010000 -DD3D11_NO_HELPERS -DGLUT_DISABLE_ATEXIT_HACK
 
 #
 # Set the Linker flags for each of the build types
@@ -282,12 +286,21 @@ LFlagsDebugw32= system nt
 LFlagsInternalw32= system nt
 LFlagsReleasew32= system nt
 
+#
+# Set the Resource flags for each of the build types
+#
+
+RFlagsDebugw32= -bt=nt -i="$(%WATCOM)/h/nt" -D_DEBUG -D_WINDOWS -DWIN32_LEAN_AND_MEAN -DWIN32 -DIDIRECTPLAY2_OR_GREATER -DWINVER=0x0600 -D_WIN32_WINNT=0x0600 -DNTDDI_VERSION=0x05010000 -DD3D11_NO_HELPERS -DGLUT_DISABLE_ATEXIT_HACK
+RFlagsInternalw32= -bt=nt -i="$(%WATCOM)/h/nt" -D_DEBUG -D_WINDOWS -DWIN32_LEAN_AND_MEAN -DWIN32 -DIDIRECTPLAY2_OR_GREATER -DWINVER=0x0600 -D_WIN32_WINNT=0x0600 -DNTDDI_VERSION=0x05010000 -DD3D11_NO_HELPERS -DGLUT_DISABLE_ATEXIT_HACK
+RFlagsReleasew32= -bt=nt -i="$(%WATCOM)/h/nt" -DNDEBUG -D_WINDOWS -DWIN32_LEAN_AND_MEAN -DWIN32 -DIDIRECTPLAY2_OR_GREATER -DWINVER=0x0600 -D_WIN32_WINNT=0x0600 -DNTDDI_VERSION=0x05010000 -DD3D11_NO_HELPERS -DGLUT_DISABLE_ATEXIT_HACK
+
 # Now, set the compiler flags
 
 CL=WCC386 -6r -fp6 -w4 -ei -j -mf -zq -zp=8 -wcd=7 -i="$(INCLUDE_DIRS)"
 CP=WPP386 -6r -fp6 -w4 -ei -j -mf -zq -zp=8 -wcd=7 -i="$(INCLUDE_DIRS)"
 ASM=WASM -5r -fp6 -w4 -zq -d__WATCOM__=1
 LINK=*WLINK option caseexact option quiet PATH $(%WATCOM)/binnt;$(%WATCOM)/binw;.
+RC=WRC -ad -r -q -d__WATCOM__=1 -i="$(INCLUDE_DIRS)"
 
 # Set the default build rules
 # Requires ASM, CP to be set
@@ -297,6 +310,10 @@ LINK=*WLINK option caseexact option quiet PATH $(%WATCOM)/binnt;$(%WATCOM)/binw;
 # $[* = C:\dir\dep (No extension)
 # $^@ = C:\dir\target.ext
 # $^: = C:\dir\
+
+.rc.res : .AUTODEPEND
+	@echo $[&.rc / $(%CONFIG) / $(%TARGET)
+	@$(RC) $(RFlags$(%CONFIG)$(%TARGET)) $[*.rc -fo=$^@
 
 .i86.obj : .AUTODEPEND
 	@echo $[&.i86 / $(%CONFIG) / $(%TARGET)
@@ -315,10 +332,12 @@ LINK=*WLINK option caseexact option quiet PATH $(%WATCOM)/binnt;$(%WATCOM)/binw;
 	@$(CP) $(CFlags$(%CONFIG)$(%TARGET)) $[*.cpp -fo=$^@ -fr=$^*.err
 
 #
-# Object files to work with for the library
+# Object files to work with for the project
 #
 
-OBJS= $(A)/bradler16.obj &
+OBJS= $(A)/bitreverse32.obj &
+	$(A)/bitreverse64.obj &
+	$(A)/bradler16.obj &
 	$(A)/bradler32.obj &
 	$(A)/bralaw.obj &
 	$(A)/bralgorithm.obj &
@@ -609,6 +628,12 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/win_xinput.obj
 
 #
+# Resource files to work with for the project
+#
+
+RC_OBJS=
+
+#
 # Build custom files
 #
 
@@ -687,14 +712,17 @@ OBJS= $(A)/bradler16.obj &
 A = $(BASE_TEMP_DIR)watw32dbg
 bin\burgerwatw32dbg.lib: $(EXTRA_OBJS) $+$(OBJS)$- burgerwatw32.wmk
 	@SET WOW=$+$(OBJS)$-
+	@echo Creating library...
 	@WLIB -q -b -c -n $^@ @WOW
 
 A = $(BASE_TEMP_DIR)watw32int
 bin\burgerwatw32int.lib: $(EXTRA_OBJS) $+$(OBJS)$- burgerwatw32.wmk
 	@SET WOW=$+$(OBJS)$-
+	@echo Creating library...
 	@WLIB -q -b -c -n $^@ @WOW
 
 A = $(BASE_TEMP_DIR)watw32rel
 bin\burgerwatw32rel.lib: $(EXTRA_OBJS) $+$(OBJS)$- burgerwatw32.wmk
 	@SET WOW=$+$(OBJS)$-
+	@echo Creating library...
 	@WLIB -q -b -c -n $^@ @WOW

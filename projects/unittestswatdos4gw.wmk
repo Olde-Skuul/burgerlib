@@ -2,16 +2,36 @@
 # Build unittests with WMAKE
 # Generated with makeprojects.watcom
 #
-# Require the environment variable WATCOM set to the OpenWatcom folder
+# This file requires the environment variable WATCOM set to the OpenWatcom
+# folder
 # Example: WATCOM=C:\WATCOM
 #
 
-# This speeds up the building process for Watcom because it
-# keeps the apps in memory and doesn't have to reload for every source file
+#
+# Test for required environment variables
+#
+
+!ifndef %WATCOM
+!error The environment variable WATCOM was not declared
+!endif
+
+#
+# Set the set of known files supported
+# Note: They are in the reverse order of building. .x86 is built first, then .c
+# until the .exe or .lib files are built
+#
+
+.extensions:
+.extensions: .exe .exp .lib .obj .cpp .c .x86 .i86 .h .res .rc
+
+#
+# This speeds up the building process for Watcom because it keeps the apps in
+# memory and doesn't have to reload for every source file
 # Note: There is a bug that if the wlib app is loaded, it will not
 # get the proper WOW file if a full build is performed
-
+#
 # The bug is gone from Watcom 1.2
+#
 
 !ifdef %WATCOM
 !ifdef __LOADDLL__
@@ -135,14 +155,6 @@ unittestswatdos4gw.wmk:
 	@%null
 
 #
-# Required environment variables
-#
-
-!ifndef %WATCOM
-!error the environment variable WATCOM was not declared
-!endif
-
-#
 # Default configuration
 #
 
@@ -175,15 +187,6 @@ CONFIG_SUFFIX_Release = rel
 BASE_TEMP_DIR = temp\unittests
 BASE_SUFFIX = wat$(TARGET_SUFFIX_$(%TARGET))$(CONFIG_SUFFIX_$(%CONFIG))
 TEMP_DIR = temp\unittests$(BASE_SUFFIX)
-
-#
-# Set the set of known files supported
-# Note: They are in the reverse order of building. .c is built first, then .x86
-# until the .exe or .lib files are built
-#
-
-.extensions:
-.extensions: .exe .exp .lib .obj .h .cpp .x86 .c .i86
 
 #
 # SOURCE_DIRS = Work directories for the source code
@@ -226,6 +229,7 @@ INCLUDE_DIRS +=;../sdks/msdos/x32/include
 .cpp: $(SOURCE_DIRS)
 .x86: $(SOURCE_DIRS)
 .i86: $(SOURCE_DIRS)
+.rc: $(SOURCE_DIRS)
 
 #
 # Set the compiler flags for each of the build types
@@ -251,12 +255,21 @@ LFlagsDebugdos4gw= system dos4g
 LFlagsInternaldos4gw= system dos4g
 LFlagsReleasedos4gw= system dos4g
 
+#
+# Set the Resource flags for each of the build types
+#
+
+RFlagsDebugdos4gw= -D_DEBUG -D__DOS4G__
+RFlagsInternaldos4gw= -D_DEBUG -D__DOS4G__
+RFlagsReleasedos4gw= -DNDEBUG -D__DOS4G__
+
 # Now, set the compiler flags
 
 CL=WCC386 -6r -fp6 -w4 -ei -j -mf -zq -zp=8 -wcd=7 -i="$(INCLUDE_DIRS)"
 CP=WPP386 -6r -fp6 -w4 -ei -j -mf -zq -zp=8 -wcd=7 -i="$(INCLUDE_DIRS)"
 ASM=WASM -5r -fp6 -w4 -zq -d__WATCOM__=1
 LINK=*WLINK option caseexact option quiet PATH $(%WATCOM)/binnt;$(%WATCOM)/binw;.
+RC=WRC -ad -r -q -d__WATCOM__=1 -i="$(INCLUDE_DIRS)"
 
 # Set the default build rules
 # Requires ASM, CP to be set
@@ -266,6 +279,10 @@ LINK=*WLINK option caseexact option quiet PATH $(%WATCOM)/binnt;$(%WATCOM)/binw;
 # $[* = C:\dir\dep (No extension)
 # $^@ = C:\dir\target.ext
 # $^: = C:\dir\
+
+.rc.res : .AUTODEPEND
+	@echo $[&.rc / $(%CONFIG) / $(%TARGET)
+	@$(RC) $(RFlags$(%CONFIG)$(%TARGET)) $[*.rc -fo=$^@
 
 .i86.obj : .AUTODEPEND
 	@echo $[&.i86 / $(%CONFIG) / $(%TARGET)
@@ -284,10 +301,12 @@ LINK=*WLINK option caseexact option quiet PATH $(%WATCOM)/binnt;$(%WATCOM)/binw;
 	@$(CP) $(CFlags$(%CONFIG)$(%TARGET)) $[*.cpp -fo=$^@ -fr=$^*.err
 
 #
-# Object files to work with for the library
+# Object files to work with for the project
 #
 
-OBJS= $(A)/bradler16.obj &
+OBJS= $(A)/bitreverse32.obj &
+	$(A)/bitreverse64.obj &
+	$(A)/bradler16.obj &
 	$(A)/bradler32.obj &
 	$(A)/bralaw.obj &
 	$(A)/bralgorithm.obj &
@@ -547,20 +566,29 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/x32_zero_base.obj
 
 #
+# Resource files to work with for the project
+#
+
+RC_OBJS=
+
+#
 # A = The object file temp folder
 #
 
 A = $(BASE_TEMP_DIR)wat4gwdbg
 bin\unittestswat4gwdbg.exe: $(EXTRA_OBJS) $+$(OBJS)$- unittestswatdos4gw.wmk
 	@SET WOW={$+$(OBJS)$-}
+	@echo Performing link...
 	@$(LINK) $(LFlagsDebugdos4gw) NAME $^@ FILE @wow
 
 A = $(BASE_TEMP_DIR)wat4gwint
 bin\unittestswat4gwint.exe: $(EXTRA_OBJS) $+$(OBJS)$- unittestswatdos4gw.wmk
 	@SET WOW={$+$(OBJS)$-}
+	@echo Performing link...
 	@$(LINK) $(LFlagsInternaldos4gw) NAME $^@ FILE @wow
 
 A = $(BASE_TEMP_DIR)wat4gwrel
 bin\unittestswat4gwrel.exe: $(EXTRA_OBJS) $+$(OBJS)$- unittestswatdos4gw.wmk
 	@SET WOW={$+$(OBJS)$-}
+	@echo Performing link...
 	@$(LINK) $(LFlagsReleasedos4gw) NAME $^@ FILE @wow

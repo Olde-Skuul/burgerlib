@@ -24,7 +24,7 @@ from burger import copy_file_if_needed, get_windows_host_type, \
     clean_files, is_under_git_control, clean_xcode, delete_directory
 from makeprojects.config import _HLSL_MATCH, _GLSL_MATCH, _X360SL_MATCH, \
     _VITACG_MATCH
-from makeprojects import PlatformTypes, IDETypes, ProjectTypes, makeprojects
+from makeprojects import PlatformTypes, IDETypes, ProjectTypes
 
 # Check if git is around
 _GIT_FOUND = None
@@ -45,8 +45,235 @@ NO_RECURSE = True
 # Overrides PROCESS_PROJECT_FILES
 CLEANME_PROCESS_PROJECT_FILES = False
 
+# List of projects to generate if makeprojects is invoked
+# without any parameters, default create recommended
+# project for the host machine
+MAKEPROJECTS = [
+    # Create the evergreen projects
+
+    # Windows
+    {"platform": "windows",
+     "name": "burger",
+     "type": "library",
+     "ide": ("vs2003", "vs2005", "vs2008", "vs2010", "vs2012",
+      "vs2013", "vs2015", "vs2017", "vs2019", "vs2022",
+      "watcom",
+      "codewarrior50",
+      "codeblocks")},
+    {"platform": "windows",
+     "name": "unittests",
+     "type": "console",
+     "ide": ("vs2003", "vs2005", "vs2008", "vs2010", "vs2012",
+      "vs2013", "vs2015", "vs2017", "vs2019", "vs2022",
+      "watcom",
+      "codewarrior50",
+      "codeblocks")},
+
+    # MSDOS X32 and DOS4GW
+    {"platform": "msdos",
+     "name": "burger",
+     "type": "library",
+     "ide": ("watcom", "codeblocks")},
+    {"platform": "msdos4gw",
+     "name": "unittests",
+     "type": "console",
+     "ide": "watcom"},
+
+    # Linux
+    {"platform": "linux",
+     "name": "burger",
+     "type": "library",
+     "ide": "make"},
+    {"platform": "linux",
+     "name": "unittests",
+     "type": "console",
+     "ide": "make"},
+
+    # MacOS X
+    {"platform": "macosx",
+     "name": "burger",
+     "type": "library",
+     "ide": ("xc3", "x14")},
+    {"platform": "macosx",
+     "name": "unittests",
+     "type": "console",
+     "ide": ("xc3", "x14")},
+
+    # iOS
+    {"platform": "macosx",
+     "name": "burger",
+     "type": "library",
+     "ide": "xc3"},
+
+    # Android / nVidia Shield
+    {"platform": "android",
+     "name": "burger",
+     "type": "library",
+     "ide": "vs2022"},
+    {"platform": "shield",
+     "name": "burger",
+     "type": "library",
+     "ide": "vs2015"},
+
+    # Sony platforms
+    {"platform": "ps3",
+     "name": "burger",
+     "type": "library",
+     "ide": "vs2015"},
+    {"platform": "ps3",
+     "name": "unittests",
+     "type": "app",
+     "ide": "vs2015"},
+
+    # Microsoft platforms
+    {"platform": "xbox360",
+     "name": "burger",
+     "type": "library",
+     "ide": "vs2010"},
+    {"platform": "xbox360",
+     "name": "unittests",
+     "type": "console",
+     "ide": "vs2010"},
+
+    # Stadia (RIP)
+    {"platform": "stadia",
+     "name": "burger",
+     "type": "library",
+     "ide": "vs2022"}
+]
+
 # Build folder
 BUILD_FOLDER = os.path.dirname(os.path.abspath(__file__))
+
+# Folder of the source code
+SOURCE_FOLDER = os.path.join(os.path.dirname(BUILD_FOLDER), "source")
+
+# Folder of the platform specific source code
+PLATFORMS_FOLDER = os.path.join(SOURCE_FOLDER, "platforms")
+
+# Allow creating projects for "forbidden" platforms
+# If you need this source code, contact Rebecca Heineman
+# at becky@oldeskuul.com and offer proof that you're a licensed
+# platform developer, and she'll send you the folder
+
+# Is PS4/PS5 support found?
+if os.path.isdir(os.path.join(PLATFORMS_FOLDER, "ps4")):
+    MAKEPROJECTS.extend([
+        {
+            "platform": "ps4",
+            "name": "burger",
+            "type": "library",
+            "ide": "vs2022"
+        },
+        {
+            "platform": "ps4",
+            "name": "unittests",
+            "type": "app",
+            "ide": "vs2022"
+        },
+
+        {
+            "platform": "ps5",
+            "name": "burger",
+            "type": "library",
+            "ide": "vs2022"
+        },
+        {
+            "platform": "ps5",
+            "name": "unittests",
+            "type": "app",
+            "ide": "vs2022"
+        }])
+
+# Is Playstation Vita support found?
+if os.path.isdir(os.path.join(PLATFORMS_FOLDER, "psvita")):
+    MAKEPROJECTS.extend([
+        {
+            "platform": "vita",
+            "name": "burger",
+            "type": "library",
+            "ide": "vs2015"
+        },
+        {
+            "platform": "vita",
+            "name": "unittests",
+            "type": "console",
+            "ide": "vs2015"
+        }])
+
+# Is Nintendo WiiU support found?
+if os.path.isdir(os.path.join(PLATFORMS_FOLDER, "wiiu")):
+    MAKEPROJECTS.extend([
+        {
+            "platform": "wiiu",
+            "name": "burger",
+            "type": "library",
+            "ide": "vs2015"
+        },
+        {
+            "platform": "wiiu",
+            "name": "unittests",
+            "type": "app",
+            "ide": "vs2015"
+        }])
+
+# Is Nintendo Switch support found?
+if os.path.isdir(os.path.join(PLATFORMS_FOLDER, "switch")):
+    MAKEPROJECTS.extend([
+        {
+            "platform": "switch64",
+            "name": "burger",
+            "type": "library",
+            "ide": "vs2022"
+        },
+        {
+            "platform": "switch64",
+            "name": "unittests",
+            "type": "app",
+            "ide": "vs2022"
+        }])
+
+# Is Microsoft Xbox ONE support found?
+if os.path.isdir(os.path.join(PLATFORMS_FOLDER, "xboxone")):
+    MAKEPROJECTS.extend([
+        {
+            "platform": "xboxone",
+            "name": "burger",
+            "type": "library",
+            "ide": "vs2017"
+        },
+        {
+            "platform": "xboxone",
+            "name": "unittests",
+            "type": "console",
+            "ide": "vs2017"
+        },
+
+        {
+            "platform": "xboxgdk",
+            "name": "burger",
+            "type": "library",
+            "ide": "vs2022"
+        },
+        {
+            "platform": "xboxgdk",
+            "name": "unittests",
+            "type": "console",
+            "ide": "vs2022"
+        },
+
+        {
+            "platform": "xboxonex",
+            "name": "burger",
+            "type": "library",
+            "ide": "vs2022"
+        },
+        {
+            "platform": "xboxonex",
+            "name": "unittests",
+            "type": "console",
+            "ide": "vs2022"
+        }])
 
 # List of Codewarrior library files to move to sdks/windows/burgerlib
 WINDOWS_LIB_FILES = (
@@ -215,53 +442,6 @@ BURGER_LIB_GENERATED = (
     "../source/generated/version.h",
 )
 
-# List of projects to build
-ARG_LISTS = [
-    ("windows", "burger", "library",
-     ["vs2003", "vs2005", "vs2008", "vs2010", "vs2012",
-      "vs2013", "vs2015", "vs2017", "vs2019", "vs2022",
-      "watcom",
-      "codewarrior50"]),
-    ("windows", "unittests", "console",
-     ["vs2003", "vs2005", "vs2008", "vs2010", "vs2012",
-      "vs2013", "vs2015", "vs2017", "vs2019", "vs2022",
-      "watcom",
-      "codewarrior50"]),
-    ("ps3", "burger", "library", ["vs2015"]),
-    ("ps3", "unittests", "app", ["vs2015"]),
-    ("ps4", "burger", "library", ["vs2022"]),
-    ("ps4", "unittests", "app", ["vs2022"]),
-    ("ps5", "burger", "library", ["vs2022"]),
-    ("ps5", "unittests", "app", ["vs2022"]),
-    ("vita", "burger", "library", ["vs2015"]),
-    ("vita", "unittests", "console", ["vs2015"]),
-    ("xbox360", "burger", "library", ["vs2010"]),
-    ("xbox360", "unittests", "console", ["vs2010"]),
-    ("xboxone", "burger", "library", ["vs2017"]),
-    ("xboxone", "unittests", "console", ["vs2017"]),
-    ("xboxgdk", "burger", "library", ["vs2022"]),
-    ("xboxgdk", "unittests", "console", ["vs2022"]),
-    ("xboxonex", "burger", "library", ["vs2022"]),
-    ("xboxonex", "unittests", "console", ["vs2022"]),
-    ("wiiu", "burger", "library", ["vs2015"]),
-    ("wiiu", "unittests", "app", ["vs2015"]),
-    ("switch", "burger", "library", ["vs2022"]),
-    ("switch", "unittests", "app", ["vs2022"]),
-    ("shield", "burger", "library", ["vs2015"]),
-    ("android", "burger", "library", ["vs2022"]),
-    ("stadia", "burger", "library", ["vs2022"]),
-    ("msdos", "burger", "library", ["watcom"]),
-    ("msdos4gw", "unittests", "console", ["watcom"]),
-    ("macosx", "burger", "library", ["xcode3", "xcode14"]),
-    ("macosx", "unittests", "console", ["xcode3", "xcode14"]),
-    ("ios", "burger", "library", ["xcode3"]),
-    ("linux", "burger", "library", ["make"]),
-    ("linux", "unittests", "console", ["make"]),
-    ("msdos", "burger", "library", ["codeblocks"]),
-    ("windows", "burger", "library", ["codeblocks"]),
-    ("windows", "unittests", "console", ["codeblocks"])
-]
-
 ########################################
 
 
@@ -290,19 +470,6 @@ def sdks_folder():
     if is_git():
         return "../sdks/"
     return "$(BURGER_SDKS)/"
-
-########################################
-
-
-def dplay_folder():
-    """
-    Return the location of the dplay folder
-
-    Check if under github, if so, it's stored locally, otherwise, it's in the
-    BURGER_SDKS folder
-    """
-
-    return sdks_folder() + "windows/dplay/include"
 
 ########################################
 
@@ -379,29 +546,6 @@ def clean(working_directory):
                                     "*.VC.db", "*.pyc", "*.pyo", "*.XGD"))
 
     clean_xcode(working_directory)
-
-########################################
-
-
-def do_generate(working_directory):
-    """
-    Generate all the project files.
-
-    Args:
-        working_directory: Directory to place the project files.
-    """
-
-    # ARG_LISTS = [
-    #    ("switch", "burger", "library", ["vs2017"])
-    # ]
-
-    for item in ARG_LISTS:
-        args = ["-p", item[0], "-n", item[1],
-                "-t", item[2], "-g", ""]
-        for ide in item[3]:
-            args[-1] = ide
-            makeprojects(working_directory=working_directory, args=args)
-    return 0
 
 
 ########################################
@@ -553,7 +697,6 @@ def watcom_rules(project):
                 "GLUT_DISABLE_ATEXIT_HACK"))
 
             project.include_folders_list.extend((
-                sdks_folder() + "windows/dplay/include",
                 sdks_folder() + "windows/ddraw/include",
                 "$(DXSDK_DIR)/Include",
                 sdks_folder() + "windows/opengl",
@@ -617,7 +760,6 @@ def codewarrior_rules(configuration):
 
         # Include these BEFORE the default headers
         configuration.library_folders_list[0:0] = [
-            dplay_folder(),
             window_opengl_folder(),
             # The DirectX Headers need sal.h, supply it manually for VS 2003
             "../source/platforms/windows/vc7compat",
@@ -830,10 +972,6 @@ def project_settings(project):
         # Add in the headers for Windows, but there be dragons
         if not ide.is_codewarrior() and ide is not IDETypes.watcom:
 
-            # For Directplay support, include first to guarantee the most recent
-            # SDK is included
-            project.include_folders_list.append(dplay_folder())
-
             # For OpenGL support since the compiler has an old sdk
             project.include_folders_list.append(window_opengl_folder())
 
@@ -954,7 +1092,7 @@ def project_settings(project):
     if platform is PlatformTypes.wiiu:
         project.source_folders_list.extend(BURGER_LIB_WIIU)
 
-    if platform is PlatformTypes.switch:
+    if platform.is_switch():
         project.source_folders_list.extend(BURGER_LIB_SWITCH)
 
     # Unix platforms
@@ -1087,6 +1225,10 @@ def project_settings(project):
     # Add rules needed for gnu/clang based projects
     gnu_clang_rules(project)
 
+    if not is_git():
+        # This is a required environment variable
+        project.env_variable_list.append("BURGER_SDKS")
+
 ########################################
 
 
@@ -1128,6 +1270,22 @@ def configuration_settings(configuration):
             else:
                 configuration.switch_meta_source = (
                     "..\\unittest\\switch\\switch.arm32.nmeta")
+
+    # Where are the sdks?
+    if is_git():
+        sdks_dir = "../sdks/"
+    else:
+        sdks_dir = os.getenv("BURGER_SDKS")
+
+    # Add in Directplay for Windows intel 32 bit
+    # platform. All others are skipped
+    if platform is PlatformTypes.win32:
+
+        # Tell the library that only the headers are needed
+        configuration.directplay_headers_only = True
+        configuration.library_rules_list.append(
+            os.path.join(sdks_dir, "windows", "dplay"))
+
     return 0
 
 ########################################
@@ -1136,4 +1294,5 @@ def configuration_settings(configuration):
 # If called as a command line and not a class, perform the build
 if __name__ == "__main__":
     import sys
-    sys.exit(do_generate(os.path.dirname(os.path.abspath(__file__))))
+    sys.exit(
+        postbuild(os.path.dirname(os.path.abspath(__file__)), "all"))

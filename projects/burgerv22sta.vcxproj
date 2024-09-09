@@ -1,73 +1,71 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|Cafe">
+    <ProjectConfiguration Include="Debug|GGP">
       <Configuration>Debug</Configuration>
-      <Platform>Cafe</Platform>
+      <Platform>GGP</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Internal|Cafe">
+    <ProjectConfiguration Include="Internal|GGP">
       <Configuration>Internal</Configuration>
-      <Platform>Cafe</Platform>
+      <Platform>GGP</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Cafe">
+    <ProjectConfiguration Include="Release|GGP">
       <Configuration>Release</Configuration>
-      <Platform>Cafe</Platform>
+      <Platform>GGP</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>unittests</ProjectName>
-    <ProjectGuid>{BAE6956C-1519-36A2-9DDC-20C6532D0EF6}</ProjectGuid>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <ProjectName>burger</ProjectName>
+    <ProjectGuid>{32D186D6-A8FF-3C25-B333-A95969EF24CB}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Cafe'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|GGP'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <WholeProgramOptimization>false</WholeProgramOptimization>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Internal|Cafe'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Internal|GGP'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <WholeProgramOptimization>false</WholeProgramOptimization>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Cafe'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|GGP'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>false</WholeProgramOptimization>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ImportGroup Label="ExtensionSettings">
-    <Import Project="$(VCTargetsPath)\BuildCustomizations\cafe2_asm.props" Condition="exists('$(VCTargetsPath)\BuildCustomizations\cafe2_asm.props')" />
-  </ImportGroup>
+  <ImportGroup Label="ExtensionSettings" />
   <ImportGroup Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Cafe'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|GGP'">
     <LinkIncremental>true</LinkIncremental>
-    <TargetName>$(ProjectName)v15wiudbg</TargetName>
-    <IntDir>$(ProjectDir)temp\$(ProjectName)v15wiudbg\</IntDir>
+    <TargetName>$(ProjectName)v22stadbg</TargetName>
+    <IntDir>$(ProjectDir)temp\$(ProjectName)v22stadbg\</IntDir>
     <OutDir>$(ProjectDir)bin\</OutDir>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Internal|Cafe'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Internal|GGP'">
     <LinkIncremental>false</LinkIncremental>
-    <TargetName>$(ProjectName)v15wiuint</TargetName>
-    <IntDir>$(ProjectDir)temp\$(ProjectName)v15wiuint\</IntDir>
+    <TargetName>$(ProjectName)v22staint</TargetName>
+    <IntDir>$(ProjectDir)temp\$(ProjectName)v22staint\</IntDir>
     <OutDir>$(ProjectDir)bin\</OutDir>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Cafe'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|GGP'">
     <LinkIncremental>false</LinkIncremental>
-    <TargetName>$(ProjectName)v15wiurel</TargetName>
-    <IntDir>$(ProjectDir)temp\$(ProjectName)v15wiurel\</IntDir>
+    <TargetName>$(ProjectName)v22starel</TargetName>
+    <IntDir>$(ProjectDir)temp\$(ProjectName)v22starel\</IntDir>
     <OutDir>$(ProjectDir)bin\</OutDir>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Cafe'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|GGP'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -76,29 +74,25 @@
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\asm\wiiu_asm;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;$(CAFE_ROOT)\system\src\tool\gfx\include;$(CAFE_ROOT)\system\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <WarningLevel>Level4</WarningLevel>
-      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\unix;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;_GNU_SOURCE;VK_USE_PLATFORM_GGP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <DebugInformationFormat>FullDebug</DebugInformationFormat>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <ExceptionHandling>false</ExceptionHandling>
+      <ExceptionHandling>Disabled</ExceptionHandling>
       <FloatingPointModel>Fast</FloatingPointModel>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <StringPooling>true</StringPooling>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <UseMultiToolTask>true</UseMultiToolTask>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
-      <SetMessageToSilent>1795</SetMessageToSilent>
-      <AdditionalOptions>--diag_suppress "1795"</AdditionalOptions>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(CAFE_ROOT)\system\lib\ghs\cafe\DEBUG;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>nn_act.a;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>false</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Internal|Cafe'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Internal|GGP'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -107,32 +101,28 @@
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\asm\wiiu_asm;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;$(CAFE_ROOT)\system\src\tool\gfx\include;$(CAFE_ROOT)\system\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <WarningLevel>Level4</WarningLevel>
-      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\unix;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;_GNU_SOURCE;VK_USE_PLATFORM_GGP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <DebugInformationFormat>FullDebug</DebugInformationFormat>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <ExceptionHandling>false</ExceptionHandling>
+      <ExceptionHandling>Disabled</ExceptionHandling>
       <FloatingPointModel>Fast</FloatingPointModel>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <StringPooling>true</StringPooling>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <UseMultiToolTask>true</UseMultiToolTask>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
-      <SetMessageToSilent>1795</SetMessageToSilent>
-      <AdditionalOptions>--diag_suppress "1795"</AdditionalOptions>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(CAFE_ROOT)\system\lib\ghs\cafe\DEBUG;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>nn_act.a;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Cafe'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|GGP'">
     <ClCompile>
-      <Optimization>MinSpace</Optimization>
+      <Optimization>Full</Optimization>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <OmitFramePointers>true</OmitFramePointers>
       <BufferSecurityCheck>false</BufferSecurityCheck>
@@ -141,24 +131,19 @@
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\asm\wiiu_asm;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;$(CAFE_ROOT)\system\src\tool\gfx\include;$(CAFE_ROOT)\system\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <WarningLevel>Level4</WarningLevel>
-      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\unix;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;_GNU_SOURCE;VK_USE_PLATFORM_GGP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <ExceptionHandling>false</ExceptionHandling>
+      <ExceptionHandling>Disabled</ExceptionHandling>
       <FloatingPointModel>Fast</FloatingPointModel>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <StringPooling>true</StringPooling>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <UseMultiToolTask>true</UseMultiToolTask>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
-      <SetMessageToSilent>1795</SetMessageToSilent>
-      <AdditionalOptions>--diag_suppress "1795"</AdditionalOptions>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(CAFE_ROOT)\system\lib\ghs\cafe\NDEBUG;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>nn_act.a;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -337,6 +322,13 @@
     <ClInclude Include="..\source\memory\brglobalmemorymanager.h" />
     <ClInclude Include="..\source\memory\brmemoryhandle.h" />
     <ClInclude Include="..\source\memory\brmemorymanager.h" />
+    <ClInclude Include="..\source\platforms\unix\brunixtypes.h" />
+    <ClInclude Include="..\source\platforms\unix\templateunix.h" />
+    <ClInclude Include="..\source\platforms\unix\unix_dbus.h" />
+    <ClInclude Include="..\source\platforms\unix\unix_dbusinstance.h" />
+    <ClInclude Include="..\source\platforms\unix\unix_shims.h" />
+    <ClInclude Include="..\source\platforms\unix\unix_sleep.h" />
+    <ClInclude Include="..\source\platforms\unix\unix_types.h" />
     <ClInclude Include="..\source\random\brmersennetwist.h" />
     <ClInclude Include="..\source\random\brrandom.h" />
     <ClInclude Include="..\source\random\brrandombase.h" />
@@ -361,29 +353,6 @@
     <ClInclude Include="..\source\text\brutf8.h" />
     <ClInclude Include="..\source\text\brwin1252.h" />
     <ClInclude Include="..\source\text\brwin437.h" />
-    <ClInclude Include="..\unittest\common.h" />
-    <ClInclude Include="..\unittest\createtables.h" />
-    <ClInclude Include="..\unittest\testbralgorithm.h" />
-    <ClInclude Include="..\unittest\testbrcodelibrary.h" />
-    <ClInclude Include="..\unittest\testbrcompression.h" />
-    <ClInclude Include="..\unittest\testbrdisplay.h" />
-    <ClInclude Include="..\unittest\testbrendian.h" />
-    <ClInclude Include="..\unittest\testbrfileloaders.h" />
-    <ClInclude Include="..\unittest\testbrfilemanager.h" />
-    <ClInclude Include="..\unittest\testbrfixedpoint.h" />
-    <ClInclude Include="..\unittest\testbrfloatingpoint.h" />
-    <ClInclude Include="..\unittest\testbrhashes.h" />
-    <ClInclude Include="..\unittest\testbrmatrix3d.h" />
-    <ClInclude Include="..\unittest\testbrmatrix4d.h" />
-    <ClInclude Include="..\unittest\testbrnumberto.h" />
-    <ClInclude Include="..\unittest\testbrpoweroftwo.h" />
-    <ClInclude Include="..\unittest\testbrprintf.h" />
-    <ClInclude Include="..\unittest\testbrstaticrtti.h" />
-    <ClInclude Include="..\unittest\testbrstrings.h" />
-    <ClInclude Include="..\unittest\testbrtimedate.h" />
-    <ClInclude Include="..\unittest\testbrtypes.h" />
-    <ClInclude Include="..\unittest\testcharset.h" />
-    <ClInclude Include="..\unittest\testmacros.h" />
     <ClCompile Include="..\source\ansi\brcapturestdout.cpp" />
     <ClCompile Include="..\source\ansi\brfileansihelpers.cpp" />
     <ClCompile Include="..\source\ansi\brmemoryansi.cpp" />
@@ -547,6 +516,23 @@
     <ClCompile Include="..\source\memory\brglobalmemorymanager.cpp" />
     <ClCompile Include="..\source\memory\brmemoryhandle.cpp" />
     <ClCompile Include="..\source\memory\brmemorymanager.cpp" />
+    <ClCompile Include="..\source\platforms\unix\brcodelibraryunix.cpp" />
+    <ClCompile Include="..\source\platforms\unix\brconditionvariableunix.cpp" />
+    <ClCompile Include="..\source\platforms\unix\brdebugunix.cpp" />
+    <ClCompile Include="..\source\platforms\unix\brdirectorysearchunix.cpp" />
+    <ClCompile Include="..\source\platforms\unix\brfilemanagerunix.cpp" />
+    <ClCompile Include="..\source\platforms\unix\brfilenameunix.cpp" />
+    <ClCompile Include="..\source\platforms\unix\brfileunix.cpp" />
+    <ClCompile Include="..\source\platforms\unix\brmutexunix.cpp" />
+    <ClCompile Include="..\source\platforms\unix\brosstringfunctionsunix.cpp" />
+    <ClCompile Include="..\source\platforms\unix\brsemaphoreunix.cpp" />
+    <ClCompile Include="..\source\platforms\unix\brthreadunix.cpp" />
+    <ClCompile Include="..\source\platforms\unix\brtickunix.cpp" />
+    <ClCompile Include="..\source\platforms\unix\brunixtypes.cpp" />
+    <ClCompile Include="..\source\platforms\unix\unix_dbus.cpp" />
+    <ClCompile Include="..\source\platforms\unix\unix_dbusinstance.cpp" />
+    <ClCompile Include="..\source\platforms\unix\unix_shims.cpp" />
+    <ClCompile Include="..\source\platforms\unix\unix_sleep.cpp" />
     <ClCompile Include="..\source\random\brmersennetwist.cpp" />
     <ClCompile Include="..\source\random\brrandom.cpp" />
     <ClCompile Include="..\source\random\brrandombase.cpp" />
@@ -570,47 +556,7 @@
     <ClCompile Include="..\source\text\brutf8.cpp" />
     <ClCompile Include="..\source\text\brwin1252.cpp" />
     <ClCompile Include="..\source\text\brwin437.cpp" />
-    <ClCompile Include="..\unittest\common.cpp" />
-    <ClCompile Include="..\unittest\testbralgorithm.cpp" />
-    <ClCompile Include="..\unittest\testbrcodelibrary.cpp" />
-    <ClCompile Include="..\unittest\testbrcompression.cpp" />
-    <ClCompile Include="..\unittest\testbrdisplay.cpp" />
-    <ClCompile Include="..\unittest\testbrendian.cpp" />
-    <ClCompile Include="..\unittest\testbrfileloaders.cpp" />
-    <ClCompile Include="..\unittest\testbrfilemanager.cpp" />
-    <ClCompile Include="..\unittest\testbrfixedpoint.cpp" />
-    <ClCompile Include="..\unittest\testbrfloatingpoint.cpp" />
-    <ClCompile Include="..\unittest\testbrhashes.cpp" />
-    <ClCompile Include="..\unittest\testbrmatrix3d.cpp" />
-    <ClCompile Include="..\unittest\testbrmatrix4d.cpp" />
-    <ClCompile Include="..\unittest\testbrnumberto.cpp" />
-    <ClCompile Include="..\unittest\testbrpoweroftwo.cpp" />
-    <ClCompile Include="..\unittest\testbrprintf.cpp" />
-    <ClCompile Include="..\unittest\testbrstaticrtti.cpp" />
-    <ClCompile Include="..\unittest\testbrstrings.cpp" />
-    <ClCompile Include="..\unittest\testbrtimedate.cpp" />
-    <ClCompile Include="..\unittest\testbrtypes.cpp" />
-    <ClCompile Include="..\unittest\testcharset.cpp" />
-    <ClCompile Include="..\unittest\testmacros.cpp" />
-    <ASM Include="..\source\asm\wiiu_asm\floattointceil.s" />
-    <ASM Include="..\source\asm\wiiu_asm\floattointceilptr.s" />
-    <ASM Include="..\source\asm\wiiu_asm\floattointfloor.s" />
-    <ASM Include="..\source\asm\wiiu_asm\floattointfloorptr.s" />
-    <ASM Include="..\source\asm\wiiu_asm\floattointround.s" />
-    <ASM Include="..\source\asm\wiiu_asm\floattointroundptr.s" />
-    <ASM Include="..\source\asm\wiiu_asm\get_signdouble.s" />
-    <ASM Include="..\source\asm\wiiu_asm\get_signfloat.s" />
-    <ASM Include="..\source\asm\wiiu_asm\getpowerpcrounding.s" />
-    <ASM Include="..\source\asm\wiiu_asm\is_nandouble.s" />
-    <ASM Include="..\source\asm\wiiu_asm\is_nanfloat.s" />
-    <ASM Include="..\source\asm\wiiu_asm\loadunaligned64.s" />
-    <ASM Include="..\source\asm\wiiu_asm\moduloradiansdouble.s" />
-    <ASM Include="..\source\asm\wiiu_asm\moduloradiansfloat.s" />
-    <ASM Include="..\source\asm\wiiu_asm\setpowerpcrounding.s" />
-    <ASM Include="..\source\asm\wiiu_asm\swapendian64.s" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-    <Import Project="$(VCTargetsPath)\BuildCustomizations\cafe2_asm.targets" Condition="exists('$(VCTargetsPath)\BuildCustomizations\cafe2_asm.targets')" />
-  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets" />
 </Project>

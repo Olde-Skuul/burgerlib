@@ -517,6 +517,27 @@
     <ClInclude Include="..\source\memory\brmemorymanager.h">
       <Filter>source\memory</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\platforms\unix\brunixtypes.h">
+      <Filter>source\platforms\unix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\unix\templateunix.h">
+      <Filter>source\platforms\unix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\unix\unix_dbus.h">
+      <Filter>source\platforms\unix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\unix\unix_dbusinstance.h">
+      <Filter>source\platforms\unix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\unix\unix_shims.h">
+      <Filter>source\platforms\unix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\unix\unix_sleep.h">
+      <Filter>source\platforms\unix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\unix\unix_types.h">
+      <Filter>source\platforms\unix</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\random\brmersennetwist.h">
       <Filter>source\random</Filter>
     </ClInclude>
@@ -588,75 +609,6 @@
     </ClInclude>
     <ClInclude Include="..\source\text\brwin437.h">
       <Filter>source\text</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\common.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\createtables.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbralgorithm.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrcodelibrary.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrcompression.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrdisplay.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrendian.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrfileloaders.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrfilemanager.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrfixedpoint.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrfloatingpoint.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrhashes.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrmatrix3d.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrmatrix4d.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrnumberto.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrpoweroftwo.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrprintf.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrstaticrtti.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrstrings.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrtimedate.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrtypes.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testcharset.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testmacros.h">
-      <Filter>unittest</Filter>
     </ClInclude>
     <ClCompile Include="..\source\ansi\brcapturestdout.cpp">
       <Filter>source\ansi</Filter>
@@ -1147,6 +1099,57 @@
     <ClCompile Include="..\source\memory\brmemorymanager.cpp">
       <Filter>source\memory</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\brcodelibraryunix.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\brconditionvariableunix.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\brdebugunix.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\brdirectorysearchunix.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\brfilemanagerunix.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\brfilenameunix.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\brfileunix.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\brmutexunix.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\brosstringfunctionsunix.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\brsemaphoreunix.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\brthreadunix.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\brtickunix.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\brunixtypes.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\unix_dbus.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\unix_dbusinstance.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\unix_shims.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\unix_sleep.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\random\brmersennetwist.cpp">
       <Filter>source\random</Filter>
     </ClCompile>
@@ -1216,179 +1219,62 @@
     <ClCompile Include="..\source\text\brwin437.cpp">
       <Filter>source\text</Filter>
     </ClCompile>
-    <ClCompile Include="..\unittest\common.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbralgorithm.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrcodelibrary.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrcompression.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrdisplay.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrendian.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrfileloaders.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrfilemanager.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrfixedpoint.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrfloatingpoint.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrhashes.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrmatrix3d.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrmatrix4d.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrnumberto.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrpoweroftwo.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrprintf.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrstaticrtti.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrstrings.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrtimedate.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrtypes.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testcharset.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testmacros.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ASM Include="..\source\asm\wiiu_asm\floattointceil.s">
-      <Filter>source\asm\wiiu_asm</Filter>
-    </ASM>
-    <ASM Include="..\source\asm\wiiu_asm\floattointceilptr.s">
-      <Filter>source\asm\wiiu_asm</Filter>
-    </ASM>
-    <ASM Include="..\source\asm\wiiu_asm\floattointfloor.s">
-      <Filter>source\asm\wiiu_asm</Filter>
-    </ASM>
-    <ASM Include="..\source\asm\wiiu_asm\floattointfloorptr.s">
-      <Filter>source\asm\wiiu_asm</Filter>
-    </ASM>
-    <ASM Include="..\source\asm\wiiu_asm\floattointround.s">
-      <Filter>source\asm\wiiu_asm</Filter>
-    </ASM>
-    <ASM Include="..\source\asm\wiiu_asm\floattointroundptr.s">
-      <Filter>source\asm\wiiu_asm</Filter>
-    </ASM>
-    <ASM Include="..\source\asm\wiiu_asm\get_signdouble.s">
-      <Filter>source\asm\wiiu_asm</Filter>
-    </ASM>
-    <ASM Include="..\source\asm\wiiu_asm\get_signfloat.s">
-      <Filter>source\asm\wiiu_asm</Filter>
-    </ASM>
-    <ASM Include="..\source\asm\wiiu_asm\getpowerpcrounding.s">
-      <Filter>source\asm\wiiu_asm</Filter>
-    </ASM>
-    <ASM Include="..\source\asm\wiiu_asm\is_nandouble.s">
-      <Filter>source\asm\wiiu_asm</Filter>
-    </ASM>
-    <ASM Include="..\source\asm\wiiu_asm\is_nanfloat.s">
-      <Filter>source\asm\wiiu_asm</Filter>
-    </ASM>
-    <ASM Include="..\source\asm\wiiu_asm\loadunaligned64.s">
-      <Filter>source\asm\wiiu_asm</Filter>
-    </ASM>
-    <ASM Include="..\source\asm\wiiu_asm\moduloradiansdouble.s">
-      <Filter>source\asm\wiiu_asm</Filter>
-    </ASM>
-    <ASM Include="..\source\asm\wiiu_asm\moduloradiansfloat.s">
-      <Filter>source\asm\wiiu_asm</Filter>
-    </ASM>
-    <ASM Include="..\source\asm\wiiu_asm\setpowerpcrounding.s">
-      <Filter>source\asm\wiiu_asm</Filter>
-    </ASM>
-    <ASM Include="..\source\asm\wiiu_asm\swapendian64.s">
-      <Filter>source\asm\wiiu_asm</Filter>
-    </ASM>
     <Filter Include="source">
-      <UniqueIdentifier>B0845961-7CDC-39A7-BE26-20E940410BB2</UniqueIdentifier>
+      <UniqueIdentifier>69C80382-0262-36D7-B5EC-C347705C18B6</UniqueIdentifier>
     </Filter>
     <Filter Include="source\ansi">
-      <UniqueIdentifier>4AFBC003-3528-36E9-B222-A1B1BD48E9CD</UniqueIdentifier>
-    </Filter>
-    <Filter Include="source\asm">
-      <UniqueIdentifier>4BD7EDA3-DDBB-3EEE-A30E-81D32CEF4181</UniqueIdentifier>
-    </Filter>
-    <Filter Include="source\asm\wiiu_asm">
-      <UniqueIdentifier>D476F796-CD80-3813-8B3D-14AF2D71DF63</UniqueIdentifier>
+      <UniqueIdentifier>CCB15216-A5FD-346B-8982-C7131363D348</UniqueIdentifier>
     </Filter>
     <Filter Include="source\audio">
-      <UniqueIdentifier>D73C8FDF-CC01-37EE-ACC1-656C520A2ACD</UniqueIdentifier>
+      <UniqueIdentifier>22D5E172-99AD-3C3B-A60B-FCB4404ACDAB</UniqueIdentifier>
     </Filter>
     <Filter Include="source\commandline">
-      <UniqueIdentifier>768A591C-FC4E-31A8-A831-CCF5D26C7246</UniqueIdentifier>
+      <UniqueIdentifier>8FD929DB-B035-30BE-A6A1-B3A6766E4D0A</UniqueIdentifier>
     </Filter>
     <Filter Include="source\compression">
-      <UniqueIdentifier>0C941F15-F636-339E-8BC7-86829E903B1A</UniqueIdentifier>
+      <UniqueIdentifier>87323765-58D8-3AFB-9C5C-C944359E3911</UniqueIdentifier>
     </Filter>
     <Filter Include="source\file">
-      <UniqueIdentifier>8F42A315-2A74-3437-8739-03C363ACD692</UniqueIdentifier>
+      <UniqueIdentifier>BC87EE69-0B86-3845-A804-340835D4A8DB</UniqueIdentifier>
     </Filter>
     <Filter Include="source\flashplayer">
-      <UniqueIdentifier>B69272EA-5821-3A5C-BA18-80352692B67D</UniqueIdentifier>
+      <UniqueIdentifier>65924A85-178E-351F-B191-DFFCE72C322A</UniqueIdentifier>
     </Filter>
     <Filter Include="source\generated">
-      <UniqueIdentifier>9594FE35-75A3-355E-A44D-D9EA072E5F9A</UniqueIdentifier>
+      <UniqueIdentifier>53474305-FC80-3C06-AA93-22F90D85395C</UniqueIdentifier>
     </Filter>
     <Filter Include="source\graphics">
-      <UniqueIdentifier>9376F9D6-24B1-391F-ACD7-63FA3A9294CD</UniqueIdentifier>
+      <UniqueIdentifier>2B40E8ED-2EA9-3041-B15B-1CF9BE99F936</UniqueIdentifier>
     </Filter>
     <Filter Include="source\graphics\effects">
-      <UniqueIdentifier>4CEE4C67-F234-3455-BA54-A825DE768A90</UniqueIdentifier>
+      <UniqueIdentifier>AA016158-C210-3B47-88A2-3A0622E2D711</UniqueIdentifier>
     </Filter>
     <Filter Include="source\graphics\shaders">
-      <UniqueIdentifier>50C8BF20-7FA4-3437-8990-9795B0294F3C</UniqueIdentifier>
+      <UniqueIdentifier>384C6EEE-92D6-39F6-92ED-E8033B61D7C7</UniqueIdentifier>
     </Filter>
     <Filter Include="source\input">
-      <UniqueIdentifier>C65A0F55-906A-3D16-B4E0-FCDA80328FEE</UniqueIdentifier>
+      <UniqueIdentifier>55806D9C-A064-337D-A4E3-29F5F3A47C28</UniqueIdentifier>
     </Filter>
     <Filter Include="source\lowlevel">
-      <UniqueIdentifier>3DAAEE10-21F9-3474-840B-715750F8E9F0</UniqueIdentifier>
+      <UniqueIdentifier>5BB183A2-7715-3C79-8E54-9157054224FC</UniqueIdentifier>
     </Filter>
     <Filter Include="source\math">
-      <UniqueIdentifier>85D3C016-5192-3967-89D4-D5EFFD6AA869</UniqueIdentifier>
+      <UniqueIdentifier>994C8C3E-4402-391B-B383-8F2B7FD602B5</UniqueIdentifier>
     </Filter>
     <Filter Include="source\memory">
-      <UniqueIdentifier>CB9C27CE-5F4D-347F-9AC8-33B1C7927743</UniqueIdentifier>
+      <UniqueIdentifier>7D1FD43A-6A0F-3934-A8DB-D3B052E08594</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\platforms">
+      <UniqueIdentifier>92D2061E-C1EE-3FEB-BA94-3B36C6BD0E5A</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\platforms\unix">
+      <UniqueIdentifier>293324C3-7BE4-39D8-9AB8-DE9591210A0E</UniqueIdentifier>
     </Filter>
     <Filter Include="source\random">
-      <UniqueIdentifier>8DEC3858-DC86-37DF-B75A-7D24F43E3D3E</UniqueIdentifier>
+      <UniqueIdentifier>F9E8686D-0BFB-3458-91C9-44A7A95B0B47</UniqueIdentifier>
     </Filter>
     <Filter Include="source\text">
-      <UniqueIdentifier>1CFB864F-FCFB-398D-9921-75B8FADE4ADA</UniqueIdentifier>
-    </Filter>
-    <Filter Include="unittest">
-      <UniqueIdentifier>7B0BA79F-E70F-3A46-B2F0-D3826330A3AE</UniqueIdentifier>
+      <UniqueIdentifier>C2812A2C-74A0-362B-AB8C-702053F7B041</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

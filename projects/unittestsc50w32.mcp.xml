@@ -339,7 +339,7 @@
 				<SETTING><NAME>SystemSearchPaths</NAME>
 					<SETTING>
 						<SETTING><NAME>SearchPath</NAME>
-							<SETTING><NAME>Path</NAME><VALUE>..\sdks\windows\dplay\include</VALUE></SETTING>
+							<SETTING><NAME>Path</NAME><VALUE>..\sdks\windows\dplay\Include</VALUE></SETTING>
 							<SETTING><NAME>PathFormat</NAME><VALUE>Windows</VALUE></SETTING>
 							<SETTING><NAME>PathRoot</NAME><VALUE>Project</VALUE></SETTING>
 						</SETTING>
@@ -438,6 +438,7 @@
 #define WIN32
 #define _CONSOLE
 #define DWRITE_NO_WINDOWS_H
+#define IDIRECTPLAY2_OR_GREATER
 #define _CRT_NONSTDC_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
 #define GLUT_NO_LIB_PRAGMA
@@ -537,6 +538,20 @@
 				<SETTING><NAME>MWLinker_X86_commandfile</NAME><VALUE></VALUE></SETTING>
 			</SETTINGLIST>
 			<FILELIST>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>bitreverse32.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS>Debug</FILEFLAGS>
+				</FILE>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>bitreverse64.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS>Debug</FILEFLAGS>
+				</FILE>
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>bradler16.cpp</PATH>
@@ -4718,6 +4733,16 @@
 				</FILE>
 			</FILELIST>
 			<LINKORDER>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>bitreverse32.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>bitreverse64.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>bradler16.cpp</PATH>
@@ -7969,7 +7994,7 @@
 				<SETTING><NAME>SystemSearchPaths</NAME>
 					<SETTING>
 						<SETTING><NAME>SearchPath</NAME>
-							<SETTING><NAME>Path</NAME><VALUE>..\sdks\windows\dplay\include</VALUE></SETTING>
+							<SETTING><NAME>Path</NAME><VALUE>..\sdks\windows\dplay\Include</VALUE></SETTING>
 							<SETTING><NAME>PathFormat</NAME><VALUE>Windows</VALUE></SETTING>
 							<SETTING><NAME>PathRoot</NAME><VALUE>Project</VALUE></SETTING>
 						</SETTING>
@@ -8068,6 +8093,7 @@
 #define WIN32
 #define _CONSOLE
 #define DWRITE_NO_WINDOWS_H
+#define IDIRECTPLAY2_OR_GREATER
 #define _CRT_NONSTDC_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
 #define GLUT_NO_LIB_PRAGMA
@@ -8167,6 +8193,20 @@
 				<SETTING><NAME>MWLinker_X86_commandfile</NAME><VALUE></VALUE></SETTING>
 			</SETTINGLIST>
 			<FILELIST>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>bitreverse32.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS>Debug</FILEFLAGS>
+				</FILE>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>bitreverse64.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS>Debug</FILEFLAGS>
+				</FILE>
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>bradler16.cpp</PATH>
@@ -12348,6 +12388,16 @@
 				</FILE>
 			</FILELIST>
 			<LINKORDER>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>bitreverse32.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>bitreverse64.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>bradler16.cpp</PATH>
@@ -15599,7 +15649,7 @@
 				<SETTING><NAME>SystemSearchPaths</NAME>
 					<SETTING>
 						<SETTING><NAME>SearchPath</NAME>
-							<SETTING><NAME>Path</NAME><VALUE>..\sdks\windows\dplay\include</VALUE></SETTING>
+							<SETTING><NAME>Path</NAME><VALUE>..\sdks\windows\dplay\Include</VALUE></SETTING>
 							<SETTING><NAME>PathFormat</NAME><VALUE>Windows</VALUE></SETTING>
 							<SETTING><NAME>PathRoot</NAME><VALUE>Project</VALUE></SETTING>
 						</SETTING>
@@ -15698,6 +15748,7 @@
 #define WIN32
 #define _CONSOLE
 #define DWRITE_NO_WINDOWS_H
+#define IDIRECTPLAY2_OR_GREATER
 #define _CRT_NONSTDC_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
 #define GLUT_NO_LIB_PRAGMA
@@ -15797,6 +15848,20 @@
 				<SETTING><NAME>MWLinker_X86_commandfile</NAME><VALUE></VALUE></SETTING>
 			</SETTINGLIST>
 			<FILELIST>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>bitreverse32.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS></FILEFLAGS>
+				</FILE>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>bitreverse64.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS></FILEFLAGS>
+				</FILE>
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>bradler16.cpp</PATH>
@@ -19980,6 +20045,16 @@
 			<LINKORDER>
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
+					<PATH>bitreverse32.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>bitreverse64.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
 					<PATH>bradler16.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
@@ -23102,6 +23177,18 @@
 			</GROUP>
 			<GROUP><NAME>asm</NAME>
 				<GROUP><NAME>mwx86asm</NAME>
+					<FILEREF>
+						<TARGETNAME>Debug</TARGETNAME>
+						<PATHTYPE>Name</PATHTYPE>
+						<PATH>bitreverse32.cpp</PATH>
+						<PATHFORMAT>Windows</PATHFORMAT>
+					</FILEREF>
+					<FILEREF>
+						<TARGETNAME>Debug</TARGETNAME>
+						<PATHTYPE>Name</PATHTYPE>
+						<PATH>bitreverse64.cpp</PATH>
+						<PATHFORMAT>Windows</PATHFORMAT>
+					</FILEREF>
 					<FILEREF>
 						<TARGETNAME>Debug</TARGETNAME>
 						<PATHTYPE>Name</PATHTYPE>
