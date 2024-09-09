@@ -386,7 +386,7 @@ Burger::String::String(const uint16_t* pInput) BURGER_NOEXCEPT
 	// Get the adjusted length
 	uInputLength = m_uLength;
 	// Copy and zero terminate
-	UTF8::FromUTF16(pWork, uInputLength + 1, pInput);
+	UTF8::from_UTF16(pWork, uInputLength + 1, pInput);
 }
 
 /*! ************************************
@@ -409,12 +409,12 @@ Burger::String::String(const uint32_t* pInput) BURGER_NOEXCEPT
 		pInput = &uTemp;
 	}
 
-	uintptr_t uInputLength = UTF8::FromUTF32(nullptr, 0, pInput);
+	uintptr_t uInputLength = UTF8::from_UTF32(nullptr, 0, pInput);
 	char* pWork = constructor_reserve(uInputLength);
 	// Get the adjusted length
 	uInputLength = m_uLength;
 	// Copy and zero terminate
-	UTF8::FromUTF32(pWork, uInputLength + 1, pInput);
+	UTF8::from_UTF32(pWork, uInputLength + 1, pInput);
 }
 
 /*! ************************************
@@ -995,7 +995,7 @@ Burger::eError BURGER_API Burger::String::assign(
 	if (uInputLength > m_uBufferSize) {
 		uInputLength = m_uBufferSize;
 	}
-	m_uLength = UTF8::FromUTF16(m_pData, uInputLength + 1, pInput);
+	m_uLength = UTF8::from_UTF16(m_pData, uInputLength + 1, pInput);
 
 	// Return error
 	return uResult;
@@ -1029,7 +1029,7 @@ Burger::eError BURGER_API Burger::String::assign(
 	if (uInputLength > m_uBufferSize) {
 		uInputLength = m_uBufferSize;
 	}
-	m_uLength = UTF8::FromUTF16(m_pData, uInputLength + 1, pInput, uLength);
+	m_uLength = UTF8::from_UTF16(m_pData, uInputLength + 1, pInput, uLength);
 
 	// Return error
 	return uResult;

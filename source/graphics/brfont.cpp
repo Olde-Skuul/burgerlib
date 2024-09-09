@@ -270,7 +270,7 @@ void Burger::Font::DrawChar(uint_t /* uLetter */)
 uint_t BURGER_API Burger::Font::GetPixelWidthChar(uint_t uLetter)
 {
 	char Ascii[8];
-	const uintptr_t uLength = UTF8::FromUTF32(Ascii,uLetter);
+	const uintptr_t uLength = UTF8::from_UTF32(Ascii,uLetter);
 	return GetPixelWidth(Ascii,uLength);
 }
 

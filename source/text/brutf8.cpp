@@ -2648,11 +2648,11 @@ uintptr_t BURGER_API Burger::UTF8::GetUTF16Size(
 	\return The number of bytes written to the stream. 1, 2, 3 or 0 if uInput is
 		>=0xD800 and <=0xDFFF.
 
-	\sa FromUTF16(char *,uintptr_t, const uint16_t *)
+	\sa from_UTF16(char *,uintptr_t, const uint16_t *)
 
 ***************************************/
 
-uintptr_t BURGER_API Burger::UTF8::FromUTF16(
+uintptr_t BURGER_API Burger::UTF8::from_UTF16(
 	char* pOutput, uint16_t uInput) BURGER_NOEXCEPT
 {
 	// Convert to native data size
@@ -2713,7 +2713,7 @@ uintptr_t BURGER_API Burger::UTF8::FromUTF16(
 
 ***************************************/
 
-uintptr_t BURGER_API Burger::UTF8::FromUTF16(char* pOutput,
+uintptr_t BURGER_API Burger::UTF8::from_UTF16(char* pOutput,
 	uintptr_t uOutputSize, const uint16_t* pInput) BURGER_NOEXCEPT
 {
 	uint8_t* pWorkPtr = reinterpret_cast<uint8_t*>(pOutput);
@@ -2860,7 +2860,7 @@ uintptr_t BURGER_API Burger::UTF8::FromUTF16(char* pOutput,
 
 ***************************************/
 
-uintptr_t BURGER_API Burger::UTF8::FromUTF16(char* pOutput,
+uintptr_t BURGER_API Burger::UTF8::from_UTF16(char* pOutput,
 	uintptr_t uOutputSize, const uint16_t* pInput,
 	uintptr_t uInputSize) BURGER_NOEXCEPT
 {
@@ -2995,13 +2995,13 @@ uintptr_t BURGER_API Burger::UTF8::FromUTF16(char* pOutput,
 
 ***************************************/
 
-char* BURGER_API Burger::UTF8::FromUTF16(const uint16_t* pInput) BURGER_NOEXCEPT
+char* BURGER_API Burger::UTF8::from_UTF16(const uint16_t* pInput) BURGER_NOEXCEPT
 {
 	const uintptr_t uInputLength = GetUTF16Size(pInput);
 	char* pWork = static_cast<char*>(Alloc(uInputLength + 1));
 	if (pWork) {
 		// Copy the string
-		FromUTF16(pWork, uInputLength + 1, pInput);
+		from_UTF16(pWork, uInputLength + 1, pInput);
 	}
 	return pWork;
 }
@@ -3027,7 +3027,7 @@ char* BURGER_API Burger::UTF8::FromUTF16(const uint16_t* pInput) BURGER_NOEXCEPT
 
 ***************************************/
 
-uintptr_t BURGER_API Burger::UTF8::FromUTF32(
+uintptr_t BURGER_API Burger::UTF8::from_UTF32(
 	char* pOutput, uint32_t uInput) BURGER_NOEXCEPT
 {
 	// Not ASCII?
@@ -3102,7 +3102,7 @@ uintptr_t BURGER_API Burger::UTF8::FromUTF32(
 
 ***************************************/
 
-uintptr_t BURGER_API Burger::UTF8::FromUTF32(char* pOutput,
+uintptr_t BURGER_API Burger::UTF8::from_UTF32(char* pOutput,
 	uintptr_t uOutputSize, const uint32_t* pInput) BURGER_NOEXCEPT
 {
 	// Make a copy, since pOutput is needed for determining size
@@ -3252,7 +3252,7 @@ uintptr_t BURGER_API Burger::UTF8::FromUTF32(char* pOutput,
 
 ***************************************/
 
-uintptr_t BURGER_API Burger::UTF8::FromUTF32(char* pOutput,
+uintptr_t BURGER_API Burger::UTF8::from_UTF32(char* pOutput,
 	uintptr_t uOutputSize, const uint32_t* pInput,
 	uintptr_t uInputSize) BURGER_NOEXCEPT
 {
@@ -3388,13 +3388,13 @@ uintptr_t BURGER_API Burger::UTF8::FromUTF32(char* pOutput,
 
 ***************************************/
 
-char* BURGER_API Burger::UTF8::FromUTF32(const uint32_t* pInput) BURGER_NOEXCEPT
+char* BURGER_API Burger::UTF8::from_UTF32(const uint32_t* pInput) BURGER_NOEXCEPT
 {
-	const uintptr_t uInputLength = FromUTF32(nullptr, 0, pInput);
+	const uintptr_t uInputLength = from_UTF32(nullptr, 0, pInput);
 	char* pWork = static_cast<char*>(Alloc(uInputLength + 1));
 	if (pWork) {
 		// Copy the string
-		FromUTF32(pWork, uInputLength + 1, pInput);
+		from_UTF32(pWork, uInputLength + 1, pInput);
 	}
 	return pWork;
 }

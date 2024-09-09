@@ -1031,10 +1031,10 @@ static uint_t BURGER_API UnitTestFormattingSingleWChar(intptr_t iStartWidth,
 			// to be 16 or 32 bits in size
 			char UTF8Buffer[8];
 			if (rStartChar.GetDataLengthInBytes() == 2) {
-				uExpectedLength = Burger::UTF8::FromUTF16(
+				uExpectedLength = Burger::UTF8::from_UTF16(
 					UTF8Buffer, static_cast<uint16_t>(uTestCharacter));
 			} else {
-				uExpectedLength = Burger::UTF8::FromUTF32(
+				uExpectedLength = Burger::UTF8::from_UTF32(
 					UTF8Buffer, static_cast<uint32_t>(uTestCharacter));
 			}
 			UTF8Buffer[uExpectedLength] = 0;

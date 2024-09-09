@@ -101,7 +101,7 @@ Burger::eError BURGER_API Burger::FileManager::get_volume_name(
 
 					// Convert from UTF16 to UTF8
 					char OutputName[(MAX_PATH * 2) + 3];
-					UTF8::FromUTF16(OutputName + 1, sizeof(OutputName) - 3,
+					UTF8::from_UTF16(OutputName + 1, sizeof(OutputName) - 3,
 						reinterpret_cast<const uint16_t*>(OutputNames));
 
 					// Prefix the volume name with a colon

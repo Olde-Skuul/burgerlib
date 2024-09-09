@@ -172,7 +172,7 @@ Burger::eError BURGER_API Burger::FileManager::get_volume_name(
 				// Unicode could be as much as 4 bytes per char
 
 				char NameUTF8[(256 * 4) + 4];
-				uintptr_t uLength = UTF8::FromUTF16(
+				uintptr_t uLength = UTF8::from_UTF16(
 					NameUTF8 + 1, sizeof(NameUTF8) - 4, Name.unicode, uStrLen);
 
 				NameUTF8[0] = ':';

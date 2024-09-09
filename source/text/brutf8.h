@@ -115,21 +115,21 @@ public:
 	static uintptr_t BURGER_API GetUTF16Size(
 		const uint16_t* pInput, uintptr_t uInputSize) BURGER_NOEXCEPT;
 
-	static uintptr_t BURGER_API FromUTF16(
+	static uintptr_t BURGER_API from_UTF16(
 		char* pOutput, uint16_t uInput) BURGER_NOEXCEPT;
-	static uintptr_t BURGER_API FromUTF16(char* pOutput, uintptr_t uOutputSize,
+	static uintptr_t BURGER_API from_UTF16(char* pOutput, uintptr_t uOutputSize,
 		const uint16_t* pInput) BURGER_NOEXCEPT;
-	static uintptr_t BURGER_API FromUTF16(char* pOutput, uintptr_t uOutputSize,
+	static uintptr_t BURGER_API from_UTF16(char* pOutput, uintptr_t uOutputSize,
 		const uint16_t* pInput, uintptr_t uInputSize) BURGER_NOEXCEPT;
-	static char* BURGER_API FromUTF16(const uint16_t* pInput) BURGER_NOEXCEPT;
+	static char* BURGER_API from_UTF16(const uint16_t* pInput) BURGER_NOEXCEPT;
 
-	static uintptr_t BURGER_API FromUTF32(
+	static uintptr_t BURGER_API from_UTF32(
 		char* pOutput, uint32_t uInput) BURGER_NOEXCEPT;
-	static uintptr_t BURGER_API FromUTF32(char* pOutput, uintptr_t uOutputSize,
+	static uintptr_t BURGER_API from_UTF32(char* pOutput, uintptr_t uOutputSize,
 		const uint32_t* pInput) BURGER_NOEXCEPT;
-	static uintptr_t BURGER_API FromUTF32(char* pOutput, uintptr_t uOutputSize,
+	static uintptr_t BURGER_API from_UTF32(char* pOutput, uintptr_t uOutputSize,
 		const uint32_t* pInput, uintptr_t uInputSize) BURGER_NOEXCEPT;
-	static char* BURGER_API FromUTF32(const uint32_t* pInput) BURGER_NOEXCEPT;
+	static char* BURGER_API from_UTF32(const uint32_t* pInput) BURGER_NOEXCEPT;
 
 	static uint_t BURGER_API ToGeneric(const char* pInput,
 		const uint8_t pTranslateTable[128][4]) BURGER_NOEXCEPT;

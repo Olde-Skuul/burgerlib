@@ -1125,21 +1125,21 @@ static uint_t BURGER_API TestUTF16IsValid(void) BURGER_NOEXCEPT
 		//
 
 		char TestUTF8[8];
-		uintptr_t uTestX = Burger::UTF8::FromUTF16(TestUTF8, pWork->m_UTF16[0]);
+		uintptr_t uTestX = Burger::UTF8::from_UTF16(TestUTF8, pWork->m_UTF16[0]);
 		if (pWork->m_uSingle) {
 			uTest = uTestX != uWidth;
 		} else {
 			uTest = uTestX != 0;
 		}
 		uResult |= uTest;
-		ReportFailure("Burger::UTF8::FromUTF16(TestUTF8, %04X) = %u!", uTest,
+		ReportFailure("Burger::UTF8::from_UTF16(TestUTF8, %04X) = %u!", uTest,
 			pWork->m_UTF16[0], static_cast<uint_t>(uTestX));
 
 		if (uTestX) {
 			uTest = Burger::MemoryCompare(pWork->m_UTF8, TestUTF8, uWidth) != 0;
 			uResult |= uTest;
 			ReportFailure(
-				"Burger::UTF8::FromUTF16(TestUTF8, %04X) data mismatch!", uTest,
+				"Burger::UTF8::from_UTF16(TestUTF8, %04X) data mismatch!", uTest,
 				pWork->m_UTF16[0]);
 		}
 
@@ -1147,7 +1147,7 @@ static uint_t BURGER_API TestUTF16IsValid(void) BURGER_NOEXCEPT
 		TempString16[1] = pWork->m_UTF16[1];
 		TempString16[2] = 0;
 		uTestX =
-			Burger::UTF8::FromUTF16(TestUTF8, sizeof(TestUTF8), TempString16);
+			Burger::UTF8::from_UTF16(TestUTF8, sizeof(TestUTF8), TempString16);
 
 		uintptr_t uExpectedWidth;
 		if (pWork->m_uValid && pWork->m_UTF16[0]) {
@@ -1167,7 +1167,7 @@ static uint_t BURGER_API TestUTF16IsValid(void) BURGER_NOEXCEPT
 
 		uResult |= uTest;
 		ReportFailure(
-			"Burger::UTF8::FromUTF16(TestUTF8, BURGER_ARRAYSIZE(TestUTF8), %04X %04X) = %u!",
+			"Burger::UTF8::from_UTF16(TestUTF8, BURGER_ARRAYSIZE(TestUTF8), %04X %04X) = %u!",
 			uTest, pWork->m_UTF16[0], pWork->m_UTF16[1],
 			static_cast<uint_t>(uTestX));
 
@@ -1179,7 +1179,7 @@ static uint_t BURGER_API TestUTF16IsValid(void) BURGER_NOEXCEPT
 				uTest, pWork->m_UTF16[0], pWork->m_UTF16[1]);
 		}
 
-		uTestX = Burger::UTF8::FromUTF16(
+		uTestX = Burger::UTF8::from_UTF16(
 			TestUTF8, sizeof(TestUTF8), TempString16, uWidth16);
 
 		if (pWork->m_UTF16[0]) {
@@ -1190,7 +1190,7 @@ static uint_t BURGER_API TestUTF16IsValid(void) BURGER_NOEXCEPT
 
 		uResult |= uTest;
 		ReportFailure(
-			"Burger::UTF8::FromUTF16(TestUTF8, sizeof(TestUTF8), uWidth16, %04X %04X) = %u!",
+			"Burger::UTF8::from_UTF16(TestUTF8, sizeof(TestUTF8), uWidth16, %04X %04X) = %u!",
 			uTest, pWork->m_UTF16[0], pWork->m_UTF16[1],
 			static_cast<uint_t>(uTestX));
 		if (uTestX) {
@@ -1237,30 +1237,30 @@ static uint_t BURGER_API TestUTF16(void) BURGER_NOEXCEPT
 	Buffer1_255[255] = 0;
 
 	// Perform the conversions using Burgerlib
-	const uintptr_t uUTF8Length = Burger::UTF8::FromUTF16(
+	const uintptr_t uUTF8Length = Burger::UTF8::from_UTF16(
 		BufferUTF8, sizeof(BufferUTF8), Buffer1_255, 255);
 
 	// Expected length of the conversion
 	uint_t uTest = (uUTF8Length != 383U);
 	uFailure |= uTest;
 	ReportFailure(
-		"Conversion from FromUTF16(4) to UTF8 yielded a different size! %u = Expected 383",
+		"Conversion from from_UTF16(4) to UTF8 yielded a different size! %u = Expected 383",
 		uTest, static_cast<uint_t>(uUTF8Length));
 
 	// Try the "C" string version to aux buffer
 	const uintptr_t uUTF8Length2 =
-		Burger::UTF8::FromUTF16(Buffer2, sizeof(Buffer2), Buffer1_255);
+		Burger::UTF8::from_UTF16(Buffer2, sizeof(Buffer2), Buffer1_255);
 	uTest = (uUTF8Length2 != 383U);
 	uFailure |= uTest;
 	ReportFailure(
-		"Conversion from FromUTF16(3) to UTF8 yielded a different size! %u = Expected 383",
+		"Conversion from from_UTF16(3) to UTF8 yielded a different size! %u = Expected 383",
 		uTest, static_cast<uint_t>(uUTF8Length2));
 
 	// Verify it is a match to the original conversion
 	uTest =
 		static_cast<uint_t>(Burger::MemoryCompare(Buffer2, BufferUTF8, 383));
 	uFailure |= uTest;
-	ReportFailure("FromUTF16(3) and FromUTF16(4) do not match!", uTest);
+	ReportFailure("from_UTF16(3) and from_UTF16(4) do not match!", uTest);
 
 	// Temp buffer, use a larger one in case of test failure
 	const uintptr_t uUTF16Length = Burger::UTF16::translate_from_UTF8(
@@ -1353,13 +1353,13 @@ static uint_t BURGER_API TestUTF16(void) BURGER_NOEXCEPT
 			static_cast<uint_t>(uCharSize));
 
 		// Test the single character to string conversion
-		uCharSize = Burger::UTF8::FromUTF16(
+		uCharSize = Burger::UTF8::from_UTF16(
 			Buffer2 + 128, static_cast<uint16_t>(i + 1));
 		// Test size
 		uTest = uCharSize != static_cast<uintptr_t>(uBuffer2Size);
 		uFailure |= uTest;
 		ReportFailure(
-			"FromUTF16() doesn't match Windows size! %u = Expected %u", uTest,
+			"from_UTF16() doesn't match Windows size! %u = Expected %u", uTest,
 			static_cast<uint_t>(uBuffer2Size), static_cast<uint_t>(uCharSize));
 
 		// Test output
@@ -1367,7 +1367,7 @@ static uint_t BURGER_API TestUTF16(void) BURGER_NOEXCEPT
 			Burger::MemoryCompare(Buffer2, Buffer2 + 128, uBuffer2Size));
 		uFailure |= uTest;
 		ReportFailure(
-			"Windows conversion from FromUTF16(uint_t) to UTF8 yielded different data!",
+			"Windows conversion from from_UTF16(uint_t) to UTF8 yielded different data!",
 			uTest);
 
 	} while (++i < 255);
@@ -1525,7 +1525,7 @@ static uint_t TestUTF32(void) BURGER_NOEXCEPT
 		//
 
 		char TestUTF8[8];
-		uTestX = Burger::UTF8::FromUTF32(TestUTF8, pWork->m_UTF32);
+		uTestX = Burger::UTF8::from_UTF32(TestUTF8, pWork->m_UTF32);
 		if (uMatch) {
 			uTest = uTestX != uWidth;
 		} else {
@@ -1544,7 +1544,7 @@ static uint_t TestUTF32(void) BURGER_NOEXCEPT
 
 		TempString32[0] = pWork->m_UTF32;
 		TempString32[1] = 0;
-		uTestX = Burger::UTF8::FromUTF32(
+		uTestX = Burger::UTF8::from_UTF32(
 			TestUTF8, BURGER_ARRAYSIZE(TestUTF8), TempString32);
 		if (uMatch && pWork->m_UTF32) {
 			uTest = uTestX != uWidth;
@@ -1563,7 +1563,7 @@ static uint_t TestUTF32(void) BURGER_NOEXCEPT
 				uTest, pWork->m_UTF32);
 		}
 
-		uTestX = Burger::UTF8::FromUTF32(
+		uTestX = Burger::UTF8::from_UTF32(
 			TestUTF8, BURGER_ARRAYSIZE(TestUTF8), TempString32, 1);
 		if (uMatch) {
 			uTest = uTestX != uWidth;

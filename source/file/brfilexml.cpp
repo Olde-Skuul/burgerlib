@@ -4564,7 +4564,7 @@ uint_t BURGER_API Burger::FileXML::DecodeXMLString(String *pInput)
 							++pSource;
 						}
 						// Convert from UTF32 to UFT8
-						uintptr_t uChunk = UTF8::FromUTF32(reinterpret_cast<char *>(pDest),uUTF32);
+						uintptr_t uChunk = UTF8::from_UTF32(reinterpret_cast<char *>(pDest),uUTF32);
 						// Invalid conversion (And nulls are not allowed)
 						if (!uChunk || !uUTF32) {
 							// Parse error

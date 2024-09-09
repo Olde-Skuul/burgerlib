@@ -111,7 +111,7 @@ Burger::ConsoleApp::ConsoleApp(int iArgc, const char** ppArgv,
 			++ppArgv;
 			// Convert a string
 			uintptr_t uLength =
-				UTF8::FromUTF16(pDest, uDataSize, ppWork[0]) + 1;
+				UTF8::from_UTF16(pDest, uDataSize, ppWork[0]) + 1;
 			// Adjust the pointers
 			uDataSize -= uLength;
 			pDest += uLength;

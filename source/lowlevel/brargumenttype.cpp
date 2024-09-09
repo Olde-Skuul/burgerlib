@@ -1416,11 +1416,11 @@ uintptr_t BURGER_API Burger::ArgumentType::GetUTF8(
 		break;
 	case kArgumentTypeInt16:
 	case kArgumentTypeUInt16:
-		uLength = UTF8::FromUTF16(pOutput, m_Data.m_uInt16);
+		uLength = UTF8::from_UTF16(pOutput, m_Data.m_uInt16);
 		break;
 	case kArgumentTypeInt32:
 	case kArgumentTypeUInt32:
-		uLength = UTF8::FromUTF32(pOutput, m_Data.m_uInt32);
+		uLength = UTF8::from_UTF32(pOutput, m_Data.m_uInt32);
 		break;
 	default:
 		uLength = 0;

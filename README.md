@@ -15,6 +15,7 @@ Filenames and paths are standardized, all text is UTF-8 regardless of platform. 
 ## Sections of interest
 
 * [Character encoding and standardizing on UTF-8.](docs/markdowns/character_encoding.md)
+* [Filesystem rules and prefixes](docs/markdowns/filemanager.md)
 * [What is Burgerlib?](docs/what_is_burgerlib.md)
 * [Building Burgerlib](docs/building.md)
 * [Using Burgerlib](docs/using_burgerlib.md)
@@ -126,6 +127,7 @@ Needed for Windows builds.
 * Matt Pritchard - SafePrint
 
 ## License
+
 Copyright 1995-2024 by Rebecca Ann Heineman [becky@burgerbecky.com](mailto:becky@burgerbecky.com). Email all suggestions, corrections, optimizations and insults to her and she'll be eternally grateful.
 
 It is released under an MIT Open Source license. Please see [**LICENSE**](https://raw.githubusercontent.com/Olde-Skuul/burgerlib/master/LICENSE) for license details. Yes, you can use it in a commercial title without paying anything, just give me a credit.

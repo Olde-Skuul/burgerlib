@@ -708,7 +708,7 @@ void BURGER_API Burger::SafePrint::ParamInfo_t::GetFormattedOutputLength(
 				uCharsCounted = UTF8::GetUTF16Size(
 					static_cast<uint16_t>(pArg->GetUInt32()));
 			} else {
-				uCharsCounted = UTF8::FromUTF32(
+				uCharsCounted = UTF8::from_UTF32(
 					TempBufferUTF8, static_cast<uint32_t>(pArg->GetUInt32()));
 			}
 		} else {
@@ -1710,17 +1710,17 @@ uintptr_t BURGER_API Burger::SafePrint::ParamInfo_t::FormatChar(
 		uintptr_t uMaxLength = GetFormattedLength();
 		if (uMaxLength) {
 
-			// The function FromUTF16 adds a terminating zero, this is not
+			// The function from_UTF16 adds a terminating zero, this is not
 			// desired. So, parse into a temp buffer and then copy
 			// the characters into the output to prevent a buffer
 			// overrun by the terminating zero.
 
 			char TempBufferUTF8[8];
 			if (pArg->GetDataLengthInBytes() == 2) {
-				uCharsWritten = UTF8::FromUTF16(
+				uCharsWritten = UTF8::from_UTF16(
 					TempBufferUTF8, static_cast<uint16_t>(pArg->GetUInt32()));
 			} else {
-				uCharsWritten = Burger::UTF8::FromUTF32(
+				uCharsWritten = Burger::UTF8::from_UTF32(
 					TempBufferUTF8, static_cast<uint32_t>(pArg->GetUInt32()));
 			}
 			if (uCharsWritten > uMaxLength) {
@@ -1771,7 +1771,7 @@ uintptr_t BURGER_API Burger::SafePrint::ParamInfo_t::FormatTextString(
 		if (pArg->GetType() == kArgumentTypeUInt16Ptr) {
 			if (pArg->m_Data.m_pUInt16) {
 				const char Temp = pOutText[uCharsWritten];
-				UTF8::FromUTF16(
+				UTF8::from_UTF16(
 					pOutText, uCharsWritten + 1, pArg->m_Data.m_pUInt16);
 				pOutText[uCharsWritten] = Temp;
 			} else {

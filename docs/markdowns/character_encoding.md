@@ -10,17 +10,17 @@ This also is enforced with filenames and interaction with environment variables,
 
 ### UTF-8 to UTF-16 or UTF-32
 
-To convert to a 16 or 32 bit string, use the Burger::String16 or Burger::String32 classes and simply use the Burger::String16::assign(const char *) function to translate to a 16/32 bit string.
+To convert to a 16 or 32 bit string, use the Burger::String16 or Burger::String32 classes and simply use the Burger::String16::assign(const char\*) function to translate to a 16/32 bit string.
 
-The functions Burger::UTF16::translate_from_UTF8(uint16_t* , uintptr_t, const char* ) and Burger::UTF32::translate_from_UTF8(uint32_t* , uintptr_t, const char* ) perform the same function but to literal buffers.
+The functions Burger::UTF16::translate_from_UTF8(uint16_t\*, uintptr_t, const char\*) and Burger::UTF32::translate_from_UTF8(uint32_t\*, uintptr_t, const char\*) perform the same function but to literal buffers.
 
-Note that these functions do not check for invalid UTF-8 strings. Use the Burger::UTF8::is_valid(const char* , uintptr_t) function for testing when a foreign string needs to be verified for validity.
+Note that these functions do not check for invalid UTF-8 strings. Use the Burger::UTF8::is_valid(const char\*, uintptr_t) function for testing when a foreign string needs to be verified for validity.
 
 ### Converting to a UTF-8 string
 
-The simplest was is to create a Burger::String and use the Burger::String::assign(const uint16_t*) function to quickly translate to UTF-8 or Burger::String::assign(const uint32_t*) to convert from UTF-32.
+The simplest was is to create a Burger::String and use the Burger::String::assign(const uint16_t\*) function to quickly translate to UTF-8 or Burger::String::assign(const uint32_t\*) to convert from UTF-32.
 
-The functions Burger::UTF8::FromUTF16(char* , uintptr_t, const uint16_t* ) and Burger::UTF8::FromUTF32(char* , uintptr_t, const uint32_t* ) perform the same function but to literal buffers.
+The functions Burger::UTF8::from_UTF16(char\* , uintptr_t, const uint16_t\*) and Burger::UTF8::from_UTF32(char\*, uintptr_t, const uint32_t\*) perform the same function but to literal buffers.
 
 ### UTF-8 filenames
 
