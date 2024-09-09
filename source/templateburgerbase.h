@@ -55,9 +55,21 @@
 /* IGNORE: "burgerlinux.h" */
 
 /* BEGIN */
-/***************************************
+/*! ************************************
 
-	Burgerlib base header
+	\file burger.h
+	\brief The master all inclusive header.
+
+	This header contains everything that is in Burgerlib in a single header.
+
+	By merging all the headers into a single file, it greatly improves the
+	speed of compilation for most modern compilers. A secondary header with
+	platform specific function is included with this header so only the
+	functions specific to a platform are included for that platform, again
+	for speed.
+
+	\note This header is generated with the makeheader tool. Editing this header
+	directly will likely have the modifications overwritten after the next build.
 
 	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 

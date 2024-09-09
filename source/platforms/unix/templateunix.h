@@ -14,21 +14,15 @@
 /* IGNORE: "brcodelibrary.h" */
 
 /* BEGIN */
-/***************************************
+/*! ************************************
 
-	Burgerlib functions for Posix platforms
+	\file burgerunix.h
+	\brief Burgerlib functions for Posix platforms
 
-	Copyright (c) 2022-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	This folder has classes, functions and defines that are shared
+	among BSD/Unix/Linux platforms that have common Posix APIs.
 
-	It is released under an MIT Open Source license. Please see LICENSE for
-	license details. Yes, you can use it in a commercial title without paying
-	anything, just give me a credit.
-
-	Please? It's not like I'm asking you for money!
-
-	Documentation can be found at https://burgerlib.readthedocs.io/en/latest/index.htm
-
-	Comments, suggestions, bug fixes, email me at becky@burgerbecky.com
+	\sa BURGER_LINUX, BURGER_MACOSX, BURGER_STADIA, and BURGER_ANDROID
 
 ***************************************/
 

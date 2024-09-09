@@ -254,17 +254,6 @@
 
 /*! ************************************
 
-	\file burger.h
-	\brief The master all inclusive header.
-
-	This header contains the base types used in all of Burgerlib. It will also
-	try to determine via compiler defines exactly what features are supported in
-	the compiler and what target OS you're building for.
-
-***************************************/
-
-/*! ************************************
-
 	\def _DEBUG
 	\brief Defined to enable the creation of debug code.
 

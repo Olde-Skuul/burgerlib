@@ -13,21 +13,16 @@
 /* IGNORE: "brerror.h" */
 
 /* BEGIN */
-/***************************************
+/*! ************************************
 
-	Burgerlib functions for Linux platforms
+	\file burgerlinux.h
+	\brief Burgerlib functions for Linux platforms
 
-	Copyright (c) 2022-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	This header is only included on Linux platforms.
 
-	It is released under an MIT Open Source license. Please see LICENSE for
-	license details. Yes, you can use it in a commercial title without paying
-	anything, just give me a credit.
-
-	Please? It's not like I'm asking you for money!
-
-	Documentation can be found at https://burgerlib.readthedocs.io/en/latest/index.htm
-
-	Comments, suggestions, bug fixes, email me at becky@burgerbecky.com
+	\note This is not included on Linux like platforms, such as 
+	Darwin, Android, or Unix. Look at \ref burgerunix.h for shared
+	functions and classes.
 
 ***************************************/
 
