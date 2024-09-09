@@ -1,0 +1,58 @@
+;
+; X86 assembly for Open Watcom
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+;
+; Build with wasm.exe
+;
+; uint64_t Burger::bit_reverse(uint64_t uInput, uint_t uBitLength)
+; all registers are non-volatile
+; Result in eax, edx
+; uInput = eax, edx, ebx
+;
+
+	.386
+
+_TEXT segment para 'CODE'
+
+	align 16
+	PUBLIC `W?bit_reverse$:Burger$n(uzui)uz`
+`W?bit_reverse$:Burger$n(uzui)uz` proc
+
+; Save registers
+	push	ecx
+	push	esi
+	push	edi
+
+; Initialize the result
+	xor		esi, esi
+	xor		edi, edi
+
+; Shift out a 64 bit
+BitReverse64:
+	shr		edx, 1
+	rcr		eax, 1
+
+; Shift in a 64 bit
+	adc		esi, esi
+	adc		edi, edi
+
+; Count down the iterator
+	sub		ebx, 1
+	jne		BitReverse64
+
+; Return in eax/edx
+	mov		eax, esi
+	mov		edx, edi
+
+; Restore registers
+	pop		edi
+	pop		esi
+	pop		ecx
+	ret
+
+`W?bit_reverse$:Burger$n(uzui)uz` endp
+
+_TEXT ends
+
+	end

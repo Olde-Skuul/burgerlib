@@ -1,0 +1,41 @@
+;
+; X86 assembly for Visual Studio
+;
+; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+;
+; Build with ml.exe
+;
+; uint32_t BURGER_API Burger::bit_reverse(uint32_t, uint_t) BURGER_NOEXCEPT
+; eax, ecx and edx are volatile
+; Result in eax
+; uInput = ecx, edx
+;
+
+	.386
+
+_TEXT segment para 'CODE'
+
+	align 16
+public ?bit_reverse@Burger@@YIIII@Z
+?bit_reverse@Burger@@YIIII@Z proc
+
+; Initialize the result
+	xor		eax, eax
+
+; Shift out a bit
+BitReverse32:
+	shr		ecx, 1
+
+; Shift into the result
+	adc		eax, eax
+
+; Count down the iterator
+	sub		edx, 1
+	jne		BitReverse32
+	ret
+
+?bit_reverse@Burger@@YIIII@Z endp
+
+_TEXT ends
+
+	end
