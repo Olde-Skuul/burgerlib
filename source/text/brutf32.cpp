@@ -76,11 +76,11 @@
 	\param uInput UTF32 encoded character value.
 	\return \ref TRUE if in bounds, \ref FALSE if not.
 
-	\sa IsValid(const uint32_t *) or IsValid(const uint32_t *, uintptr_t)
+	\sa is_valid(const uint32_t *) or is_valid(const uint32_t *, uintptr_t)
 
 ***************************************/
 
-uint_t BURGER_API Burger::UTF32::IsValid(uint32_t uInput) BURGER_NOEXCEPT
+uint_t BURGER_API Burger::UTF32::is_valid(uint32_t uInput) BURGER_NOEXCEPT
 {
 	if ((uInput < 0xD800U) || ((uInput >= 0xE000U) && (uInput < 0x110000U))) {
 		return TRUE;
@@ -102,11 +102,11 @@ uint_t BURGER_API Burger::UTF32::IsValid(uint32_t uInput) BURGER_NOEXCEPT
 	\return \ref TRUE if the entire string is a valid UTF32 stream, \ref FALSE
 		if not.
 
-	\sa IsValid(uint32_t) or IsValid(const uint32_t *, uintptr_t)
+	\sa is_valid(uint32_t) or is_valid(const uint32_t *, uintptr_t)
 
 ***************************************/
 
-uint_t BURGER_API Burger::UTF32::IsValid(const uint32_t* pInput) BURGER_NOEXCEPT
+uint_t BURGER_API Burger::UTF32::is_valid(const uint32_t* pInput) BURGER_NOEXCEPT
 {
 	// Get the first character in the string.
 	uint_t uFirst = pInput[0];
@@ -148,11 +148,11 @@ uint_t BURGER_API Burger::UTF32::IsValid(const uint32_t* pInput) BURGER_NOEXCEPT
 	\return \ref TRUE if the entire string is a valid UTF8 stream, \ref FALSE if
 		not.
 
-	\sa IsValid(uint32_t) or IsValid(const uint32_t *)
+	\sa is_valid(uint32_t) or is_valid(const uint32_t *)
 
 ***************************************/
 
-uint_t BURGER_API Burger::UTF32::IsValid(
+uint_t BURGER_API Burger::UTF32::is_valid(
 	const uint32_t* pInput, uintptr_t uElementCount) BURGER_NOEXCEPT
 {
 	if (uElementCount) {

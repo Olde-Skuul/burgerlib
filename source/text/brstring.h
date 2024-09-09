@@ -294,7 +294,7 @@ public:
 	{
 		return (m_uLength == 0);
 	}
-	BURGER_INLINE uint_t IsValid(void) const BURGER_NOEXCEPT
+	BURGER_INLINE uint_t is_valid(void) const BURGER_NOEXCEPT
 	{
 		return (m_uLength != 0);
 	}

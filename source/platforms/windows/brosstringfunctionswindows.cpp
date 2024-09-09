@@ -230,7 +230,7 @@ Burger::eError BURGER_API Burger::GetFullPathNameUTF8(
 	// First thing, convert it to UTF16
 	String16 Temp16;
 
-	eError uResult = Temp16.Set(pInput);
+	eError uResult = Temp16.assign(pInput);
 	if (!uResult) {
 		// Now that it's UTF16, let's have Windows expand it
 		WCHAR ExpandedPath[512];

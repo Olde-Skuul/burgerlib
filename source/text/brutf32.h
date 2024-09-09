@@ -35,9 +35,9 @@ public:
 	static const uint32_t kBigEndianMark = 0x0000FEFFU;
 	static const uint32_t kLittleEndianMark = 0xFFFE0000U;
 #endif
-	static uint_t BURGER_API IsValid(uint32_t uInput) BURGER_NOEXCEPT;
-	static uint_t BURGER_API IsValid(const uint32_t* pInput) BURGER_NOEXCEPT;
-	static uint_t BURGER_API IsValid(
+	static uint_t BURGER_API is_valid(uint32_t uInput) BURGER_NOEXCEPT;
+	static uint_t BURGER_API is_valid(const uint32_t* pInput) BURGER_NOEXCEPT;
+	static uint_t BURGER_API is_valid(
 		const uint32_t* pInput, uintptr_t uElementCount) BURGER_NOEXCEPT;
 
 	static uint32_t BURGER_API translate_from_UTF8(

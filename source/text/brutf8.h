@@ -27,9 +27,9 @@ public:
 	BURGER_ALIGN(static const uint8_t, TokenSizeTable[256], 16);
 	static const uint8_t ByteOrderMark[3];
 
-	static uint_t BURGER_API IsValidSingle(const char* pInput) BURGER_NOEXCEPT;
-	static uint_t BURGER_API IsValid(const char* pInput) BURGER_NOEXCEPT;
-	static uint_t BURGER_API IsValid(
+	static uint_t BURGER_API is_valid_single(const char* pInput) BURGER_NOEXCEPT;
+	static uint_t BURGER_API is_valid(const char* pInput) BURGER_NOEXCEPT;
+	static uint_t BURGER_API is_valid(
 		const char* pInput, uintptr_t uInputSize) BURGER_NOEXCEPT;
 	static uintptr_t BURGER_API GetTokenSize(
 		const char* pInput) BURGER_NOEXCEPT;

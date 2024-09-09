@@ -1130,7 +1130,7 @@ uint_t BURGER_API Burger::Keyboard::EncodeUnicode(
 {
 	// Make sure the code is valid
 	uint_t uResult = 10;
-	if (UTF32::IsValid(uUnicode)) {
+	if (UTF32::is_valid(uUnicode)) {
 
 		// Initialize the time stamp
 		pEvent->m_uMSTimeStamp = 0;

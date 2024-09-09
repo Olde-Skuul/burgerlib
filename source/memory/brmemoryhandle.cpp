@@ -263,7 +263,8 @@ void BURGER_API Burger::MemoryManagerHandle::shutdown_proc(
 	\brief Allocate a new handle record.
 
 	If out of handles in the pool, allocate memory from the operating system in
-	\ref kDefaultHandleCount * sizeof(\ref Handle_t) chunks
+	\ref kDefaultHandleCount * sizeof(
+		\ref MemoryManagerHandle::Handle_t) chunks
 
 	\return Pointer to a new uninitialized Handle_t structure
 

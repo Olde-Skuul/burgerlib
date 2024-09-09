@@ -331,7 +331,7 @@ Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv4Address(
 		String TempDNS(pDNSName);
 
 		// Valid string?
-		if (TempDNS.IsValid()) {
+		if (TempDNS.is_valid()) {
 
 			// Was there a port #?
 
@@ -656,7 +656,7 @@ static Burger::eError BURGER_API get_PDM_built_in_enet_address(
 	uint8_t* pWork = pOutput->m_Node;
 	do {
 		// Reverse the bits, because, reasons
-		pWork[0] = Burger::g_ReverseBits[pROMBase[0]];
+		pWork[0] = Burger::g_reverse_bits[pROMBase[0]];
 		++pWork;
 		pROMBase += 16;
 	} while (--uCount);

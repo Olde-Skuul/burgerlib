@@ -247,8 +247,8 @@ int BURGER_API Burger::GetFileLocation(short* pVRefNum, long* pDirID,
 
 	\return Zero if no error, or mac error code
 
-	\sa GetFileLocation(FSRef *, short) or GetFileLocation(
-		short*, long*, uint8_t *, short)
+	\sa GetFileLocation(FSRef* , short) or
+		GetFileLocation(short* , long* , uint8_t* , short)
 
 ***************************************/
 
@@ -276,8 +276,8 @@ int BURGER_API Burger::GetFileLocation(
 
 	\return Zero if no error, or mac error code
 
-	\sa GetFileLocation(FSSpec *, short) or GetFileLocation(
-		short*, long*, uint8_t *, short)
+	\sa GetFileLocation(FSSpec* ,short) or
+		GetFileLocation(short* ,long* ,uint8_t* ,short)
 
 ***************************************/
 

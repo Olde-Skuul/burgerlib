@@ -115,8 +115,8 @@ public:
     {
         return m_pData;
     }
-    eError BURGER_API Set(const char* pInput) BURGER_NOEXCEPT;
-    eError BURGER_API Set(const uint16_t* pInput) BURGER_NOEXCEPT;
+    eError BURGER_API assign(const char* pInput) BURGER_NOEXCEPT;
+    eError BURGER_API assign(const uint16_t* pInput) BURGER_NOEXCEPT;
     eError BURGER_API SetBufferSize(uintptr_t uSize) BURGER_NOEXCEPT;
 	eError BURGER_API resize(uintptr_t uSize) BURGER_NOEXCEPT { return SetBufferSize(uSize); }
 
@@ -165,7 +165,7 @@ public:
     {
         return (m_uLength == 0);
     }
-    BURGER_INLINE uint_t IsValid(void) const BURGER_NOEXCEPT
+    BURGER_INLINE uint_t is_valid(void) const BURGER_NOEXCEPT
     {
         return (m_uLength != 0);
     }

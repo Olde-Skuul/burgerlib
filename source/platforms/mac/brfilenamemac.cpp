@@ -1074,7 +1074,7 @@ Burger::eError BURGER_API Burger::Filename::get_native_Carbon(
 			TempString.assign(pInput, static_cast<uintptr_t>(pEnd - pInput));
 
 			// Convert to UTF16
-			Name16.Set(TempString.c_str());
+			Name16.assign(TempString.c_str());
 
 			// Follow the FSRef chain using Unicode
 			FSRef TempRef;

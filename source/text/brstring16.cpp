@@ -326,7 +326,7 @@ Burger::String16::String16(const uint16_t *pInput)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::String16::Set(const uint16_t *pInput) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::String16::assign(const uint16_t *pInput) BURGER_NOEXCEPT
 {
 	// Assume no error
 	eError uResult = kErrorNone;
@@ -365,7 +365,7 @@ Burger::eError BURGER_API Burger::String16::Set(const uint16_t *pInput) BURGER_N
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::String16::Set(
+Burger::eError BURGER_API Burger::String16::assign(
     const char* pInput) BURGER_NOEXCEPT
 {
     // Assume no error
@@ -508,7 +508,7 @@ Burger::String16 & Burger::String16::operator =(const Burger::String16 &rInput)
 
 Burger::String16 & Burger::String16::operator =(const uint16_t *pInput)
 {
-	Set(pInput);
+	assign(pInput);
 	return *this;
 }
 
@@ -525,7 +525,7 @@ Burger::String16 & Burger::String16::operator =(const uint16_t *pInput)
 
 Burger::String16 & Burger::String16::operator =(const char *pInput)
 {
-	Set(pInput);
+	assign(pInput);
 	return *this;
 }
 
@@ -653,7 +653,7 @@ Burger::String16 & Burger::String16::operator =(char cInput)
 
 /*! ************************************
 
-	\fn Burger::String16::IsValid(void) const
+	\fn Burger::String16::is_valid(void) const
 	\brief Return \ref TRUE if the string has characters
 
 	\return \ref FALSE on an empty string, \ref TRUE if there are characters in the string

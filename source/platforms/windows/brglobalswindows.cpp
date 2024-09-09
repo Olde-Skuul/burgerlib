@@ -825,7 +825,7 @@ const char* BURGER_API Burger::GetEnvironmentString(
 
 	// Convert the key to UTF16
 	char* pValue = nullptr;
-	if (!Key16.Set(pKey)) {
+	if (!Key16.assign(pKey)) {
 		// How long is the key?
 		const DWORD uLength = GetEnvironmentVariableW(
 			reinterpret_cast<LPCWSTR>(Key16.c_str()), nullptr, 0);
@@ -866,9 +866,9 @@ Burger::eError BURGER_API Burger::SetEnvironmentString(
 	// Convert the input to UTF16
 	String16 Input16;
 
-	eError uResult = Key16.Set(pKey);
+	eError uResult = Key16.assign(pKey);
 	if (!uResult) {
-		uResult = Input16.Set(pInput);
+		uResult = Input16.assign(pInput);
 		if (!uResult) {
 			// If the input is an empty string or null, get rid of the string
 			LPWSTR pInput16 = nullptr;

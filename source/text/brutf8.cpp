@@ -157,11 +157,11 @@ const uint8_t Burger::UTF8::ByteOrderMark[3] = {0xEF, 0xBB, 0xBF};
 
 	Since UTF8 streams are variable length, there is no function that can take a
 	singular value and check it for validity, you must use this function for
-	single cases or Burger::UTF8::IsValid(const char *) for multi-character
+	single cases or Burger::UTF8::is_valid(const char *) for multi-character
 	streams.
 
-	\note This function is called Burger::UTF8::IsValidSingle(const char *)
-	because of a name conflict with Burger::UTF8::IsValid(const char *).
+	\note This function is called Burger::UTF8::is_valid_single(const char *)
+	because of a name conflict with Burger::UTF8::is_valid(const char *).
 
 	\param pInput Pointer to a stream of 1 to 4 UTF8 encoded bytes, ``nullptr``
 		will page fault.
@@ -169,7 +169,7 @@ const uint8_t Burger::UTF8::ByteOrderMark[3] = {0xEF, 0xBB, 0xBF};
 
 ***************************************/
 
-uint_t BURGER_API Burger::UTF8::IsValidSingle(
+uint_t BURGER_API Burger::UTF8::is_valid_single(
 	const char* pInput) BURGER_NOEXCEPT
 {
 	// Check for the simple case of 0x00-0x7F
@@ -266,7 +266,7 @@ uint_t BURGER_API Burger::UTF8::IsValidSingle(
 
 ***************************************/
 
-uint_t BURGER_API Burger::UTF8::IsValid(const char* pInput) BURGER_NOEXCEPT
+uint_t BURGER_API Burger::UTF8::is_valid(const char* pInput) BURGER_NOEXCEPT
 {
 	// Check for the simple case of 0x00-0x7F
 	uint_t uFirst;
@@ -371,7 +371,7 @@ uint_t BURGER_API Burger::UTF8::IsValid(const char* pInput) BURGER_NOEXCEPT
 
 ***************************************/
 
-uint_t BURGER_API Burger::UTF8::IsValid(
+uint_t BURGER_API Burger::UTF8::is_valid(
 	const char* pInput, uintptr_t uInputSize) BURGER_NOEXCEPT
 {
 	// End mark

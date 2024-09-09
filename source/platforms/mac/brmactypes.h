@@ -25,8 +25,6 @@
 
 #if !defined(DOXYGEN)
 
-struct Point;
-struct Rect;
 struct FSRef;
 struct UTCDateTime;
 struct CCrsr;

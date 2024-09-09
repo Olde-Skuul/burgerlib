@@ -1821,7 +1821,7 @@ void BURGER_API Burger::String::Put(
 
 /*! ************************************
 
-	\fn Burger::String::IsValid(void) const
+	\fn Burger::String::is_valid(void) const
 	\brief Return \ref TRUE if the string has characters
 
 	\return \ref FALSE on an empty string, \ref TRUE if there are characters in

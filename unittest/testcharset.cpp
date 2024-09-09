@@ -945,7 +945,7 @@ static uint_t BURGER_API TestWin437(void) BURGER_NOEXCEPT
 
 /***************************************
 
-	Test UTF16::IsValid()
+	Test UTF16::is_valid()
 
 ***************************************/
 
@@ -1023,27 +1023,27 @@ static uint_t BURGER_API TestUTF16IsValid(void) BURGER_NOEXCEPT
                                                     1U;
 
 		//
-		// Test IsValid
+		// Test is_valid
 		//
 		uint_t uTest =
-			Burger::UTF16::IsValid(pWork->m_UTF16[0]) != pWork->m_uSingle;
+			Burger::UTF16::is_valid(pWork->m_UTF16[0]) != pWork->m_uSingle;
 		uResult |= uTest;
-		ReportFailure("Burger::UTF16::IsValid(%04X) is invalid!", uTest,
+		ReportFailure("Burger::UTF16::is_valid(%04X) is invalid!", uTest,
 			pWork->m_UTF16[0]);
 
 		TempString16[0] = pWork->m_UTF16[0];
 		TempString16[1] = pWork->m_UTF16[1];
-		uTest = Burger::UTF16::IsValid(TempString16) != pWork->m_uValid;
+		uTest = Burger::UTF16::is_valid(TempString16) != pWork->m_uValid;
 		uResult |= uTest;
 		ReportFailure(
-			"Burger::UTF16::IsValid(TempString16 %04X, %04X) is invalid!",
+			"Burger::UTF16::is_valid(TempString16 %04X, %04X) is invalid!",
 			uTest, pWork->m_UTF16[0], pWork->m_UTF16[1]);
 
-		uTest = Burger::UTF16::IsValid(pWork->m_UTF16,
+		uTest = Burger::UTF16::is_valid(pWork->m_UTF16,
 					pWork->m_UTF16[1] ? 2U : 1U) != pWork->m_uValid;
 		uResult |= uTest;
 		ReportFailure(
-			"Burger::UTF16::IsValid(pWork->m_UTF16 %04X %04X) is invalid!",
+			"Burger::UTF16::is_valid(pWork->m_UTF16 %04X %04X) is invalid!",
 			uTest, pWork->m_UTF16[0], pWork->m_UTF16[1]);
 
 		//
@@ -1156,8 +1156,8 @@ static uint_t BURGER_API TestUTF16IsValid(void) BURGER_NOEXCEPT
 			// Special case where the first character is invalid and skipped,
 			// but the second is valid and decoded
 		} else if (pWork->m_UTF16[1] &&
-			!Burger::UTF16::IsValid(pWork->m_UTF16[0]) &&
-			Burger::UTF16::IsValid(pWork->m_UTF16[1])) {
+			!Burger::UTF16::is_valid(pWork->m_UTF16[0]) &&
+			Burger::UTF16::is_valid(pWork->m_UTF16[1])) {
 			uExpectedWidth = Burger::UTF8::GetUTF16Size(pWork->m_UTF16[1]);
 		} else {
 			uExpectedWidth = 0;
@@ -1378,7 +1378,7 @@ static uint_t BURGER_API TestUTF16(void) BURGER_NOEXCEPT
 
 /***************************************
 
-	Test UTF32::IsValid()
+	Test UTF32::is_valid()
 
 ***************************************/
 
@@ -1435,24 +1435,24 @@ static uint_t TestUTF32(void) BURGER_NOEXCEPT
 
 	do {
 		//
-		// Test IsValid
+		// Test is_valid
 		//
-		uint_t uTest = Burger::UTF32::IsValid(pWork->m_UTF32) != uMatch;
+		uint_t uTest = Burger::UTF32::is_valid(pWork->m_UTF32) != uMatch;
 		uResult |= uTest;
 		ReportFailure(
-			"Burger::UTF32::IsValid(%08X) is invalid!", uTest, pWork->m_UTF32);
+			"Burger::UTF32::is_valid(%08X) is invalid!", uTest, pWork->m_UTF32);
 
 		TempString32[0] = pWork->m_UTF32;
-		uTest = Burger::UTF32::IsValid(TempString32) != uMatch;
+		uTest = Burger::UTF32::is_valid(TempString32) != uMatch;
 		uResult |= uTest;
 		ReportFailure(
-			"Burger::UTF32::IsValid(TempString32[0] %08X) is invalid!", uTest,
+			"Burger::UTF32::is_valid(TempString32[0] %08X) is invalid!", uTest,
 			pWork->m_UTF32);
 
-		uTest = Burger::UTF32::IsValid(&pWork->m_UTF32, 1) != uMatch;
+		uTest = Burger::UTF32::is_valid(&pWork->m_UTF32, 1) != uMatch;
 		uResult |= uTest;
 		ReportFailure(
-			"Burger::UTF32::IsValid(&pWork->m_UTF32 %08X) is invalid!", uTest,
+			"Burger::UTF32::is_valid(&pWork->m_UTF32 %08X) is invalid!", uTest,
 			pWork->m_UTF32);
 
 		//

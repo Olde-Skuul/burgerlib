@@ -118,8 +118,6 @@ BURGER_ALIGN(extern const uint8_t, g_reverse_bits[256], 16);
 
 extern const uint32_t g_TensTable32[10];
 extern const uint64_t g_TensTable64[20];
-extern uint32_t BURGER_API BCDToWord(uint32_t uInput) BURGER_NOEXCEPT;
-extern uint32_t BURGER_API WordToBCD(uint32_t uInput) BURGER_NOEXCEPT;
 
 BURGER_INLINE BURGER_CONSTEXPR uint32_t ToLower(uint32_t uInput) BURGER_NOEXCEPT
 {
@@ -189,13 +187,6 @@ BURGER_INLINE uint_t IsSpace(int iInput) BURGER_NOEXCEPT
 		(static_cast<uint_t>(iInput) < BURGER_ARRAYSIZE(g_AsciiTestTable)) &&
 		(g_AsciiTestTable[static_cast<uint_t>(iInput)] & ASCII_SPACE));
 }
-
-extern uint32_t BURGER_API BitReverse(
-	uint32_t uInput, uint_t uBitLength) BURGER_NOEXCEPT;
-extern uint64_t BURGER_API BitReverse(
-	uint64_t uInput, uint_t uBitLength) BURGER_NOEXCEPT;
-extern uint_t BURGER_API BitSetCount(uint32_t uInput) BURGER_NOEXCEPT;
-extern uint_t BURGER_API BitSetCount(uint64_t uInput) BURGER_NOEXCEPT;
 
 extern void BURGER_API CStringToPString(
 	uint8_t* pOutput, const char* pInput) BURGER_NOEXCEPT;

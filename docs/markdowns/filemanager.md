@@ -10,11 +10,11 @@ This also is enforced with filenames and interaction with environment variables,
 
 ### UTF-8 to UTF-16 or UTF-32
 
-To convert to a 16 or 32 bit string, use the Burger::String16 or Burger::String32 classes and simply use the Burger::String16::assign(const char *) function to translate to a 16/32 bit string.
+To convert to a 16 or 32 bit string, use the Burger::String16 or Burger::String32 classes and simply use the Burger::String16::Set(const char *) function to translate to a 16/32 bit string.
 
 The functions Burger::UTF16::translate_from_UTF8(uint16_t* , uintptr_t, const char* ) and Burger::UTF32::translate_from_UTF8(uint32_t* , uintptr_t, const char* ) perform the same function but to literal buffers.
 
-Note that these functions do not check for invalid UTF-8 strings. Use the Burger::UTF8::is_valid(const char* , uintptr_t) function for testing when a foreign string needs to be verified for validity.
+Note that these functions do not check for invalid UTF-8 strings. Use the Burger::UTF8::IsValid(const char* , uintptr_t) function for testing when a foreign string needs to be verified for validity.
 
 ### Converting to a UTF-8 string
 

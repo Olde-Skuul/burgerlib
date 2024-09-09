@@ -79,7 +79,7 @@
 	\brief Validate a UTF16 value.
 
 	\note Use of this function is not recommended because it considers escape
-		values as invalid. Use IsValid(const uint16_t*) instead.
+		values as invalid. Use is_valid(const uint16_t*) instead.
 
 	Return \ref TRUE if a UTF16 character is in the valid bounds. (0-0xD7FF) or
 	(0xE000-0xFFFF).
@@ -89,7 +89,7 @@
 
 ***************************************/
 
-uint_t BURGER_API Burger::UTF16::IsValid(uint16_t uInput) BURGER_NOEXCEPT
+uint_t BURGER_API Burger::UTF16::is_valid(uint16_t uInput) BURGER_NOEXCEPT
 {
 	if ((uInput < 0xD800U) || (uInput >= 0xE000U)) {
 		return TRUE;
@@ -111,7 +111,7 @@ uint_t BURGER_API Burger::UTF16::IsValid(uint16_t uInput) BURGER_NOEXCEPT
 
 ***************************************/
 
-uint_t BURGER_API Burger::UTF16::IsValid(const uint16_t* pInput) BURGER_NOEXCEPT
+uint_t BURGER_API Burger::UTF16::is_valid(const uint16_t* pInput) BURGER_NOEXCEPT
 {
 	// Get the first character in the string.
 	uint_t uFirst = pInput[0];
@@ -166,7 +166,7 @@ uint_t BURGER_API Burger::UTF16::IsValid(const uint16_t* pInput) BURGER_NOEXCEPT
 
 ***************************************/
 
-uint_t BURGER_API Burger::UTF16::IsValid(
+uint_t BURGER_API Burger::UTF16::is_valid(
 	const uint16_t* pInput, uintptr_t uElementCount) BURGER_NOEXCEPT
 {
 	if (uElementCount) {
