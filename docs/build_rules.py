@@ -92,7 +92,7 @@ def unlock_copied_files(working_directory):
         try:
             # Unlock it
             os.chmod(filename, stat.S_IMODE(os.stat(filename).st_mode) |
-                stat.S_IWRITE | stat.S_IREAD | stat.S_IRGRP | stat.S_IWOTH)
+                     stat.S_IWRITE | stat.S_IREAD | stat.S_IRGRP | stat.S_IWOTH)
         except FileNotFoundError:
             continue
 
@@ -211,9 +211,9 @@ def create_pdf_docs(working_directory):
     # Start by cleaning off all of the cruft left over
     # from previous compilations
     clean_files(latex_dir, ("refman.pdf"
-        ".ps", "*.dvi", "*.aux", "*.toc",
-        "*.idx", "*.ind", "*.ilg", "*.log",
-        "*.out", "*.brf", "*.blg", "*.bbl"))
+                            ".ps", "*.dvi", "*.aux", "*.toc",
+                            "*.idx", "*.ind", "*.ilg", "*.log",
+                            "*.out", "*.brf", "*.blg", "*.bbl"))
 
     # Commands to execute latex
     latex_cmd = [pdflatex, "refman"]
@@ -328,7 +328,7 @@ def prebuild(working_directory, configuration):
     if not error:
         # Generate the charsets
         script = import_py_script(os.path.join(working_directory,
-            "generate_charsets.py"))
+                                               "generate_charsets.py"))
         if not script:
             error = 10
         else:
@@ -376,34 +376,37 @@ def postbuild(working_directory, configuration):
         None if not implemented, otherwise an integer error code.
     """
 
-    # Get the directory where the cleanup must occur
-    raw_dir = os.path.join(working_directory, "temp", "burgerlibdoxygenraw")
+    if not _ON_RTD:
+        # Get the directory where the cleanup must occur
+        raw_dir = os.path.join(
+            working_directory, "temp", "burgerlibdoxygenraw")
 
-    # Allow writing on these files.
-    unlock_copied_files(raw_dir)
+        # Allow writing on these files.
+        unlock_copied_files(raw_dir)
 
-    # Get the directory where the latex cleanup must occur
-    latex_dir = os.path.join(working_directory, "temp", "burgerliblatex")
+        # Get the directory where the latex cleanup must occur
+        latex_dir = os.path.join(working_directory, "temp", "burgerliblatex")
 
-    # Allow writing on these files.
-    unlock_copied_files(latex_dir)
+        # Allow writing on these files.
+        unlock_copied_files(latex_dir)
 
-    # Get all the paths for the docs folder and the cache
-    html_dir = os.path.join(working_directory, "temp", "burgerlibdoxygen")
-    html_source = os.path.join(html_dir, "search")
-    raw_source = os.path.join(raw_dir, "search")
+        # Get all the paths for the docs folder and the cache
+        html_dir = os.path.join(
+            working_directory, "temp", "burgerlibdoxygen")
+        html_source = os.path.join(html_dir, "search")
+        raw_source = os.path.join(raw_dir, "search")
 
-    # Ensure the output folders exist
-    create_folder_if_needed(html_dir)
-    create_folder_if_needed(html_source)
+        # Ensure the output folders exist
+        create_folder_if_needed(html_dir)
+        create_folder_if_needed(html_source)
 
-    # Check if files are to be deleted
-    remove_missing(html_dir, raw_dir)
-    remove_missing(html_source, raw_source)
+        # Check if files are to be deleted
+        remove_missing(html_dir, raw_dir)
+        remove_missing(html_source, raw_source)
 
-    # Check if files are to be deleted
-    copy_if_changed(html_dir, raw_dir)
-    copy_if_changed(html_source, raw_source)
+        # Check if files are to be deleted
+        copy_if_changed(html_dir, raw_dir)
+        copy_if_changed(html_source, raw_source)
 
     # Create the PDF version of the documentation
     create_pdf_docs(working_directory)

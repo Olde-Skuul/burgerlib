@@ -323,6 +323,11 @@ def generate_doxygen_xml(app):
         retcode = subprocess.call(doxygen, cwd=CWD, shell=True)
         if retcode < 0:
             sys.stderr.write("doxygen terminated by signal %s" % (-retcode))
+
+        else:
+            # Generate PDF docs on Read The Docs
+            build_rules.postbuild(CWD, "all")
+
     except OSError as error:
         sys.stderr.write("doxygen execution failed: %s" % error)
 
