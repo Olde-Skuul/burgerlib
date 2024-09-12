@@ -193,6 +193,9 @@ def create_pdf_docs(working_directory):
         working_directory
             Directory this script resides in.
     """
+
+    # pylint: disable=too-many-branches
+
     # Check if the tools are present
     pdflatex = where_is_pdflatex()
     makeindex = where_is_makeindex()
@@ -227,7 +230,7 @@ def create_pdf_docs(working_directory):
         print(
             "Error in {}, look in refman.log for error".format(
                 latex_dir))
-        return None
+        return 10
 
     # Save the log for debugging
     if not _ON_RTD:
@@ -248,6 +251,8 @@ def create_pdf_docs(working_directory):
             print(
                 "Error in {}, look in refman.log for error".format(
                     latex_dir))
+            return 10
+
         if not _ON_RTD:
             save_text_file(
                 os.path.join(latex_dir, "pass{}.log".format(i + 2)), std_lines)
@@ -284,7 +289,7 @@ def create_pdf_docs(working_directory):
         print(
             "Error in {}, look in refman.log for error".format(
                 latex_dir))
-        return None
+        return 10
 
     # Save the log for debugging
     if not _ON_RTD:
@@ -409,8 +414,13 @@ def postbuild(working_directory, configuration):
         copy_if_changed(html_source, raw_source)
 
     # Create the PDF version of the documentation
-    create_pdf_docs(working_directory)
+    error = create_pdf_docs(working_directory)
 
+    # If there was an error, make certain it's logged
+    if error and _ON_RTD:
+        run_command(
+            ["cat", "refman.log"], os.path.join(
+                working_directory, "temp", "burgerliblatex"))
     return 0
 
 ########################################
