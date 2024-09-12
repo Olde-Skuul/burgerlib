@@ -23,7 +23,8 @@ from shutil import copyfile
 import filecmp
 
 from burger import import_py_script, clean_directories, clean_files, \
-    create_folder_if_needed
+    create_folder_if_needed, where_is_pdflatex, where_is_makeindex, \
+    run_command, load_text_file, save_text_file
 
 # If set to True, ``buildme -r``` will not parse directories in this folder.
 NO_RECURSE = True
@@ -68,6 +69,36 @@ _ON_RTD = os.environ.get("READTHEDOCS", None) == "True"
 ########################################
 
 
+def unlock_copied_files(working_directory):
+    """
+    Hack to unlock files copied by Doxygen
+
+    When Doxygen copies files, the files checked into perforce are locked,
+    and Doxygen retains the lock bit. Sadly, this means that on another
+    pass, it can't copy the files because it can't overwrite a locked file.
+
+    This function will iterate over these files and manually unlock them
+
+    Args:
+        working_directory
+            Directory where the locked files reside
+    """
+
+    # Allow writing on these files.
+    for item in DOXYGEN_FILE_LIST:
+
+        # Full pathname
+        filename = os.path.join(working_directory, item)
+        try:
+            # Unlock it
+            os.chmod(filename, stat.S_IMODE(os.stat(filename).st_mode) |
+                stat.S_IWRITE | stat.S_IREAD | stat.S_IRGRP | stat.S_IWOTH)
+        except FileNotFoundError:
+            continue
+
+########################################
+
+
 def remove_missing(dest_dir, source_dir):
     """
     Given two folders, check if files exist in the destination
@@ -81,8 +112,12 @@ def remove_missing(dest_dir, source_dir):
             Directory to check if files are missing
 
     """
+
+    # Get the source and dest directories
     source_files = os.listdir(source_dir)
     dest_files = os.listdir(dest_dir)
+
+    # Remove all files except the "blessed" ones
     for item in dest_files:
         if item == "search":
             continue
@@ -107,13 +142,15 @@ def copy_if_changed(dest_dir, source_dir):
             Directory to check if files are missing
 
     """
+
+    # Get the source and dest directories
     source_files = os.listdir(source_dir)
     dest_files = os.listdir(dest_dir)
 
     # Copy all the files that have changed
     for item in source_files:
 
-        # Skip the directory
+        # Skip the search directory
         if item == "search":
             continue
 
@@ -140,6 +177,119 @@ def copy_if_changed(dest_dir, source_dir):
                 return error.errno
 
     return 0
+
+
+########################################
+
+def create_pdf_docs(working_directory):
+    """
+    If latex is available, generate PDF docs
+
+    This algorithm is a duplicate of the make file generated
+    by Doxygen and duplicates its functionality so it's not
+    necessary to have make installed on the host system.
+
+    Args:
+        working_directory
+            Directory this script resides in.
+    """
+    # Check if the tools are present
+    pdflatex = where_is_pdflatex()
+    makeindex = where_is_makeindex()
+
+    # Not installed? Just punt.
+    if not pdflatex or not makeindex:
+        return None
+
+    # Where is the documentation directory?
+    # Exit if there isn't any latex data
+    latex_dir = os.path.join(
+        working_directory, "temp", "burgerliblatex")
+    if not os.path.isdir(latex_dir):
+        return None
+
+    # Start by cleaning off all of the cruft left over
+    # from previous compilations
+    clean_files(latex_dir, ("refman.pdf"
+        ".ps", "*.dvi", "*.aux", "*.toc",
+        "*.idx", "*.ind", "*.ilg", "*.log",
+        "*.out", "*.brf", "*.blg", "*.bbl"))
+
+    # Commands to execute latex
+    latex_cmd = [pdflatex, "refman"]
+    index_cmd = [makeindex, "-q", "refman" + ".idx"]
+
+    # First pass
+    print("Compiling refman pass 1")
+    error, std_lines, _ = run_command(
+        latex_cmd, latex_dir, capture_stdout=True)
+    if error:
+        print(
+            "Error in {}, look in refman.log for error".format(
+                latex_dir))
+        return None
+
+    # Save the log for debugging
+    if not _ON_RTD:
+        save_text_file(os.path.join(latex_dir, "pass1.log"), std_lines)
+
+    # Create the initial index
+    print("Generating temp refman.idx")
+    error, _, _ = run_command(
+        index_cmd, latex_dir, capture_stdout=True, capture_stderr=True)
+
+    # Try a maximum number of 8 times
+    log_filename = os.path.join(latex_dir, "refman.log")
+    for i in range(8):
+        print("Compiling refman pass {}".format(i + 2))
+        error, std_lines, _ = run_command(
+            latex_cmd, latex_dir, capture_stdout=True)
+        if error:
+            print(
+                "Error in {}, look in refman.log for error".format(
+                    latex_dir))
+        if not _ON_RTD:
+            save_text_file(
+                os.path.join(latex_dir, "pass{}.log".format(i + 2)), std_lines)
+
+        # Check the log file for a need to rerun latex
+        lines = load_text_file(log_filename)
+        if not lines:
+            print("Log file is empty")
+            break
+
+        do_loop = False
+        for line in lines:
+            # If any of these exist in the log, re-run
+            if "Rerun LaTeX" in line or \
+                "Rerun to get cross-references right" in line or \
+                    "Rerun to get bibliographical references right" in line:
+                do_loop = True
+                break
+
+        if not do_loop:
+            break
+
+    # Last pass
+    # Create the final index
+    print("Generating refman.idx")
+    error, _, _ = run_command(
+        index_cmd, latex_dir, capture_stdout=True)
+
+    # Generate the final document
+    print("Final pass on refman")
+    error, std_lines, _ = run_command(
+        latex_cmd, latex_dir, capture_stdout=True)
+    if error:
+        print(
+            "Error in {}, look in refman.log for error".format(
+                latex_dir))
+        return None
+
+    # Save the log for debugging
+    if not _ON_RTD:
+        save_text_file(os.path.join(latex_dir, "final.log"), std_lines)
+    return None
 
 ########################################
 
@@ -184,6 +334,20 @@ def prebuild(working_directory, configuration):
         else:
             error = script.main(working_directory)
 
+    if not error:
+        # Directory where the Doxygen data is stored
+        raw_dir = os.path.join(
+            working_directory, "temp", "burgerlibdoxygenraw")
+        if os.path.isdir(raw_dir):
+            # Allow writing on these files.
+            unlock_copied_files(raw_dir)
+
+        # Directory where the PDF is generated
+        latex_dir = os.path.join(working_directory, "temp", "burgerliblatex")
+        if os.path.isdir(latex_dir):
+            # Allow writing on these files.
+            unlock_copied_files(latex_dir)
+
     return error
 
 ########################################
@@ -216,13 +380,13 @@ def postbuild(working_directory, configuration):
     raw_dir = os.path.join(working_directory, "temp", "burgerlibdoxygenraw")
 
     # Allow writing on these files.
-    for item in DOXYGEN_FILE_LIST:
-        filename = os.path.join(raw_dir, item)
-        try:
-            os.chmod(filename, stat.S_IMODE(os.stat(filename).st_mode) |
-                stat.S_IWRITE | stat.S_IREAD | stat.S_IRGRP | stat.S_IWOTH)
-        except FileNotFoundError:
-            break
+    unlock_copied_files(raw_dir)
+
+    # Get the directory where the latex cleanup must occur
+    latex_dir = os.path.join(working_directory, "temp", "burgerliblatex")
+
+    # Allow writing on these files.
+    unlock_copied_files(latex_dir)
 
     # Get all the paths for the docs folder and the cache
     html_dir = os.path.join(working_directory, "temp", "burgerlibdoxygen")
@@ -240,6 +404,9 @@ def postbuild(working_directory, configuration):
     # Check if files are to be deleted
     copy_if_changed(html_dir, raw_dir)
     copy_if_changed(html_source, raw_source)
+
+    # Create the PDF version of the documentation
+    create_pdf_docs(working_directory)
 
     return 0
 
