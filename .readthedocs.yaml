@@ -11,8 +11,9 @@ version: 2
 sphinx:
   configuration: docs/conf.py
 
-# Build all sphinx docs
-formats: []
+# Build Doxygen and pdf
+formats:
+  - pdf
 
 # Set up all the requirements for python building
 python:
