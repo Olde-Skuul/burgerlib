@@ -64,6 +64,13 @@ DOXYGEN_FILE_LIST = (
     "is138182.pdf"
 )
 
+# Overrides for pdflatex to increase memory size
+TEXMF_CNF = (
+    "extra_mem_top = 10000000",
+    "extra_mem_bot = 10000000",
+    "pool_size = 62500000"
+)
+
 _ON_RTD = os.environ.get("READTHEDOCS", None) == "True"
 
 ########################################
@@ -234,6 +241,13 @@ def create_pdf_docs(working_directory):
                             "*.idx", "*.ind", "*.ilg", "*.log",
                             "*.out", "*.brf", "*.blg", "*.bbl"))
 
+    # Create a texmf.cnf file to help in low memory situations
+    save_text_file(os.path.join(latex_dir, "texmf.cnf"), TEXMF_CNF)
+
+    # Add the path so pdflatex can get the values
+    os.environ["TEXMFCNF"] = "temp" + os.sep + \
+        "burgerliblatex" + os.pathsep + "." + os.pathsep
+
     # Commands to execute latex
     latex_cmd = [pdflatex, "refman"]
     index_cmd = [makeindex, "-q", "refman" + ".idx"]
@@ -260,6 +274,8 @@ def create_pdf_docs(working_directory):
     # Try a maximum number of 8 times
     log_filename = os.path.join(latex_dir, "refman.log")
     for i in range(8):
+
+        # Resolve issues
         print("Compiling refman pass {}".format(i + 2))
         error, std_lines, _ = run_command(
             latex_cmd, latex_dir, capture_stdout=True)
@@ -269,6 +285,7 @@ def create_pdf_docs(working_directory):
                     latex_dir))
             return 10
 
+        # Save the logs, for debugging
         if not _ON_RTD:
             save_text_file(
                 os.path.join(latex_dir, "pass{}.log".format(i + 2)), std_lines)
@@ -288,6 +305,7 @@ def create_pdf_docs(working_directory):
                 do_loop = True
                 break
 
+        # Are we good? If so, do the final pass
         if not do_loop:
             break
 
@@ -310,6 +328,16 @@ def create_pdf_docs(working_directory):
     # Save the log for debugging
     if not _ON_RTD:
         save_text_file(os.path.join(latex_dir, "final.log"), std_lines)
+
+        # Save the final pdf to the bin folder
+        source = os.path.join(latex_dir, "refman.pdf")
+
+        dest_dir = os.path.join(
+            os.path.dirname(working_directory), "bin")
+        destination = os.path.join(dest_dir, "burgerlib.pdf")
+        print("Copying {0} -> {1}".format(source, destination))
+        copyfile(source, destination)
+
     return None
 
 ########################################
