@@ -304,6 +304,12 @@ def generate_doxygen_xml(app):
         if error.errno != errno.EEXIST:
             raise
 
+    # If on Readthe docs, abort if already run
+    # Test if the index.htm file exists
+    if _ON_RTD and os.path.isfile(
+            os.path.join(CWD, "temp", "burgerlibdoxygenraw", "index.htm")):
+        return None
+
     # The tools need makeheader, make sure it's present
     load_makeheader()
 
@@ -331,8 +337,10 @@ def generate_doxygen_xml(app):
     except OSError as error:
         sys.stderr.write("doxygen execution failed: %s" % error)
 
+    return None
 
 ########################################
+
 
 def copy_docs(app, exception):
     """
