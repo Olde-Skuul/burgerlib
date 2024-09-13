@@ -464,6 +464,9 @@ def prebuild(working_directory, configuration):
     # makeheader is a local copy or one from the path?
     makeheader = find_makeheader()
 
+    # Assume no error
+    error = 0
+
     for item in SUPER_HEADERS:
         templatepath = os.path.join(working_directory, "source", item[0])
 
