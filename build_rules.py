@@ -174,9 +174,14 @@ def is_git():
 
     if _GIT_FOUND is None:
 
-        # Check if write protected, which is true under perforce
-        _GIT_FOUND = not is_write_protected(
-            os.path.join(BUILD_FOLDER, "AUTHORS"))
+        # Assume Git on ReadTheDocs
+        if _ON_RTD:
+            _GIT_FOUND = True
+        else:
+            # Check if write protected, which is true under perforce
+            # Not perfect, but it's a fast test
+            _GIT_FOUND = not is_write_protected(
+                os.path.join(BUILD_FOLDER, "AUTHORS"))
 
     return _GIT_FOUND
 
@@ -234,14 +239,19 @@ def create_version_header(working_directory=None):
         working_directory: Directory to store version.h in.
     """
 
+    # Under git or ReadTheDocs?
     if not is_git():
+
         if working_directory is None:
             working_directory = BUILD_FOLDER
 
-        dest_folder = os.path.join(working_directory, "source", "generated")
-        make_version_header(working_directory,
-                        os.path.join(dest_folder, "version.h"),
-                        verbose=False)
+        # Use Perforce to get the current changelist
+        dest_folder = os.path.join(
+            working_directory, "source", "generated")
+        make_version_header(
+            working_directory,
+            os.path.join(dest_folder, "version.h"),
+            verbose=False)
 
 ########################################
 
@@ -256,6 +266,7 @@ def update_burger_h(working_directory=None):
         Zero if no error, non zero on error
     """
 
+    # Only copy if on the Olde Skuul repository
     if is_git():
         return 0
 
@@ -296,6 +307,7 @@ def update_special_headers(working_directory=None):
         Zero if no error, non zero on error
     """
 
+    # Only copy if on the Olde Skuul repository
     if is_git():
         return 0
 
@@ -351,6 +363,7 @@ def update_unique_headers(working_directory=None):
         Zero if no error, non zero on error
     """
 
+    # Only copy if on the Olde Skuul repository
     if is_git():
         return 0
 
@@ -388,6 +401,7 @@ def update_mac_resources(working_directory=None):
         Zero if no error, non zero on error
     """
 
+    # Only copy if on the Olde Skuul repository
     if is_git():
         return 0
 
@@ -457,14 +471,19 @@ def prebuild(working_directory, configuration):
         if os.path.isfile(templatepath):
             if item[1]:
                 headerfilepath = os.path.join(dest_folder, item[1])
-                cmd = (makeheader, templatepath, headerfilepath)
-                print(" ".join(cmd))
-                sys.stdout.flush()
-                error, _, _ = run_command(cmd, working_dir=working_directory)
-                # if error:
-                #    break
 
-            if item[2]:
+                # Read the docs tests if the file already exists
+                if not _ON_RTD or not os.path.isfile(headerfilepath):
+                    cmd = (makeheader, templatepath, headerfilepath)
+                    print(" ".join(cmd))
+                    sys.stdout.flush()
+                    error, _, _ = run_command(
+                        cmd, working_dir=working_directory)
+                    # if error:
+                    #    break
+
+            # No need to create the stripped header on ReadTheDocs
+            if not _ON_RTD and item[2]:
                 headerfilepath = os.path.join(dest_folder, item[2])
                 cmd = (makeheader, "-r", templatepath, headerfilepath)
                 print(" ".join(cmd))
