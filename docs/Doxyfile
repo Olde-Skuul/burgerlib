@@ -1078,6 +1078,7 @@ EXCLUDE_PATTERNS       = data \
                          dplay \
                          directx9 \
                          vc7compat \
+                         steamworks \
                          dbus \
                          *_Data \
                          "* Data" \

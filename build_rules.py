@@ -347,6 +347,22 @@ def update_special_headers(working_directory=None):
                     headerfilepath, destfile, perforce=True)
                 if error:
                     break
+
+        # Copy the deployed build rules
+        headerfilepath = os.path.join(
+            working_directory, "deploy", "build_rules.py")
+        destfile = os.path.join(
+            SDKS_FOLDER, dest, "burgerlib", "build_rules.py")
+
+        # Copy if the destination doesn't exist or it's different
+        # from the header
+        if not os.path.isfile(destfile) or not compare_files(
+                headerfilepath, destfile):
+            error = copy_file_if_needed(
+                headerfilepath, destfile, perforce=True)
+            if error:
+                break
+
     return error
 
 
