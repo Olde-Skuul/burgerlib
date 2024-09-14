@@ -28,3 +28,9 @@ build:
   apt_packages:
     - graphviz
     - texlive-latex-recommended
+  # After building the PDF, copy it up
+  jobs:
+    post_build:
+      - cp docs/temp/burgerliblatex/refman.pdf $READTHEDOCS_OUTPUT/pdf
+      - ls -al
+      - ls $READTHEDOCS_OUTPUT
