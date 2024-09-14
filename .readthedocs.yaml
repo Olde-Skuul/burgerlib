@@ -31,7 +31,8 @@ build:
   # After building the PDF, copy it up
   jobs:
     post_build:
-      - cp docs/temp/burgerliblatex/refman.pdf $READTHEDOCS_OUTPUT/pdf
+      # Copy the pdf to the final folder
+      - cp docs/temp/burgerliblatex/refman.pdf $READTHEDOCS_OUTPUT/pdf/burgerlib.pdf
       - ls -al
       - ls -al docs
       - ls -al $READTHEDOCS_OUTPUT
