@@ -218,6 +218,7 @@ def create_pdf_docs(working_directory):
     """
 
     # pylint: disable=too-many-branches
+    # pylint: disable=too-many-locals
 
     # Check if the tools are present
     pdflatex = where_is_pdflatex()
@@ -513,5 +514,5 @@ def clean(working_directory):
 
 # If called as a command line and not a class, perform the build
 if __name__ == "__main__":
-    WORKING_DIRECOTORY = os.path.dirname(os.path.abspath(__file__))
-    sys.exit(prebuild(WORKING_DIRECOTORY, "all"))
+    WORKING_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
+    sys.exit(prebuild(WORKING_DIRECTORY, "all"))

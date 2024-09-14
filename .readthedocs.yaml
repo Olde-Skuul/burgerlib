@@ -11,10 +11,8 @@ version: 2
 sphinx:
   configuration: docs/conf.py
 
-# Build Doxygen and pdf
-# Note, pdf is missing because this yaml will manually
-# create it because ReadTheDocs build system has steps
-# that aren't needed
+# Disable formats since they will be manually built
+# below
 formats: []
 
 # Set up all the requirements for python building
@@ -49,6 +47,7 @@ build:
       - buildme -h
     post_build:
       # Invoke doxygen to build everything
+      # This is the command that builds all the documentation
       - cd docs ; buildme -docs || true
       # Copy the html files to the final folder
       - cp -a docs/temp/burgerlibdoxygenraw/. $READTHEDOCS_OUTPUT/html/
