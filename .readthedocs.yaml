@@ -31,10 +31,12 @@ build:
   # After building the PDF, copy it up
   jobs:
     post_install:
+      # Debug the environment variables
+      - export
       # Make sure doxygen is the latest version
       - curl --no-progress-meter -O http://logicware.com/downloads/linux/doxygen-1.12.0.tgz
       - tar -xvf doxygen-1.12.0.tgz
-      # Copy into the path
+      # Copy into the path and show version
       - cp doxygen $READTHEDOCS_VIRTUALENV_PATH/bin
       - doxygen -V
       # Burgerlib needs the tool makeheader
@@ -43,11 +45,9 @@ build:
       - cp makeheader $READTHEDOCS_VIRTUALENV_PATH/bin
       # Make sure makeprojects is loaded
       - buildme -h
-      # Debug the environment variable
-      - export
+    post_build:
       # Invoke doxygen to build everything
       - cd docs ; buildme -docs || true
-    post_build:
       # Copy the pdf to the final folder
       - cp docs/temp/burgerliblatex/refman.pdf $READTHEDOCS_OUTPUT/pdf/burgerlib.pdf
       - ls -al

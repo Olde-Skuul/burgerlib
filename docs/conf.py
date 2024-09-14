@@ -21,11 +21,8 @@
 import subprocess
 import os
 import sys
-import errno
 import shutil
 import sphinx_rtd_theme
-
-from burger import import_py_script
 
 # Determine if running on "ReadTheDocs.org"
 _ON_RTD = os.environ.get("READTHEDOCS", None) == "True"
@@ -208,51 +205,6 @@ epub_exclude_files = ["search.html"]
 
 # -- Extension configuration -------------------------------------------------
 
-def generate_doxygen_xml(app):
-    """
-    Run the doxygen make commands if we're on the ReadTheDocs server
-    """
-
-    # pylint: disable=unused-argument
-
-    # Doxygen can't create a nested folder. Help it by
-    # creating the first folder
-
-    return None
-    try:
-        os.makedirs(os.path.join(CWD, "temp"))
-    except OSError as error:
-        if error.errno != errno.EEXIST:
-            raise
-
-    # If on Readthe docs, abort if already run
-    # Test if the index.htm file exists
-    if _ON_RTD and os.path.isfile(
-            os.path.join(CWD, "temp", "burgerlibdoxygenraw", "index.htm")):
-        return None
-
-    # Invoke the prebuild python script to create the super headers
-    # that are needed by doxygen
-    build_rules = import_py_script(
-        os.path.join(CWD, "build_rules.py"))
-    build_rules.prebuild(CWD, "all")
-
-    # Call Doxygen to build the documentation
-    try:
-        # Log the Doxygen version number
-        retcode = subprocess.call("doxygen", cwd=CWD, shell=True)
-        if retcode < 0:
-            sys.stderr.write("doxygen terminated by signal %s" % (-retcode))
-
-        else:
-            # Generate PDF docs on Read The Docs
-            build_rules.postbuild(CWD, "all")
-
-    except OSError as error:
-        sys.stderr.write("doxygen execution failed: %s" % error)
-
-    return None
-
 ########################################
 
 
@@ -266,7 +218,7 @@ def copy_docs(app, exception):
     # pylint: disable=unused-argument
 
     # If on ReadTheDocs.org, copy doxygen to public folder
-    if _ON_RTD:
+    if _ON_RTD and False:
 
         # Find the destination folder
         output_dir = os.environ.get(
@@ -295,9 +247,6 @@ def setup(app):
     """
     Called by breathe to create the doxygen docs
     """
-
-    # Add hook for building doxygen xml when needed
-    app.connect("builder-inited", generate_doxygen_xml)
 
     # Add hook for building doxygen xml when needed
     app.connect("build-finished", copy_docs)
