@@ -38,7 +38,11 @@ build:
       # Burgerlib needs the tool makeheader
       - curl --no-progress-meter -O http://logicware.com/downloads/linux/makeheader.tgz
       - tar -xvf makeheader.tgz
-      - ./makeheader -h
+      # Make sure makeprojects is loaded
+      - buildme -h
+      - export
+      # Invoke doxygen to build everything
+      - cd docs ; buildme -docs
     post_build:
       # Copy the pdf to the final folder
       - cp docs/temp/burgerliblatex/refman.pdf $READTHEDOCS_OUTPUT/pdf/burgerlib.pdf
