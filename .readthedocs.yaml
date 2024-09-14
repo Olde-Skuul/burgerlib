@@ -50,6 +50,10 @@ build:
     post_build:
       # Invoke doxygen to build everything
       - cd docs ; buildme -docs || true
+      # Copy the html files to the final folder
+      - cp -a docs/temp/burgerlibdoxygenraw/. $READTHEDOCS_OUTPUT/html/
+      # Make sure the index file is the doxygen one
+      - cp $READTHEDOCS_OUTPUT/html/index.htm $READTHEDOCS_OUTPUT/html/index.html
       # Copy the pdf to the final folder
       - mkdir --parents $READTHEDOCS_OUTPUT/pdf/
       - cp docs/temp/burgerliblatex/refman.pdf $READTHEDOCS_OUTPUT/pdf/burgerlib.pdf
