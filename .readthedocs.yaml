@@ -34,13 +34,16 @@ build:
       # Make sure doxygen is the latest version
       - curl --no-progress-meter -O http://logicware.com/downloads/linux/doxygen-1.12.0.tgz
       - tar -xvf doxygen-1.12.0.tgz
-      - ./doxygen -V
+      # Copy into the path
+      - cp doxygen $READTHEDOCS_VIRTUALENV_PATH/bin
+      - doxygen -V
       # Burgerlib needs the tool makeheader
       - curl --no-progress-meter -O http://logicware.com/downloads/linux/makeheader.tgz
       - tar -xvf makeheader.tgz
+      - cp makeheader $READTHEDOCS_VIRTUALENV_PATH/bin
       # Make sure makeprojects is loaded
       - buildme -h
-      - export PATH="$PWD:$PATH"
+      # Debug the environment variable
       - export
       # Invoke doxygen to build everything
       - cd docs ; buildme -docs
