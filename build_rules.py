@@ -197,11 +197,7 @@ def find_makeheader():
 
     """
 
-    # Read the docs has it in the docs folder
-    if _ON_RTD:
-        return "docs/makeheader"
-
-    if not is_git():
+    if not is_git() or _ON_RTD:
         # At Olde Skuul, it's on the path
         return "makeheader"
 
