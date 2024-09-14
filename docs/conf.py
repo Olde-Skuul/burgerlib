@@ -18,10 +18,8 @@
 # pylint: disable=redefined-builtin
 # pylint: disable=consider-using-f-string
 
-import subprocess
 import os
 import sys
-import shutil
 import sphinx_rtd_theme
 
 # Determine if running on "ReadTheDocs.org"
@@ -204,49 +202,3 @@ epub_exclude_files = ["search.html"]
 
 
 # -- Extension configuration -------------------------------------------------
-
-########################################
-
-
-def copy_docs(app, exception):
-    """
-    Sphinx is done, copy the docs
-
-    Replace the Sphinx docs with the Doxygen docs
-    """
-
-    # pylint: disable=unused-argument
-
-    # If on ReadTheDocs.org, copy doxygen to public folder
-    if _ON_RTD and False:
-
-        # Find the destination folder
-        output_dir = os.environ.get(
-            "READTHEDOCS_OUTPUT", ".")
-        output_dir = os.path.join(output_dir, "html")
-
-        try:
-            retcode = subprocess.call(
-                "cp -r . " + output_dir,
-                cwd=os.path.join(CWD, "temp", "burgerlibdoxygenraw"),
-                shell=True)
-            if retcode < 0:
-                sys.stderr.write("cp terminated by signal %s" % (-retcode))
-        except OSError as error:
-            sys.stderr.write("cp execution failed: %s" % error)
-
-        # Copy over the Sphinx index with the Doxygen file
-        src_file = os.path.join(output_dir, "index.htm")
-        dest_file = os.path.join(output_dir, "index.html")
-        shutil.copy(src_file, dest_file)
-
-########################################
-
-
-def setup(app):
-    """
-    Called by breathe to create the doxygen docs
-    """
-
-    # Add hook for building doxygen xml when needed
-    app.connect("build-finished", copy_docs)
