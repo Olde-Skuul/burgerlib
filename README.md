@@ -12,8 +12,9 @@ Filenames and paths are standardized, all text is UTF-8 regardless of platform. 
 
 ---
 
-## Sections of interest
+## Table of contents
 
+* [How to build documentation](docs/markdowns/build_docs.md)
 * [Character encoding and standardizing on UTF-8.](docs/markdowns/character_encoding.md)
 * [Filesystem rules and prefixes](docs/markdowns/filemanager.md)
 * [What is Burgerlib?](docs/what_is_burgerlib.md)
@@ -23,10 +24,6 @@ Filenames and paths are standardized, all text is UTF-8 regardless of platform. 
 * [Platform defines](docs/defines.md)
 * [Platform types](docs/platform_types.md)
 * [White Papers](docs/white_papers.md)
-
-## Building Documentation
-
-To build documentation locally, in the ``docs`` folder, type "``buildme -docs``". Make sure that ``doxygen``, ``dot``, and ``pandoc`` are in the path. The HTML documentation will be found in **docs/temp/burgerlibdoxygen/index.htm**
 
 ---
 
@@ -81,18 +78,6 @@ Download these three ISO files,
 ### Visual Studio code
 
 [Download Visual Studio code here](https://code.visualstudio.com/)
-
-### Doxygen
-
-[Download Doxygen for the host platform from here.](https://www.doxygen.nl/download.html)
-
-### Graphviz
-
-[Download Graphviz from here.](https://graphviz.org/download/)
-
-### Pandoc
-
-[Download Pandoc from here.](https://pandoc.org/installing.html)
 
 ### 7Zip
 
