@@ -33,4 +33,7 @@ build:
     post_build:
       - cp docs/temp/burgerliblatex/refman.pdf $READTHEDOCS_OUTPUT/pdf
       - ls -al
-      - ls $READTHEDOCS_OUTPUT
+      - ls -al docs
+      - ls -al $READTHEDOCS_OUTPUT
+      - ls -al $READTHEDOCS_OUTPUT/pdf
+      - ls -al $READTHEDOCS_OUTPUT/html
