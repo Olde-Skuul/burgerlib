@@ -218,6 +218,7 @@ def create_pdf_docs(working_directory):
     """
 
     # pylint: disable=too-many-branches
+    return None
 
     # Check if the tools are present
     pdflatex = where_is_pdflatex()

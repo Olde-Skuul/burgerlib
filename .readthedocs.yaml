@@ -30,6 +30,15 @@ build:
     - texlive-latex-recommended
   # After building the PDF, copy it up
   jobs:
+    post_install:
+      # Make sure doxygen is the latest version
+      - curl --no-progress-meter -O http://logicware.com/downloads/linux/doxygen-1.12.0.tgz
+      - tar -xvf doxygen-1.12.0.tgz
+      - doxygen -V
+      # Burgerlib needs the tool makeheader
+      - curl --no-progress-meter -O http://logicware.com/downloads/linux/makeheader.tgz
+      - tar -xvf makeheader.tgz
+      - makeheader -h
     post_build:
       # Copy the pdf to the final folder
       - cp docs/temp/burgerliblatex/refman.pdf $READTHEDOCS_OUTPUT/pdf/burgerlib.pdf

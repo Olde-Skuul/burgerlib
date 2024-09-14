@@ -225,6 +225,8 @@ def locate_doxygen():
     if not _ON_RTD:
         return "doxygen"
 
+    return "doxygen"
+
     # Put it at this folder
     doxygen = os.path.join(CWD, "doxygen")
 
@@ -264,6 +266,7 @@ def load_makeheader():
     if not _ON_RTD:
         return
 
+    return
     # Put it at this folder
     makeheader = os.path.join(CWD, "makeheader")
 
