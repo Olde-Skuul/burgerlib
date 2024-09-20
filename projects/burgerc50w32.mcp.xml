@@ -329,6 +329,16 @@
 				<SETTING><NAME>SystemSearchPaths</NAME>
 					<SETTING>
 						<SETTING><NAME>SearchPath</NAME>
+							<SETTING><NAME>Path</NAME><VALUE>..\sdks\windows\ddraw\Include</VALUE></SETTING>
+							<SETTING><NAME>PathFormat</NAME><VALUE>Windows</VALUE></SETTING>
+							<SETTING><NAME>PathRoot</NAME><VALUE>Project</VALUE></SETTING>
+						</SETTING>
+						<SETTING><NAME>Recursive</NAME><VALUE>false</VALUE></SETTING>
+						<SETTING><NAME>FrameworkPath</NAME><VALUE>false</VALUE></SETTING>
+						<SETTING><NAME>HostFlags</NAME><VALUE>All</VALUE></SETTING>
+					</SETTING>
+					<SETTING>
+						<SETTING><NAME>SearchPath</NAME>
 							<SETTING><NAME>Path</NAME><VALUE>..\sdks\windows\dplay\Include</VALUE></SETTING>
 							<SETTING><NAME>PathFormat</NAME><VALUE>Windows</VALUE></SETTING>
 							<SETTING><NAME>PathRoot</NAME><VALUE>Project</VALUE></SETTING>
@@ -428,10 +438,11 @@
 #define WIN32
 #define DWRITE_NO_WINDOWS_H
 #define IDIRECTPLAY2_OR_GREATER
+#define DIRECTDRAW_VERSION 0x700
 #define _CRT_NONSTDC_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
 #define GLUT_NO_LIB_PRAGMA
-#define _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1
+#define _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES 1
 </VALUE></SETTING>
 				<SETTING><NAME>C_CPP_Preprocessor_MultiByteEncoding</NAME><VALUE>encASCII_Unicode</VALUE></SETTING>
 				<SETTING><NAME>C_CPP_Preprocessor_PCHUsesPrefixText</NAME><VALUE>false</VALUE></SETTING>
@@ -7301,6 +7312,16 @@
 				<SETTING><NAME>SystemSearchPaths</NAME>
 					<SETTING>
 						<SETTING><NAME>SearchPath</NAME>
+							<SETTING><NAME>Path</NAME><VALUE>..\sdks\windows\ddraw\Include</VALUE></SETTING>
+							<SETTING><NAME>PathFormat</NAME><VALUE>Windows</VALUE></SETTING>
+							<SETTING><NAME>PathRoot</NAME><VALUE>Project</VALUE></SETTING>
+						</SETTING>
+						<SETTING><NAME>Recursive</NAME><VALUE>false</VALUE></SETTING>
+						<SETTING><NAME>FrameworkPath</NAME><VALUE>false</VALUE></SETTING>
+						<SETTING><NAME>HostFlags</NAME><VALUE>All</VALUE></SETTING>
+					</SETTING>
+					<SETTING>
+						<SETTING><NAME>SearchPath</NAME>
 							<SETTING><NAME>Path</NAME><VALUE>..\sdks\windows\dplay\Include</VALUE></SETTING>
 							<SETTING><NAME>PathFormat</NAME><VALUE>Windows</VALUE></SETTING>
 							<SETTING><NAME>PathRoot</NAME><VALUE>Project</VALUE></SETTING>
@@ -7400,10 +7421,11 @@
 #define WIN32
 #define DWRITE_NO_WINDOWS_H
 #define IDIRECTPLAY2_OR_GREATER
+#define DIRECTDRAW_VERSION 0x700
 #define _CRT_NONSTDC_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
 #define GLUT_NO_LIB_PRAGMA
-#define _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1
+#define _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES 1
 </VALUE></SETTING>
 				<SETTING><NAME>C_CPP_Preprocessor_MultiByteEncoding</NAME><VALUE>encASCII_Unicode</VALUE></SETTING>
 				<SETTING><NAME>C_CPP_Preprocessor_PCHUsesPrefixText</NAME><VALUE>false</VALUE></SETTING>
@@ -14273,6 +14295,16 @@
 				<SETTING><NAME>SystemSearchPaths</NAME>
 					<SETTING>
 						<SETTING><NAME>SearchPath</NAME>
+							<SETTING><NAME>Path</NAME><VALUE>..\sdks\windows\ddraw\Include</VALUE></SETTING>
+							<SETTING><NAME>PathFormat</NAME><VALUE>Windows</VALUE></SETTING>
+							<SETTING><NAME>PathRoot</NAME><VALUE>Project</VALUE></SETTING>
+						</SETTING>
+						<SETTING><NAME>Recursive</NAME><VALUE>false</VALUE></SETTING>
+						<SETTING><NAME>FrameworkPath</NAME><VALUE>false</VALUE></SETTING>
+						<SETTING><NAME>HostFlags</NAME><VALUE>All</VALUE></SETTING>
+					</SETTING>
+					<SETTING>
+						<SETTING><NAME>SearchPath</NAME>
 							<SETTING><NAME>Path</NAME><VALUE>..\sdks\windows\dplay\Include</VALUE></SETTING>
 							<SETTING><NAME>PathFormat</NAME><VALUE>Windows</VALUE></SETTING>
 							<SETTING><NAME>PathRoot</NAME><VALUE>Project</VALUE></SETTING>
@@ -14372,10 +14404,11 @@
 #define WIN32
 #define DWRITE_NO_WINDOWS_H
 #define IDIRECTPLAY2_OR_GREATER
+#define DIRECTDRAW_VERSION 0x700
 #define _CRT_NONSTDC_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
 #define GLUT_NO_LIB_PRAGMA
-#define _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1
+#define _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES 1
 </VALUE></SETTING>
 				<SETTING><NAME>C_CPP_Preprocessor_MultiByteEncoding</NAME><VALUE>encASCII_Unicode</VALUE></SETTING>
 				<SETTING><NAME>C_CPP_Preprocessor_PCHUsesPrefixText</NAME><VALUE>false</VALUE></SETTING>

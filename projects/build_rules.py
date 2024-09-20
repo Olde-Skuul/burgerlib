@@ -697,7 +697,6 @@ def watcom_rules(project):
                 "GLUT_DISABLE_ATEXIT_HACK"))
 
             project.include_folders_list.extend((
-                sdks_folder() + "windows/ddraw/include",
                 "$(DXSDK_DIR)/Include",
                 sdks_folder() + "windows/opengl",
                 sdks_folder() + "steamworks/public/steam"
@@ -882,11 +881,6 @@ def vs2005_2008_rules(project):
             "../source/asm/masm/vs2003_2005")
         project.source_folders_list.append(
             "../source/asm/masm64/vs2005")
-
-        # Direct Draw was not included in the Visual Studio 2005
-        # Windows SDK, use the local copy
-        project.include_folders_list.append(
-            sdks_folder() + "windows/ddraw/include")
 
 ########################################
 
@@ -1285,6 +1279,12 @@ def configuration_settings(configuration):
         configuration.directplay_headers_only = True
         configuration.library_rules_list.append(
             os.path.join(sdks_dir, "windows", "dplay"))
+
+    # Add in DirectDraw for Windows platforms
+    if platform.is_windows():
+        configuration.directdraw_headers_only = True
+        configuration.library_rules_list.append(
+            os.path.join(sdks_dir, "windows", "ddraw"))
 
     return 0
 

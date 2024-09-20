@@ -2,3 +2,7 @@
 	path = sdks/windows/dplay
 	url = https://github.com/Olde-Skuul/directplay
 	branch = main
+[submodule "directdraw"]
+	path = sdks/windows/ddraw
+	url = https://github.com/Olde-Skuul/directdraw.git
+	branch = main
