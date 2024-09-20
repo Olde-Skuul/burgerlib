@@ -51,6 +51,7 @@ class ActionScriptProperty : public WeakAndStrongBase {
 	SmartPointer<ActionScriptFunction> m_GetFunction;		///< Function object to call when data is to be retrieved
 	SmartPointer<ActionScriptFunction> m_SetFunction;		///< Function object to call when data is being updated
 	BURGER_RTTI_IN_CLASS();
+	BURGER_DISABLE_COPY(ActionScriptProperty);
 public:
 	ActionScriptProperty(const ActionScriptValue &rGetFunction,const ActionScriptValue &rSetFunction);
 	virtual ~ActionScriptProperty();

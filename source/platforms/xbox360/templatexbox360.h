@@ -2,11 +2,18 @@
 
 	What follows are commands for the directories to find the included headers
 
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
+
+	Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #ifndef __TEMPLATEXBOX360_H__
 #define __TEMPLATEXBOX360_H__
-#endif
 
 /* DIR: "platforms:xbox360" */
 /* IGNORE: "brtypes.h" */
@@ -38,3 +45,5 @@
 
 #endif
 /* END */
+
+#endif

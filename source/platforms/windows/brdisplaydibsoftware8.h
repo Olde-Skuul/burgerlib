@@ -41,6 +41,7 @@ namespace Burger {
 class DisplayDIBSoftware8 : public DisplayDIB {
 public:
 	DisplayDIBSoftware8(GameApp *pGameApp);
+	BURGER_DISABLE_COPY(DisplayDIBSoftware8);
 protected:
 	virtual uint_t InitContext(void);
 	virtual void PostShutdown(void);

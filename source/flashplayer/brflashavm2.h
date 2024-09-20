@@ -116,6 +116,7 @@ public:
 	TraitsInfo();
 	virtual ~TraitsInfo();
 	void BURGER_API Read(Stream *pStream,ABC_Definition *pABCDefinition);
+	BURGER_DISABLE_COPY(TraitsInfo);
 };
 class MetadataInfo : public WeakAndStrongBase {
 public:
@@ -124,6 +125,7 @@ public:
 	MetadataInfo();
 	virtual ~MetadataInfo();
 	void BURGER_API Read(Stream* pStream);
+	BURGER_DISABLE_COPY(MetadataInfo);
 };
 class ExceptionInfo : public WeakAndStrongBase {
 public:
@@ -135,6 +137,7 @@ public:
 	ExceptionInfo();
 	virtual ~ExceptionInfo();
 	void BURGER_API Read(Stream* pStream);
+	BURGER_DISABLE_COPY(ExceptionInfo);
 };
 class InstanceInfo : public WeakAndStrongBase {
 public:
@@ -155,6 +158,7 @@ public:
 	InstanceInfo();
 	virtual ~InstanceInfo();
 	void BURGER_API Read(Stream *pStream,ABC_Definition *pABCDefinition);
+	BURGER_DISABLE_COPY(InstanceInfo);
 };
 class ClassInfo : public WeakAndStrongBase {
 public:
@@ -164,6 +168,7 @@ public:
 	ClassInfo();
 	virtual ~ClassInfo();
 	void BURGER_API Read(Stream* pStream,ABC_Definition *pABCDefinition);
+	BURGER_DISABLE_COPY(ClassInfo);
 };
 class ScriptInfo : public WeakAndStrongBase {
 public:
@@ -172,6 +177,7 @@ public:
 	ScriptInfo();
 	virtual ~ScriptInfo();
 	void BURGER_API Read(Stream* pStream,ABC_Definition *pABCDefinition);
+	BURGER_DISABLE_COPY(ScriptInfo);
 };
 
 }}

@@ -49,6 +49,7 @@ class DisplayOpenGLSoftware8 : public Display {
 	uint_t m_uvPositionHandle;		///< OpenGL shader handle for shader vertexes
 	uint_t m_uUVHandle;				///< OpenGL shader handle for texture UV coordinates
 	BURGER_RTTI_IN_CLASS();
+	BURGER_DISABLE_COPY(DisplayOpenGLSoftware8);
 public:
 	DisplayOpenGLSoftware8(GameApp *pGameApp);
 #if defined(BURGER_WINDOWS)

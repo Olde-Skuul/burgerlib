@@ -33,3 +33,6 @@ private: \
     x& operator=(const x&) BURGER_EQUALS_DELETE; \
     x(x&&) BURGER_EQUALS_DELETE; \
     x& operator=(x&&) BURGER_EQUALS_DELETE
+
+#define BURGER_DEFAULT_DESTRUCTOR = default
+#define BURGER_VIRTUAL(a, b, c) virtual a b c = 0;

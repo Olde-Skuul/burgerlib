@@ -1,16 +1,16 @@
 /***************************************
 
-    Start up code for games based applications
+	Start up code for games based applications
 
-    Xbox 360 version
+	Xbox 360 version
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -37,7 +37,6 @@
 #define MINIMUMRESERVE Burger::MemoryManagerHandle::kSystemMemoryReservedSize
 #endif
 
-
 /***************************************
 
 	This is the main entry point for an XBox 360 version of the game
@@ -50,7 +49,7 @@ void BURGER_ANSIAPI main(void)
 {
 	// Create an application instance
 
-	Burger::GameApp MyApp(MEMORYSIZE,HANDLECOUNT,MINIMUMRESERVE);
+	Burger::GameApp MyApp(MEMORYSIZE, HANDLECOUNT, MINIMUMRESERVE);
 
 	// Error on startup?
 	int iResult = Burger::Globals::GetErrorCode();
