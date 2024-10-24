@@ -14,13 +14,44 @@
 
 #include "brrect.h"
 
+// Documented here, all others use the DOXYGEN header guard
+
+#if defined(BURGER_MAC)
+#include <MacTypes.h>
+#else
+
+/*! ************************************
+
+	\brief Definition of a MacOS Rect
+
+	Duplicate of the definition found in the MacOS header <MacTypes.h>
+
+	This is to allow non-Mac desktop platforms to manipulate data used by
+	MacOS functions and data sharing. It's assumed to be stored on disc in
+	Big Endian format.
+
+	\note This structure is only natively used on MacOS platforms.
+
+	\sa Point
+
+***************************************/
+
+struct Rect {
+	int16_t top;    ///< Topmost Y coordinate
+	int16_t left;   ///< Leftmost X coordinate
+	int16_t bottom; ///< Bottommost Y coordinate
+	int16_t right;  ///< Rightmost X coordinate
+};
+
+#endif
+
 /*! ************************************
 
 	\struct Burger::Rect_t
 	\brief Structure describing an integer precision 2D rectangle.
 
-	Simple container structure that holds the upper left and
-	lower right coordinates in integer precision.
+	Simple container structure that holds the upper left and lower right
+	coordinates in integer precision.
 
 	\sa Burger::Vector4D_t or Burger::Point2D_t
 
@@ -31,8 +62,8 @@
 	\fn Burger::Rect_t::GetWidth(void) const
 	\brief Return the width of a rectangle.
 
-	Subtract the right value from the left value and returns the
-	difference in the form of the rectangle's width.
+	Subtract the right value from the left value and returns the difference in
+	the form of the rectangle's width.
 
 	\return Width of the rectangle
 
@@ -45,8 +76,8 @@
 	\fn Burger::Rect_t::GetHeight(void) const
 	\brief Return the height of a rectangle.
 
-	Subtract the bottom value from the top value and returns the
-	difference in the form of the rectangle's height.
+	Subtract the bottom value from the top value and returns the difference in
+	the form of the rectangle's height.
 
 	\return Height of the rectangle
 
@@ -66,8 +97,8 @@
 	\sa GetRight() or SetLeft()
 
 	\note On unsorted rectangles, this could be a larger value than the
-rightmost value. Do not assume that this value is less than or equal to the
-rightmost X coordinate.
+		rightmost value. Do not assume that this value is less than or equal to
+		the rightmost X coordinate.
 
 ***************************************/
 
@@ -83,8 +114,8 @@ rightmost X coordinate.
 	\sa GetBottom() or SetTop()
 
 	\note On unsorted rectangles, this could be a larger value than the
-bottommost value. Do not assume that this value is less than or equal to the
-bottommost Y coordinate.
+		bottommost value. Do not assume that this value is less than or equal
+		to the bottommost Y coordinate.
 
 ***************************************/
 
@@ -100,8 +131,8 @@ bottommost Y coordinate.
 	\sa GetLeft() or SetRight()
 
 	\note On unsorted rectangles, this could be a smaller value than the
-leftmost value. Do not assume that this value is greater than or equal to the
-leftmost X coordinate.
+		leftmost value. Do not assume that this value is greater than or equal
+		to the leftmost X coordinate.
 
 ***************************************/
 
@@ -117,8 +148,8 @@ leftmost X coordinate.
 	\sa GetTop() or SetBottom()
 
 	\note On unsorted rectangles, this could be a smaller value than the top
-most value. Do not assume that this value is greater than or equal to the
-topmost Y coordinate.
+		most value. Do not assume that this value is greater than or equal to
+		the topmost Y coordinate.
 
 ***************************************/
 
@@ -127,9 +158,9 @@ topmost Y coordinate.
 	\fn Burger::Rect_t::SetWidth(int32_t)
 	\brief Set the width of a rectangle.
 
-	Set the right most X coordinate so the rectangle will be the
-	requested width. No bounds checking is performed, so unsorted
-	rectangles are possible on overflow or underflow input.
+	Set the right most X coordinate so the rectangle will be the requested
+	width. No bounds checking is performed, so unsorted rectangles are possible
+	on overflow or underflow input.
 
 	\param iWidth Requested width of the rectangle.
 
@@ -142,9 +173,9 @@ topmost Y coordinate.
 	\fn Burger::Rect_t::SetHeight(int32_t)
 	\brief Set the height of a rectangle.
 
-	Set the bottom most Y coordinate so the rectangle will be the
-	requested height. No bounds checking is performed, so unsorted
-	rectangles are possible on overflow or underflow input.
+	Set the bottom most Y coordinate so the rectangle will be the requested
+	height. No bounds checking is performed, so unsorted rectangles are
+	possible on overflow or underflow input.
 
 	\param iHeight Requested height of the rectangle.
 
@@ -394,10 +425,13 @@ void Burger::Rect_t::MoveTo(int32_t iX, int32_t iY) BURGER_NOEXCEPT
 	// Get the size of the rectangle
 	int32_t iWidth = m_iRight - m_iLeft;
 	int32_t iHeight = m_iBottom - m_iTop;
+
 	m_iLeft = iX; // Set the new upper left corner
 	m_iTop = iY;
+
 	iWidth += iX; // New lower right
 	iHeight += iY;
+
 	m_iRight = iWidth; // Save it
 	m_iBottom = iHeight;
 }
@@ -424,10 +458,13 @@ void Burger::Rect_t::MoveTo(const Point2D_t* pInput) BURGER_NOEXCEPT
 	// Get the size of the rectangle
 	int32_t iWidth = m_iRight - m_iLeft;
 	int32_t iHeight = m_iBottom - m_iTop;
+
 	m_iLeft = iX; // Set the new upper left corner
 	m_iTop = iY;
+
 	iWidth += iX; // New lower right
 	iHeight += iY;
+
 	m_iRight = iWidth; // Save it
 	m_iBottom = iHeight;
 }
@@ -1240,6 +1277,7 @@ void Burger::Rect_t::Clip(const Rect_t* pInput) BURGER_NOEXCEPT
 	const int32_t iTop2 = pInput->m_iTop;
 	const int32_t iRight2 = pInput->m_iRight;
 	const int32_t iBottom2 = pInput->m_iBottom;
+
 	if ((iBottom >= iTop2) && // Outside of the clip rect?
 		(iTop < iBottom2) && (iRight >= iLeft2) && (iLeft < iRight2)) {
 		if (iLeft < iLeft2) { // Clip the left?
@@ -1661,3 +1699,80 @@ void BURGER_API LBRectListCopy(LBRectList *Input,const LBRectList *list)
 }
 
 #endif
+
+/*! ************************************
+
+	\brief Read in a MacOS Rect from an InputMemoryStream
+
+	Read in 8 bytes from the stream as big endian 16 bit chunks and fill in a
+	MacOS Rect structure using native endian. There is no need for endian
+	conversion to the data after it's been read.
+
+	No data validation is performed on the input.
+
+	\param pRect Pointer to MacOS Rect structure
+	\param pInput Pointer to InputMemoryStream to read from
+
+	\return \ref kErrorDataStarvation if data is not sufficient in the stream
+		or \ref kErrorNone.
+
+	\sa get(Point*, InputMemoryStream*),
+		append(OutputMemoryStream*, const Rect*)
+
+***************************************/
+
+Burger::eError BURGER_API Burger::get(
+	Rect* pRect, InputMemoryStream* pInput) BURGER_NOEXCEPT
+{
+	if (pInput->BytesRemaining() < 8U) {
+		return kErrorDataStarvation;
+	}
+
+	// Read in the 16 bit values, endian swap if needed
+	pRect->top = static_cast<int16_t>(pInput->GetBigShort());
+	pRect->left = static_cast<int16_t>(pInput->GetBigShort());
+	pRect->bottom = static_cast<int16_t>(pInput->GetBigShort());
+	pRect->right = static_cast<int16_t>(pInput->GetBigShort());
+	return kErrorNone;
+}
+
+/*! ************************************
+
+	\brief Write out a MacOS Rect into an OutputMemoryStream
+
+	Write out 8 bytes into the stream as big endian 16 bit chunks from a native
+	endian MacOS Rect structure.
+
+	\param pOutput Pointer to OutputMemoryStream to write to
+	\param pRect Pointer to MacOS Rect structure
+
+	\return \ref kErrorNone if no error, OutputMemoryStream error codes if the
+		function failed.
+
+	\sa append(OutputMemoryStream*, const Point*),
+		get(Rect*, InputMemoryStream*)
+
+***************************************/
+
+Burger::eError BURGER_API Burger::append(
+	OutputMemoryStream* pOutput, const Rect* pRect) BURGER_NOEXCEPT
+{
+	// Save off the data to the stream
+	eError uResult =
+		pOutput->BigEndianAppend(static_cast<uint16_t>(pRect->top));
+
+	if (!uResult) {
+		uResult = pOutput->BigEndianAppend(static_cast<uint16_t>(pRect->left));
+
+		if (!uResult) {
+			uResult =
+				pOutput->BigEndianAppend(static_cast<uint16_t>(pRect->bottom));
+
+			if (!uResult) {
+				uResult = pOutput->BigEndianAppend(
+					static_cast<uint16_t>(pRect->right));
+			}
+		}
+	}
+	return uResult;
+}

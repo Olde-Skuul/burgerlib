@@ -2,7 +2,7 @@
 
 	Integer 2 dimensional Rect handlers
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2024 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -19,8 +19,20 @@
 #include "brtypes.h"
 #endif
 
+#ifndef __BRERROR_H__
+#include "brerror.h"
+#endif
+
 #ifndef __BRPOINT2D_H__
 #include "brpoint2d.h"
+#endif
+
+#ifndef __BRINPUTMEMORYSTREAM_H__
+#include "brinputmemorystream.h"
+#endif
+
+#ifndef __BROUTPUTMEMORYSTREAM_H__
+#include "broutputmemorystream.h"
 #endif
 
 #if defined(BURGER_MAC) && !defined(__BRMACTYPES_H__)
@@ -198,6 +210,12 @@ struct Rect_t {
 	void Set(const tagRECT* pInput) BURGER_NOEXCEPT;
 #endif
 };
+
+extern eError BURGER_API get(
+	Rect* pRect, InputMemoryStream* pInput) BURGER_NOEXCEPT;
+extern eError BURGER_API append(
+	OutputMemoryStream* pOutput, const Rect* pRect) BURGER_NOEXCEPT;
+
 }
 /* END */
 

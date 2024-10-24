@@ -2,7 +2,7 @@
 
 	Integer 2 dimensional Point handlers
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2024 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -21,6 +21,14 @@
 
 #ifndef __BRERROR_H__
 #include "brerror.h"
+#endif
+
+#ifndef __BRINPUTMEMORYSTREAM_H__
+#include "brinputmemorystream.h"
+#endif
+
+#ifndef __BROUTPUTMEMORYSTREAM_H__
+#include "broutputmemorystream.h"
 #endif
 
 #if defined(BURGER_MAC) && !defined(__BRMACTYPES_H__)
@@ -119,6 +127,12 @@ struct Point2D_t {
 	void Set(const tagPOINT* pInput) BURGER_NOEXCEPT;
 #endif
 };
+
+extern eError BURGER_API get(
+	Point* pPoint, InputMemoryStream* pInput) BURGER_NOEXCEPT;
+extern eError BURGER_API append(
+	OutputMemoryStream* pOutput, const Point* pPoint) BURGER_NOEXCEPT;
+
 }
 /* END */
 

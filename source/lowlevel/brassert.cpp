@@ -278,8 +278,8 @@ void BURGER_API Burger::invoke_debugger(void) BURGER_NOEXCEPT
 #elif defined(BURGER_WATCOM) && defined(BURGER_MSDOS)
 		_asm int 3
 
-#elif defined(BURGER_XBOX360) || defined(BURGER_XBOXONE) || \
-	defined(BURGER_WINDOWS)
+#elif defined(BURGER_XBOX) || defined(BURGER_XBOX360) || \
+	defined(BURGER_XBOXONE) || defined(BURGER_WINDOWS)
 		// Xbox 360 always has a debugger, either from the host or the kernel
 		__debugbreak();
 

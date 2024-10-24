@@ -126,6 +126,14 @@ MAKEPROJECTS = [
      "ide": "vs2015"},
 
     # Microsoft platforms
+    {"platform": "xbox",
+     "name": "burger",
+     "type": "library",
+     "ide": "vs2003"},
+    {"platform": "xbox",
+     "name": "unittests",
+     "type": "console",
+     "ide": "vs2003"},
     {"platform": "xbox360",
      "name": "burger",
      "type": "library",
@@ -809,7 +817,7 @@ def vs2003_stripcomments(line_list):
 
 def vs2003_rules(project):
     """
-    Handle special cases for Visual Stuid.x86udio 2003
+    Handle special cases for Visual Studio 2003
 
     Assume these IDEs are building only for Windows
     """
@@ -826,22 +834,23 @@ def vs2003_rules(project):
         project.source_folders_list.append(
             "../source/asm/masm/vs2003_2008")
 
-        # stripcomments.exe is on the path, but VS 2003 doesn't use it
-        # So, replace the call to where the binary actually is
-        project.solution.post_process = vs2003_stripcomments
+        if project.platform.is_windows():
+            # stripcomments.exe is on the path, but VS 2003 doesn't use it
+            # So, replace the call to where the binary actually is
+            project.solution.post_process = vs2003_stripcomments
 
-        # The DirectX Headers need sal.h, supply it manually for VS 2003
-        project.source_folders_list.append(
-            "../source/platforms/windows/vc7compat")
+            # The DirectX Headers need sal.h, supply it manually for VS 2003
+            project.source_folders_list.append(
+                "../source/platforms/windows/vc7compat")
 
-        # Use the DirectX SDK. MUST BE INCLUDED BEFORE Windows SDK!
-        project.include_folders_list.append("$(DXSDK_DIR)/Include")
+            # Use the DirectX SDK. MUST BE INCLUDED BEFORE Windows SDK!
+            project.include_folders_list.append("$(DXSDK_DIR)/Include")
 
-        # Use the Windows SDK installed from VS 2005 because the one
-        # that shipped with VS 2003 is too old to handle the DirectX
-        # SDK
-        project.include_folders_list.append(
-            "C:/Program Files/Microsoft SDKs/Windows/v6.0A/Include")
+            # Use the Windows SDK installed from VS 2005 because the one
+            # that shipped with VS 2003 is too old to handle the DirectX
+            # SDK
+            project.include_folders_list.append(
+                "C:/Program Files/Microsoft SDKs/Windows/v6.0A/Include")
 
 ########################################
 
@@ -1059,6 +1068,15 @@ def project_settings(project):
             _VITACG_MATCH)
 
     # Microsoft platforms
+    if platform is PlatformTypes.xbox:
+        # project.source_folders_list.extend(BURGER_LIB_XBOX)
+        project.source_folders_list.append(
+            "../source/asm/masm/vs2003_2010")
+
+        # 8087 control for all x86 targets
+        project.source_folders_list.append(
+            "../source/asm/masm")
+
     if platform is PlatformTypes.xbox360:
         project.source_folders_list.extend(BURGER_LIB_XBOX_360)
         project.vs_props.append(

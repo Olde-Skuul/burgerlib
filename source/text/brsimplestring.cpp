@@ -69,9 +69,9 @@
 
 Burger::SimpleString::SimpleString(char cInput)
 {
-	const char *pOutput = g_EmptyString;		// Empty
-	if (cInput) {			// Valid?
-		char *pTemp = static_cast<char *>(Alloc(2));
+	const char* pOutput = g_EmptyString; // Empty
+	if (cInput) {                        // Valid?
+		char* pTemp = static_cast<char*>(Alloc(2));
 		if (pTemp) {
 			pTemp[0] = cInput;
 			pTemp[1] = 0;

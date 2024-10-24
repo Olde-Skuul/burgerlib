@@ -22,7 +22,7 @@
 #include <stdlib.h>
 
 #if !defined(DOXYGEN)
-#if defined(BURGER_XBOX) || defined(BURGER_XBOX360) || \
+#if defined(BURGER_XBOXONE) || defined(BURGER_XBOX360) || \
 	(defined(BURGER_WINDOWS) && !defined(BURGER_WATCOM) && \
 		!defined(BURGER_METROWERKS) && \
 		!(defined(_MSC_VER) && (_MSC_VER < 1400)))

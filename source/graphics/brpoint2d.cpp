@@ -2,7 +2,7 @@
 
 	Integer 2 dimensional Point handlers
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2024 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -14,6 +14,35 @@
 
 #include "brpoint2d.h"
 #include "brendian.h"
+
+// Documented here, all others use the DOXYGEN header guard
+
+#if defined(BURGER_MAC)
+#include <MacTypes.h>
+#else
+
+/*! ************************************
+
+	\brief Definition of a MacOS Point
+
+	Duplicate of the definition found in the MacOS header <MacTypes.h>
+
+	This is to allow non-Mac desktop platforms to manipulate data used by
+	MacOS functions and data sharing. It's assumed to be stored on disc in
+	Big Endian format.
+
+	\note This structure is only natively used on MacOS platforms.
+
+	\sa Rect
+
+***************************************/
+
+struct Point {
+	int16_t v; ///< Vertical (Y) coordinate
+	int16_t h; ///< Height (X) coordinate
+};
+
+#endif
 
 /*! ************************************
 
@@ -239,6 +268,69 @@ Burger::eError Burger::Point2D_t::Write(Burger::File* fp) const BURGER_NOEXCEPT
 	eError uResult = kErrorWriteFailure;
 	if (fp->write(Output, 4) == 4) {
 		uResult = kErrorNone;
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Read in a MacOS Point from an InputMemoryStream
+
+	Read in 4 bytes from the stream as big endian 16 bit chunks and fill in a
+	MacOS Point structure using native endian. There is no need for endian
+	conversion to the data after it's been read.
+
+	No data validation is performed on the input.
+
+	\param pPoint Pointer to MacOS Point structure
+	\param pInput Pointer to InputMemoryStream to read from
+
+	\return \ref kErrorDataStarvation if data is not sufficient in the stream
+		or \ref kErrorNone.
+
+	\sa get(Rect*, InputMemoryStream*),
+		append(OutputMemoryStream*, const Point*)
+
+***************************************/
+
+Burger::eError BURGER_API Burger::get(
+	Point* pPoint, InputMemoryStream* pInput) BURGER_NOEXCEPT
+{
+	if (pInput->BytesRemaining() < 4U) {
+		return kErrorDataStarvation;
+	}
+
+	// Read in the 16 bit values, endian swap if needed
+	pPoint->v = static_cast<int16_t>(pInput->GetBigShort());
+	pPoint->h = static_cast<int16_t>(pInput->GetBigShort());
+	return kErrorNone;
+}
+
+/*! ************************************
+
+	\brief Write out a MacOS Point into an OutputMemoryStream
+
+	Write out 4 bytes into the stream as big endian 16 bit chunks from a native
+	endian MacOS Point structure.
+
+	\param pOutput Pointer to OutputMemoryStream to write to
+	\param pPoint Pointer to MacOS Point structure
+
+	\return \ref kErrorNone if no error, OutputMemoryStream error codes if the
+		function failed.
+
+	\sa append(OutputMemoryStream*, const Rect*),
+		get(Point*, InputMemoryStream*)
+
+***************************************/
+
+Burger::eError BURGER_API Burger::append(
+	OutputMemoryStream* pOutput, const Point* pPoint) BURGER_NOEXCEPT
+{
+	// Save off the data to the stream
+	eError uResult = pOutput->BigEndianAppend(static_cast<uint16_t>(pPoint->v));
+	if (!uResult) {
+		uResult = pOutput->BigEndianAppend(static_cast<uint16_t>(pPoint->h));
 	}
 	return uResult;
 }
