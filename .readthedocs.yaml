@@ -34,8 +34,8 @@ build:
       # Debug the environment variables
       - export
       # Make sure doxygen is the latest version
-      - curl --no-progress-meter -O http://logicware.com/downloads/linux/doxygen-1.12.0.tgz
-      - tar -xvf doxygen-1.12.0.tgz
+      - curl --no-progress-meter -O http://logicware.com/downloads/linux/doxygen-1.13.2.tgz
+      - tar -xvf doxygen-1.13.2.tgz
       # Copy into the path and show version
       - cp doxygen $READTHEDOCS_VIRTUALENV_PATH/bin
       - doxygen -V
