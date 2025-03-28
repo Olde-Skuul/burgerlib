@@ -3,7 +3,7 @@
 	Determine which compiler is being used and create standardized typedefs
 	and macros so generic code can be created cross platform
 
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -31,15 +31,15 @@
 
 ***************************************/
 
+#define BURGER_LEFT_PARENTHESIS (
+#define BURGER_RIGHT_PARENTHESIS )
+
 #define BURGER_STRINGIZE2(x) #x
 #define BURGER_STRINGIZE(x) BURGER_STRINGIZE2(x)
 
 #define BURGER_JOIN3(x, y) x##y
 #define BURGER_JOIN2(x, y) BURGER_JOIN3(x, y)
 #define BURGER_JOIN(x, y) BURGER_JOIN2(x, y)
-
-#define BURGER_LEFT_PARENTHESIS (
-#define BURGER_RIGHT_PARENTHESIS )
 
 #if !defined(NULL)
 #define NULL 0

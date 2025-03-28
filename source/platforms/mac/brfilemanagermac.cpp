@@ -914,7 +914,7 @@ Burger::eError Burger::FileManager::create_directory_path(
 				}
 
 				// Convert the filename to unicode
-				uResult = MyName.Set(pNative);
+				uResult = MyName.assign(pNative);
 				// Restore the filename
 				if (pColon) {
 					pColon[0] = ':';

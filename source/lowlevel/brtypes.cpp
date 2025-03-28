@@ -3,7 +3,7 @@
 	Determine which compiler is being used and create standardized typedefs and
 	macros so generic code can be created cross platform
 
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -257,7 +257,7 @@
 	\def _DEBUG
 	\brief Defined to enable the creation of debug code.
 
-	If this define exists, you can assume that you're compiling a debug build.
+	If this define exists, debugging information is included while compiling.
 	This is used to flag whether debug code is to be included in the build
 	and/or \ref BURGER_ASSERT is to operate. Only \ref _DEBUG or \ref NDEBUG can
 	exist at a time. Specifying both or neither is considered a fatal compile
@@ -280,11 +280,11 @@
 	\def NDEBUG
 	\brief Defined to disable the creation of debug code.
 
-	If this define exists, then you are creating a release build. This is only
-	present to force \ref BURGER_ASSERT to vanish. Only \ref _DEBUG or \ref
-	NDEBUG can exist at a time. Specifying both or neither is considered a fatal
-	compile error. This define is not supplied by Burgerlib, it must be defined
-	by the build project.
+	If this define exists, debugging information is not included while
+	compiling. This is only present to force \ref BURGER_ASSERT to vanish. Only
+	\ref _DEBUG or \ref NDEBUG can exist at a time. Specifying both or neither
+	is considered a fatal compile error. This define is not supplied by
+	Burgerlib, it must be defined by the build project.
 
 	\note This flag is not used to determine if optimizations have been enabled.
 	It's only used to disable the generation of debugging code.
@@ -296,6 +296,45 @@
 	\endcode
 
 	\sa _DEBUG
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_NULL_MACRO_PARAM
+	\brief An empty macro parameter.
+
+	To trick the preprocessor to accept an empty parameter in a macro, use this
+	macro which inserts a "C" style empty comment to force data separation so an
+	empty parameter can be passed to a macro.
+
+	\sa BURGER_LEFT_PARENTHESIS, and BURGER_RIGHT_PARENTHESIS
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_LEFT_PARENTHESIS
+	\brief The character (
+
+	If a macro contains a left parenthesis, it will be treated as an enclosure
+	for a parameter list. Use this macro inside another macro to output a left
+	parenthesis without actually invoking parameters.
+
+	\sa BURGER_NULL_MACRO_PARAM, and BURGER_RIGHT_PARENTHESIS
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_RIGHT_PARENTHESIS
+	\brief The character )
+
+	If a macro contains a right parenthesis, it will be treated as an enclosure
+	for a parameter list. Use this macro inside another macro to output a right
+	parenthesis without actually invoking parameters.
+
+	\sa BURGER_NULL_MACRO_PARAM, and BURGER_LEFT_PARENTHESIS
 
 ***************************************/
 
@@ -3219,43 +3258,6 @@ line of processors.
 	\param y The second macro to join.
 
 	\sa BURGER_JOIN or BURGER_JOIN2
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_LEFT_PARENTHESIS
-	\brief The character (
-
-	If a macro contains a parenthesis, it will be treated as an enclosure for a
-	parameter list. Use this macro inside another macro to output a left
-	parenthesis without actually invoking parameters.
-
-	\sa BURGER_RIGHT_PARENTHESIS
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_RIGHT_PARENTHESIS
-	\brief The character )
-
-	If a macro contains a parenthesis, it will be treated as an enclosure for a
-	parameter list. Use this macro inside another macro to output a right
-	parenthesis without actually invoking parameters.
-
-	\sa BURGER_LEFT_PARENTHESIS
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_NULL_MACRO_PARAM
-	\brief An empty macro parameter.
-
-	To trick the preprocessor to accept an empty parameter in a macro, use this
-	macro which inserts a "C" style empty comment to force data separation so an
-	empty parameter can be passed to a macro.
 
 ***************************************/
 

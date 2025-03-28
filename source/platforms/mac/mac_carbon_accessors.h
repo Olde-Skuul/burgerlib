@@ -25,6 +25,10 @@
 #include "mac_types.h"
 #endif
 
+#ifndef __BRSTRUCTS_H__
+#include "brstructs.h"
+#endif
+
 /* BEGIN */
 #if defined(BURGER_MACCLASSIC) && !ACCESSOR_CALLS_ARE_FUNCTIONS && \
 	!defined(DOXYGEN)

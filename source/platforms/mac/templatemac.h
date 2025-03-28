@@ -11,6 +11,7 @@
 /* DIR: "platforms:mac" */
 /* IGNORE: "brtypes.h" */
 /* IGNORE: "brerror.h" */
+/* IGNORE: "brstructs.h" */
 
 /* BEGIN */
 /*! ************************************

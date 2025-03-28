@@ -1,14 +1,14 @@
 /***************************************
 
-    ASCII to number functions
+	ASCII to number functions
 
-    Copyright (c) 1995-2020 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2020 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -19,92 +19,92 @@
 
 /*! ************************************
 
-    \brief Convert an ASCII string into an integer.
+	\brief Convert an ASCII string into an integer.
 
-    Take a string formatted as a simple integer number a hex number of the form
-    $5123 or 0x1234 with or without a preceding '-' sign and convert it into a
-    32 bit integer value.
+	Take a string formatted as a simple integer number a hex number of the form
+	$5123 or 0x1234 with or without a preceding '-' sign and convert it into a
+	32 bit integer value.
 
-    Overflow is detected and is considered an error condition. 0xFFFFFFFFU will
-    be returned in this case.
+	Overflow is detected and is considered an error condition. 0xFFFFFFFFU will
+	be returned in this case.
 
-    \param pInput Pointer to the string to convert. nullptr will page fault.
-    \param pDest Pointer to a const char * that will either be given pInput
-        (Error) of pInput moved ahead until a non-numeric character was found.
-        This can be nullptr if the application doesn't require the location of
-        the string after the integer was parsed.
+	\param pInput Pointer to the string to convert. nullptr will page fault.
+	\param pDest Pointer to a const char * that will either be given pInput
+		(Error) of pInput moved ahead until a non-numeric character was found.
+		This can be nullptr if the application doesn't require the location of
+		the string after the integer was parsed.
 
-    \return A 32 bit integer that represents the ASCII string. Will be
-        0xFFFFFFFF if an overflow occurred and 0 if nothing could be parsed.
+	\return A 32 bit integer that represents the ASCII string. Will be
+		0xFFFFFFFF if an overflow occurred and 0 if nothing could be parsed.
 
-    \sa Burger::AsciiToFloat(const char *,const char **) or
-        Burger::AsciiToDouble(const char *,const char **)
+	\sa Burger::AsciiToFloat(const char *,const char **) or
+		Burger::AsciiToDouble(const char *,const char **)
 
 ***************************************/
 
 uint32_t BURGER_API Burger::AsciiToInteger(
-    const char* pInput, const char** pDest) BURGER_NOEXCEPT
+	const char* pInput, const char** pDest) BURGER_NOEXCEPT
 {
-    if (pDest) {
-        pDest[0] = pInput; // Assume I don't accept any input (Error condition)
-    }
+	if (pDest) {
+		pDest[0] = pInput; // Assume I don't accept any input (Error condition)
+	}
 
-    uint_t uLetter; // Temp ASCII char
+	uint_t uLetter; // Temp ASCII char
 
-    // Parse away whitespace and the '-' flag.
+	// Parse away whitespace and the '-' flag.
 
-    uint_t uNegate = 0; // Don't negate the result (Assume positive)
-    do {
-        uLetter = reinterpret_cast<const uint8_t*>(pInput)[0]; // Get char
-        ++pInput;
-        // Negate it?
-        if (uLetter == '-') {
-            // Toggle it, so - - works. (Foo^-1)-(-1) = -Foo
-            uNegate ^= static_cast<uint_t>(-1);
-            uLetter = ' '; // Force staying in the loop
-        }
-        // Eat white space
-    } while ((uLetter == ' ') || (uLetter == '\t') || (uLetter == '+'));
+	uint_t uNegate = 0; // Don't negate the result (Assume positive)
+	do {
+		uLetter = reinterpret_cast<const uint8_t*>(pInput)[0]; // Get char
+		++pInput;
+		// Negate it?
+		if (uLetter == '-') {
+			// Toggle it, so - - works. (Foo^-1)-(-1) = -Foo
+			uNegate ^= static_cast<uint_t>(-1);
+			uLetter = ' '; // Force staying in the loop
+		}
+		// Eat white space
+	} while ((uLetter == ' ') || (uLetter == '\t') || (uLetter == '+'));
 
-    if (uLetter != '$') { // Hex input?
-        // 0X or 0x for "C" style input
-        if ((uLetter == '0') &&
-            !((reinterpret_cast<const uint8_t*>(pInput)[0] ^ 'X') & (~0x20U))) {
-            // Skip the x and go to the hex parser
-            ++pInput;
-        } else {
+	if (uLetter != '$') { // Hex input?
+		// 0X or 0x for "C" style input
+		if ((uLetter == '0') &&
+			!((reinterpret_cast<const uint8_t*>(pInput)[0] ^ 'X') & (~0x20U))) {
+			// Skip the x and go to the hex parser
+			++pInput;
+		} else {
 
-            // Here's the base 10 code. Common case
+			// Here's the base 10 code. Common case
 
-            uint32_t uValue10 = g_AsciiToWord8Table[uLetter];
-            if (uValue10 < 10) { // First char valid?
-                uint_t uAscii10 = reinterpret_cast<const uint8_t*>(pInput)[0];
-                uLetter = g_AsciiToWord8Table[uAscii10];
-                if (uLetter < 10) { // Second char valid?
-                    do {
-                        ++pInput;
-                        // Check for overflow
-                        // 0xFFFFFFFFU/10 = 0x19999999
-                        if ((uValue10 > 0x19999999) ||
-                            ((uValue10 == 0x19999999) && (uLetter >= 6))) {
-                            return 0xFFFFFFFFU; // Tilt!
-                        }
-                        // Process into the total
-                        uValue10 = (uValue10 * 10) + uLetter;
-                        // Convert char to value
-                        uAscii10 = reinterpret_cast<const uint8_t*>(pInput)[0];
-                        uLetter = g_AsciiToWord8Table[uAscii10];
-                    } while (uLetter < 10);
-                }
+			uint32_t uValue10 = g_AsciiToWord8Table[uLetter];
+			if (uValue10 < 10) { // First char valid?
+				uint_t uAscii10 = reinterpret_cast<const uint8_t*>(pInput)[0];
+				uLetter = g_AsciiToWord8Table[uAscii10];
+				if (uLetter < 10) { // Second char valid?
+					do {
+						++pInput;
+						// Check for overflow
+						// 0xFFFFFFFFU/10 = 0x19999999
+						if ((uValue10 > 0x19999999) ||
+							((uValue10 == 0x19999999) && (uLetter >= 6))) {
+							return 0xFFFFFFFFU; // Tilt!
+						}
+						// Process into the total
+						uValue10 = (uValue10 * 10) + uLetter;
+						// Convert char to value
+						uAscii10 = reinterpret_cast<const uint8_t*>(pInput)[0];
+						uLetter = g_AsciiToWord8Table[uAscii10];
+					} while (uLetter < 10);
+				}
 
-                // Okay, I've got a valid value
+				// Okay, I've got a valid value
 
-                uValue10 = (uValue10 ^ uNegate) - uNegate; // Perform negation?
+				uValue10 = (uValue10 ^ uNegate) - uNegate; // Perform negation?
 
-                // Does the caller want the end address?
+				// Does the caller want the end address?
 
-                if (pDest) {
-                    // Skip past trailing white space
+				if (pDest) {
+					// Skip past trailing white space
 
                     if (uAscii10 == ' ' || uAscii10 == '\t') {
                         do {

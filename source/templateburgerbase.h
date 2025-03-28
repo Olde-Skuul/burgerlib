@@ -69,9 +69,10 @@
 	for speed.
 
 	\note This header is generated with the makeheader tool. Editing this header
-	directly will likely have the modifications overwritten after the next build.
+	directly will likely have the modifications overwritten after the next
+	build.
 
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -79,9 +80,11 @@
 
 	Please? It's not like I'm asking you for money!
 
-	Documentation can be found at https://burgerlib.readthedocs.io/en/latest/index.htm
+	Documentation can be found
+	[here.](https://burgerlib.readthedocs.io/en/latest/index.htm)
 
-	Comments, suggestions, bug fixes, email me at becky@burgerbecky.com
+	Comments, suggestions, bug fixes, email me at [becky@burgerbecky.com](
+	mailto:becky@burgerbecky.com).
 
 ***************************************/
 
