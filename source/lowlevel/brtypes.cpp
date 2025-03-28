@@ -304,6 +304,8 @@
 	\def BURGER_NULL_MACRO_PARAM
 	\brief An empty macro parameter.
 
+	\#define BURGER_NULL_MACRO_PARAM /&lowast;&lowast;/
+
 	To trick the preprocessor to accept an empty parameter in a macro, use this
 	macro which inserts a "C" style empty comment to force data separation so an
 	empty parameter can be passed to a macro.
@@ -335,6 +337,105 @@
 	parenthesis without actually invoking parameters.
 
 	\sa BURGER_NULL_MACRO_PARAM, and BURGER_LEFT_PARENTHESIS
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_STRINGIZE
+	\brief Convert a macro into a string literal.
+
+	Using deep magic in the form of \ref BURGER_STRINGIZE2,	convert the macro
+	into an 8 bit quoted string literal.
+
+	\param x Name of the macro to turn into a string
+
+	\code
+	#define foo 4
+	printf(BURGER_STRINGIZE(foo));
+
+	// Prints "4" (Without the quotes)
+
+	\endcode
+	\sa BURGER_STRINGIZE2
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_STRINGIZE2
+	\brief Convert the parameter into a string literal.
+
+	Using the # token, convert the macro parameter into an 8 bit quoted string
+	literal. That is, the string does not have the "L" qualfier for UTF-16.
+
+	\param x Name of the item to turn into a string
+
+	\code
+	int foo = 4;
+	printf(BURGER_STRINGIZE2(foo));
+
+	// Prints "foo" (Without the quotes)
+
+	\endcode
+
+	\sa BURGER_STRINGIZE
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_JOIN
+	\brief Concatenates two strings, even if they are macros.
+
+	Using deep magic in the form of \ref BURGER_JOIN2 and \ref BURGER_JOIN3,
+	join the two macros into one. If a macro is passed, it must resolve into a
+	string literal.
+
+	\code
+	printf("%s\n", BURGER_JOIN("Language ", BURGER_STDCPP_NAME));
+	\endcode
+
+	\param x The first macro to join.
+	\param y The second macro to join.
+
+	\sa BURGER_JOIN2 or BURGER_JOIN3
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_JOIN2
+	\brief Concatenates two strings or macros that directly become strings.
+
+	Invoke \ref BURGER_JOIN3 to join macros with ##.
+
+	\code
+	printf("%s\n", BURGER_JOIN("Language ", BURGER_STDCPP_NAME));
+	\endcode
+
+	\param x The first macro to join.
+	\param y The second macro to join.
+
+	\sa BURGER_JOIN or BURGER_JOIN3
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_JOIN3
+	\brief Combine two stringa with ##.
+
+	Use ## to join two string literals. Does not work with macros.
+
+	\code
+	printf("%s\n", BURGER_JOIN3("Language ", "Forth"));
+	\endcode
+
+	\param x The first string to join.
+	\param y The second string to join.
+
+	\sa BURGER_JOIN or BURGER_JOIN2
 
 ***************************************/
 
@@ -3172,92 +3273,6 @@ line of processors.
 	static DWORD gStorage = TlsAlloc();
 
 	\endcode
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_STRINGIZE
-	\brief Convert a macro into a string literal.
-
-	Using deep magic in the form of \ref BURGER_STRINGIZE2,
-	convert the macro into an 8 bit quoted string literal.
-
-	\param x Name of the macro to turn into a string
-
-	\code
-	#define foo 4
-	printf(BURGER_STRINGIZE(foo));
-
-	// Prints "4" (Without the quotes)
-
-	\endcode
-	\sa BURGER_STRINGIZE2
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_STRINGIZE2
-	\brief Convert the parameter into a string literal.
-
-	Using the # token, convert the macro parameter into an 8 bit quoted string
-	literal.
-
-	\param x Name of the item to turn into a string
-
-	\code
-	int foo = 4;
-	printf(BURGER_STRINGIZE2(foo));
-
-	// Prints "foo" (Without the quotes)
-
-	\endcode
-
-	\sa BURGER_STRINGIZE
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_JOIN
-	\brief Concatenates two strings, even if they are macros.
-
-	Using deep magic in the form of \ref BURGER_JOIN2 and \ref BURGER_JOIN3,
-	join the two macros into one.
-
-	\param x The first macro to join.
-	\param y The second macro to join.
-
-	\sa BURGER_JOIN2 or BURGER_JOIN3
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_JOIN2
-	\brief Invokes \ref BURGER_JOIN3
-
-	Invoke \ref BURGER_JOIN3 to join macros with ##.
-
-	\param x The first macro to join.
-	\param y The second macro to join.
-
-	\sa BURGER_JOIN or BURGER_JOIN3
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_JOIN3
-	\brief Combine two macros with ##.
-
-	Use ## to join two macros.
-
-	\param x The first macro to join.
-	\param y The second macro to join.
-
-	\sa BURGER_JOIN or BURGER_JOIN2
 
 ***************************************/
 

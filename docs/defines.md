@@ -206,10 +206,11 @@ Defines to denote if features, compilation switches or high level APIs are prese
 Handy macros {#sect_handy_macros}
 ------------
 
-* \ref BURGER_STRINGIZE Convert a macro's definition into a string
-* \ref BURGER_JOIN Join two macros together.
+* \ref BURGER_NULL_MACRO_PARAM A null parameter for a macro, fakes being empty
 * \ref BURGER_LEFT_PARENTHESIS (
 * \ref BURGER_RIGHT_PARENTHESIS )
+* \ref BURGER_STRINGIZE Convert a macro's definition into a string
+* \ref BURGER_JOIN Join two macros together.
 * \ref BURGER_OFFSETOF Get offset of a structure member
 * \ref BURGER_GET_BASE_PTR
 * \ref BURGER_CONST_GET_BASE_PTR
