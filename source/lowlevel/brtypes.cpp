@@ -34,7 +34,7 @@
 #define BURGER_METROWERKS __MWERKS__
 #define BURGER_ARM_COMPILER __ARMCC_VERSION
 #define BURGER_MSVC _MSC_FULL_VER
-#define BURGER_COMPILER_NAME "The name of the compiler"
+#define BURGER_COMPILER_NAME "Open Watcom Compiler"
 #define BURGER_COMPILER_VERSION 1234
 
 #define BURGER_X86
@@ -588,207 +588,25 @@
 
 /*! ************************************
 
-	\def BURGER_WATCOM
-	\brief Define to determine if code is being built using Open Watcom
-		compilers.
+	\def BURGER_HAS_64_BIT_SUPPORT
+	\brief Compiler supports 64 bit integers.
 
-	If this define exists, then you are creating code with the [Open Watcom
-		compiler](http://www.openwatcom.com "Open Watcom Project")
+	Most compilers support 64 bit integers, but older compilers only support 32
+	bit integers. To allow limited 64 bit integer support, this define exists
+	and ``Burger::longlong_t`` and ``Burger::ulonglong_t`` are used to preform
+	64 bit integer math.
 
-	## Known issues with the Watcom Compiler version 1.9.
-
-	1. Multicharacter ASCII such as ``'RSRC'`` or ``'ABCD'`` are not supported.
-		Any use of this data type will have the compiler generate an ASCII
-		character of the first letter found and ignore the rest and assume a
-		data type of ``char``.
-	2. Templates are not fully supported. So several high level templates are
-		not available. Look to the documentation of the Burgerlib templates to
-		determine if it is supported on Watcom.
-
-	\sa BURGER_INTEL_COMPILER, BURGER_METROWERKS, BURGER_MSVC and BURGER_X86
+	\sa Burger::longlong_t, Burger::ulonglong_t, BURGER_APPLE_SC, or BURGER_MRC
 
 ***************************************/
 
 /*! ************************************
 
-	\def BURGER_MRC
-	\brief Define to determine if code is being built using Apple/Motorola MrC
-		compiler.
-
-	If this define exists, then you are creating code with the [MrC compiler]
-	(https://staticky.com/mirrors/ftp.apple.com/developer/Tool_Chest/Core_Mac_OS_Tools/MPW_Website_Downloads/
-	"MrC Compiler download page")
-
-	## Known issues with the Apple MrC compiler.
-
-	1. Templates are poorly supported. Do not use templates.
-
-	\sa BURGER_GNUC, BURGER_METROWERKS, BURGER_APPLE_SC and BURGER_POWERPC
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_APPLE_SC
-	\brief Define to determine if code is being built using Apple/Motorola SC
-		compiler.
-
-	If this define exists, then you are creating code with the [Apple SC
-	compiler]
-	(https://staticky.com/mirrors/ftp.apple.com/developer/Tool_Chest/Core_Mac_OS_Tools/MPW_Website_Downloads/
-	"Apple SC Compiler download page")
-
-	## Known issues with the Apple SC compiler.
-
-	1. Templates are poorly supported. Do not use templates.
-
-	\sa BURGER_GNUC, BURGER_METROWERKS, BURGER_MRC and BURGER_68K
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_DJGPP
-	\brief Define to determine if code is being built using DJGPP compiler.
-
-	If this define exists, then you are creating code with the [DJGPP compiler]
-	(http://www.delorie.com/djgpp/ "DJGPP Compiler home page")
-
-	\sa BURGER_MSDOS, or BURGER_X86
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_BORLAND
-	\brief Define to determine if code is being built using the Borland C
-		compiler.
-
-	If this define exists, then you are creating code with the [Borland C
-	compiler] (https://www.embarcadero.com/free-tools/ccompiler "Borland C free
-	version download")
-
-	\sa BURGER_MSDOS, or BURGER_X86
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_SNSYSTEMS
-	\brief Define to determine if code is being built using Green Hills
-		compiler.
-
-	If this define exists, then you are creating code with the
-	[SN Systems compiler](http://www.snsys.com/ "SN Systems home page")
-
-	\sa BURGER_METROWERKS, BURGER_POWERPC, BURGER_MIPS32 and BURGER_AMD64
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_GHS
-	\brief Define to determine if code is being built using SN Systems compiler.
-
-	If this define exists, then you are creating code with the
-	[Green Hills Software compiler](https://www.ghs.com/ "Green Hills Software
-	home page")
-
-	\sa BURGER_METROWERKS, BURGER_POWERPC, BURGER_WIIU and BURGER_WII
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_INTEL_COMPILER
-	\brief Define to determine if code is being built using Intel compiler.
-
-	If this define exists, then you are creating code with the [Intel
-	compiler](https://software.intel.com/en-us/c-compilers "Intel Compiler Home
-	page")
-
-	\sa BURGER_MSVC, BURGER_METROWERKS, BURGER_AMD64 and BURGER_X86
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_MINGW
-	\brief Define to determine if code is being built using MinGW compilers.
-
-	If this define exists, then you are creating code with the [MinGW compiler]
-	(http://www.mingw.org/ "MinGW home page")
-
-	\sa BURGER_WATCOM, BURGER_INTEL_COMPILER, BURGER_METROWERKS, BURGER_MSVC and
-		BURGER_X86
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_CLANG
-	\brief Define to determine if code is being built using the clang compiler.
-
-	If this define exists, then you are creating code with the [clang compiler]
-	(https://clang.llvm.org/ "Clang home page")
-
-	\sa BURGER_GNUC, BURGER_METROWERKS, BURGER_POWERPC, BURGER_ARM32,
-		BURGER_AMD64 and BURGER_X86
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_GNUC
-	\brief Define to determine if code is being built using the GNU C family of
-		compilers.
-
-	If this define exists, then you are creating code with the [GNUC compiler]
-	(https://gcc.gnu.org/ "GCC home page")
-
-	\sa BURGER_CLANG, BURGER_METROWERKS, BURGER_POWERPC, BURGER_ARM32,
-		BURGER_AMD64 and BURGER_X86
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_METROWERKS
-	\brief Define to determine if code is being built using Freescale/Metrowerks
-		family of compilers.
-
-	If this define exists, then you are creating code with the [Freescale /
-	Metrowerks compiler]
-	(https://www.nxp.com/support/developer-resources/software-development-tools/codewarrior-development-tools:CW_HOME)
-
-	\sa BURGER_MRC, BURGER_POWERPC, BURGER_MIPS32 and BURGER_X86
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_ARM_COMPILER
-	\brief Define to determine if code is being built using
-		Advanced RISC Machines family of compilers.
-
-	If this define exists, then you are creating code with the [ARM compiler]
-	(https://developer.arm.com/products/software-development-tools/compilers/arm-compiler")
-
-	\sa BURGER_MRC, BURGER_POWERPC, BURGER_MIPS32 and BURGER_X86
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_MSVC
-	\brief Define to determine if code is being built using Microsoft Visual C
-		family of compilers.
-
-	If this define exists, then you are creating code with the [Microsoft
-	Visual C compiler.](https://visualstudio.microsoft.com/)
-
-	\sa BURGER_INTEL_COMPILER, BURGER_METROWERKS, BURGER_ARM32, BURGER_AMD64 and
-		BURGER_X86
+	\def BURGER_HAS_SFINAE
+	\brief Compiler supports SFINAE
+
+	Most compilers support "Substitution Failure Is Not An Error" (SFINAE), for
+	those few old compilers that don't support it, this macro doesn't exist.
 
 ***************************************/
 
@@ -816,6 +634,221 @@
 
 	\sa BURGER_COMPILER_NAME, BURGER_INTEL_COMPILER, BURGER_MSVC,
 		BURGER_WATCOM, BURGER_CLANG, BURGER_GNUC, or BURGER_METROWERKS
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_WATCOM
+	\brief Define to determine if code is being built using Open Watcom
+		compiler.
+
+	If this define exists, then the code is being compiled with the [Open Watcom
+		compiler](http://www.openwatcom.com "Open Watcom Project")
+
+	## Known issues with the Open Watcom Compiler version 1.9.
+
+	1. Multicharacter ASCII such as ``'RSRC'`` or ``'ABCD'`` are not supported.
+		Any use of this data type will have the compiler generate an ASCII
+		character of the first letter found and ignore the rest and assume a
+		data type of ``char``.
+	2. Templates are not fully supported. So several high level templates are
+		not available. Look to the documentation of the Burgerlib templates to
+		determine if it is supported on Watcom.
+
+	\sa BURGER_INTEL_COMPILER, BURGER_METROWERKS, BURGER_MSVC and BURGER_X86
+
+***************************************/
+
+// clang-format off
+/*! ************************************
+
+	\def BURGER_MRC
+	\brief Define to determine if code is being built using Apple/Motorola MrC
+		compiler.
+
+	If this define exists, then the code is being compiled with the [MrC compiler](
+	https://web.archive.org/web/20240914083349/https://staticky.com/mirrors/ftp.apple.com/developer/Tool_Chest/Core_Mac_OS_Tools/MPW_Website_Downloads/ "MrC Compiler download page on archive.org")
+
+	## Known issues with the Apple MrC compiler.
+
+	1. Templates are poorly supported. Do not use templates.
+	2. Version 5.0 or higher is required for Burgerlib.
+
+	\sa BURGER_GNUC, BURGER_METROWERKS, BURGER_APPLE_SC and BURGER_POWERPC
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_APPLE_SC
+	\brief Define to determine if code is being built using Apple/Motorola SC
+		compiler.
+
+	If this define exists, then the code is being compiled with the
+	[Apple SC compiler](
+	https://web.archive.org/web/20240914083349/https://staticky.com/mirrors/ftp.apple.com/developer/Tool_Chest/Core_Mac_OS_Tools/MPW_Website_Downloads/ "Apple SC Compiler download page on archive.org")
+
+	## Known issues with the Apple SC compiler.
+
+	1. Templates are poorly supported. Do not use templates.
+	2. Version 8.9 or higher is required for Burgerlib.
+	3. 64 bit integers are NOT supported. Use Metrowerks for 68K instead.
+
+	\sa BURGER_GNUC, BURGER_METROWERKS, BURGER_MRC and BURGER_68K
+
+***************************************/
+// clang-format on
+
+/*! ************************************
+
+	\def BURGER_BORLAND
+	\brief Define to determine if code is being built using the Borland C
+		compiler.
+
+	If this define exists, then the code is being compiled with the [Borland C
+	compiler](https://www.embarcadero.com/free-tools/ccompiler "Borland C free
+	version download")
+
+	\sa BURGER_MSDOS, or BURGER_X86
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_DJGPP
+	\brief Define to determine if code is being built using DJGPP compiler.
+
+	If this define exists, then the code is being compiled with the
+	[DJGPP compiler](http://www.delorie.com/djgpp/ "DJGPP Compiler home page")
+
+	\sa BURGER_MSDOS, or BURGER_X86
+
+***************************************/
+
+// clang-format off
+/*! ************************************
+
+	\def BURGER_SNSYSTEMS
+	\brief Define to determine if code is being built using Green Hills
+		compiler.
+
+	If this define exists, then the code is being compiled with the [SN Systems 
+	compiler](https://web.archive.org/web/20140908162510/http://www.snsys.com/ "SN Systems home page on archive.org")
+
+	\note This compiler is used by Sony for the Playstation 3, and Vita.
+
+	\sa BURGER_METROWERKS, BURGER_POWERPC, BURGER_MIPS32 and BURGER_AMD64
+
+***************************************/
+// clang-format on
+
+/*! ************************************
+
+	\def BURGER_GHS
+	\brief Define to determine if code is being built using Green Hills
+		compiler.
+
+	If this define exists, then the code is being compiled with the
+	[Green Hills Software compiler](https://www.ghs.com/ "Green Hills Software
+	home page")
+
+	\sa BURGER_METROWERKS, BURGER_POWERPC, BURGER_WIIU and BURGER_WII
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_INTEL_COMPILER
+	\brief Define to determine if code is being built using Intel compiler.
+
+	If this define exists, then the code is being compiled with the [Intel
+	compiler](https://software.intel.com/en-us/c-compilers "Intel Compiler Home
+	page")
+
+	\sa BURGER_MSVC, BURGER_METROWERKS, BURGER_AMD64 and BURGER_X86
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_MINGW
+	\brief Define to determine if code is being built using MinGW compilers.
+
+	If this define exists, then the code is being compiled with the [MinGW
+	compiler](https://osdn.net/projects/mingw/ "MinGW home page")
+
+	\sa BURGER_WATCOM, BURGER_INTEL_COMPILER, BURGER_METROWERKS, BURGER_MSVC and
+		BURGER_X86
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_CLANG
+	\brief Define to determine if code is being built using the clang compiler.
+
+	If this define exists, then the code is being compiled with the [clang
+	compiler](https://clang.llvm.org/ "Clang home page")
+
+	\sa BURGER_GNUC, BURGER_METROWERKS, BURGER_POWERPC, BURGER_ARM32,
+		BURGER_AMD64 and BURGER_X86
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_GNUC
+	\brief Define to determine if code is being built using the GNU C family of
+		compilers.
+
+	If this define exists, then the code is being compiled with the [GNUC
+	compiler](https://gcc.gnu.org/ "GCC home page")
+
+	\sa BURGER_CLANG, BURGER_METROWERKS, BURGER_POWERPC, BURGER_ARM32,
+		BURGER_AMD64 and BURGER_X86
+
+***************************************/
+
+// clang-format off
+/*! ************************************
+
+	\def BURGER_METROWERKS
+	\brief Define to determine if code is being built using Freescale/Metrowerks
+		family of compilers.
+
+	If this define exists, then the code is being compiled with the [Freescale /
+	Metrowerks compiler](https://www.nxp.com/support/developer-resources/software-development-tools/codewarrior-development-tools:CW_HOME)
+
+	\sa BURGER_MRC, BURGER_POWERPC, BURGER_MIPS32 and BURGER_X86
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_ARM_COMPILER
+	\brief Define to determine if code is being built using
+		Advanced RISC Machines family of compilers.
+
+	If this define exists, then the code is being compiled with the [ARM
+	compiler](https://developer.arm.com/products/software-development-tools/compilers/arm-compiler)
+
+	\sa BURGER_MRC, BURGER_POWERPC, BURGER_MIPS32 and BURGER_X86
+
+***************************************/
+// clang-format on
+
+/*! ************************************
+
+	\def BURGER_MSVC
+	\brief Define to determine if code is being built using Microsoft Visual C
+		family of compilers.
+
+	If this define exists, then the code is being compiled with the [Microsoft
+	Visual C compiler.](https://visualstudio.microsoft.com/)
+
+	\sa BURGER_INTEL_COMPILER, BURGER_METROWERKS, BURGER_ARM32, BURGER_AMD64 and
+		BURGER_X86
 
 ***************************************/
 
@@ -3826,30 +3859,6 @@ default constructors.
 	using `long` as an input must be declared.
 
 	\sa BURGER_INT_NOT_IN_STDINT
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_HAS_64_BIT_SUPPORT
-	\brief Computer supports 64 bit integers.
-
-	Most compilers support 64 bit integers, but older compilers only support 32
-	bit integers. To allow limited 64 bit integer support, this define exists
-	and `Burger::longlong_t` and `Burger::ulonglong_t` are used to preform 64
-	bit integer math.
-
-	\sa Burger::longlong_t, or Burger::ulonglong_t
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_HAS_SFINAE
-	\brief Compiler supports SFINAE
-
-	Most compilers support "Substitution Failure Is Not An Error" (SFINAE), for
-	those few old compilers that don't support it, this macro doesn't exist.
 
 ***************************************/
 

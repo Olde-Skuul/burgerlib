@@ -30,6 +30,7 @@ Compiler defines, to determine any compiler specific features are available. Onl
 * \ref BURGER_WATCOM Open Watcom
 * \ref BURGER_MRC Apple's PowerPC MPW compiler
 * \ref BURGER_APPLE_SC Apple's 68000 MPW compiler
+* \ref BURGER_BORLAND Embarcadero, formerly Borland, compiler
 * \ref BURGER_DJGPP DJ's GNU compiler
 * \ref BURGER_SNSYSTEMS SN System's compiler
 * \ref BURGER_GHS Green Hills compiler
@@ -227,4 +228,5 @@ Handy macros {#sect_handy_macros}
 * \ref nullptr 0 on compilers that don't support this keyword.
 * \ref __underlying_type `int` on compilers that don't support this keyword.
 * \ref BURGER_RVALUE_REFERENCES Test for && operations.
+* \ref BURGER_HAS_64_BIT_SUPPORT 64 bit integers are supported
 * \ref BURGER_HAS_SFINAE Compiler supports SFINAE
