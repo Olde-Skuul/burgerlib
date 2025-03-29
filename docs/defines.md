@@ -19,6 +19,7 @@ Compiler C++ level, all are defined up to the feature level present.
 * \ref BURGER_CPP14 Compiler is at least C++14 level of features
 * \ref BURGER_CPP17 Compiler is at least C++17 level of features
 * \ref BURGER_CPP20 Compiler is at least C++20 level of features
+* \ref BURGER_CPP23 Compiler is at least C++23 level of features
 * \ref BURGER_STDCPP_NAME String of maximum C++ level
 
 Compiler name {#sect_compiler_name}

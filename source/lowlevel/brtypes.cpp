@@ -441,10 +441,51 @@
 
 /*! ************************************
 
+	\def NULL
+	\brief Define of the number 0 for pointer invalidation.
+
+	This is only present for older codebases. Burgerlib supports nullptr and
+	will define \ref nullptr as a macro for older compilers, so to use the
+	robust error checking available on modern compilers, use \ref nullptr
+	instead.
+
+	\note Since this a common \#define, Burgerlib will first check if it's
+	already present before defining.
+
+	\sa \ref nullptr, FALSE or TRUE
+
+***************************************/
+
+/*! ************************************
+
+	\def TRUE
+	\brief Define of the number 1 for boolean operations.
+
+	\note Since this a common \#define, Burgerlib will first check if it's
+	already present before defining.
+
+	\sa FALSE or NULL
+
+***************************************/
+
+/*! ************************************
+
+	\def FALSE
+	\brief Define of the number 0 for boolean operations.
+
+	\note Since this a common \#define, Burgerlib will first check if it's
+	already present before defining.
+
+	\sa TRUE or NULL
+
+***************************************/
+
+/*! ************************************
+
 	\def BURGER_CPP89
 	\brief Define to determine if compiler has feature level C++89 (ANSI C)
 
-	If this define exists, then you are creating code with a compiler that has a
+	If this define exists, then code is bring created with a compiler that has a
 	minimum feature set found in ANSI C++ compilers.
 
 	\note Burgerlib requires this as a baseline. It will likely not compile
@@ -460,7 +501,7 @@
 	\def BURGER_CPP98
 	\brief Define to determine if compiler has feature level C++98
 
-	If this define exists, then you are creating code with a compiler that has a
+	If this define exists, then code is bring created with a compiler that has a
 	minimum feature set found in C++98 compilers.
 
 	\sa BURGER_STDCPP_NAME, BURGER_CPP89, BURGER_CPP11, BURGER_CPP14,
@@ -473,7 +514,7 @@
 	\def BURGER_CPP11
 	\brief Define to determine if compiler has feature level C++11
 
-	If this define exists, then you are creating code with a compiler that has a
+	If this define exists, then code is bring created with a compiler that has a
 	minimum feature set found in C++11 compilers.
 
 	\sa BURGER_STDCPP_NAME, BURGER_CPP89, BURGER_CPP98, BURGER_CPP14,
@@ -486,7 +527,7 @@
 	\def BURGER_CPP14
 	\brief Define to determine if compiler has feature level C++14
 
-	If this define exists, then you are creating code with a compiler that has a
+	If this define exists, then code is bring created with a compiler that has a
 	minimum feature set found in C++14 compilers.
 
 	\sa BURGER_STDCPP_NAME, BURGER_CPP89, BURGER_CPP98, BURGER_CPP11,
@@ -499,7 +540,7 @@
 	\def BURGER_CPP17
 	\brief Define to determine if compiler has feature level C++17
 
-	If this define exists, then you are creating code with a compiler that has a
+	If this define exists, then code is bring created with a compiler that has a
 	minimum feature set found in C++17 compilers.
 
 	\sa BURGER_STDCPP_NAME, BURGER_CPP89, BURGER_CPP98, BURGER_CPP11,
@@ -512,7 +553,7 @@
 	\def BURGER_CPP20
 	\brief Define to determine if compiler has feature level C++20
 
-	If this define exists, then you are creating code with a compiler that has a
+	If this define exists, then code is bring created with a compiler that has a
 	minimum feature set found in C++20 compilers.
 
 	\sa BURGER_STDCPP_NAME, BURGER_CPP89, BURGER_CPP98, BURGER_CPP11,
@@ -525,7 +566,7 @@
 	\def BURGER_CPP23
 	\brief Define to determine if compiler has feature level C++23
 
-	If this define exists, then you are creating code with a compiler that has a
+	If this define exists, then code is bring created with a compiler that has a
 	minimum feature set found in C++23 compilers.
 
 	\sa BURGER_STDCPP_NAME, BURGER_CPP89, BURGER_CPP98, BURGER_CPP11,
@@ -540,8 +581,8 @@
 
 	This define is of a string naming the compiler feature level.
 
-	\sa BURGER_CPP89, BURGER_CPP98, BURGER_CPP11, BURGER_CPP14, BURGER_CPP17, or
-		BURGER_CPP20
+	\sa BURGER_CPP89, BURGER_CPP98, BURGER_CPP11, BURGER_CPP14, BURGER_CPP17,
+		BURGER_CPP20, or BURGER_CPP23
 
 ***************************************/
 
@@ -2088,42 +2129,6 @@ line of processors.
 
 /*! ************************************
 
-	\def TRUE
-	\brief Define of the number 1 for boolean operations.
-
-	\note Since this a common \#define, it will first check if it's already
-	present before defining.
-
-	\sa FALSE or NULL
-
-***************************************/
-
-/*! ************************************
-
-	\def FALSE
-	\brief Define of the number 0 for boolean operations.
-
-	\note Since this a common \#define, it will first check if it's already
-	present before defining.
-
-	\sa TRUE or NULL
-
-***************************************/
-
-/*! ************************************
-
-	\def NULL
-	\brief Define of the number 0 for pointer invalidation.
-
-	\note Since this a common \#define, it will first check if it's already
-	present before defining.
-
-	\sa FALSE or TRUE
-
-***************************************/
-
-/*! ************************************
-
 	\def BURGER_MININT
 	\brief Minimum value of a signed integer.
 
@@ -2754,7 +2759,7 @@ line of processors.
 	On compilers that support nullptr, this macro does not exist. To support
 	this feature on older compilers, this macro exists to simulate the feature
 
-	\sa BURGER_CPP11, BURGER_OVERRIDE or BURGER_CONSTEXPR
+	\sa NULL, BURGER_CPP11, BURGER_OVERRIDE or BURGER_CONSTEXPR
 
 ***************************************/
 

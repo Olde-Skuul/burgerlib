@@ -69,11 +69,14 @@
 // At C++11 or later, things get odd.
 #if (__cplusplus >= 201103L) || defined(DOXYGEN)
 #define BURGER_CPP11 __cplusplus
-// SN Systems using Edison Design Group front end
-#elif defined(__SNC__) && (defined(__EDG_VERSION__) && (__EDG_VERSION__ >= 403))
+// SN Systems
+#elif (defined(__SNC__) && \
+	(defined(__EDG_VERSION__) && (__EDG_VERSION__ >= 403))) || \
+	(defined(__SN_VER__) && (__SN_VER__ >= 43001))
 #if __option(cpp11)
 #define BURGER_CPP11 201103L
 #endif
+
 // Because, Microsoft
 #elif (defined(_MSVC_LANG) && (_MSVC_LANG >= 201103L))
 #define BURGER_CPP11 _MSVC_LANG
@@ -82,6 +85,7 @@
 // Test for C++14
 #if (__cplusplus >= 201402L) || defined(DOXYGEN)
 #define BURGER_CPP14 __cplusplus
+// Because, Microsoft again
 #elif (defined(_MSVC_LANG) && (_MSVC_LANG >= 201402L))
 #define BURGER_CPP14 _MSVC_LANG
 #endif
@@ -89,6 +93,7 @@
 // Test for C++17
 #if (__cplusplus >= 201700L) || defined(DOXYGEN)
 #define BURGER_CPP17 __cplusplus
+// Why Microsoft?
 #elif (defined(_MSVC_LANG) && (_MSVC_LANG >= 201700L))
 #define BURGER_CPP17 _MSVC_LANG
 #endif
@@ -96,6 +101,7 @@
 // Test for C++20
 #if (__cplusplus > 202002L) || defined(DOXYGEN)
 #define BURGER_CPP20 __cplusplus
+// Give it a rest Microsoft
 #elif (defined(_MSVC_LANG) && (_MSVC_LANG > 202002L))
 #define BURGER_CPP20 _MSVC_LANG
 #endif
@@ -103,6 +109,7 @@
 // To C++Infinity and beyond
 #if (__cplusplus > 202300L) || defined(DOXYGEN)
 #define BURGER_CPP23 __cplusplus
+// Microsoft hates me
 #elif (defined(_MSVC_LANG) && (_MSVC_LANG > 202300L))
 #define BURGER_CPP23 _MSVC_LANG
 #endif
