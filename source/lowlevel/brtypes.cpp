@@ -56,6 +56,8 @@
 #define BURGER_SH32
 #define BURGER_S390
 #define BURGER_KVX
+#define BURGER_BPF
+#define BURGER_MRISC32
 #define BURGER_CPU_NAME "The name of the CPU"
 
 #define BURGER_3DNOW
@@ -854,6 +856,306 @@
 
 /*! ************************************
 
+	\def BURGER_CPU_NAME
+	\brief String of the name of the CPU.
+
+	"C" string of the name of the CPU.
+
+	\sa BURGER_X86, BURGER_AMD64, BURGER_ARM32, or BURGER_SPARC32
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_X86
+	\brief Define to determine if code is being built for 32 bit Intel
+		processors.
+
+	If this define exists, then the code runs on the 32 bit Intel, AMD and other
+	compatible processors. The Microsoft XBox, Mac OSX Intel and Win32 platforms
+	which are running on Pentium, 386, 486, and AMD CPUs will have this define
+	present.
+
+	\sa BURGER_CPU_NAME, BURGER_INTEL, BURGER_AMD64, BURGER_WIN32, BURGER_BEOS,
+		BURGER_MSDOS, BURGER_MACOSX or BURGER_XBOX
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_AMD64
+	\brief Define to determine if code is being built for AMD64 (Intel 64 bit)
+		compatible processors.
+
+	If this define exists, then the code runs on the AMD 64 and other compatible
+	processors. The Microsoft Win64 and Mac OSX 64 platforms which are running
+	on Pentium and AMD CPUs in 64 bit mode will have this define present.
+
+	\sa BURGER_CPU_NAME, BURGER_INTEL, BURGER_WIN64, BURGER_MACOSX,
+		BURGER_XBOXONE, BURGER_PS4, BURGER_PS5, or BURGER_X86
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_ITANIUM
+	\brief Define to determine if code is being built for Intel Itanium
+		compatible processors.
+
+	If this define exists, then the code runs on the Intel Itanium compatible
+	processors. The Microsoft Win64 and Linux which are running on Itanium
+	compatible processors will have this define present.
+
+	\sa BURGER_CPU_NAME, BURGER_WIN64 or BURGER_LINUX
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_ARM32
+	\brief Define to determine if code is being built for 32 bit Advanced RISC
+		Machine processors.
+
+	If this define exists, then the code runs on the Advanced RISC Machines 32
+	bit line of processors. The Gameboy Advanced, Nintendo DS, Nokia NGage,
+	Apple iPad/iPhone/iPod and certain cell phones will have this define
+	present.
+
+	\sa BURGER_CPU_NAME, BURGER_ARM64, BURGER_ARM, BURGER_GBA, BURGER_ANDROID,
+		BURGER_SHIELD, BURGER_OUYA, BURGER_DS, BURGER_3DS, BURGER_IOS,
+		BURGER_NGAGE, or BURGER_SYMBIAN
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_ARM64
+	\brief Define to determine if code is being built for 64 bit Advanced RISC
+		Machine processors.
+
+	If this define exists, then the code runs on the Advanced RISC Machines 64
+	bit line of processors. Apple iPad/iPhone/iPod/Mac, Nintendo Switch, and
+	certain cell phones will have this define present.
+
+	\sa BURGER_CPU_NAME, BURGER_ARM32, BURGER_ARM, BURGER_ANDROID or BURGER_IOS
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_MIPS32
+	\brief Define to determine if code is being built for MIPS 32 bit
+		processors.
+
+	If this define exists, then the code runs on the MIPS 32 bit line of
+	processors. R5900 (PS2), R3300 (PS1) and R4400 (PSP) all will have this
+	define present.
+
+	\sa BURGER_CPU_NAME, BURGER_MIPS64, BURGER_PS2, BURGER_PSP, BURGER_PS1 or
+		BURGER_MIPS
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_MIPS64
+	\brief Define to determine if code is being built for MIPS 64 bit
+		processors.
+
+	If this define exists, then the code runs on the MIPS 64 bit line of 64 bit
+	processors.
+
+	\sa BURGER_CPU_NAME, BURGER_MIPS32, BURGER_MIPS
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_POWERPC
+	\brief Define to determine if code is being built for 32 bit PowerPC
+		processors.
+
+	If this define exists, then the code runs on a 32 bit PowerPC processor. The
+	Nintendo GameCube, Power Macintosh and the Nintendo Wii all will have this
+	define present.
+
+	\sa BURGER_CPU_NAME, BURGER_PPC, BURGER_WIIU, BURGER_WII, BURGER_MAC,
+		BURGER_MACOSX, BURGER_BEOS or BURGER_GAMECUBE
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_POWERPC64
+	\brief Define to determine if code is being built for 64 bit PowerPC
+		processors.
+
+	If this define exists, then the code runs on a 64 bit PowerPC processor. The
+	G5 Power Macintosh, Sony Playstation 3 and Microsoft XBox 360 all will have
+	this define present.
+
+	\sa BURGER_CPU_NAME, BURGER_PPC, BURGER_XBOX360, BURGER_PS3 or BURGER_MACOSX
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_68K
+	\brief Define to determine if code is being built for Motorola 680x0
+		processors.
+
+	If this define exists, then the code runs on the Motorola 680x0 line of
+	processors. The classic Macintosh, Commodore Amiga, and certain PDAs will
+	have this define present.
+
+	\sa BURGER_CPU_NAME, BURGER_68881, BURGER_MAC or BURGER_CFM
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_RISCV
+	\brief Define to determine if code is being built for 32 bit RISC-V
+		processors.
+
+	If this define exists, then the code runs on the RISC-V line of
+	processors. Micro controllers will have this define present.
+
+	\sa BURGER_CPU_NAME, BURGER_MSP430, BURGER_ARM64, BURGER_ARM32 or BURGER_AVR
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_AVR
+	\brief Define to determine if code is being built for 32 bit Atmel AVR
+		processors.
+
+	If this define exists, then the code runs on the Atmel AVR line of
+	processors. Micro controllers will have this define present.
+
+	\sa BURGER_CPU_NAME, BURGER_ARM64, BURGER_ARM32 or BURGER_RISCV
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_MSP430
+	\brief Define to determine if code is being built for 16 bit MSP430
+		processors from Texas Instruments.
+
+	If this define exists, then the code runs on the MSP430 line of 16 bit
+	processors. Micro controllers will have this define present.
+
+	\sa BURGER_CPU_NAME, BURGER_RISCV, BURGER_ARM32 or BURGER_AVR
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_SPARC32
+	\brief Define to determine if code is being built for 32 bit Sparc
+		processors from Sun.
+
+	If this define exists, then the code runs on the Sparc line of 32 bit
+	processors. Sun servers will have this define present.
+
+	\sa BURGER_CPU_NAME, BURGER_LINUX, or BURGER_SPARC64
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_SPARC64
+	\brief Define to determine if code is being built for 64 bit Sparc
+		processors from Sun.
+
+	If this define exists, then the code runs on the Sparc line of 64 bit
+	processors. Sun servers will have this define present.
+
+	\sa BURGER_CPU_NAME, BURGER_LINUX, or BURGER_SPARC32
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_NANOMIPS32
+	\brief Define to determine if code is being built for 32 bit nanoMIPS
+	processors from Sun.
+
+	If this define exists, then the code runs on the nanoMIPS line of 32 bit
+	processors.
+
+	\sa BURGER_CPU_NAME, BURGER_LINUX, or BURGER_RISCV
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_SH32
+	\brief Define to determine if code is being built for 32 bit SuperH
+	processors from HItachi.
+
+	If this define exists, then the code runs on the SuperH line of 32 bit
+	processors. Used by the Sega Dreamcast
+
+	\sa BURGER_CPU_NAME, or BURGER_LINUX
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_S390
+	\brief Define to determine if code is being built for 64 bit IBM
+	System/390 processors.
+
+	If this define exists, then the code runs on the IBM Systemp/390 line of 64
+	bit processors. IBM servers will have this define present.
+
+	\sa BURGER_CPU_NAME, BURGER_LINUX, or BURGER_AMD64
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_KVX
+	\brief Define to determine if code is being built for 32 bit Kalray
+	KVX processor.
+
+	If this define exists, then the code runs on the KVX line of 32 bit
+	processors from Kalray.
+
+	\sa BURGER_CPU_NAME, or BURGER_LINUX
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_BPF
+	\brief Define to determine if code is being built for 64 bit eBPF
+	pseudocode.
+
+	If this define exists, then the code runs on the eBPF jit virtual CPU.
+
+	\sa BURGER_CPU_NAME, or BURGER_LINUX
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_MRISC32
+	\brief Define to determine if code is being built for 32 bit vector
+	CPU by Marcus Geelnard.
+
+	If this define exists, then the code runs on the MRISC32 CPU.
+
+	More information [can be found here](https://gitlab.com/mrisc32)
+	\sa BURGER_CPU_NAME, or BURGER_LINUX
+
+***************************************/
+
+/*! ************************************
+
 	\def __has_builtin
 	\brief Clang feature macro for __has_builtin.
 
@@ -989,283 +1291,6 @@
 	(https://sites.uclouvain.be/SystInfo/usr/include/features.h.html)
 
 	\sa BURGER_GNUC
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_X86
-	\brief Define to determine if code is being built for 32 bit Intel
-		processors.
-
-	If this define exists, then you are creating code that runs on the Intel,
-	AMD and other compatible processors. The Microsoft XBox, Mac OSX Intel and
-	Win32 platforms which are running on Pentium, 386, 486, and AMD CPUs will
-	have this define present.
-
-	\sa BURGER_CPU_NAME, BURGER_INTEL, BURGER_AMD64, BURGER_WIN32, BURGER_BEOS,
-		BURGER_MSDOS, BURGER_MACOSX or BURGER_XBOX
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_AMD64
-	\brief Define to determine if code is being built for AMD64 (Intel 64 bit)
-		compatible processors.
-
-	If this define exists, then you are creating code that runs on the AMD 64
-	and other compatible processors. The Microsoft Win64 and Mac OSX 64
-	platforms which are running on Pentium and AMD CPUs in 64 bit mode will have
-	this define present.
-
-	\sa BURGER_CPU_NAME, BURGER_INTEL, BURGER_WIN64, BURGER_MACOSX,
-		BURGER_XBOXONE, BURGER_PS4, BURGER_PS5, or BURGER_X86
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_ITANIUM
-	\brief Define to determine if code is being built for Intel Itanium
-		compatible processors.
-
-	If this define exists, then you are creating code that runs on the Intel
-	Itanium compatible processors. The Microsoft Win64 and Linux which are
-	running on Itanium compatible processors will have this define present.
-
-	\sa BURGER_CPU_NAME, BURGER_WIN64 or BURGER_LINUX
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_ARM32
-	\brief Define to determine if code is being built for 32 bit Advanced RISC
-		Machine processors.
-
-	If this define exists, then you are creating code that runs on the Advanced
-	RISC Machines 32 bit line of processors. The Gameboy Advanced, Nintendo DS,
-	Nokia NGage, Apple iPad/iPhone/iPod and certain cell phones will have this
-	define present.
-
-	\sa BURGER_CPU_NAME, BURGER_ARM64, BURGER_ARM, BURGER_GBA, BURGER_ANDROID,
-		BURGER_SHIELD, BURGER_OUYA, BURGER_DS, BURGER_3DS, BURGER_IOS,
-		BURGER_NGAGE, or BURGER_SYMBIAN
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_ARM64
-	\brief Define to determine if code is being built for 64 bit Advanced RISC
-		Machine processors.
-
-	If this define exists, then you are creating code that runs on the Advanced
-	RISC Machines 64 bit line of processors. Apple iPad/iPhone/iPod and certain
-	cell phones will have this define present.
-
-	\sa BURGER_CPU_NAME, BURGER_ARM32, BURGER_ARM, BURGER_ANDROID or BURGER_IOS
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_MIPS32
-	\brief Define to determine if code is being built for MIPS 32 bit
-		processors.
-
-	If this define exists, then you are creating code that runs on the MIPS 32
-	bit line of processors. R5900 (PS2), R3300 (PS1) and R4400 (PSP) all will
-	have this define present.
-
-	\sa BURGER_CPU_NAME, BURGER_MIPS64, BURGER_PS2, BURGER_PSP, BURGER_PS1 or
-		BURGER_MIPS
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_MIPS64
-	\brief Define to determine if code is being built for MIPS 64 bit
-		processors.
-
-	If this define exists, then you are creating code that runs on the MIPS 64
-	bit line of 64 bit processors.
-
-	\sa BURGER_CPU_NAME, BURGER_MIPS32, BURGER_MIPS
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_POWERPC
-	\brief Define to determine if code is being built for 32 bit PowerPC
-		processors.
-
-	If this define exists, then you are creating code that runs on a 32 bit
-	PowerPC processor. The Nintendo GameCube, Power Macintosh and the Nintendo
-	Wii all will have this define present.
-
-	\sa BURGER_CPU_NAME, BURGER_PPC, BURGER_WIIU, BURGER_WII, BURGER_MAC,
-		BURGER_MACOSX, BURGER_BEOS or BURGER_GAMECUBE
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_POWERPC64
-	\brief Define to determine if code is being built for 64 bit PowerPC
-		processors.
-
-	If this define exists, then you are creating code that runs on a 64 bit
-	PowerPC processor. The G5 Power Macintosh, Sony Playstation 3 and Microsoft
-	XBox 360 all will have this define present.
-
-	\sa BURGER_CPU_NAME, BURGER_PPC, BURGER_XBOX360, BURGER_PS3 or BURGER_MACOSX
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_68K
-	\brief Define to determine if code is being built for Motorola 680x0
-		processors.
-
-	If this define exists, then you are creating code that runs on the Motorola
-	680x0 line of processors. The classic Macintosh and certain PDAs will have
-	this define present.
-
-	\sa BURGER_CPU_NAME, BURGER_68881, BURGER_MAC or BURGER_CFM
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_RISCV
-	\brief Define to determine if code is being built for 32 bit RISC-V
-	processors.
-
-	If this define exists, then you are creating code that runs on the RISC-V
-	line of processors. Micro controllers will have this define present.
-
-	\sa BURGER_CPU_NAME, BURGER_MSP430, BURGER_ARM64, BURGER_ARM32 or BURGER_AVR
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_AVR
-	\brief Define to determine if code is being built for 32 bit Atmel AVR
-	processors.
-
-	If this define exists, then you are creating code that runs on the Atmel
-	AVR line of processors. Micro controllers will have this define present.
-
-	\sa BURGER_CPU_NAME, BURGER_ARM64, BURGER_ARM32 or BURGER_RISCV
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_MSP430
-	\brief Define to determine if code is being built for 16 bit MSP430
-	processors from Texas Instruments.
-
-	If this define exists, then you are creating code that runs on the MSP430
-	line of 16 bit processors. Micro controllers will have this define present.
-
-	\sa BURGER_CPU_NAME, BURGER_RISCV, BURGER_ARM32 or BURGER_AVR
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_SPARC32
-	\brief Define to determine if code is being built for 32 bit Sparc
-	processors from Sun.
-
-	If this define exists, then you are creating code that runs on the Sparc
-	line of 32 bit processors. Sun servers will have this define present.
-
-	\sa BURGER_CPU_NAME, BURGER_LINUX, or BURGER_SPARC64
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_SPARC64
-	\brief Define to determine if code is being built for 64 bit Sparc
-	processors from Sun.
-
-	If this define exists, then you are creating code that runs on the Sparc
-	line of 64 bit processors. Sun servers will have this define present.
-
-	\sa BURGER_CPU_NAME, BURGER_LINUX, or BURGER_SPARC32
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_NANOMIPS32
-	\brief Define to determine if code is being built for 32 bit nanoMIPS
-	processors from Sun.
-
-	If this define exists, then you are creating code that runs on the nanoMIPS
-	line of 32 bit processors.
-
-	\sa BURGER_CPU_NAME, BURGER_LINUX, or BURGER_RISCV
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_SH32
-	\brief Define to determine if code is being built for 32 bit SuperH
-	processors from HItachi.
-
-	If this define exists, then you are creating code that runs on the SuperH
-	line of 32 bit processors. Used by the Sega Dreamcast
-
-	\sa BURGER_CPU_NAME, or BURGER_LINUX
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_S390
-	\brief Define to determine if code is being built for 64 bit IBM
-	System/390 processors.
-
-	If this define exists, then you are creating code that runs on the IBM
-	Systemp/390 line of 64 bit processors. IBM servers will have this define
-	present.
-
-	\sa BURGER_CPU_NAME, BURGER_LINUX, or BURGER_AMD64
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_KVX
-	\brief Define to determine if code is being built for 32 bit Kalray
-	KVX processor.
-
-	If this define exists, then you are creating code that runs on the KVX
-	line of 32 bit processors from Kalray.
-
-	\sa BURGER_CPU_NAME, or BURGER_LINUX
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_CPU_NAME
-	\brief String of the name of the CPU.
-
-	"C" string of the name of the CPU.
-
-	\sa BURGER_X86, BURGER_AMD64, BURGER_ARM32, or BURGER_SPARC32
 
 ***************************************/
 

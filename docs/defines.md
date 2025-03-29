@@ -83,6 +83,12 @@ CPU defines, only one is enabled on each compiler.
 * \ref BURGER_SPARC32 compiled for 32 bit SPARC CPUs.
 * \ref BURGER_SPARC64 compiled for 64 bit SPARC CPUs.
 
+* \ref BURGER_NANOMIPS32 compiled for 32 bit nanoMIPS CPUs.
+* \ref BURGER_SH32 compiled for 32 bit SuperH CPUs.
+* \ref BURGER_S390 compiled for 64 bit IBM System/390 CPUs.
+* \ref BURGER_KVX compiled for Kalray KVX CPUs.
+* \ref BURGER_BPF compiled with the eBPF Jit virtual CPU.
+* \ref BURGER_MRISC32 compiled for the Mostly Harmless CPU.
 * \ref BURGER_CPU_NAME String of the CPU's name.
 
 "Type of CPU" defines, they are defined to help determine the type of CPU is running.
