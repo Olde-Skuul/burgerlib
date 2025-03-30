@@ -68,6 +68,7 @@
 #define BURGER_MSDOS
 #define BURGER_DOS4G
 #define BURGER_X32
+#define BURGER_WINDOWS
 #define BURGER_WIN32
 #define BURGER_WIN64
 #define BURGER_PS1
@@ -1156,6 +1157,827 @@
 
 /*! ************************************
 
+	\def BURGER_INTEL
+	\brief Define to determine if the CPU is either X86 or AMD64
+
+	On \ref BURGER_AMD64 or \ref BURGER_X86 CPUs, this define will also be
+	present to allow Intel Architecture instructions. Some instructions may or
+	may not be present, so call \ref Burger::CPUID(Burger::CPUID_t *) to test
+	for all features and determine which functions to use for performance.
+
+	\sa BURGER_XBOXONE, BURGER_PS4, BURGER_PS5, BURGER_WINDOWS, BURGER_MACOSX,
+		BURGER_X86, or BURGER_AMD64
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_PPC
+	\brief Define to determine if code is being built for PowerPC processors.
+
+	If this define exists, then code is created to run on the PowerPC line of
+	processors. The Nintendo GameCube, Power Macintosh, Nintendo Wii, Sony
+	Playstation 3 and Microsoft XBox 360 all will have this define present.
+
+	\sa BURGER_POWERPC, BURGER_POWERPC64, BURGER_XBOX360,
+		BURGER_WII, BURGER_PS3, BURGER_MAC, BURGER_MACOSX, BURGER_BEOS or
+		BURGER_GAMECUBE
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_ARM
+	\brief Define to determine if code is being built for Advanced RISC Machine
+		processors.
+
+	If this define exists, then code is created to run on on the Advanced RISC
+	Machines line of processors.
+
+	\sa BURGER_ARM32, BURGER_ARM64, BURGER_ANDROID, BURGER_SWITCH, or BURGER_IOS
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_MIPS
+	\brief Define to determine if code is being built for MIPS
+		processors.
+
+	If this define exists, then code is created to run on the MIPS line of
+	processors.
+
+	\sa BURGER_MIPS32, BURGER_MIPS64, or BURGER_VITA
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_SPARC
+	\brief Define to determine if code is being built for SPARC
+		processors.
+
+	If this define exists, then code is created to run on the SPARC line of
+	processors.
+
+	\sa BURGER_SPARC32 or BURGER_SPARC64
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_64BITCPU
+	\brief Define to determine if the CPU has 64 bit integer registers.
+
+	On \ref BURGER_XBOXONE, \ref BURGER_PS4, \ref BURGER_AMD64, \ref BURGER_PS3
+	and \ref BURGER_XBOX360 platforms, the CPU has integer registers that are
+	64-bits wide. Using this define, code can be written that takes advantage of
+	this. Mostly useful with \ref Fixed32 and other high precision fixed point
+	calculations.
+
+	\sa BURGER_XBOXONE, BURGER_PS4, BURGER_PS3, BURGER_XBOX360, or BURGER_AMD64
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_NEON
+
+	\brief Define to determine if code is being built with Advanced RISC
+		Machines NEON instruction set extensions.
+
+	If this define exists, then code is created to run on the ARM line of
+	processors with NEON instructions.
+
+	\sa BURGER_ARM, BURGER_ARM32, or BURGER_ARM64
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_68881
+
+	\brief Define to determine if code is being built with Motorola 680x0
+		processors with a 68881 floating point unit.
+
+	If this define exists, then code is created to run on the Motorola 680x0
+	line of processors with floating point hardware.
+
+	\sa BURGER_68K
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_ALTIVEC
+
+	\brief Define to determine if code is being built with PowerPC Altivec
+		instruction set extensions.
+
+	If this define exists, then code is created to run on the PowerPC line of
+	processors with Altivec instructions.
+
+	\sa BURGER_PPC, BURGER_POWERPC, or BURGER_POWERPC64
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_3DNOW
+
+	\brief Define to determine if code is being built with AMD
+		3D Now! instruction set extensions.
+
+	If this define exists, then code is created to run on the AMD line of
+	processors with 3D Now! instructions.
+
+	[Click here to read the 3D Now! instruction set](3dnow.pdf)
+
+	\sa BURGER_SSE, BURGER_SSE2, BURGER_AVX, BURGER_AVX2, BURGER_INTEL,
+		BURGER_X86, or BURGER_AMD64
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_SSE
+
+	\brief Define to determine if code is being built with SSE instruction set
+		extensions.
+
+	If this define exists, then code is created to run on a processor that has
+	SSE instructions.
+
+	[Click here to read the SSE through AVX2 instruction set](avx.pdf)
+
+	\sa BURGER_3DNOW, BURGER_SSE2, BURGER_AVX, BURGER_AVX2, BURGER_INTEL,
+		BURGER_X86, or BURGER_AMD64
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_SSE2
+
+	\brief Define to determine if code is being built with SSE2 instruction set
+		extensions.
+
+	If this define exists, then code is created to run on a processor that has
+	SSE2 instructions.
+
+	[Click here to read the SSE through AVX2 instruction set](avx.pdf)
+
+	\sa BURGER_3DNOW, BURGER_SSE, BURGER_AVX, BURGER_AVX2, BURGER_INTEL,
+		BURGER_X86, or BURGER_AMD64
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_AVX
+
+	\brief Define to determine if code is being built with AVX instruction set
+		extensions.
+
+	If this define exists, then code is created to run on a processor that has
+	AVX instructions.
+
+	[Click here to read the SSE through AVX2 instruction set](avx.pdf)
+
+	\sa BURGER_3DNOW, BURGER_SSE, BURGER_SSE2, BURGER_AVX2, BURGER_INTEL,
+		BURGER_X86, or BURGER_AMD64
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_AVX2
+
+	\brief Define to determine if code is being built with AVX2 instruction set
+		extensions.
+
+	If this define exists, then code is created to run on a processor that has
+	AVX2 instructions.
+
+	[Click here to read the SSE through AVX2 instruction set](avx.pdf)
+
+	\sa BURGER_3DNOW, BURGER_SSE, BURGER_SSE2, BURGER_AVX, BURGER_INTEL,
+		BURGER_X86, or BURGER_AMD64
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_XBOX
+	\brief Define to determine if code is being built for the Microsoft XBox.
+
+	If this define exists, then code is created to run on the Intel
+	Pentium III Coppermine for a Microsoft XBox.
+
+	\sa BURGER_X86, BURGER_XBOX360, or BURGER_XBOXONE
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_XBOX360
+	\brief Define to determine if code is being built for the Microsoft XBox
+		360.
+
+	If this define exists, then code is created to run on the PowerPC 64 with
+	VMX extensions on the Microsoft XBox360.
+
+	\sa BURGER_POWERPC, BURGER_XBOX, or BURGER_XBOXONE
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_XBOXONE
+	\brief Define to determine if code is being built for the Microsoft XBox
+		One.
+
+	If this define exists, then code is created to run on the AMD Jaguar 8 core
+	CPU on the Microsoft XBox One and compatible consoles.
+
+	\sa BURGER_AMD64, BURGER_XBOX, or BURGER_XBOX360
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_MSDOS
+	\brief Define to determine if code is being built for Microsoft MS-DOS.
+
+	If this define exists, then code is created to run on classic MS-DOS.
+
+	Check for the defines \ref BURGER_X32 or \ref BURGER_DOS4G to determine
+	which dos extender is being used.
+
+	\sa BURGER_X86, BURGER_X32, or BURGER_DOS4G
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_X32
+	\brief Define to determine if MS-DOS code is being built with the X32 DOS
+		extender.
+
+	If this define exists, then code is created to run on classic MS-DOS with
+	the X32 DOS extender.
+
+	\note Some projects may have to define \__X32__ to enable the X32 DOS
+	extender.
+
+	\sa BURGER_X86, BURGER_MSDOS, or BURGER_DOS4G
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_DOS4G
+	\brief Define to determine if MS-DOS code is being built with the DOS4G DOS
+		extender.
+
+	If this define exists, then code is created to run on classic MS-DOS with
+	the DOS4G DOS extender.
+
+	\sa BURGER_X86, BURGER_MSDOS, or BURGER_X32
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_WINDOWS
+	\brief Define to determine if code is being built for Microsoft 32 or 64 bit
+		Windows.
+
+	If this define exists, then code is created to run on Microsoft Windows for
+	either 32 or 64 bit CPUs.
+
+	\note Check the processor define if necessary due to Windows being available
+	on Intel and ARM processors.
+
+	\sa BURGER_WIN32, BURGER_WIN64, or BURGER_MSDOS
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_WIN32
+	\brief Define to determine if code is being built for Microsoft 32 bit
+		Windows.
+
+	If this define exists, then code is created to run on Microsoft Windows for
+	32 bit CPUs.
+
+	\note Check the processor define if necessary due to Windows being available
+	on Intel and ARM processors.
+
+	\sa BURGER_WINDOWS,BURGER_WIN64, BURGER_MSDOS, BURGER_X86, or BURGER_ARM32
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_WIN64
+	\brief Define to determine if code is being built for Microsoft 64 bit
+		Windows.
+
+	If this define exists, then code is created to run on Microsoft Windows for
+	64 bit CPUs.
+
+	\note Check the processor define if necessary due to Windows being available
+	on Intel and ARM processors.
+
+	\sa BURGER_WINDOWS, BURGER_WIN32, BURGER_MSDOS, BURGER_AMD64,
+		or BURGER_ARM64
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_PS1
+	\brief Define to determine if code is being built for the Sony Playstation.
+
+	If this define exists, then code is created to run on the Sony Playstation.
+
+	\note There is no floating point support on this platform.
+
+	\sa BURGER_MIPS32, BURGER_PS2, BURGER_PS3, BURGER_PS4, or BURGER_PS5
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_PS2
+	\brief Define to determine if code is being built for the Emotion Engine CPU
+		for a PS2.
+
+	If this define exists, then code is created to run on the main processor for
+	the Sony Playstation 2.
+
+	\sa BURGER_MIPS32, BURGER_PS1, BURGER_PS3, BURGER_PS4, or BURGER_PS5
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_PS3
+	\brief Define to determine if code is being built for the PS3.
+
+	If this define exists, then code is created to run on the main processor for
+	the Sony Playstation 3.
+
+	\note This define is only present for compiling code on the primary CPU.
+	Code targeted for the cell units must be written and compiled separately.
+
+	\sa BURGER_POWERPC, BURGER_PS1, BURGER_PS2, BURGER_PS4, or BURGER_PS5
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_PS4
+	\brief Define to determine if code is being built for the PS4.
+
+	If this define exists, then code is created to run on the Sony
+	Playstation 4.
+
+	\sa BURGER_AMD64, BURGER_PS1, BURGER_PS2, BURGER_PS3, or BURGER_PS5
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_PS5
+	\brief Define to determine if code is being built for the PS5.
+
+	If this define exists, then code is created to run on the Sony
+	Playstation 5.
+
+	\sa BURGER_AMD64, BURGER_PS1, BURGER_PS2, BURGER_PS3, or BURGER_PS4
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_PSP
+	\brief Define to determine if code is being built for the Sony PSP.
+
+	If this define exists, then code is created to run on the Sony Playstation
+	Portable (PSP).
+
+	\sa BURGER_MIPS32, BURGER_VITA, BURGER_PS1, BURGER_PS2, BURGER_PS3, or
+		BURGER_PS4
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_VITA
+	\brief Define to determine if code is being built for the Sony VITA.
+
+	If this define exists, then code is created to run on the Sony Playstation
+	Portable 2 (PSP2 / Vita).
+
+	\sa BURGER_ARM32, BURGER_PSP, BURGER_PS1, BURGER_PS2, BURGER_PS3, or
+		BURGER_PS4
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_STADIA
+	\brief Define to determine if code is being built for Google Stadia.
+
+	If this define exists, then code is created to run on the Google Stadia
+	streaming console.
+
+	\note As of 2023, Stadia has been shut down, so this target exists only for
+		archive purposes only.
+
+	\sa BURGER_UNIX, BURGER_LINUX, BURGER_ANDROID, or BURGER_AMD64
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_ANDROID
+	\brief Define to determine if code is being built for Google Android
+		devices.
+
+	If this define exists, then code is created to run on Google Android
+	devices.
+
+	\sa BURGER_IOS, BURGER_SHIELD, BURGER_OUYA, BURGER_ARM32 or BURGER_MACOSX
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_SHIELD
+	\brief Define to determine if code is being built for nVidia SHIELD devices.
+
+	If this define exists, then code is created to run on nVidia SHIELD Android
+	devices.
+
+	\sa BURGER_IOS, BURGER_ANDROID, BURGER_OUYA, BURGER_ARM32 or BURGER_MACOSX
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_GBA
+	\brief Define to determine if code is being built for the Nintendo Gameboy
+	Advanced.
+
+	If this define exists, then code is created to run on the Nintendo Gameboy
+	Advanced.
+
+	\note In addition to defining \ref NDEBUG or \ref _DEBUG, SDK_DEBUG needs to
+	be defined in the project for the Nintendo GBA SDK to generate debugging
+	information
+
+	\sa BURGER_ARM32, BURGER_DS or BURGER_3DS
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_DS
+	\brief Define to determine if code is being built for the Nintendo DS.
+
+	If this define exists, then code is created to run on the Nintendo DS.
+
+	\note In addition to defining \ref NDEBUG or \ref _DEBUG, SDK_DEBUG needs to
+	be defined in the project for the Nintendo DS SDK to generate debugging
+	information
+
+	\sa BURGER_ARM32, BURGER_3DS or BURGER_GBA
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_3DS
+	\brief Define to determine if code is being built for the Nintendo 3DS.
+
+	If this define exists, then code is created to run on the Nintendo 3DS.
+
+	\note In addition to defining \ref NDEBUG or \ref _DEBUG,  SDK_DEBUG needs
+	to be defined in the project for the Nintendo 3DS SDK to generate debugging
+	information
+
+	\sa BURGER_ARM32, BURGER_DS or BURGER_GBA
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_GAMECUBE
+	\brief Define to determine if code is being built for the Nintendo GameCube.
+
+	If this define exists, then code is created to run on the Gekko processor
+	for the Nintendo GameCube.
+
+	\sa BURGER_POWERPC, BURGER_WII or BURGER_WIIU
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_WII
+	\brief Define to determine if code is being built for the Nintendo Wii.
+
+	If this define exists, then code is created to run on the Broadway processor
+	for the Nintendo Wii.
+
+	\sa BURGER_SWITCH, BURGER_POWERPC, BURGER_WIIU or BURGER_GAMECUBE
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_WIIU
+	\brief Define to determine if code is being built for the Nintendo WiiU.
+
+	If this define exists, then code is created to run on the Broadway processor
+	for the Nintendo WiiU.
+
+	\sa BURGER_SWITCH, BURGER_POWERPC, BURGER_WII or BURGER_GAMECUBE
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_SWITCH
+	\brief Define to determine if code is being built for the Nintendo Switch.
+
+	If this define exists, then code is created to run on the Arm64 processor
+	for the Nintendo Switch.
+
+	\sa BURGER_ARM64, BURGER_WII, BURGER_WII or BURGER_3DS
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_BEOS
+	\brief Define to determine if code is being built for BeOS.
+
+	If this define exists, then code is created to run on BeOS for Intel or
+	PowerPC.
+
+	\sa BURGER_POWERPC or BURGER_X86
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_SYMBIAN
+	\brief Define to determine if code is being built for the Symbian OS.
+
+	If this define exists, then code is created to run on the Symbian OS,
+	usually Nokia brand cell phones and PDAs.
+
+	\note There is no floating point support on this platform.
+
+	\sa BURGER_ARM32, or BURGER_NGAGE
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_AMIGA
+	\brief Define to determine if code is being built for the Commodore Amiga.
+
+	If this define exists, then code is created to run on the Amiga for 68K or
+	PowerPC.
+
+	\sa BURGER_POWERPC or BURGER_68K
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_MAC
+	\brief Define to determine if code is being built for Apple Mac OS 7.5.3
+		through 9.2.
+
+	If this define exists, then code is created to run on Apple	MacOS
+	version 7.5.3 through 9.2. Since MacOS runs on the 680x0 or the PowerPC
+	architectures, a check \ref BURGER_68K or \ref BURGER_POWERPC for any CPU
+	specific code or features. Also, on 680x0 platforms, the code may be
+	compiling with the Code Fragment Manager format, and to detect that, check
+	for the presence of \ref BURGER_CFM.
+
+	\note To compile for Carbon under a PowerPC CPU, the project must define
+	\ref TARGET_API_MAC_CARBON so the MacOS headers will properly be adjusted
+	for Carbon. If the code is using Burgerlib for Carbon, it will have access
+	to MacOS X features if the application is running on a MacOS X system.
+
+	\code
+	// Include this define in your CodeWarrior C/C++ Preprocessor preferences
+	// settings to build for MacOS 9 Carbon.
+
+	#define TARGET_API_MAC_CARBON 1
+	\endcode
+
+	\sa BURGER_MACOS, BURGER_MACOSX, BURGER_MACCLASSIC, BURGER_MACCARBON,
+		BURGER_68K, BURGER_POWERPC or TARGET_API_MAC_CARBON
+
+***************************************/
+
+/*! ************************************
+
+	\def TARGET_API_MAC_CARBON
+	\brief Define to determine if Mac OS 9 code is being built with the Carbon
+		libraries.
+
+	Define this macro to 1 so code that runs under classic Mac OS will be
+	compiled to link with the Carbon libraries.
+
+	\note This define is declared by the project, not by Burgerlib. If this
+	macro is missing, the code will default to classic MacOS 7.5.3 - 9.2.
+
+	\sa BURGER_MAC, BURGER_CFM or BURGER_MACOSX
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_CFM
+	\brief Define to determine if Mac OS 9 code is being built in Code Fragment
+		Manger format.
+
+	If this define exists, then code is created in which the final binary
+	is in PEF format for use with the Code Fragment Manager. All Power PC code
+	for Classic or Carbon is in this format and 68k also can be compiled this
+	way.
+
+	\note To be able to use DrawSprocket in 68k code, you must build your
+	application using CFM. The classic format can't link to DrawSprocket 68k.
+
+	\note Power PC code can be built in Mach-O format, but if that is the case,
+	then the code can only run in Mac OS X.
+
+	\sa BURGER_MAC, BURGER_68K or BURGER_MACOSX
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_MACCLASSIC
+	\brief Define to determine if code is being built exclusively for Apple Mac
+		OS9.
+
+	If this define exists, then code is created to run on Apple	MacOS 7.5
+	through 9 for either PowerPC or 68K. There is no support for MacOS X
+	operating systems under this build target. The CPU can be either \ref
+	BURGER_POWERPC or \ref BURGER_68K for this platform, so no CPU specific code
+	should be written without checking for the CPU type. Since no MacOS Carbon
+	support is enabled, accessing the low memory operating system variables is
+	allowed.
+
+	\sa BURGER_POWERPC, BURGER_68K, BURGER_MACOS or BURGER_MAC
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_MACCARBON
+	\brief Define to determine if code is being built for both Apple Mac OS9 and
+		MacOS X.
+
+	If this define exists, then code is created to run on Apple	MacOS 9 and for
+	Apple MacOS X. Only the PowerPC is supported. Since MacOS Carbon support is
+	enabled, accessing the low memory operating system variables is **NOT**
+	allowed.
+
+	\sa BURGER_POWERPC, BURGER_MACOSX, BURGER_MACOS or BURGER_MAC
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_IOS
+	\brief Define to determine if code is being built for Apple iOS devices.
+
+	If this define exists, then code is created to run on Apple iOS devices.
+
+	\sa BURGER_ANDROID, BURGER_ARM, BURGER_DARWIN or BURGER_MACOSX
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_MACOSX
+	\brief Define to determine if code is being built exclusively for Apple Mac
+		OS X.
+
+	If this define exists, then code is created to run on Apple MacOS X using
+	Mach-O. There is no support for pre-MacOS X operating systems under this
+	build target. The CPU can be either \ref BURGER_POWERPC, \ref BURGER_AMD64,
+	\ref BURGER_X86, or \ref BURGER_ARM64 for this platform, so no CPU specific
+	code should be written without checking for the CPU type.
+
+	\sa BURGER_POWERPC, BURGER_AMD64, BURGER_X86, BURGER_ARM64, BURGER_MACOS,
+		BURGER_DARWIN or BURGER_MAC
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_LINUX
+	\brief Define to determine if code is being built for Linux.
+
+	If this define exists, then code is created to run on Linux.
+
+	\sa BURGER_POWERPC, BURGER_AMD64 or BURGER_X86
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_ARDUINO
+	\brief Define to determine if code is being built for Arduino.
+
+	If this define exists, then code is created to run on Arduino devices.
+
+	\sa BURGER_POWERPC, BURGER_AMD64 or BURGER_X86
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_OUYA
+	\brief Define to determine if code is being built for the OUYA.
+
+	If this define exists, then code is created to run on OUYA Android devices.
+
+	\sa BURGER_IOS, BURGER_ANDROID, BURGER_SHIELD, BURGER_ARM32 or BURGER_MACOSX
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_NGAGE
+	\brief Define to determine if code is being built for the Nokia Ngage.
+
+	If this define exists, then code is created to run on the Nokia NGage.
+
+	\note There is no floating point support on this platform.
+
+	\sa BURGER_ARM32, or BURGER_SYMBIAN
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_MACOS
+	\brief Define to determine if code is being built for any Apple Mac OS
+		platform.
+
+	If this define exists, then code is created to run on Apple MacOS.
+	Currently, 68K, PowerPC, ARM and Intel are supported. Since it's not known
+	which version of MacOS is currently being targeted, accessing the low memory
+	operating system variables is **NOT** allowed.
+
+	\sa BURGER_POWERPC, BURGER_X86, BURGER_68K, BURGER_MACOSX,
+		BURGER_MACCLASSIC, BURGER_MACCARBON or BURGER_MAC
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_DARWIN
+	\brief Define to determine if code is being built on a Darwin platorm.
+
+	If this define exists, then code is created to run on macOS X, tvOS,
+	watchOS, or iOS running on top of Darwin.
+
+	\sa BURGER_IOS, or BURGER_MACOSX
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_UNIX
+	\brief Define to determine if code is being built on a unix platorm.
+
+	If this define exists, then code is created to run on macOS X, tvOS,
+	watchOS, iOS, Android, or Linux so the Unix/BSD APIs are available.
+
+	\note This will also be present if the Posix APIs are present.
+
+	\sa BURGER_LINUX, BURGER_ANDROID, BURGER_IOS, or BURGER_MACOSX
+
+***************************************/
+
+/*! ************************************
+
 	\def __has_builtin
 	\brief Clang feature macro for __has_builtin.
 
@@ -1296,217 +2118,6 @@
 
 /*! ************************************
 
-	\def BURGER_INTEL
-	\brief Define to determine if the CPU is either X86 or AMD64
-
-	On \ref BURGER_AMD64 or \ref BURGER_X86 CPUs, this define will also be
-	present to allow Intel Architecture instructions. Some instructions may or
-	may not be present, so call \ref Burger::CPUID(Burger::CPUID_t *) to test
-	for all features and determine which functions to use for performance.
-
-	\sa BURGER_XBOXONE, BURGER_PS4, BURGER_PS5, BURGER_WINDOWS, BURGER_MACOSX,
-		BURGER_X86, or BURGER_AMD64
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_PPC
-	\brief Define to determine if code is being built for PowerPC processors.
-
-	If this define exists, then you are creating code that runs on the PowerPC
-	line of processors. The Nintendo GameCube, Power Macintosh, Nintendo Wii,
-	Sony Playstation 3 and Microsoft XBox 360 all will have this define present.
-
-	\sa BURGER_POWERPC, BURGER_POWERPC64, BURGER_XBOX360,
-		BURGER_WII, BURGER_PS3, BURGER_MAC, BURGER_MACOSX, BURGER_BEOS or
-		BURGER_GAMECUBE
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_ARM
-	\brief Define to determine if code is being built for Advanced RISC Machine
-		processors.
-
-	If this define exists, then you are creating code that runs on the Advanced
-	RISC Machines line of processors.
-
-	\sa BURGER_ARM32 or BURGER_ARM64
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_MIPS
-	\brief Define to determine if code is being built for MIPS
-		processors.
-
-	If this define exists, then you are creating code that runs on the MIPS line
-	of processors.
-
-	\sa BURGER_MIPS32 or BURGER_MIPS64
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_SPARC
-	\brief Define to determine if code is being built for SPARC
-		processors.
-
-	If this define exists, then you are creating code that runs on the SPARC
-line of processors.
-
-	\sa BURGER_SPARC32 or BURGER_SPARC64
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_64BITCPU
-	\brief Define to determine if the CPU has 64 bit integer registers.
-
-	On \ref BURGER_XBOXONE, \ref BURGER_PS4, \ref BURGER_AMD64, \ref BURGER_PS3
-	and \ref BURGER_XBOX360 platforms, the CPU has integer registers that are
-	64-bits wide. Using this define, code can be written that takes advantage of
-	this. Mostly useful with \ref Fixed32 and other high precision fixed point
-	calculations.
-
-	\sa BURGER_XBOXONE, BURGER_PS4, BURGER_PS3, BURGER_XBOX360, or BURGER_AMD64
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_NEON
-
-	\brief Define to determine if code is being built for Advanced RISC Machines
-		NEON instruction set extensions.
-
-	If this define exists, then you are creating code that runs on the ARM line
-	of processors with NEON instructions.
-
-	\sa BURGER_ARM, BURGER_ARM32, or BURGER_ARM64
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_68881
-
-	\brief Define to determine if code is being built for Motorola 680x0
-		processor with a 68881 floating point unit.
-
-	If this define exists, then you are creating code that runs on the Motorola
-	680x0 line of processors with floating point hardware.
-
-	\sa BURGER_68K
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_ALTIVEC
-
-	\brief Define to determine if code is being built for PowerPC
-		Altivec instruction set extensions.
-
-	If this define exists, then you are creating code that runs on the PowerPC
-	line of processors with Altivec instructions.
-
-	\sa BURGER_PPC, BURGER_POWERPC, or BURGER_POWERPC64
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_3DNOW
-
-	\brief Define to determine if code is being built for AMD
-		3D Now! instruction set extensions.
-
-	If this define exists, then you are creating code that runs on the AMD
-	line of processors with 3D Now! instructions.
-
-	[Click here to read the 3D Now! instruction set](3dnow.pdf)
-
-	\sa BURGER_SSE, BURGER_SSE2, BURGER_AVX, BURGER_AVX2, BURGER_INTEL,
-		BURGER_X86, or BURGER_AMD64
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_SSE
-
-	\brief Define to determine if code is being built for SSE instruction set
-		extensions.
-
-	If this define exists, then you are creating code that runs a processor that
-		has SSE instructions.
-
-	[Click here to read the SSE through AVX2 instruction set](avx.pdf)
-
-	\sa BURGER_3DNOW, BURGER_SSE2, BURGER_AVX, BURGER_AVX2, BURGER_INTEL,
-		BURGER_X86, or BURGER_AMD64
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_SSE2
-
-	\brief Define to determine if code is being built for SSE2 instruction set
-		extensions.
-
-	If this define exists, then you are creating code that runs a processor that
-		has SSE2 instructions.
-
-	[Click here to read the SSE through AVX2 instruction set](avx.pdf)
-
-	\sa BURGER_3DNOW, BURGER_SSE, BURGER_AVX, BURGER_AVX2, BURGER_INTEL,
-		BURGER_X86, or BURGER_AMD64
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_AVX
-
-	\brief Define to determine if code is being built for AVX instruction set
-		extensions.
-
-	If this define exists, then you are creating code that runs a processor that
-		has AVX instructions.
-
-	[Click here to read the SSE through AVX2 instruction set](avx.pdf)
-
-	\sa BURGER_3DNOW, BURGER_SSE, BURGER_SSE2, BURGER_AVX2, BURGER_INTEL,
-		BURGER_X86, or BURGER_AMD64
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_AVX2
-
-	\brief Define to determine if code is being built for AVX2 instruction set
-		extensions.
-
-	If this define exists, then you are creating code that runs a processor that
-		has AVX2 instructions.
-
-	[Click here to read the SSE through AVX2 instruction set](avx.pdf)
-
-	\sa BURGER_3DNOW, BURGER_SSE, BURGER_SSE2, BURGER_AVX, BURGER_INTEL,
-		BURGER_X86, or BURGER_AMD64
-
-***************************************/
-
-/*! ************************************
-
 	\def BURGER_LITTLEENDIAN
 	\brief Define to flag code running on a little endian machine.
 
@@ -1556,621 +2167,6 @@ line of processors.
 	On little endian machines, this value is 1, otherwise it's 0.
 
 	\sa BURGER_ENDIANINDEX_LOW, BURGER_LITTLEENDIAN or BURGER_BIGENDIAN
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_WIN32
-	\brief Define to determine if code is being built for Microsoft 32 bit
-		Windows.
-
-	If this define exists, then you are creating code that runs on Microsoft
-	Windows for 32 bit CPUs.
-
-	\note You may need to check the processor define, since future versions of
-	Windows may be running on non-Pentium type processors.
-
-	\sa BURGER_WINDOWS,BURGER_WIN64, BURGER_MSDOS and BURGER_X86
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_WIN64
-	\brief Define to determine if code is being built for Microsoft 64 bit
-		Windows.
-
-	If this define exists, then you are creating code that runs on Microsoft
-	Windows for 64 bit CPUs.
-
-	\note You may need to check the processor define, since future versions of
-	Windows may be running on non-Pentium type processors.
-
-	\sa BURGER_WINDOWS, BURGER_WIN32, BURGER_MSDOS and BURGER_AMD64
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_WINDOWS
-	\brief Define to determine if code is being built for Microsoft 32 or 64 bit
-		Windows.
-
-	If this define exists, then you are creating code that runs on Microsoft
-	Windows for either 32 or 64 bit CPUs.
-
-	\note You may need to check the processor define, since future versions of
-	Windows may be running on non-Pentium type processors.
-
-	\sa BURGER_WIN32, BURGER_WIN64, BURGER_MSDOS and BURGER_X86
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_MSDOS
-	\brief Define to determine if code is being built for Microsoft MS-DOS.
-
-	If this define exists, then you are creating code that runs under classic
-	MS-DOS.
-
-	Check for the defines BURGER_X32 or BURGER_DOS4G if you wish to determine
-	which dos extender you are using.
-
-	\sa BURGER_X86
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_X32
-	\brief Define to determine if MS-DOS code is being built with the X32 DOS
-		extender.
-
-	If this define exists, then you are creating code that runs under classic
-	MS-DOS with the X32 DOS extender.
-
-	This define is declared by the project, not by Burgerlib. Either BURGER_X32
-	or BURGER_DOS4G must be present.
-
-	\sa BURGER_MSDOS or BURGER_DOS4G
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_DOS4G
-	\brief Define to determine if MS-DOS code is being built with the DOS4G DOS
-		extender.
-
-	If this define exists, then you are creating code that runs under classic
-	MS-DOS with the DOS4G DOS extender.
-
-	This define is declared by the project, not by Burgerlib. Either
-	BURGER_DOS4G or BURGER_X32 must be present.
-
-	\sa BURGER_MSDOS or BURGER_X32
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_MAC
-	\brief Define to determine if code is being built for Apple Mac OS 8.6
-		through 9.2.
-
-	If this define exists, then you are creating code that runs under Apple
-	MacOS version 8.6 through 9.2. Since MacOS runs on the 680x0 or the PowerPC
-	architectures, you may need to check \ref BURGER_68K or \ref BURGER_POWERPC
-	for any CPU specific code or features. Also, on 680x0 platforms, you may be
-	compiling under the Code Fragment Manager format, and to detect that, check
-	for the presence of \ref BURGER_CFM.
-
-	\note To compile for Carbon under a PowerPC CPU, your project must define
-	\ref TARGET_API_MAC_CARBON so the MacOS headers will properly be adjusted
-	for Carbon. If you are using Burgerlib for Carbon, you have access to MacOS
-	X features if your application is running on a MacOS X system.
-
-	\code
-	// Include this define in your CodeWarrior C/C++ Preprocessor preferences
-	// settings to build for MacOS 9 Carbon.
-
-	#define TARGET_API_MAC_CARBON 1
-	\endcode
-
-	\sa BURGER_MACOS, BURGER_MACOSX, BURGER_MACCLASSIC, BURGER_MACCARBON,
-		BURGER_68K, BURGER_POWERPC or TARGET_API_MAC_CARBON
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_MACOSX
-	\brief Define to determine if code is being built exclusively for Apple Mac
-		OS X.
-
-	If this define exists, then you are creating code that runs under Apple
-	MacOS X using Mach-O. There is no support for pre-MacOS X operating systems
-	under this build target. The CPU can be either \ref BURGER_POWERPC, \ref
-	BURGER_AMD64 or \ref BURGER_X86 for this platform, so no CPU specific code
-	should be written without checking for the CPU type.
-
-	\sa BURGER_POWERPC, BURGER_AMD64, BURGER_X86, BURGER_MACOS, BURGER_DARWIN or
-		BURGER_MAC
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_MACCARBON
-	\brief Define to determine if code is being built for both Apple Mac OS9 and
-		MacOS X.
-
-	If this define exists, then you are creating code that runs under Apple
-	MacOS 9 and for Apple MacOS X. Only the PowerPC is supported. Since MacOS
-	Carbon support is enabled, accessing the low memory operating system
-	variables is <b>NOT</b> allowed.
-
-	\sa BURGER_POWERPC, BURGER_MACOSX, BURGER_MACOS or BURGER_MAC
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_MACCLASSIC
-	\brief Define to determine if code is being built exclusively for Apple Mac
-		OS9.
-
-	If this define exists, then you are creating code that runs under Apple
-	MacOS 9 for either PowerPC or 68K. There is no support for MacOS X operating
-	systems under this build target. The CPU can be either \ref BURGER_POWERPC
-	or \ref BURGER_68K for this platform, so no CPU specific code should be
-	written without checking for the CPU type. Since no MacOS Carbon support is
-	enabled, accessing the low memory operating system variables is allowed.
-
-	\sa BURGER_POWERPC, BURGER_68K, BURGER_MACOS or BURGER_MAC
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_MACOS
-	\brief Define to determine if code is being built for any Apple Mac OS
-		platform.
-
-	If this define exists, then you are creating code that runs under Apple
-	MacOS. Currently, 68K, PowerPC and Intel are supported. Since it's not known
-	which version of MacOS is currently being targeted, accessing the low memory
-	operating system variables is <b>NOT</b> allowed.
-
-	\sa BURGER_POWERPC, BURGER_X86, BURGER_68K, BURGER_MACOSX,
-		BURGER_MACCLASSIC, BURGER_MACCARBON or BURGER_MAC
-
-***************************************/
-
-/*! ************************************
-
-	\def TARGET_API_MAC_CARBON
-	\brief Define to determine if Mac OS 9 code is being built with the Carbon
-		libraries.
-
-	If this define exists, then you are creating code that runs under classic
-	Mac OS with the Carbon libraries.
-
-	This define is declared by the project, not by Burgerlib. If this define is
-	missing, the code will default to classic MacOS 8.6 - 9.2.
-
-	\sa BURGER_MAC, BURGER_CFM or BURGER_MACOSX
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_CFM
-	\brief Define to determine if Mac OS 9 code is being built in Code Fragment
-		Manger format.
-
-	If this define exists, then you are creating code in which the final binary
-	is in PEF format for use with the Code Fragment Manager. All Power PC code
-	for Classic or Carbon is in this format and 68k also can be compiled this
-	way.
-
-	\note To be able to use DrawSprocket in 68k code, you must build your
-	application using CFM. The classic format can't link to DrawSprocket 68k.
-
-	\note Power PC code can be built in Mach-O format, but if that is the case,
-	then the code can only run in Mac OS X.
-
-	\sa BURGER_MAC, BURGER_68K or BURGER_MACOSX
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_DARWIN
-	\brief Define to determine if code is being built on a Darwin platorm.
-
-	If this define exists, then the code is running on macOS X, tvOS, watchOS,
-	or iOS running on top of Darwin.
-
-	\sa BURGER_IOS, or BURGER_MACOSX
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_IOS
-	\brief Define to determine if code is being built for Apple iOS devices.
-
-	If this define exists, then you are creating code that runs on Apple iOS
-	devices.
-
-	\sa BURGER_ANDROID, BURGER_ARM, BURGER_DARWIN or BURGER_MACOSX
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_ANDROID
-	\brief Define to determine if code is being built for Google Android
-		devices.
-
-	If this define exists, then you are creating code that runs on Google
-	Android devices.
-
-	\sa BURGER_IOS, BURGER_SHIELD, BURGER_OUYA, BURGER_ARM32 or BURGER_MACOSX
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_SHIELD
-	\brief Define to determine if code is being built for nVidia SHIELD devices.
-
-	If this define exists, then you are creating code that runs on nVidia SHIELD
-	Android devices.
-
-	\sa BURGER_IOS, BURGER_ANDROID, BURGER_OUYA, BURGER_ARM32 or BURGER_MACOSX
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_OUYA
-	\brief Define to determine if code is being built for the OUYA.
-
-	If this define exists, then you are creating code that runs on OUYA Android
-	devices.
-
-	\sa BURGER_IOS, BURGER_ANDROID, BURGER_SHIELD, BURGER_ARM32 or BURGER_MACOSX
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_STADIA
-	\brief Define to determine if code is being built for Google Stadia.
-
-	If this define exists, then you are creating code that runs on Google Stadia
-	streaming console.
-
-	\note As of 2023, Stadia has been shut down, so this target exists only for
-		archive purposes only.
-
-	\sa BURGER_UNIX, BURGER_LINUX, BURGER_ANDROID, or BURGER_AMD64
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_NGAGE
-	\brief Define to determine if code is being built for the Nokia Ngage.
-
-	If this define exists, then you are creating code that runs on the Nokia
-	NGage.
-
-	\note There is no floating point support on this platform.
-
-	\sa BURGER_ARM32, or BURGER_SYMBIAN
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_SYMBIAN
-	\brief Define to determine if code is being built for the Symbian OS.
-
-	If this define exists, then you are creating code that runs under the
-	Symbian OS, usually Nokia brand cell phones and PDAs.
-
-	\note There is no floating point support on this platform.
-
-	\sa BURGER_ARM32, or BURGER_NGAGE
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_PS1
-	\brief Define to determine if code is being built for the Sony Playstation.
-
-	If this define exists, then you are creating code that runs on the Sony
-	Playstation.
-
-	\note There is no floating point support on this platform.
-
-	\sa BURGER_MIPS32, BURGER_PS2, BURGER_PS3, BURGER_PS4, or BURGER_PS5
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_PS2
-	\brief Define to determine if code is being built for the Emotion Engine CPU
-		for a PS2.
-
-	If this define exists, then you are creating code that runs on the main
-	processor for a Sony Playstation 2.
-
-	\sa BURGER_MIPS32, BURGER_PS1, BURGER_PS3, BURGER_PS4, or BURGER_PS5
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_PS3
-	\brief Define to determine if code is being built for the PS3.
-
-	If this define exists, then you are creating code that runs on the main
-	processor for a Sony Playstation 3.
-
-	\note This define is only present for compiling code on the primary CPU.
-	Code targeted for the cell units must be written and compiled separately.
-
-	\sa BURGER_POWERPC, BURGER_PS1, BURGER_PS2, BURGER_PS4, or BURGER_PS5
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_PS4
-	\brief Define to determine if code is being built for the PS4.
-
-	If this define exists, then you are creating code that runs on the main
-	processor for a Sony Playstation 4.
-
-	\sa BURGER_AMD64, BURGER_PS1, BURGER_PS2, BURGER_PS3, or BURGER_PS5
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_PS5
-	\brief Define to determine if code is being built for the PS5.
-
-	If this define exists, then you are creating code that runs on the main
-	processor for a Sony Playstation 5.
-
-	\sa BURGER_AMD64, BURGER_PS1, BURGER_PS2, BURGER_PS3, or BURGER_PS4
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_PSP
-	\brief Define to determine if code is being built for the Sony PSP.
-
-	If this define exists, then you are creating code that runs on the Sony
-	Playstation Portable (PSP).
-
-	\sa BURGER_MIPS32, BURGER_VITA, BURGER_PS1, BURGER_PS2, BURGER_PS3, or
-		BURGER_PS4
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_VITA
-	\brief Define to determine if code is being built for the Sony VITA.
-
-	If this define exists, then you are creating code that runs on the Sony
-	Playstation Portable 2 (PSP2 / Vita).
-
-	\sa BURGER_ARM32, BURGER_PSP, BURGER_PS1, BURGER_PS2, BURGER_PS3, or
-		BURGER_PS4
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_GAMECUBE
-	\brief Define to determine if code is being built for the Nintendo GameCube.
-
-	If this define exists, then you are creating code that runs on the Gekko
-	processor for a Nintendo GameCube.
-
-	\sa BURGER_POWERPC, BURGER_WII or BURGER_WIIU
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_WII
-	\brief Define to determine if code is being built for the Nintendo Wii.
-
-	If this define exists, then you are creating code that runs on the Broadway
-	processor for a Nintendo Wii.
-
-	\sa BURGER_SWITCH, BURGER_POWERPC, BURGER_WIIU or BURGER_GAMECUBE
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_WIIU
-	\brief Define to determine if code is being built for the Nintendo WiiU.
-
-	If this define exists, then you are creating code that runs on the Broadway
-	processor for a Nintendo WiiU.
-
-	\sa BURGER_SWITCH, BURGER_POWERPC, BURGER_WII or BURGER_GAMECUBE
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_SWITCH
-	\brief Define to determine if code is being built for the Nintendo Switch.
-
-	If this define exists, then you are creating code that runs on the Arm64
-	processor for a Nintendo Switch.
-
-	\sa BURGER_ARM64, BURGER_WII, BURGER_WII or BURGER_3DS
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_GBA
-	\brief Define to determine if code is being built for the Nintendo Gameboy
-	Advanced.
-
-	If this define exists, then you are creating code that runs on the Nintendo
-	Gameboy Advanced.
-
-	\note In addition to defining \ref NDEBUG or \ref _DEBUG, you need to define
-	SDK_DEBUG in your project if you wish for the Nintendo GBA SDK to generate
-	debugging information
-
-	\sa BURGER_ARM32, BURGER_DS or BURGER_3DS
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_DS
-	\brief Define to determine if code is being built for the Nintendo DS.
-
-	If this define exists, then you are creating code that runs on the Nintendo
-	DS.
-
-	\note In addition to defining \ref NDEBUG or \ref _DEBUG, you need to define
-	SDK_DEBUG in your project if you wish for the Nintendo DS SDK to generate
-	debugging information
-
-	\sa BURGER_ARM32, BURGER_3DS or BURGER_GBA
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_3DS
-	\brief Define to determine if code is being built for the Nintendo 3DS.
-
-	If this define exists, then you are creating code that runs on the Nintendo
-	3DS.
-
-	\note In addition to defining \ref NDEBUG or \ref _DEBUG, you need to define
-	SDK_DEBUG in your project if you wish for the Nintendo 3DS SDK to generate
-	debugging information
-
-	\sa BURGER_ARM32, BURGER_DS or BURGER_GBA
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_XBOX
-	\brief Define to determine if code is being built for the Microsoft XBox.
-
-	If this define exists, then you are creating code that runs on the Intel
-	Celeron for a Microsoft XBox.
-
-	\sa BURGER_X86, BURGER_XBOX360, or BURGER_XBOXONE
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_XBOX360
-	\brief Define to determine if code is being built for the Microsoft XBox
-		360.
-
-	If this define exists, then you are creating code that runs on the Microsoft
-	XBox360.
-
-	\note You can use Burgerlib functions from any thread, but caution should be
-	exercised to prevent thread stalls and multi threading problems. Burgerlib's
-	higher level classes may not be reentrant. See the documentation for higher
-	level classes to determine multi-threading safety.
-
-	\sa BURGER_POWERPC, BURGER_XBOX, or BURGER_XBOXONE
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_XBOXONE
-	\brief Define to determine if code is being built for the Microsoft XBox
-		One.
-
-	If this define exists, then you are creating code that runs on the Microsoft
-	XBox One.
-
-	\note You can use Burgerlib functions from any thread, but caution should be
-	exercised to prevent thread stalls and multi threading problems. Burgerlib's
-	higher level classes may not be reentrant. See the documentation for higher
-	level classes to determine multi-threading safety.
-
-	\sa BURGER_AMD64, BURGER_XBOX, or BURGER_XBOX360
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_BEOS
-	\brief Define to determine if code is being built for Be OS.
-
-	If this define exists, then you are creating code that runs on Be OS for
-	Intel or PowerPC.
-
-	\sa BURGER_POWERPC or BURGER_X86
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_AMIGA
-	\brief Define to determine if code is being built for the Commodore Amiga.
-
-	If this define exists, then you are creating code that runs on the Amiga for
-	68K or PowerPC.
-
-	\sa BURGER_POWERPC or BURGER_68K
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_LINUX
-	\brief Define to determine if code is being built for Linux.
-
-	If this define exists, then you are creating code that runs on Linux.
-
-	\sa BURGER_POWERPC, BURGER_AMD64 or BURGER_X86
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_UNIX
-	\brief Define to determine if code is being built on a unix platorm.
-
-	If this define exists, then the code is running on macOS X, tvOS, watchOS,
-	iOS, Android, or Linux so the Unix/BSD APIs are available.
-
-	\sa BURGER_LINUX, BURGER_ANDROID, BURGER_IOS, or BURGER_MACOSX
 
 ***************************************/
 

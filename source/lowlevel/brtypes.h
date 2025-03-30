@@ -487,16 +487,18 @@
 
 ***************************************/
 
-// Microsoft XBox
+// Microsoft XBox line of consoles
 #if defined(_XBOX) || defined(XBOX) || defined(_XBOX_ONE) || \
 	defined(_GAMING_XBOX_XBOXONE) || defined(_GAMING_XBOX_SCARLETT)
 #if defined(BURGER_X86)
 #define BURGER_XBOX
 #define BURGER_PLATFORM_NAME "Microsoft XBox Classic"
+
 #elif defined(BURGER_POWERPC64)
 #define BURGER_XBOX360
 #define BURGER_PLATFORM_NAME "Microsoft XBox 360"
 #else
+
 #define BURGER_XBOXONE
 #if defined(_GAMING_XBOX_SCARLETT)
 #define BURGER_PLATFORM_NAME "Microsoft XBox ONE Series X"
@@ -505,6 +507,7 @@
 #endif
 #endif
 
+// Test for MS-DOS (Both Dos4GW and X32)
 #elif defined(__DOS__) || defined(__MSDOS__) || defined(_MSDOS)
 #define BURGER_MSDOS
 #if defined(__X32__)
@@ -517,9 +520,11 @@
 #error Unknown MSDOS extender, try using Dos4g
 #endif
 
+// Microsoft Windows
 #elif defined(__NT__) || defined(_WINDOWS) || defined(__WIN32__) || \
 	defined(__WINDOWS__) || defined(__TOS_WIN__) || defined(_WIN32) || \
 	defined(_WIN64)
+#define BURGER_WINDOWS
 #if defined(BURGER_64BITCPU)
 #define BURGER_WIN64
 #define BURGER_PLATFORM_NAME "Microsoft Windows 64 bit"
@@ -601,11 +606,14 @@
 #define BURGER_AMIGA
 #define BURGER_PLATFORM_NAME "Commodore Amiga"
 
+// Mac OS platforms
 #elif defined(macintosh) && macintosh
 #define BURGER_MAC
+
 #if defined(__CFM68K) || defined(__CFM68K__) || defined(BURGER_POWERPC)
 #define BURGER_CFM
 #endif
+
 #if !defined(TARGET_API_MAC_CARBON) || (TARGET_API_MAC_CARBON == 0)
 #define BURGER_MACCLASSIC
 #define BURGER_PLATFORM_NAME "Apple macOS Classic"
@@ -634,11 +642,6 @@
 
 #elif !defined(DOXYGEN)
 #error Unknown Platform
-#endif
-
-// Generic windows platform?
-#if defined(BURGER_WIN32) || defined(BURGER_WIN64) || defined(DOXYGEN)
-#define BURGER_WINDOWS
 #endif
 
 // Any form of MacOS
@@ -683,7 +686,7 @@
 
 // Is Vulkan supported on this platform?
 #if (defined(BURGER_ANDROID) || defined(BURGER_WINDOWS) || \
-	defined(BURGER_LINUX) || defined(BURGER_SWITCH))
+	defined(BURGER_LINUX) || defined(BURGER_SWITCH)) || defined(DOXYGEN)
 #define BURGER_VULKAN
 #endif
 

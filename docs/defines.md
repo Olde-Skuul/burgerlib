@@ -163,11 +163,13 @@ Platform defines, only one is enabled on each compile.
 * \ref BURGER_XBOX Build for the original XBox
 * \ref BURGER_XBOX360 Build for the Xbox 360
 * \ref BURGER_XBOXONE Build for the Xbox ONE
+* \ref BURGER_LINUX Build for Linux
 * \ref BURGER_ANDROID Build for Android
 * \ref BURGER_SHIELD Build for nVidia Shield
 * \ref BURGER_OUYA Build for Ouya
 * \ref BURGER_BEOS Build for BeOS and Haiku.
 * \ref BURGER_AMIGA Build for Commodore Amiga.
+* \ref BURGER_ARDUINO Build for Arduino devices
 * BURGER_APPLEIIGS has been removed.
 * BURGER_3DO has been removed.
 
