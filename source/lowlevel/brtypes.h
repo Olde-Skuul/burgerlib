@@ -736,19 +736,13 @@
 #if defined(BURGER_68K) || defined(BURGER_PPC) || defined(BURGER_SPARC) || \
 	(defined(BURGER_MIPS) && _MIPSEL)
 #define BURGER_BIGENDIAN
+#define BURGER_ENDIANINDEX_LOW 1
+#define BURGER_ENDIANINDEX_HIGH 0
 #else
 #define BURGER_LITTLEENDIAN
-#endif
-
-// Create the endian indexes (0,1 for little, 1,0 for big)
-
-#if defined(BURGER_LITTLEENDIAN)
 #define BURGER_ENDIANINDEX_LOW 0
-#else
-#define BURGER_ENDIANINDEX_LOW 1
+#define BURGER_ENDIANINDEX_HIGH 1
 #endif
-
-#define BURGER_ENDIANINDEX_HIGH (1 - BURGER_ENDIANINDEX_LOW)
 
 /***************************************
 

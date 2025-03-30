@@ -103,7 +103,7 @@
 #define BURGER_LINUX
 #define BURGER_ARDUINO
 #define BURGER_STEAM
-#define BURGER_PLATFORM_NAME "Name of operating system"
+#define BURGER_PLATFORM_NAME "Microsoft XBox 360"
 
 #define BURGER_LITTLEENDIAN
 
@@ -1368,6 +1368,17 @@
 
 /*! ************************************
 
+	\def BURGER_PLATFORM_NAME
+	\brief String with the operating system's name.
+
+	This string is of the operating system the code is being compiled for.
+
+	\sa BURGER_WINDOWS, BURGER_LINUX or BURGER_MACOS
+
+***************************************/
+
+/*! ************************************
+
 	\def BURGER_XBOX
 	\brief Define to determine if code is being built for the Microsoft XBox.
 
@@ -1978,141 +1989,109 @@
 
 /*! ************************************
 
-	\def __has_builtin
-	\brief Clang feature macro for __has_builtin.
+	\def BURGER_OPENGL
+	\brief Define for the presence of OpenGL
 
-	On non-clang compilers, this compiles to 0.
+	If this define exists, then OpenGL is supported.
 
-	[Clang documentation on __has_builtin]
-	(https://clang.llvm.org/docs/LanguageExtensions.html#has-builtin)
-
-	\sa BURGER_CLANG
+	\sa BURGER_OPENGLES, or BURGER_VULKAN
 
 ***************************************/
 
 /*! ************************************
 
-	\def __has_feature
-	\brief Clang feature macro for __has_feature.
+	\def BURGER_OPENGLES
+	\brief Define for the presence of OpenGL ES
 
-	On non-clang compilers, this compiles to 0.
+	If this define exists, then OpenGL ES is supported.
 
-	[Clang documentation on __has_feature]
-	(https://clang.llvm.org/docs/LanguageExtensions.html#has-feature-and-has-extension)
-
-	\sa BURGER_CLANG
+	\sa BURGER_OPENGL, or BURGER_VULKAN
 
 ***************************************/
 
 /*! ************************************
 
-	\def __has_extension
-	\brief Clang feature macro for __has_extension.
+	\def BURGER_VULKAN
+	\brief Define for the presence of Vulkan
 
-	On non-clang compilers, this remaps to \ref __has_feature, which could also
-	be 0.
+	If this define exists, then Vulkan is supported.
 
-	[Clang documentation on __has_extension]
-	(https://clang.llvm.org/docs/LanguageExtensions.html#has-feature-and-has-extension)
-
-	\sa BURGER_CLANG
+	\sa BURGER_OPENGL, or BURGER_OPENGLES
 
 ***************************************/
 
 /*! ************************************
 
-	\def __has_cpp_attribute
-	\brief Clang feature macro for __has_cpp_attribute.
+	\def BURGER_TCPIP
+	\brief Define for the presence of TCP/IP
 
-	On non-clang compilers, this compiles to 0.
-
-	[Clang documentation on __has_cpp_attribute]
-	(https://clang.llvm.org/docs/LanguageExtensions.html#has-cpp-attribute)
-
-	\sa BURGER_CLANG
+	If this define exists, then the TCP/IP networking protocol is supported.
+s
+	\sa BURGER_APPLETALK, BURGER_IPX, BURGER_STEAM, or BURGER_XBOXLIVE
 
 ***************************************/
 
 /*! ************************************
 
-	\def __has_declspec_attribute
-	\brief Clang feature macro for __has_declspec_attribute.
+	\def BURGER_APPLETALK
+	\brief Define for the presence of AppleTalk
 
-	On non-clang compilers, this compiles to 0.
+	If this define exists, then the AppleTalk networking protocol is supported.
+	This is usually found on older MacOS computers and some Windows XP
+	platforms.
 
-	[Clang documentation on __has_declspec_attribute]
-	(https://clang.llvm.org/docs/LanguageExtensions.html#has-declspec-attribute)
-
-	\sa BURGER_CLANG
-
-***************************************/
-
-/*! ************************************
-
-	\def __has_attribute
-	\brief Clang feature macro for __has_attribute.
-
-	On non-clang compilers, this compiles to 0.
-
-	[Clang documentation on __has_attribute]
-	(https://clang.llvm.org/docs/LanguageExtensions.html#has-attribute)
-
-	\sa BURGER_CLANG
+	\sa BURGER_TCPIP, BURGER_IPX, BURGER_STEAM, or BURGER_XBOXLIVE
 
 ***************************************/
 
 /*! ************************************
 
-	\def __has_warning
-	\brief Clang feature macro for __has_warning.
+	\def BURGER_IPX
+	\brief Define for the presence of IPX/SPX
 
-	On non-clang compilers, this compiles to 0.
+	If this define exists, then the IPX/SPX networking protocol is supported.
+	It's supported on Windows and older MacOS platforms.
 
-	[Clang documentation on __has_warning]
-	(https://clang.llvm.org/docs/LanguageExtensions.html#has-warning)
-
-	\sa BURGER_CLANG
+	\sa BURGER_TCPIP, BURGER_APPLETALK, BURGER_STEAM, or BURGER_XBOXLIVE
 
 ***************************************/
 
 /*! ************************************
 
-	\def __has_include
-	\brief Clang feature macro for __has_include.
+	\def BURGER_STEAM
+	\brief Define for the presence of Valve's Steam platform
 
-	On non-clang compilers, this compiles to 0.
+	If this define exists, then the Steam platform is supported. TCP/IP can be
+	assumed to be available with this define present.
 
-	[Clang documentation on __has_include]
-	(https://clang.llvm.org/docs/LanguageExtensions.html#has-include)
-	\sa BURGER_CLANG
+	\note Steam is not available on PowerPC MacOSX and old Windows compilers
 
-***************************************/
-
-/*! ************************************
-
-	\def __has_include_next
-	\brief Clang feature macro for __has_include_next.
-
-	On non-clang compilers, this compiles to 0.
-
-	[Clang documentation on __has_include_next]
-	(https://clang.llvm.org/docs/LanguageExtensions.html#has-include-next)
-
-	\sa BURGER_CLANG
+	\sa BURGER_TCPIP, BURGER_APPLETALK, BURGER_IPX, or BURGER_XBOXLIVE
 
 ***************************************/
 
 /*! ************************************
 
-	\def __GNUC_PREREQ
-	\brief GNUC version test macro
+	\def BURGER_XBOXLIVE
+	\brief Define for the presence of Microsoft's Xbox Live platform.
 
-	On GNUC compilers, this compiles to 0. This was taken from features.h
+	If this define exists, then the Xbox Live platform is supported. TCP/IP can
+	be assumed to be available with this define present.
 
-	[features.h documentation for this macro]
-	(https://sites.uclouvain.be/SystInfo/usr/include/features.h.html)
+	\sa BURGER_TCPIP, BURGER_APPLETALK, BURGER_IPX, or BURGER_STEAM
 
-	\sa BURGER_GNUC
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_CONSOLE
+	\brief Define for the presence of a text console.
+
+	If this define exists, then the platform supports a terminal console such as
+	CMD.COM, bash, sh etc. Test for this macro if the code requires a console,
+	such as code for a command line tool.
+
+	\sa BURGER_MSDOS, BURGER_LINUX, BURGER_MACOS or BURGER_WINDOWS
 
 ***************************************/
 
@@ -2153,7 +2132,9 @@
 	\def BURGER_ENDIANINDEX_LOW
 	\brief Index to the "low" word of a 64 bit value as a 32 value
 
-	On little endian machines, this value is 0, otherwise it's 1.
+	If a 64 bit value is stored in memory in an array of 32 bit integers, which
+	index references the low 32 bits of the 64 bit integer. On little endian
+	machines, this value is 0, otherwise it's 1 for big endian.
 
 	\sa BURGER_ENDIANINDEX_HIGH, BURGER_LITTLEENDIAN or BURGER_BIGENDIAN
 
@@ -2164,105 +2145,206 @@
 	\def BURGER_ENDIANINDEX_HIGH
 	\brief Index to the "high" word of a 64 bit value as a 32 value
 
-	On little endian machines, this value is 1, otherwise it's 0.
+	If a 64 bit value is stored in memory in an array of 32 bit integers, which
+	index references the low 32 bits of the 64 bit integer. On little endian
+	machines, this value is 1, otherwise it's 0 for big endian.
 
 	\sa BURGER_ENDIANINDEX_LOW, BURGER_LITTLEENDIAN or BURGER_BIGENDIAN
 
 ***************************************/
 
+// clang-format off
 /*! ************************************
 
-	\def BURGER_PLATFORM_NAME
-	\brief String with the operating system's name.
+	\def __has_builtin
+	\brief Clang feature macro for __has_builtin.
 
-	This string is of the operating system the code is being compiled for.
+	On non-clang compilers, this compiles to 0.
 
-	\sa BURGER_WINDOWS, BURGER_LINUX or BURGER_MACOS
+	[Clang documentation on __has_builtin](https://clang.llvm.org/docs/LanguageExtensions.html#has-builtin)
+
+	\sa BURGER_CLANG
 
 ***************************************/
 
 /*! ************************************
 
-	\def BURGER_MININT
-	\brief Minimum value of a signed integer.
+	\def __has_feature
+	\brief Clang feature macro for __has_feature.
 
-	This is a replacement for the ANSI macro MIN_INT. Normally, this is
-	(-0x7FFFFFFF)-1, but it could be a 64 or 128 bit value on future processors.
+	On non-clang compilers, this compiles to 0.
 
-	\sa BURGER_MININT64 or BURGER_MAXINT
+	[Clang documentation on __has_feature](https://clang.llvm.org/docs/LanguageExtensions.html#has-feature-and-has-extension)
 
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_MAXINT
-	\brief Maximum value of a signed integer.
-
-	This is a replacement for the ANSI macro MAX_INT. Normally, this is
-	0x7FFFFFFF, but it could be a 64 or 128 bit value on future processors.
-
-	\sa BURGER_MININT, BURGER_MAXINTPTR or BURGER_MAXUINT
+	\sa BURGER_CLANG
 
 ***************************************/
 
 /*! ************************************
 
-	\def BURGER_MAXUINT
-	\brief Maximum value of an unsigned integer.
+	\def __has_extension
+	\brief Clang feature macro for __has_extension.
 
-	This is a replacement for the ANSI macro MAX_UINT. Normally, this is
-	0xFFFFFFFFU, but it could be a 64 or 128 bit value on future processors.
+	On non-clang compilers, this remaps to \ref __has_feature, which could also
+	be 0.
 
-	\sa BURGER_MAXINTPTR or BURGER_MAXINT
+	[Clang documentation on __has_extension](https://clang.llvm.org/docs/LanguageExtensions.html#has-feature-and-has-extension)
 
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_MININT64
-	\brief Minimum value of a int64_t.
-
-	This is a replacement for the ANSI macro MIN_INT but it's meant for 64 bit
-	values defined as int64_t. Normally, this is ((-0x7FFFFFFFFFFFFFFFLL)-1).
-
-	\sa BURGER_MAXINT64, BURGER_MAXUINT64, or BURGER_MAXINT
+	\sa BURGER_CLANG
 
 ***************************************/
 
 /*! ************************************
 
-	\def BURGER_MAXINT64
-	\brief Maximum value of a int64_t.
+	\def __has_cpp_attribute
+	\brief Clang feature macro for __has_cpp_attribute.
 
-	This is a replacement for the ANSI macro MAX_INT but it's meant for 64 bit
-	values defined as int64_t. Normally, this is 0x7FFFFFFFFFFFFFFFLL.
+	On non-clang compilers, this compiles to 0.
 
-	\sa BURGER_MININT64, BURGER_MAXUINT64, or BURGER_MAXINT
+	[Clang documentation on __has_cpp_attribute](https://clang.llvm.org/docs/LanguageExtensions.html#has-cpp-attribute)
 
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_MAXUINT64
-	\brief Maximum value of a uint64_t.
-
-	This is a replacement for the ANSI macro MAX_UINT but it's meant for 64 bit
-	values defined as uint64_t. Normally, this is 0xFFFFFFFFFFFFFFFFULL.
-
-	\sa BURGER_MAXINT64, or BURGER_MAXUINT
+	\sa BURGER_CLANG
 
 ***************************************/
 
 /*! ************************************
 
-	\def BURGER_MAXINTPTR
-	\brief Maximum value of a signed address space integer.
+	\def __has_declspec_attribute
+	\brief Clang feature macro for __has_declspec_attribute.
 
-	This is a constant value of the largest allowable address. Normally, this is
-	0x7FFFFFFF on 32 bit CPUs and 0x7FFFFFFFFFFFFFFFLL on 64 bit CPUs. It may be
-	a 128 bit value on future processors.
+	On non-clang compilers, this compiles to 0.
 
-	\sa BURGER_MAXINT or BURGER_MAXUINT
+	[Clang documentation on __has_declspec_attribute](https://clang.llvm.org/docs/LanguageExtensions.html#has-declspec-attribute)
+
+	\sa BURGER_CLANG
+
+***************************************/
+
+/*! ************************************
+
+	\def __has_attribute
+	\brief Clang feature macro for __has_attribute.
+
+	On non-clang compilers, this compiles to 0.
+
+	[Clang documentation on __has_attribute](https://clang.llvm.org/docs/LanguageExtensions.html#has-attribute)
+
+	\sa BURGER_CLANG
+
+***************************************/
+
+/*! ************************************
+
+	\def __has_warning
+	\brief Clang feature macro for __has_warning.
+
+	On non-clang compilers, this compiles to 0.
+
+	[Clang documentation on __has_warning](https://clang.llvm.org/docs/LanguageExtensions.html#has-warning)
+
+	\sa BURGER_CLANG
+
+***************************************/
+
+/*! ************************************
+
+	\def __has_include
+	\brief Clang feature macro for __has_include.
+
+	On non-clang compilers, this compiles to 0.
+
+	[Clang documentation on __has_include](https://clang.llvm.org/docs/LanguageExtensions.html#has-include)
+
+	\sa BURGER_CLANG
+
+***************************************/
+
+/*! ************************************
+
+	\def __has_include_next
+	\brief Clang feature macro for __has_include_next.
+
+	On non-clang compilers, this compiles to 0.
+
+	[Clang documentation on __has_include_next](https://clang.llvm.org/docs/LanguageExtensions.html#has-include-next)
+
+	\sa BURGER_CLANG
+
+***************************************/
+
+/*! ************************************
+
+	\def __GNUC_PREREQ
+	\brief GNUC version test macro
+
+	On non GNUC compilers, this compiles to 0. This was taken from features.h
+
+	[features.h documentation for this macro](https://sites.uclouvain.be/SystInfo/usr/include/features.h.html)
+
+	\sa BURGER_GNUC
+
+***************************************/
+// clang-format on
+
+/*! ************************************
+
+	\def BURGER_API
+	\brief Default parameter passing type for Burgerlib functions.
+
+	On Intel platforms, there are several methods of passing parameters.
+	Burgerlib uses the `__fastcall` method and this define will evaluate to
+	`__fastcall` on compilers that support it. Otherwise, this will evaluate
+	to nothing on non-Intel platforms.
+
+	For non Intel platforms, this resolves into a blank \#define.
+
+	\note Open Watcom uses __watcall
+
+	\sa BURGER_ANSIAPI or BURGER_FASTCALLENABLED
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_ANSIAPI
+	\brief Default parameter passing type for ANSI library functions.
+
+	On Intel platforms, there are several methods of passing parameters. ANSI
+	uses the __cdecl keyword, so any ANSI function like qsort() or atexit()
+	that needs a callback function should have this keyword before the user
+supplied callback. It will ensure that the linkage will be correct. This will
+	evaluate to nothing on non-Intel platforms.
+
+	\code
+	static int BURGER_ANSIAPI Compare(const void *a,const void *b)
+	{
+		return strcmp((char *)a,(char *)b);
+	}
+
+	void SortData(void)
+	{
+		qsort(array,arraycount,sizeof(array[0]),Compare);
+	}
+
+	\endcode
+
+	\sa BURGER_API
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_FASTCALLENABLED
+	\brief Flag for determining Intel assembly generation
+
+	This flag is defined only if the target platform is Intel and the parameter
+	passing is in the `__fastcall` format.
+
+	Some targets require parameters to be passed in the `__cdecl` format, so
+	this will allow the selection of the proper assembly header and footer
+	without having to create complicated \#ifdefs
+
+	\sa BURGER_API, BURGER_ANSIAPI or BURGER_DECLSPECNAKED
 
 ***************************************/
 
@@ -2308,10 +2390,13 @@
 	returns. For functions that do not return, add this macro to the beginning
 	of its definition to take advantage of this compiler feature.
 
+	For C++ 11 or higher, this resolves to `[[noreturn]]`
+
 	\sa BURGER_INLINE
 
 ***************************************/
 
+// clang-format off
 /*! ************************************
 
 	\def BURGER_PRINTF_ATTRIBUTE
@@ -2321,8 +2406,7 @@
 	accepts ``printf`` style input strings, the input can be validated with this
 	macro.
 
-	[Documentation on the compiler feature]
-	(https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-format-function-attribute)
+	[Documentation on the compiler feature](https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-format-function-attribute)
 
 	\param _index 1 based index to the parameter that has the format string.
 	\param _check 1 based index to the first variable argument.
@@ -2330,50 +2414,7 @@
 	\sa BURGER_CLANG or BURGER_GNUC
 
 ***************************************/
-
-/*! ************************************
-
-	\def BURGER_API
-	\brief Default parameter passing type for Burgerlib functions.
-
-	On Intel platforms, there are several methods of passing parameters.
-	Burgerlib uses the `__fastcall` method and this define will evaluate to
-	`__fastcall` on compilers that support it. Otherwise, this will evaluate
-	to nothing on non-Intel platforms.
-
-	For non Intel platforms, this resolves into a blank \#define.
-
-	\sa BURGER_ANSIAPI or BURGER_FASTCALLENABLED
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_ANSIAPI
-	\brief Default parameter passing type for ANSI library functions.
-
-	On Intel platforms, there are several methods of passing parameters. ANSI
-	uses the __cdecl keyword, so any ANSI function like qsort() or atexit() that
-	needs a callback function should have this keyword before the user supplied
-	callback. It will ensure that the linkage will be correct. This will
-	evaluate to nothing on non-Intel platforms.
-
-	\code
-	static int BURGER_ANSIAPI Compare(const void *a,const void *b)
-	{
-		return strcmp((char *)a,(char *)b);
-	}
-
-	void SortData(void)
-	{
-		qsort(array,arraycount,sizeof(array[0]),Compare);
-	}
-
-	\endcode
-
-	\sa BURGER_API
-
-***************************************/
+// clang-format on
 
 /*! ************************************
 
@@ -2386,22 +2427,6 @@
 	It's preferred that this keyword is used for Intel assembly.
 
 	\sa BURGER_DECLSPECNAKED or BURGER_ANSIAPI
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_FASTCALLENABLED
-	\brief Flag for determining Intel assembly generation
-
-	This flag is defined only if the target platform is Intel and the parameter
-	passing is in the "__fastcall" format.
-
-	Some targets require parameters to be passed in the __cdecl format, so this
-	will allow the selection of the proper assembly header and footer without
-	having to create complicated \#ifdefs
-
-	\sa BURGER_API, BURGER_ANSIAPI or BURGER_DECLSPECNAKED
 
 ***************************************/
 
@@ -2505,12 +2530,12 @@
 
 	\code
 
-	// Have the function accept the parameter in D1 on 68K
-	extern void foobar(int input BURGER_68K_D1);
+	// Have the function accept the parameter in D0 on 68K
+	extern void foobar(int input BURGER_68K_D0);
 
-	uint32_t bar(uint32_t *pInput BURGER_68K_A1) BURGER_68K_D1
+	uint32_t bar(uint32_t *pInput BURGER_68K_A1) BURGER_68K_D0
 	{
-		// Input is passed in A1, and loaded into D1 for return
+		// Input is passed in A1, and loaded into D0 for return
 		// This compiles to a single instruction and a RET
 		return *pInput;
 	}
@@ -2560,13 +2585,18 @@
 	that is desired by the programmer.
 
 	\note The size must be a power of two. Acceptable sizes are 1, 2, 4, 8, 16
-	and 32. Larger are acceptable, as long as they are powers of two.
+	and 32. Larger are acceptable, as long as they are powers of two and
+	supported by the compiler.
 
 	\code
 		BURGER_ALIGN(extern int, foo, 8);
 		BURGER_ALIGN(CoolClass, MyClass, 1);
 		BURGER_ALIGN(int, DataArray[4], 8) = {1,2,3,4};
 	\endcode
+
+	\param __type Type of the data to declare
+	\param __name Name of the object
+	\param __a Alignment value, must be power of 2
 
 	\sa BURGER_NO_ALIGN, BURGER_PREALIGN and BURGER_POSTALIGN
 
@@ -2593,6 +2623,8 @@
 	} BURGER_POSTALIGN(32);
 	\endcode
 
+	\param __a Alignment value, must be power of 2
+
 	\sa BURGER_NO_ALIGN, BURGER_ALIGN and BURGER_POSTALIGN
 
 ***************************************/
@@ -2618,6 +2650,8 @@
 	} BURGER_POSTALIGN(32);
 	\endcode
 
+	\param __a Alignment value, must be power of 2
+
 	\sa BURGER_NO_ALIGN, BURGER_PREALIGN and BURGER_ALIGN
 
 ***************************************/
@@ -2631,7 +2665,7 @@
 	not supported. This macro exists on those compilers to alert code to be
 	written to handle this case.
 
-	\sa BURGER_PREALIGN, BURGER_POSTALIGN and BURGER_ALIGN
+	\sa BURGER_PREALIGN, BURGER_POSTALIGN, BURGER_ALIGN, or BURGER_WATCOM
 
 ***************************************/
 
@@ -2679,6 +2713,48 @@
 
 /*! ************************************
 
+	\def BURGER_STRUCT_PACKPUSH
+	\brief Defined if the compiler uses Microsoft style data alignment commands.
+
+	Compilers can be set to change the default alignment of data structures. If
+	alignment for a specific header needs to be set, you will need to insert
+	this code as a prefix and a postfix to make sure that the compiler settings
+	are overridden.
+
+	This is useful for data structures that are mapped to the contents of a
+	loaded file.
+
+	\note Care must be exercised when changing alignment to byte or short. Some
+	CPUs will generate a page fault if a 32 bit value is not 4 byte aligned.
+
+	\code
+
+	// Prefix for 4 byte alignment
+	#if defined(BURGER_STRUCT_ALIGN)
+	#pragma options align=power
+	#elif defined(BURGER_STRUCT_PACKPUSH)
+	#pragma pack(push,4)
+	#elif defined(BURGER_STRUCT_PACK)
+	#pragma pack(4)
+	#endif
+
+	// Postfix to restore compiler setting alignment
+	#if defined(BURGER_STRUCT_ALIGN)
+	#pragma options align=reset
+	#elif defined(BURGER_STRUCT_PACKPUSH)
+	#pragma pack(pop)
+	#elif defined(BURGER_STRUCT_PACK)
+	#pragma pack()
+	#endif
+
+	\endcode
+
+	\sa BURGER_STRUCT_ALIGN or BURGER_STRUCT_PACK
+
+***************************************/
+
+/*! ************************************
+
 	\def BURGER_STRUCT_PACK
 	\brief Defined if the compiler uses GNU style data alignment commands.
 
@@ -2716,6 +2792,31 @@
 	\endcode
 
 	\sa BURGER_STRUCT_ALIGN or BURGER_STRUCT_PACKPUSH
+
+***************************************/
+
+/*! ************************************
+
+	\def nullptr
+	\brief Defined to nothing if the feature is not available.
+
+	On compilers that support nullptr, this macro does not exist. To support
+	this feature on older compilers, this macro exists to simulate the feature
+
+	\sa NULL, BURGER_CPP11, BURGER_OVERRIDE or BURGER_CONSTEXPR
+
+***************************************/
+
+/*! ************************************
+
+	\def __underlying_type
+	\brief Defined if __underlying_type is not available.
+
+	If the feature __underlying_type isn't supported by the compiler, this
+	macro will be defined to `int` to allow code to compile on older
+	compilers.
+
+	\sa BURGER_CPP11, nullptr or BURGER_CONSTEXPR
 
 ***************************************/
 
@@ -2807,31 +2908,6 @@
 
 /*! ************************************
 
-	\def nullptr
-	\brief Defined to nothing if the feature is not available.
-
-	On compilers that support nullptr, this macro does not exist. To support
-	this feature on older compilers, this macro exists to simulate the feature
-
-	\sa NULL, BURGER_CPP11, BURGER_OVERRIDE or BURGER_CONSTEXPR
-
-***************************************/
-
-/*! ************************************
-
-	\def __underlying_type
-	\brief Defined if __underlying_type is not available.
-
-	If the feature __underlying_type isn't supported by the compiler, this
-	macro will be defined to `int` to allow code to compile on older
-	compilers.
-
-	\sa BURGER_CPP11, nullptr or BURGER_CONSTEXPR
-
-***************************************/
-
-/*! ************************************
-
 	\def BURGER_OVERRIDE
 	\brief Defined to nothing if the feature is not available.
 
@@ -2847,13 +2923,193 @@
 	\def BURGER_FINAL
 	\brief Defined to nothing if the feature is not available.
 
-	On compilers that support final, this macro is set to final. To
+	On compilers that support `final`, this macro is set to `final`. To
 	support this feature on older compilers, this macro is set to nothing.
 
-	Microsoft Visual C can set this to sealed, or for GNU compilers it is
-	set to __final.
+	Microsoft Visual C can set this to `sealed`, or for GNU compilers it is
+	set to `__final`.
 
 	\sa BURGER_CPP11, nullptr, BURGER_OVERRIDE or BURGER_CONSTEXPR
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_EQUALS_DELETE
+	\brief Declare "= delete" on C++ 11 compilers
+
+	Some class functions can be disabled in C++11 by the use of the
+	term "= delete" suffix. Of the compiler supports this feature, this
+	macro will map to "= delete", otherwise the macro will be blank.
+
+	\code
+	class DontCopyMe {
+		// Disallow copying of this class
+		DontCopyMe(const &) BURGER_EQUALS_DELETE;
+		DontCopyMe& operator=(DontCopyMe const&) BURGER_EQUALS_DELETE;
+	public:
+		void DoStuff(void);
+
+	\endcode
+
+	\sa BURGER_DISABLE_COPY, or BURGER_EQUALS_DEFAULT
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_EQUALS_DEFAULT
+	\brief Declare "= default" on C++ 11 compilers
+
+	Some default constructors can be created in C++11 by the use of the
+	term "= default" suffix. Of the compiler supports this feature, this
+	macro will map to "= default", otherwise the macro will be blank.
+
+	\code
+	class DefaultClass {
+		// Default constructor
+		DefaultClass() BURGER_EQUALS_DEFAULT;
+
+	public:
+		void DoStuff(void);
+
+	\endcode
+
+	\sa BURGER_EQUALS_DELETE or BURGER_DEFAULT_DESTRUCTOR
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_DEFAULT_CONSTRUCTOR
+	\brief Declare "= default" on C++ 11 compilers
+
+	For a default constructor, "= default" is the preferred method for C++ 11 or
+	higher compilers, while earlier compilers prefer {} for default
+	constructors. This macro will expand to the preferred format for creating
+	default constructors.
+
+	\code
+	class DefaultClass {
+		// Default constructor
+		DefaultClass() BURGER_DEFAULT_CONSTRUCTOR;
+
+	public:
+		void DoStuff(void);
+
+	\endcode
+
+	\sa BURGER_EQUALS_DEFAULT or BURGER_DEFAULT_DESTRUCTOR
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_DEFAULT_DESTRUCTOR
+	\brief Declare "= default" on C++ 11 compilers
+
+	For a default destructor, "= default" is the preferred method for C++ 11 or
+	higher compilers, while earlier compilers prefer {} for default destructors.
+	This macro will expand to the preferred format for creating default
+	destructors.
+
+	\code
+	class DefaultClass {
+		// Default destructor
+		~DefaultClass() BURGER_DEFAULT_DESTRUCTOR;
+
+	public:
+		void DoStuff(void);
+
+	\endcode
+
+	\sa BURGER_DEFAULT_CONSTRUCTOR, BURGER_EQUALS_DEFAULT or
+		BURGER_EQUALS_DELETE
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_MININT
+	\brief Minimum value of a signed integer.
+
+	This is a replacement for the ANSI macro MIN_INT. Normally, this is
+	(-0x7FFFFFFF)-1, but it could be a 64 or 128 bit value on future processors.
+
+	\sa BURGER_MININT64 or BURGER_MAXINT
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_MAXINT
+	\brief Maximum value of a signed integer.
+
+	This is a replacement for the ANSI macro MAX_INT. Normally, this is
+	0x7FFFFFFF, but it could be a 64 or 128 bit value on future processors.
+
+	\sa BURGER_MININT, BURGER_MAXINTPTR or BURGER_MAXUINT
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_MAXUINT
+	\brief Maximum value of an unsigned integer.
+
+	This is a replacement for the ANSI macro MAX_UINT. Normally, this is
+	0xFFFFFFFFU, but it could be a 64 or 128 bit value on future processors.
+
+	\sa BURGER_MAXINTPTR or BURGER_MAXINT
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_MININT64
+	\brief Minimum value of a int64_t.
+
+	This is a replacement for the ANSI macro MIN_INT but it's meant for 64 bit
+	values defined as int64_t. Normally, this is ((-0x7FFFFFFFFFFFFFFFLL)-1).
+
+	\sa BURGER_MAXINT64, BURGER_MAXUINT64, or BURGER_MAXINT
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_MAXINT64
+	\brief Maximum value of a int64_t.
+
+	This is a replacement for the ANSI macro MAX_INT but it's meant for 64 bit
+	values defined as int64_t. Normally, this is 0x7FFFFFFFFFFFFFFFLL.
+
+	\sa BURGER_MININT64, BURGER_MAXUINT64, or BURGER_MAXINT
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_MAXUINT64
+	\brief Maximum value of a uint64_t.
+
+	This is a replacement for the ANSI macro MAX_UINT but it's meant for 64 bit
+	values defined as uint64_t. Normally, this is 0xFFFFFFFFFFFFFFFFULL.
+
+	\sa BURGER_MAXINT64, or BURGER_MAXUINT
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_MAXINTPTR
+	\brief Maximum value of a signed address space integer.
+
+	This is a constant value of the largest allowable address. Normally, this is
+	0x7FFFFFFF on 32 bit CPUs and 0x7FFFFFFFFFFFFFFFLL on 64 bit CPUs. It may be
+	a 128 bit value on future processors.
+
+	\sa BURGER_MAXINT or BURGER_MAXUINT
 
 ***************************************/
 
@@ -2962,154 +3218,6 @@
 	final product, mark it with this macro.
 
 	\sa BURGER_NODISCARD or BURGER_MAYBE_UNUSED
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_STRUCT_PACKPUSH
-	\brief Defined if the compiler uses Microsoft style data alignment commands.
-
-	Compilers can be set to change the default alignment of data structures. If
-	alignment for a specific header needs to be set, you will need to insert
-	this code as a prefix and a postfix to make sure that the compiler settings
-	are overridden.
-
-	This is useful for data structures that are mapped to the contents of a
-	loaded file.
-
-	\note Care must be exercised when changing alignment to byte or short. Some
-	CPUs will generate a page fault if a 32 bit value is not 4 byte aligned.
-
-	\code
-
-	// Prefix for 4 byte alignment
-	#if defined(BURGER_STRUCT_ALIGN)
-	#pragma options align=power
-	#elif defined(BURGER_STRUCT_PACKPUSH)
-	#pragma pack(push,4)
-	#elif defined(BURGER_STRUCT_PACK)
-	#pragma pack(4)
-	#endif
-
-	// Postfix to restore compiler setting alignment
-	#if defined(BURGER_STRUCT_ALIGN)
-	#pragma options align=reset
-	#elif defined(BURGER_STRUCT_PACKPUSH)
-	#pragma pack(pop)
-	#elif defined(BURGER_STRUCT_PACK)
-	#pragma pack()
-	#endif
-
-	\endcode
-
-	\sa BURGER_STRUCT_ALIGN or BURGER_STRUCT_PACK
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_OPENGL
-	\brief Define for the presence of OpenGL
-
-	If this define exists, then OpenGL is supported.
-	\sa BURGER_OPENGLES, or BURGER_VULKAN
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_OPENGLES
-	\brief Define for the presence of OpenGL ES
-
-	If this define exists, then OpenGL ES is supported.
-	\sa BURGER_OPENGL, or BURGER_VULKAN
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_VULKAN
-	\brief Define for the presence of Vulkan
-
-	If this define exists, then Vulkan is supported.
-	\sa BURGER_OPENGL, or BURGER_OPENGLES
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_TCPIP
-	\brief Define for the presence of TCP/IP
-
-	If this define exists, then the TCP/IP networking protocol
-	is supported.
-
-	\sa BURGER_APPLETALK, BURGER_IPX, BURGER_STEAM, or BURGER_XBOXLIVE
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_APPLETALK
-	\brief Define for the presence of AppleTalk
-
-	If this define exists, then the AppleTalk networking protocol
-	is supported. This is usually found on older MacOS computers and
-	some Windows XP platforms.
-
-	\sa BURGER_TCPIP, BURGER_IPX, BURGER_STEAM, or BURGER_XBOXLIVE
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_IPX
-	\brief Define for the presence of IPX/SPX
-
-	If this define exists, then the IPX/SPX networking protocol
-	is supported. It's supported on Windows and older MacOS platforms.
-
-	\sa BURGER_TCPIP, BURGER_APPLETALK, BURGER_STEAM, or BURGER_XBOXLIVE
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_STEAM
-	\brief Define for the presence of Valve's Steam platform
-
-	If this define exists, then the Steam platform is supported.
-	TCP/IP can be assumed to be available with this define present.
-
-	\note Steam is not available on PowerPC MacOSX and old Windows compilers
-
-	\sa BURGER_TCPIP, BURGER_APPLETALK, BURGER_IPX, or BURGER_XBOXLIVE
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_XBOXLIVE
-	\brief Define for the presence of Microsoft's Xbox Live platform.
-
-	If this define exists, then the Xbox Live platform is supported.
-	TCP/IP can be assumed to be available with this define present.
-
-	\sa BURGER_TCPIP, BURGER_APPLETALK, BURGER_IPX, or BURGER_STEAM
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_CONSOLE
-	\brief Define for the presence of a text console.
-
-	If this define exists, then the platform supports a terminal console such as
-	CMD.COM, bash, sh etc. Test for this macro if the code requires a console,
-	such as code for a command line tool.
-
-	\sa BURGER_MSDOS, BURGER_LINUX, BURGER_MACOS or BURGER_WINDOWS
 
 ***************************************/
 
@@ -3363,101 +3471,6 @@
 	\note This macro will set the class setting to "private"
 
 	\sa BURGER_EQUALS_DELETE
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_EQUALS_DELETE
-	\brief Declare "= delete" on C++ 11 compilers
-
-	Some class functions can be disabled in C++11 by the use of the
-	term "= delete" suffix. Of the compiler supports this feature, this
-	macro will map to "= delete", otherwise the macro will be blank.
-
-	\code
-	class DontCopyMe {
-		// Disallow copying of this class
-		DontCopyMe(const &) BURGER_EQUALS_DELETE;
-		DontCopyMe& operator=(DontCopyMe const&) BURGER_EQUALS_DELETE;
-	public:
-		void DoStuff(void);
-
-	\endcode
-
-	\sa BURGER_DISABLE_COPY, or BURGER_EQUALS_DEFAULT
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_EQUALS_DEFAULT
-	\brief Declare "= default" on C++ 11 compilers
-
-	Some default constructors can be created in C++11 by the use of the
-	term "= default" suffix. Of the compiler supports this feature, this
-	macro will map to "= default", otherwise the macro will be blank.
-
-	\code
-	class DefaultClass {
-		// Default constructor
-		DefaultClass() BURGER_EQUALS_DEFAULT;
-
-	public:
-		void DoStuff(void);
-
-	\endcode
-
-	\sa BURGER_EQUALS_DELETE or BURGER_DEFAULT_DESTRUCTOR
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_DEFAULT_CONSTRUCTOR
-	\brief Declare "= default" on C++ 11 compilers
-
-	For a default constructor, "= default" is the preferred method for C++ 11 or
-	higher compilers, while earlier compilers prefer {} for default
-constructors. This macro will expand to the preferred format for creating
-default constructors.
-
-	\code
-	class DefaultClass {
-		// Default constructor
-		DefaultClass() BURGER_DEFAULT_CONSTRUCTOR;
-
-	public:
-		void DoStuff(void);
-
-	\endcode
-
-	\sa BURGER_EQUALS_DEFAULT or BURGER_DEFAULT_DESTRUCTOR
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_DEFAULT_DESTRUCTOR
-	\brief Declare "= default" on C++ 11 compilers
-
-	For a default destructor, "= default" is the preferred method for C++ 11 or
-	higher compilers, while earlier compilers prefer {} for default destructors.
-	This macro will expand to the preferred format for creating default
-	destructors.
-
-	\code
-	class DefaultClass {
-		// Default destructor
-		~DefaultClass() BURGER_DEFAULT_DESTRUCTOR;
-
-	public:
-		void DoStuff(void);
-
-	\endcode
-
-	\sa BURGER_DEFAULT_CONSTRUCTOR, BURGER_EQUALS_DEFAULT or
-		BURGER_EQUALS_DELETE
 
 ***************************************/
 

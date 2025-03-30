@@ -212,6 +212,7 @@ Defines to denote if features, compilation switches or high level APIs are prese
 * \ref BURGER_IPX Is IPX/SPX available on this platform
 * \ref BURGER_STEAM Is Steam is available on this platform
 * \ref BURGER_XBOXLIVE Is Xbox Live available on this platform
+* \ref BURGER_CONSOLE Is there a command line shell available
 
 Handy macros {#sect_handy_macros}
 ------------
