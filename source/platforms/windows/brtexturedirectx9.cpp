@@ -179,7 +179,7 @@ void Burger::TextureDirectX9::Release(Display * /* pDisplay */)
 		m_pD3DTexture->Release();
 		m_pD3DTexture = NULL;
 	}
-	m_uDirty = BURGER_MAXUINT;
+	m_uDirty = UINT32_MAX;
 }
 
 //

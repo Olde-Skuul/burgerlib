@@ -19,10 +19,10 @@
 /*! ************************************
 
 	\def BURGER_FLOAT_TO_FIXED
-	\brief Define to convert a float into a \ref Fixed32.
+	\brief Define to convert a float into a \ref fixed16_16_t.
 
 	Macro to convert at compile time a floating point value into 16.16 fixed
-	point. Used for compile assignment of \ref Fixed32 constants.
+	point. Used for compile assignment of \ref fixed16_16_t constants.
 
 	\note Due to the float to integer conversion, use of this macro at runtime
 		may be a performance penalty on the Xbox 360 and PS3 on non-constant
@@ -30,26 +30,26 @@
 
 	\code
 	// Fast use
-	static const Fixed32 MyData = BURGER_FLOAT_TO_FIXED(4.503f);
+	static const fixed16_16_t MyData = BURGER_FLOAT_TO_FIXED(4.503f);
 	// Slow use
 	void Foo(float fInput)
 	{
-		Fixed32 iInput = BURGER_FLOAT_TO_FIXED(fInput);
+		fixed16_16_t iInput = BURGER_FLOAT_TO_FIXED(fInput);
 	}
 	\endcode
 
-	\param x Floating point value to convert to a \ref Fixed32.
+	\param x Floating point value to convert to a \ref fixed16_16_t.
 
 ***************************************/
 
 /*! ************************************
 
 	\def BURGER_FIXED_TO_FLOAT
-	\brief Define to convert a \ref Fixed32 into a float.
+	\brief Define to convert a \ref fixed16_16_t into a float.
 
 	Macro to convert at compile time a 16.16 fixed point number into a floating
 	point value Used for compile assignment of float constants using
-	\ref Fixed32 constants..
+	\ref fixed16_16_t constants..
 
 	\note Due to the integer to float conversion, use of this macro at runtime
 		on non constant values may be a performance penalty on the Xbox 360 and
@@ -59,7 +59,7 @@
 	// Fast use
 	static const float MyData = BURGER_FIXED_TO_FLOAT(Burger::kPiFixed32);
 	// Slow use
-	void Foo(Fixed32 iInput)
+	void Foo(fixed16_16_t iInput)
 	{
 		float fInput = BURGER_FIXED_TO_FLOAT(iInput);
 	}
@@ -72,30 +72,30 @@
 /*! ************************************
 
 	\def BURGER_INT_TO_FIXED
-	\brief Define to convert a integer into a \ref Fixed32.
+	\brief Define to convert a integer into a \ref fixed16_16_t.
 
 	Macro to convert at compile time an integer value into 16.16 fixed point.
-	Used for compile assignment of \ref Fixed32 constants.
+	Used for compile assignment of \ref fixed16_16_t constants.
 
 	\note There is no bounds checking performed by this macro. As a result,
 		integers larger than 32767 or less than -32768 will cause undefined
 		behavior due to over/underflow.
 
 	\code
-	static const Fixed32 MyData = BURGER_INT_TO_FIXED(443);
+	static const fixed16_16_t MyData = BURGER_INT_TO_FIXED(443);
 	\endcode
 
-	\param x Integer value to convert to a \ref Fixed32.
+	\param x Integer value to convert to a \ref fixed16_16_t.
 
 ***************************************/
 
 /*! ************************************
 
 	\def BURGER_FIXED_TO_INT
-	\brief Define to convert a \ref Fixed32 value to an integer.
+	\brief Define to convert a \ref fixed16_16_t value to an integer.
 
 	Macro to convert at compile time a 16.16 fixed point value into an integer.
-	Used for compile time assignment of integers using \ref Fixed32 constants.
+	Used for compile time assignment of integers using \ref fixed16_16_t constants.
 
 	\note This macro uses round to zero in the removal of the fraction. Negative
 		numbers like -0.8 become 0, as well as 0.8 becomes 0.
@@ -104,7 +104,7 @@
 	static const int MyData = BURGER_FIXED_TO_INT(Burger::kPiFixed32);
 	\endcode
 
-	\param x \ref Fixed32 value to convert to an integer.
+	\param x \ref fixed16_16_t value to convert to an integer.
 
 ***************************************/
 
@@ -146,8 +146,8 @@
 
 /*! ************************************
 
-	\fn Fixed32 Burger::int_to_fixed(int32_t iInput)
-	\brief Convert an int32_t into a \ref Fixed32 value.
+	\fn fixed16_16_t Burger::int_to_fixed(int32_t iInput)
+	\brief Convert an int32_t into a \ref fixed16_16_t value.
 
 	Convert an integer into a fixed point number. No bounds checking is
 	performed so values that exceed 32767 or are less than -32768 will yield
@@ -163,7 +163,7 @@
 
 /*! ************************************
 
-	\brief Convert an int32_t into a Fixed32 value with saturation.
+	\brief Convert an int32_t into a fixed16_16_t value with saturation.
 
 	Convert an integer into a fixed point number. Bounds checking is performed
 	so values that exceed 32767 or are less than -32768 will yield max and min
@@ -180,9 +180,9 @@
 
 ***************************************/
 
-Fixed32 BURGER_API Burger::int_to_fixed_saturate(int32_t iInput) BURGER_NOEXCEPT
+fixed16_16_t BURGER_API Burger::int_to_fixed_saturate(int32_t iInput) BURGER_NOEXCEPT
 {
-	Fixed32 iResult;
+	fixed16_16_t iResult;
 
 	// Not too big?
 	if (iInput >= 0x8000) {
@@ -196,17 +196,17 @@ Fixed32 BURGER_API Burger::int_to_fixed_saturate(int32_t iInput) BURGER_NOEXCEPT
 
 	} else {
 		// Convert to fixed (Signed shift)
-		iResult = static_cast<Fixed32>(iInput << 16);
+		iResult = static_cast<fixed16_16_t>(iInput << 16);
 	}
 	return iResult;
 }
 
 /*! ************************************
 
-	\fn Burger::fixed_to_int_floor(Fixed32 fInput)
+	\fn Burger::fixed_to_int_floor(fixed16_16_t fInput)
 	\brief Convert a fixed point value to an integer using round down.
 
-	Convert a \ref Fixed32 into an integer using the same formula as floor().
+	Convert a \ref fixed16_16_t into an integer using the same formula as floor().
 
 	\code
 	int iResult;
@@ -224,17 +224,17 @@ Fixed32 BURGER_API Burger::int_to_fixed_saturate(int32_t iInput) BURGER_NOEXCEPT
 
 	\return The input converted to an integer using the truth table below.
 
-	\sa get_floor(float), get_floor(double), fixed_to_int(Fixed32),
-		fixed_to_int_ceil(Fixed32), or fixed_to_int_nearest(Fixed32)
+	\sa get_floor(float), get_floor(double), fixed_to_int(fixed16_16_t),
+		fixed_to_int_ceil(fixed16_16_t), or fixed_to_int_nearest(fixed16_16_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::fixed_to_int(Fixed32 fInput)
+	\fn Burger::fixed_to_int(fixed16_16_t fInput)
 	\brief Convert a fixed point value to an integer using round to zero.
 
-	Convert a \ref Fixed32 into an integer using round to zero.
+	Convert a \ref fixed16_16_t into an integer using round to zero.
 
 	\code
 	floorint = Burger::fixed_to_int(BURGER_FLOAT_TO_FIXED(1.1f));	//1
@@ -250,17 +250,17 @@ Fixed32 BURGER_API Burger::int_to_fixed_saturate(int32_t iInput) BURGER_NOEXCEPT
 	\param fInput Value to convert to an integer.
 	\return The input converted to an integer using the truth table below.
 
-	\sa fixed_to_int_floor(Fixed32), fixed_to_int_ceil(Fixed32), or
-		fixed_to_int_nearest(Fixed32)
+	\sa fixed_to_int_floor(fixed16_16_t), fixed_to_int_ceil(fixed16_16_t), or
+		fixed_to_int_nearest(fixed16_16_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::fixed_to_int_ceil(Fixed32 fInput)
+	\fn Burger::fixed_to_int_ceil(fixed16_16_t fInput)
 	\brief Convert a fixed point value to an integer using round up.
 
-	Convert a \ref Fixed32 into an integer using the same formula as ceil().
+	Convert a \ref fixed16_16_t into an integer using the same formula as ceil().
 
 	\code
 	int iResult;
@@ -278,17 +278,17 @@ Fixed32 BURGER_API Burger::int_to_fixed_saturate(int32_t iInput) BURGER_NOEXCEPT
 
 	\return The input converted to an integer using the truth table below.
 
-	\sa get_ceiling(float), get_ceiling(double), fixed_to_int_floor(Fixed32),
-		fixed_to_int(Fixed32), or fixed_to_int_nearest(Fixed32)
+	\sa get_ceiling(float), get_ceiling(double), fixed_to_int_floor(fixed16_16_t),
+		fixed_to_int(fixed16_16_t), or fixed_to_int_nearest(fixed16_16_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::fixed_to_int_nearest(Fixed32 fInput)
+	\fn Burger::fixed_to_int_nearest(fixed16_16_t fInput)
 	\brief Convert a fixed point value to an integer using round to nearest.
 
-	Convert a \ref Fixed32 into an integer using round to nearest.
+	Convert a \ref fixed16_16_t into an integer using round to nearest.
 
 	\code
 	int iResult;
@@ -308,8 +308,8 @@ Fixed32 BURGER_API Burger::int_to_fixed_saturate(int32_t iInput) BURGER_NOEXCEPT
 
 	\return The input converted to an integer using the truth table below.
 
-	\sa get_round(float), get_round(double), fixed_to_int_floor(Fixed32),
-		fixed_to_int(Fixed32), or fixed_to_int_ceil(Fixed32)
+	\sa get_round(float), get_round(double), fixed_to_int_floor(fixed16_16_t),
+		fixed_to_int(fixed16_16_t), or fixed_to_int_ceil(fixed16_16_t)
 
 ***************************************/
 
@@ -857,17 +857,17 @@ void BURGER_API Burger::float_to_int_round_to_zero(
 
 /*! ************************************
 
-	\brief Convert a 32 bit float to a \ref Fixed32 using floor().
+	\brief Convert a 32 bit float to a \ref fixed16_16_t using floor().
 
-	Convert a single precision floating point number to a \ref Fixed32
+	Convert a single precision floating point number to a \ref fixed16_16_t
 	using the floor() form of fractional truncation
 
 	\param fInput A valid single precision floating point number.
 
-	\return a \ref Fixed32 equivalent value after applying floor() on the
+	\return a \ref fixed16_16_t equivalent value after applying floor() on the
 		floating point number.
 
-	\sa float_to_fixed_floor(Fixed32 *,float),
+	\sa float_to_fixed_floor(fixed16_16_t *,float),
 		float_to_fixed_round_to_zero(float),
 		float_to_fixed_ceil(float), or
 		float_to_fixed_round(float)
@@ -879,51 +879,51 @@ void BURGER_API Burger::float_to_int_round_to_zero(
 	(defined(BURGER_MSVC) && defined(BURGER_X86))
 // Assembly
 #else
-Fixed32 BURGER_API Burger::float_to_fixed_floor(float fInput) BURGER_NOEXCEPT
+fixed16_16_t BURGER_API Burger::float_to_fixed_floor(float fInput) BURGER_NOEXCEPT
 {
-	return static_cast<Fixed32>(float_to_int_floor(fInput * 65536.0f));
+	return static_cast<fixed16_16_t>(float_to_int_floor(fInput * 65536.0f));
 }
 #endif
 
 /*! ************************************
 
-	\brief Convert a 32 bit float to a \ref Fixed32 using round to zero.
+	\brief Convert a 32 bit float to a \ref fixed16_16_t using round to zero.
 
-	Convert a single precision floating point number to a \ref Fixed32
+	Convert a single precision floating point number to a \ref fixed16_16_t
 	using the round to zero fractional truncation
 
 	\param fInput A valid single precision floating point number.
 
-	\return a \ref Fixed32 equivalent value after applying round to zero on the
+	\return a \ref fixed16_16_t equivalent value after applying round to zero on the
 		floating point number.
 
-	\sa float_to_fixed_round_to_zero(Fixed32 *,float),
+	\sa float_to_fixed_round_to_zero(fixed16_16_t *,float),
 		float_to_fixed_floor(float), float_to_fixed_ceil(float), or
 		float_to_fixed_round(float)
 
 ***************************************/
 
-Fixed32 BURGER_API Burger::float_to_fixed_round_to_zero(
+fixed16_16_t BURGER_API Burger::float_to_fixed_round_to_zero(
 	float fInput) BURGER_NOEXCEPT
 {
-	return static_cast<Fixed32>(
+	return static_cast<fixed16_16_t>(
 		float_to_int_round_to_zero(fInput * g_f65536.f));
 }
 
 /*! ************************************
 
-	\fn Fixed32 Burger::float_to_fixed_ceil(float fInput)
-	\brief Convert a 32 bit float to a \ref Fixed32 using ceil().
+	\fn fixed16_16_t Burger::float_to_fixed_ceil(float fInput)
+	\brief Convert a 32 bit float to a \ref fixed16_16_t using ceil().
 
-	Convert a single precision floating point number to a \ref Fixed32
+	Convert a single precision floating point number to a \ref fixed16_16_t
 	using the ceil() form of fractional truncation
 
 	\param fInput A valid single precision floating point number.
 
-	\return a \ref Fixed32 equivalent value after applying ceil() on the
+	\return a \ref fixed16_16_t equivalent value after applying ceil() on the
 		floating point number.
 
-	\sa float_to_fixed_ceil(Fixed32 *,float), float_to_fixed_floor(float),
+	\sa float_to_fixed_ceil(fixed16_16_t *,float), float_to_fixed_floor(float),
 		float_to_fixed_round_to_zero(float), or float_to_fixed_round(float)
 
 ***************************************/
@@ -933,24 +933,24 @@ Fixed32 BURGER_API Burger::float_to_fixed_round_to_zero(
 	(defined(BURGER_MSVC) && defined(BURGER_X86))
 // Assembly
 #else
-Fixed32 BURGER_API Burger::float_to_fixed_ceil(float fInput) BURGER_NOEXCEPT
+fixed16_16_t BURGER_API Burger::float_to_fixed_ceil(float fInput) BURGER_NOEXCEPT
 {
-	return static_cast<Fixed32>(float_to_int_ceil(fInput * 65536.0f));
+	return static_cast<fixed16_16_t>(float_to_int_ceil(fInput * 65536.0f));
 }
 #endif
 
 /*! ************************************
 
-	\brief Convert a 32 bit float to a \ref Fixed32 using round to nearest.
+	\brief Convert a 32 bit float to a \ref fixed16_16_t using round to nearest.
 
-	Convert a single precision floating point number to a \ref Fixed32
+	Convert a single precision floating point number to a \ref fixed16_16_t
 	using the round to nearest fractional truncation
 
 	\param fInput A valid single precision floating point number.
-	\return a \ref Fixed32 equivalent value after applying round to nearest on
+	\return a \ref fixed16_16_t equivalent value after applying round to nearest on
 		the floating point number.
 
-	\sa float_to_fixed_round(Fixed32 *,float), float_to_fixed_floor(float),
+	\sa float_to_fixed_round(fixed16_16_t *,float), float_to_fixed_floor(float),
 		float_to_fixed_round_to_zero(float), or float_to_fixed_ceil(float)
 
 ***************************************/
@@ -960,26 +960,26 @@ Fixed32 BURGER_API Burger::float_to_fixed_ceil(float fInput) BURGER_NOEXCEPT
 	(defined(BURGER_MSVC) && defined(BURGER_X86))
 // Assembly
 #else
-Fixed32 BURGER_API Burger::float_to_fixed_round(float fInput) BURGER_NOEXCEPT
+fixed16_16_t BURGER_API Burger::float_to_fixed_round(float fInput) BURGER_NOEXCEPT
 {
-	return static_cast<Fixed32>(float_to_int_round(fInput * 65536.0f));
+	return static_cast<fixed16_16_t>(float_to_int_round(fInput * 65536.0f));
 }
 #endif
 
 /*! ************************************
 
-	\brief Convert a 32 bit float to a \ref Fixed32 using floor().
+	\brief Convert a 32 bit float to a \ref fixed16_16_t using floor().
 
-	Convert a single precision floating point number to a \ref Fixed32
+	Convert a single precision floating point number to a \ref fixed16_16_t
 	using the floor() form of fractional truncation and store it to memory
 
-	\param pOutput A valid pointer to a \ref Fixed32 to receive the result.
+	\param pOutput A valid pointer to a \ref fixed16_16_t to receive the result.
 	\param fInput A valid single precision floating point number.
 
 	\sa float_to_fixed_floor(float),
-		float_to_fixed_round_to_zero(Fixed32* ,float),
-		float_to_fixed_ceil(Fixed32* ,float), or
-		float_to_fixed_round(Fixed32* ,float)
+		float_to_fixed_round_to_zero(fixed16_16_t* ,float),
+		float_to_fixed_ceil(fixed16_16_t* ,float), or
+		float_to_fixed_round(fixed16_16_t* ,float)
 
 ***************************************/
 
@@ -989,7 +989,7 @@ Fixed32 BURGER_API Burger::float_to_fixed_round(float fInput) BURGER_NOEXCEPT
 // Assembly
 #else
 void BURGER_API Burger::float_to_fixed_floor(
-	Fixed32* pOutput, float fInput) BURGER_NOEXCEPT
+	fixed16_16_t* pOutput, float fInput) BURGER_NOEXCEPT
 {
 	float_to_int_floor(reinterpret_cast<int32_t*>(pOutput), fInput * 65536.0f);
 }
@@ -997,22 +997,22 @@ void BURGER_API Burger::float_to_fixed_floor(
 
 /*! ************************************
 
-	\brief Convert a 32 bit float to a \ref Fixed32 using round to zero.
+	\brief Convert a 32 bit float to a \ref fixed16_16_t using round to zero.
 
-	Convert a single precision floating point number to a \ref Fixed32
+	Convert a single precision floating point number to a \ref fixed16_16_t
 	using the round to zero fractional truncation and store it to memory
 
-	\param pOutput A valid pointer to a \ref Fixed32 to receive the result.
+	\param pOutput A valid pointer to a \ref fixed16_16_t to receive the result.
 	\param fInput A valid single precision floating point number.
 	\sa float_to_fixed_round_to_zero(float),
-		float_to_fixed_floor(Fixed32*, float),
-		float_to_fixed_ceil(Fixed32*, float), or
-		float_to_fixed_round(Fixed32*, float)
+		float_to_fixed_floor(fixed16_16_t*, float),
+		float_to_fixed_ceil(fixed16_16_t*, float), or
+		float_to_fixed_round(fixed16_16_t*, float)
 
 ***************************************/
 
 void BURGER_API Burger::float_to_fixed_round_to_zero(
-	Fixed32* pOutput, float fInput) BURGER_NOEXCEPT
+	fixed16_16_t* pOutput, float fInput) BURGER_NOEXCEPT
 {
 	float_to_int_round_to_zero(
 		reinterpret_cast<int32_t*>(pOutput), fInput * g_f65536.f);
@@ -1020,17 +1020,17 @@ void BURGER_API Burger::float_to_fixed_round_to_zero(
 
 /*! ************************************
 
-	\brief Convert a 32 bit float to a \ref Fixed32 using ceil().
+	\brief Convert a 32 bit float to a \ref fixed16_16_t using ceil().
 
-	Convert a single precision floating point number to a \ref Fixed32
+	Convert a single precision floating point number to a \ref fixed16_16_t
 	using the ceil() form of fractional truncation and store it to memory
 
-	\param pOutput A valid pointer to a \ref Fixed32 to receive the result.
+	\param pOutput A valid pointer to a \ref fixed16_16_t to receive the result.
 	\param fInput A valid single precision floating point number.
 
-	\sa float_to_fixed_ceil(float), float_to_fixed_floor(Fixed32 *,float),
-		float_to_fixed_round_to_zero(Fixed32 *,float),
-		or float_to_fixed_round(Fixed32 *,float)
+	\sa float_to_fixed_ceil(float), float_to_fixed_floor(fixed16_16_t *,float),
+		float_to_fixed_round_to_zero(fixed16_16_t *,float),
+		or float_to_fixed_round(fixed16_16_t *,float)
 
 ***************************************/
 
@@ -1040,7 +1040,7 @@ void BURGER_API Burger::float_to_fixed_round_to_zero(
 // Assembly
 #else
 void BURGER_API Burger::float_to_fixed_ceil(
-	Fixed32* pOutput, float fInput) BURGER_NOEXCEPT
+	fixed16_16_t* pOutput, float fInput) BURGER_NOEXCEPT
 {
 	float_to_int_ceil(reinterpret_cast<int32_t*>(pOutput), fInput * 65536.0f);
 }
@@ -1048,17 +1048,17 @@ void BURGER_API Burger::float_to_fixed_ceil(
 
 /*! ************************************
 
-	\brief Convert a 32 bit float to a \ref Fixed32 using round to nearest.
+	\brief Convert a 32 bit float to a \ref fixed16_16_t using round to nearest.
 
-	Convert a single precision floating point number to a \ref Fixed32
+	Convert a single precision floating point number to a \ref fixed16_16_t
 	using the round to nearest fractional truncation and store it to memory
 
-	\param pOutput A valid pointer to a \ref Fixed32 to receive the result.
+	\param pOutput A valid pointer to a \ref fixed16_16_t to receive the result.
 	\param fInput A valid single precision floating point number.
 
-	\sa float_to_fixed_round(float), float_to_fixed_floor(Fixed32 *,float),
-		float_to_fixed_round_to_zero(Fixed32 *,float),
-		or float_to_fixed_ceil(Fixed32 *,float)
+	\sa float_to_fixed_round(float), float_to_fixed_floor(fixed16_16_t *,float),
+		float_to_fixed_round_to_zero(fixed16_16_t *,float),
+		or float_to_fixed_ceil(fixed16_16_t *,float)
 
 ***************************************/
 
@@ -1068,7 +1068,7 @@ void BURGER_API Burger::float_to_fixed_ceil(
 // Assembly
 #else
 void BURGER_API Burger::float_to_fixed_round(
-	Fixed32* pOutput, float fInput) BURGER_NOEXCEPT
+	fixed16_16_t* pOutput, float fInput) BURGER_NOEXCEPT
 {
 	float_to_int_round(reinterpret_cast<int32_t*>(pOutput), fInput * 65536.0f);
 }
@@ -1260,7 +1260,7 @@ void BURGER_API Burger::float_to_fixed_round(
 
 /*! ************************************
 
-	\fn Fixed32 Burger::FixedMultiply(Fixed32 fInput1,Fixed32 fInput2)
+	\fn fixed16_16_t Burger::FixedMultiply(fixed16_16_t fInput1,fixed16_16_t fInput2)
 	\brief Multiply two 16.16 fixed point numbers.
 
 	Perform a signed multiplication of two 32-bit fixed point
@@ -1272,7 +1272,7 @@ void BURGER_API Burger::float_to_fixed_round(
 	\param fInput2 Second signed value to multiply
 	\return Result of fInput1 * fInput2 without bounds checking
 
-	\sa FixedMultiplySaturate(Fixed32,Fixed32) or FixedDivide(Fixed32,Fixed32)
+	\sa FixedMultiplySaturate(fixed16_16_t,fixed16_16_t) or FixedDivide(fixed16_16_t,fixed16_16_t)
 
 ***************************************/
 
@@ -1281,18 +1281,18 @@ void BURGER_API Burger::float_to_fixed_round(
 #elif (defined(BURGER_X86) && defined(BURGER_MSVC))
 #elif (defined(BURGER_PPC) || defined(BURGER_64BITCPU))
 #else
-Fixed32 BURGER_API Burger::FixedMultiply(Fixed32 fInput1, Fixed32 fInput2)
+fixed16_16_t BURGER_API Burger::FixedMultiply(fixed16_16_t fInput1, fixed16_16_t fInput2)
 {
 	int64_t iFoo =
 		static_cast<int64_t>(fInput1) * static_cast<int64_t>(fInput2);
-	return static_cast<Fixed32>(iFoo >> 16);
+	return static_cast<fixed16_16_t>(iFoo >> 16);
 }
 #endif
 
 /*! ************************************
 
-	\fn Fixed32 Burger::FixedDivide(Fixed32 fInputNumerator,
-		Fixed32 fInputDenominator)
+	\fn fixed16_16_t Burger::FixedDivide(fixed16_16_t fInputNumerator,
+		fixed16_16_t fInputDenominator)
 
 	\brief Divide two 16.16 fixed point numbers.
 
@@ -1305,8 +1305,8 @@ Fixed32 BURGER_API Burger::FixedMultiply(Fixed32 fInput1, Fixed32 fInput2)
 
 	\note A divide by zero or an overflow can cause an exception error!
 
-	\sa FixedDivideSaturate(Fixed32,Fixed32), FixedReciprocal(Fixed32) or
-		FixedMultiply(Fixed32,Fixed32)
+	\sa FixedDivideSaturate(fixed16_16_t,fixed16_16_t), FixedReciprocal(fixed16_16_t) or
+		FixedMultiply(fixed16_16_t,fixed16_16_t)
 
 ***************************************/
 
@@ -1315,18 +1315,18 @@ Fixed32 BURGER_API Burger::FixedMultiply(Fixed32 fInput1, Fixed32 fInput2)
 #elif (defined(BURGER_X86) && defined(BURGER_MSVC))
 #elif (defined(BURGER_PPC) || defined(BURGER_64BITCPU))
 #else
-Fixed32 BURGER_API Burger::FixedDivide(
-	Fixed32 fInputNumerator, Fixed32 fInputDenominator)
+fixed16_16_t BURGER_API Burger::FixedDivide(
+	fixed16_16_t fInputNumerator, fixed16_16_t fInputDenominator)
 {
 	int64_t iFoo = (static_cast<int64_t>(fInputNumerator) << 16) /
 		static_cast<int64_t>(fInputDenominator);
-	return static_cast<Fixed32>(iFoo >> 16);
+	return static_cast<fixed16_16_t>(iFoo >> 16);
 }
 #endif
 
 /*! ************************************
 
-	\fn Fixed32 Burger::FixedReciprocal(Fixed32 fInput)
+	\fn fixed16_16_t Burger::FixedReciprocal(fixed16_16_t fInput)
 	\brief Return the reciprocal of a fixed point number.
 
 	Divide a 16.16 fixed point number by \ref BURGER_FLOAT_TO_FIXED(1.0f) in
@@ -1335,13 +1335,13 @@ fixed point. If the input value is negative epsilon (0xFFFFFFFF), return
 0x7ffffff. This has the effect of saturating the output and leaving no output as
 undefined.
 
-	\param fInput \ref Fixed32 value to convert to a reciprocal.
+	\param fInput \ref fixed16_16_t value to convert to a reciprocal.
 	\return Result of \ref BURGER_FLOAT_TO_FIXED(1.0f) / fInput with saturation
 
 	\note It's not recommended to input epsilon or 0 due to
 	saturation.
 
-	\sa FixedDivideSaturate(Fixed32,Fixed32) or FixedDivide(Fixed32,Fixed32)
+	\sa FixedDivideSaturate(fixed16_16_t,fixed16_16_t) or FixedDivide(fixed16_16_t,fixed16_16_t)
 
 ***************************************/
 
@@ -1350,16 +1350,16 @@ undefined.
 #elif (defined(BURGER_X86) && defined(BURGER_MSVC))
 #elif (defined(BURGER_PPC) || defined(BURGER_64BITCPU))
 #else
-Fixed32 BURGER_API Burger::FixedReciprocal(Fixed32 fInput)
+fixed16_16_t BURGER_API Burger::FixedReciprocal(fixed16_16_t fInput)
 {
 	if (fInput != -1) {
 		if (static_cast<uint32_t>(fInput) >= 2) { // Prevent a divide by zero
 			uint32_t uFoo = static_cast<uint32_t>(absolute(fInput));
 			uFoo = 0x80000000UL / (uFoo >> 1);
 			if (fInput < 0) {
-				return -static_cast<Fixed32>(uFoo);
+				return -static_cast<fixed16_16_t>(uFoo);
 			}
-			return static_cast<Fixed32>(uFoo);
+			return static_cast<fixed16_16_t>(uFoo);
 		}
 		return kMaxFixed32;
 	}
@@ -1382,7 +1382,7 @@ Fixed32 BURGER_API Burger::FixedReciprocal(Fixed32 fInput)
 	for the fraction so if the calculated square root is 1.6, it will
 	return 2.
 
-	\sa Burger::square_root(Fixed32), Burger::square_root(float),
+	\sa Burger::square_root(fixed16_16_t), Burger::square_root(float),
 		and Burger::square_root(double)
 
 ***************************************/
@@ -1536,9 +1536,9 @@ uint32_t BURGER_API Burger::square_root(uint32_t uInput)
 
 /*! ************************************
 
-	\brief Get the square root of a \ref Fixed32.
+	\brief Get the square root of a \ref fixed16_16_t.
 
-	Return the square root of a \ref Fixed32 and
+	Return the square root of a \ref fixed16_16_t and
 	return the integer result.
 	The maximum value is 255.998 (256) for the square root
 	of 0x7FFFFFFF. This routine is 100% accurate.
@@ -1556,7 +1556,7 @@ uint32_t BURGER_API Burger::square_root(uint32_t uInput)
 
 ***************************************/
 
-uint32_t BURGER_API Burger::SqrtFixedToWord32(Fixed32 fInput)
+uint32_t BURGER_API Burger::SqrtFixedToWord32(fixed16_16_t fInput)
 {
 	// Perform the square root
 
@@ -1639,24 +1639,24 @@ uint32_t BURGER_API Burger::SqrtFixedToWord32(Fixed32 fInput)
 
 /*! ************************************
 
-	\brief Get the square root of a \ref Fixed32.
+	\brief Get the square root of a \ref fixed16_16_t.
 
-	Return the square root of a \ref Fixed32 and
-	return the \ref Fixed32 result.
+	Return the square root of a \ref fixed16_16_t and
+	return the \ref fixed16_16_t result.
 	The maximum value is 255.998 (256) for the square root
 	of 0x7FFFFFFF. This routine is 100% accurate.
 
 	Negative numbers will return zero for the result.
 
 	\param fInput Value to return the square root of.
-	\return Return the square root as a \ref Fixed32.
+	\return Return the square root as a \ref fixed16_16_t.
 
 	\sa Burger::square_root(uint32_t), Burger::square_root(float),
 		and Burger::square_root(double)
 
 ***************************************/
 
-Fixed32 BURGER_API Burger::square_root(Fixed32 fInput)
+fixed16_16_t BURGER_API Burger::square_root(fixed16_16_t fInput)
 {
 	if (fInput < 0) {
 		return 0;
@@ -1847,7 +1847,7 @@ Fixed32 BURGER_API Burger::square_root(Fixed32 fInput)
 	if (uInput > Result) {
 		Result += 1;
 	}
-	return static_cast<Fixed32>(Result);
+	return static_cast<fixed16_16_t>(Result);
 }
 
 /*! ************************************

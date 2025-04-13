@@ -43,7 +43,7 @@
 
 void BURGER_API Burger::FixedMatrix3D_t::Zero(void)
 {
-	Fixed32 fTemp = 0;	// Force the compiler to use a register
+	fixed16_16_t fTemp = 0;	// Force the compiler to use a register
 	x.x = fTemp;		// Fill all the elements with zero
 	x.y = fTemp;
 	x.z = fTemp;
@@ -82,14 +82,14 @@ void BURGER_API Burger::FixedMatrix3D_t::Identity(void)
 
 /*! ************************************
 
-	\brief Convert a floating point matrix into a \ref Fixed32 matrix
+	\brief Convert a floating point matrix into a \ref fixed16_16_t matrix
 	
 	Using round to nearest, convert a matrix using floating point
-	values into one that has \ref Fixed32 values.
+	values into one that has \ref fixed16_16_t values.
 	The destination matrix is assumed to be uninitialized.
 
 	\param pInput Pointer to a valid Matrix3D_t
-	\sa float_to_fixed_round(Fixed32 *,float)
+	\sa float_to_fixed_round(fixed16_16_t *,float)
 
 ***************************************/
 
@@ -119,8 +119,8 @@ void BURGER_API Burger::FixedMatrix3D_t::Set(const Matrix3D_t *pInput)
 
 void BURGER_API Burger::FixedMatrix3D_t::Transpose(void)
 {
-	Fixed32 fTemp1 = x.y;	// Swap x.y and y.x
-	Fixed32 fTemp2 = y.x;
+	fixed16_16_t fTemp1 = x.y;	// Swap x.y and y.x
+	fixed16_16_t fTemp2 = y.x;
 	x.y = fTemp2;
 	y.x = fTemp1;
 
@@ -152,8 +152,8 @@ void BURGER_API Burger::FixedMatrix3D_t::Transpose(void)
 
 void BURGER_API Burger::FixedMatrix3D_t::Transpose(const FixedMatrix3D_t *pInput)
 {
-	Fixed32 fTemp1 = pInput->x.x;	// I am copying the matrix, this 
-	Fixed32 fTemp2 = pInput->y.x;	// is why I am copying the x.x, y.y
+	fixed16_16_t fTemp1 = pInput->x.x;	// I am copying the matrix, this 
+	fixed16_16_t fTemp2 = pInput->y.x;	// is why I am copying the x.x, y.y
 	x.x = fTemp1;	// and z.z entries
 	x.y = fTemp2;
 
@@ -415,11 +415,11 @@ void BURGER_API Burger::FixedMatrix3D_t::SetZColumn(const FixedVector3D_t *pInpu
 	</table>
 
 	\param fScale Scalar to multiply all entries by
-	\sa Multiply(const FixedMatrix3D_t *,Fixed32)
+	\sa Multiply(const FixedMatrix3D_t *,fixed16_16_t)
 
 ***************************************/
 
-void BURGER_API Burger::FixedMatrix3D_t::Multiply(Fixed32 fScale)
+void BURGER_API Burger::FixedMatrix3D_t::Multiply(fixed16_16_t fScale)
 {
 	x.x = FixedMultiply(x.x,fScale);
 	x.y = FixedMultiply(x.y,fScale);
@@ -462,11 +462,11 @@ void BURGER_API Burger::FixedMatrix3D_t::Multiply(Fixed32 fScale)
 
 	\param pInput Pointer to Matrix to multiply
 	\param fScale Scalar to multiply all entries by
-	\sa Multiply(Fixed32)
+	\sa Multiply(fixed16_16_t)
 
 ***************************************/
 
-void BURGER_API Burger::FixedMatrix3D_t::Multiply(const FixedMatrix3D_t *pInput,Fixed32 fScale)
+void BURGER_API Burger::FixedMatrix3D_t::Multiply(const FixedMatrix3D_t *pInput,fixed16_16_t fScale)
 {
 	x.x = FixedMultiply(pInput->x.x,fScale);
 	x.y = FixedMultiply(pInput->x.y,fScale);

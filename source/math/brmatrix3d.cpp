@@ -124,11 +124,11 @@ void BURGER_API Burger::Matrix3D_t::Set(const Matrix3D_t *pInput)
 
 	\brief Convert a fixed point matrix into a floating point matrix
 
-	Using fixed_to_float(float *,Fixed32), convert all of the entries
+	Using fixed_to_float(float *,fixed16_16_t), convert all of the entries
 	from a 3x3 16.16 fixed point matrix into a floating point matrix
 
 	\param pInput Pointer to a valid FixedMatrix3D_t for conversion
-	\sa fixed_to_float(float *,Fixed32)
+	\sa fixed_to_float(float *,fixed16_16_t)
 
 ***************************************/
 

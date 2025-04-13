@@ -195,7 +195,7 @@ void BURGER_API Burger::MacOS::kill_other_processes(void) BURGER_NOEXCEPT
 			// Preload the NEXT process since I may kill it now
 			GetNextProcess(&next);
 
-			Bool bIsFlag = FALSE;
+			uint8_t bIsFlag = FALSE;
 
 			// Don't kill myself
 			SameProcess(&current, &MyAppNumber, &bIsFlag);

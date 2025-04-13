@@ -42,9 +42,9 @@ struct FixedMatrix4D_t {
 	void BURGER_API Identity(void);
 	void BURGER_API Set(const Matrix4D_t *pInput);
 	void BURGER_API Set(const FixedMatrix4D_t *pInput);
-	void BURGER_API SetTranslate(Fixed32 fX,Fixed32 fY,Fixed32 fZ);
-	void BURGER_API SetScale(Fixed32 fX,Fixed32 fY,Fixed32 fZ);
-	void BURGER_API SetScale(Fixed32 fX,Fixed32 fY,Fixed32 fZ,Fixed32 fW);
+	void BURGER_API SetTranslate(fixed16_16_t fX,fixed16_16_t fY,fixed16_16_t fZ);
+	void BURGER_API SetScale(fixed16_16_t fX,fixed16_16_t fY,fixed16_16_t fZ);
+	void BURGER_API SetScale(fixed16_16_t fX,fixed16_16_t fY,fixed16_16_t fZ,fixed16_16_t fW);
 };
 extern const FixedMatrix4D_t s_FixedMatrix4DIdentity;
 }

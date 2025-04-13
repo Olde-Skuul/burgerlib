@@ -1,16 +1,16 @@
 /***************************************
 
-    Sound manager class
+	Sound manager class
 
-    Xbox 360 version
+	Xbox 360 version
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -21,9 +21,10 @@
 #define NONET
 #include <xtl.h>
 
+#include "brendian.h"
 #include "brglobals.h"
 #include "brrunqueue.h"
-#include "brendian.h"
+
 
 /***************************************
 
@@ -31,7 +32,7 @@
 
 ***************************************/
 
-Burger::SoundManager::SoundManager(GameApp *pGameApp) :
+Burger::SoundManager::SoundManager(GameApp* pGameApp):
 	m_pGameApp(pGameApp),
 	m_uMaxVoices(cMaxVoiceCount),
 	m_uVolume(cMaxVolume),
@@ -58,38 +59,26 @@ uint_t Burger::SoundManager::Init(void)
 
 ***************************************/
 
-void Burger::SoundManager::Shutdown(void)
+void Burger::SoundManager::Shutdown(void) {}
+
+void Burger::SoundManager::SetVolume(uint_t uVolume) {}
+
+Burger::SoundManager::Buffer::Buffer():
+	m_uPan(cPanCenter), m_uVolume(cMaxVolume)
 {
 }
 
-
-
-void Burger::SoundManager::SetVolume(uint_t uVolume)
-{
-}
-
-Burger::SoundManager::Buffer::Buffer() :
-	m_uPan(cPanCenter),
-	m_uVolume(cMaxVolume)
-{
-}
-
-
-void Burger::SoundManager::Buffer::Shutdown(void)
-{
-}
+void Burger::SoundManager::Buffer::Shutdown(void) {}
 
 //
 // Upload to DirectSound
 //
 
-uint_t Burger::SoundManager::Buffer::Upload(SoundManager *pSoundManager)
+uint_t Burger::SoundManager::Buffer::Upload(SoundManager* pSoundManager)
 {
 	return 10;
 }
 
-Burger::SoundManager::Voice::Voice()
-{
-}
+Burger::SoundManager::Voice::Voice() {}
 
 #endif

@@ -293,16 +293,16 @@ BURGER_INLINE void int_to_float(float* pOutput, int32_t iInput) BURGER_NOEXCEPT
 }
 
 BURGER_INLINE BURGER_CONSTEXPR float fixed_to_float(
-	Fixed32 fInput) BURGER_NOEXCEPT
+	fixed16_16_t fInput) BURGER_NOEXCEPT
 {
 	return static_cast<float>(fInput) * (1.0f / 65536.0f);
 }
-BURGER_INLINE float fixed_to_float(const Fixed32* pInput) BURGER_NOEXCEPT
+BURGER_INLINE float fixed_to_float(const fixed16_16_t* pInput) BURGER_NOEXCEPT
 {
 	return static_cast<float>(pInput[0]) * (1.0f / 65536.0f);
 }
 BURGER_INLINE void fixed_to_float(
-	float* pOutput, Fixed32 fInput) BURGER_NOEXCEPT
+	float* pOutput, fixed16_16_t fInput) BURGER_NOEXCEPT
 {
 	pOutput[0] = static_cast<float>(fInput) * (1.0f / 65536.0f);
 }
@@ -323,7 +323,7 @@ BURGER_INLINE void int_to_float(
 }
 
 BURGER_INLINE void fixed_to_float(
-	float* pOutput, const Fixed32* pInput) BURGER_NOEXCEPT
+	float* pOutput, const fixed16_16_t* pInput) BURGER_NOEXCEPT
 {
 	// Load in VMX128
 	__vector4 vTemp = __lvlx(pInput, 0);
@@ -351,7 +351,7 @@ BURGER_INLINE void int_to_float(
 }
 
 BURGER_INLINE void fixed_to_float(
-	float* pOutput, const Fixed32* pInput) BURGER_NOEXCEPT
+	float* pOutput, const fixed16_16_t* pInput) BURGER_NOEXCEPT
 {
 	// Load in VMX128
 	vector int vTemp = vec_lvlx(0, pInput);
@@ -389,7 +389,7 @@ BURGER_INLINE void int_to_float(
 }
 
 BURGER_INLINE void fixed_to_float(
-	float* pOutput, const Fixed32* pInput) BURGER_NOEXCEPT
+	float* pOutput, const fixed16_16_t* pInput) BURGER_NOEXCEPT
 {
 	// Step one, load the integer into the vector
 	// It can be in different slots based on the low 4 bit of the address
@@ -417,7 +417,7 @@ BURGER_INLINE void int_to_float(
 	pOutput[0] = static_cast<float>(pInput[0]);
 }
 BURGER_INLINE void fixed_to_float(
-	float* pOutput, const Fixed32* pInput) BURGER_NOEXCEPT
+	float* pOutput, const fixed16_16_t* pInput) BURGER_NOEXCEPT
 {
 	pOutput[0] = static_cast<float>(pInput[0]) * (1.0f / 65536.0f);
 }

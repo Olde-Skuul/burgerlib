@@ -82,7 +82,7 @@ uint32_t BURGER_API Burger::power_of_two(uint32_t uInput) BURGER_NOEXCEPT
 {
 	--uInput;
 	// Count leading zeros (Reverse the count)
-	uint32_t uReverseCount = __cntlzw(uInput);
+	uint32_t uReverseCount = static_cast<uint32_t>(__cntlzw(uInput));
 
 	// Test for 0 (uReverseCount == 32)
 	uint32_t uMask = uReverseCount >> 5U;

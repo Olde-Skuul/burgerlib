@@ -141,7 +141,7 @@ const char* Burger::Filename::get_native(void) BURGER_NOEXCEPT
 		long lDirID = 0;
 
 		// Assume no device found
-		uint_t uDeviceNum = BURGER_MAXUINT;
+		uint_t uDeviceNum = UINT32_MAX;
 
 		// Assume the directory has no length
 		uintptr_t uDirLength = 0;
@@ -164,7 +164,7 @@ const char* Burger::Filename::get_native(void) BURGER_NOEXCEPT
 				pEndVolume[1] = cTemp;
 
 				// Was a volume found?
-				if (uDeviceNum != BURGER_MAXUINT) {
+				if (uDeviceNum != UINT32_MAX) {
 
 					// Set up the root volume number and directory ID
 					sVRefNum = static_cast<short>(uDeviceNum);
@@ -219,7 +219,7 @@ const char* Burger::Filename::get_native(void) BURGER_NOEXCEPT
 
 		// Convert the device number (Index) to an actual device number
 
-		if (uDeviceNum != BURGER_MAXUINT) {
+		if (uDeviceNum != UINT32_MAX) {
 			Str63 DriveName;
 			HParamBlockRec hpb;
 			hpb.volumeParam.ioNamePtr = DriveName;

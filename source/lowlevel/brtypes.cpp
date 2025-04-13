@@ -1232,8 +1232,8 @@
 	On \ref BURGER_XBOXONE, \ref BURGER_PS4, \ref BURGER_AMD64, \ref BURGER_PS3
 	and \ref BURGER_XBOX360 platforms, the CPU has integer registers that are
 	64-bits wide. Using this define, code can be written that takes advantage of
-	this. Mostly useful with \ref Fixed32 and other high precision fixed point
-	calculations.
+	this. Mostly useful with \ref fixed16_16_t and other high precision fixed
+	point calculations.
 
 	\sa BURGER_XBOXONE, BURGER_PS4, BURGER_PS3, BURGER_XBOX360, or BURGER_AMD64
 
@@ -3030,91 +3030,6 @@ supplied callback. It will ensure that the linkage will be correct. This will
 
 /*! ************************************
 
-	\def BURGER_MININT
-	\brief Minimum value of a signed integer.
-
-	This is a replacement for the ANSI macro MIN_INT. Normally, this is
-	(-0x7FFFFFFF)-1, but it could be a 64 or 128 bit value on future processors.
-
-	\sa BURGER_MININT64 or BURGER_MAXINT
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_MAXINT
-	\brief Maximum value of a signed integer.
-
-	This is a replacement for the ANSI macro MAX_INT. Normally, this is
-	0x7FFFFFFF, but it could be a 64 or 128 bit value on future processors.
-
-	\sa BURGER_MININT, BURGER_MAXINTPTR or BURGER_MAXUINT
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_MAXUINT
-	\brief Maximum value of an unsigned integer.
-
-	This is a replacement for the ANSI macro MAX_UINT. Normally, this is
-	0xFFFFFFFFU, but it could be a 64 or 128 bit value on future processors.
-
-	\sa BURGER_MAXINTPTR or BURGER_MAXINT
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_MININT64
-	\brief Minimum value of a int64_t.
-
-	This is a replacement for the ANSI macro MIN_INT but it's meant for 64 bit
-	values defined as int64_t. Normally, this is ((-0x7FFFFFFFFFFFFFFFLL)-1).
-
-	\sa BURGER_MAXINT64, BURGER_MAXUINT64, or BURGER_MAXINT
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_MAXINT64
-	\brief Maximum value of a int64_t.
-
-	This is a replacement for the ANSI macro MAX_INT but it's meant for 64 bit
-	values defined as int64_t. Normally, this is 0x7FFFFFFFFFFFFFFFLL.
-
-	\sa BURGER_MININT64, BURGER_MAXUINT64, or BURGER_MAXINT
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_MAXUINT64
-	\brief Maximum value of a uint64_t.
-
-	This is a replacement for the ANSI macro MAX_UINT but it's meant for 64 bit
-	values defined as uint64_t. Normally, this is 0xFFFFFFFFFFFFFFFFULL.
-
-	\sa BURGER_MAXINT64, or BURGER_MAXUINT
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_MAXINTPTR
-	\brief Maximum value of a signed address space integer.
-
-	This is a constant value of the largest allowable address. Normally, this is
-	0x7FFFFFFF on 32 bit CPUs and 0x7FFFFFFFFFFFFFFFLL on 64 bit CPUs. It may be
-	a 128 bit value on future processors.
-
-	\sa BURGER_MAXINT or BURGER_MAXUINT
-
-***************************************/
-
-/*! ************************************
-
 	\def BURGER_RVALUE_REFERENCES
 	\brief Defined if move semantics are available.
 
@@ -3132,7 +3047,7 @@ supplied callback. It will ensure that the linkage will be correct. This will
 
 	If the code is being built with Address Sanitization, this macro will exist.
 
-	\sa BURGER_DISABLE_ASAN or BURGER_CLANG
+	\sa BURGER_DISABLE_ASAN, BURGER_MSVC or BURGER_CLANG
 
 ***************************************/
 
@@ -3145,7 +3060,8 @@ supplied callback. It will ensure that the linkage will be correct. This will
 	disable testing any function that is marked. It's to work around false
 	positives.
 
-	\sa BURGER_ADDRESS_SANITIZER, BURGER_DISABLE_MSAN or BURGER_CLANG
+	\sa BURGER_ADDRESS_SANITIZER, BURGER_DISABLE_MSAN, BURGER_MSVC, or
+		BURGER_CLANG
 
 ***************************************/
 
@@ -3180,6 +3096,9 @@ supplied callback. It will ensure that the linkage will be correct. This will
 	For C++17 or higher compilers, or those that support the equivalent, insert
 	the [[maybe_unused]] attribute to the code.
 
+	[Docs are found
+	here.](https://en.cppreference.com/w/cpp/language/attributes/maybe_unused)
+
 	\sa BURGER_NODISCARD, BURGER_USED or BURGER_FALLTHROUGH
 
 ***************************************/
@@ -3191,6 +3110,9 @@ supplied callback. It will ensure that the linkage will be correct. This will
 
 	For C++17 or higher compilers, or those that support the equivalent, insert
 	the [[nodiscard]] attribute to the code.
+
+	[Docs are found
+	here.](https://en.cppreference.com/w/cpp/language/attributes/nodiscard)
 
 	\sa BURGER_MAYBE_UNUSED, BURGER_USED or BURGER_FALLTHROUGH
 
@@ -3204,6 +3126,9 @@ supplied callback. It will ensure that the linkage will be correct. This will
 	For C++17 or higher compilers, or those that support the equivalent, insert
 	the [[fallthrough]] attribute to the code.
 
+	[Docs are found
+	here.](https://en.cppreference.com/w/cpp/language/attributes/fallthrough)
+
 	\sa BURGER_NODISCARD or BURGER_MAYBE_UNUSED
 
 ***************************************/
@@ -3216,6 +3141,28 @@ supplied callback. It will ensure that the linkage will be correct. This will
 	Some compilers remove functions and variables that are not used by the
 	program. To force a function or variable to be compiled and linked into the
 	final product, mark it with this macro.
+
+	[Docs are found here
+	](https://gcc.gnu.org/onlinedocs/gcc-4.8.5/gcc/Variable-Attributes.html)
+
+	\sa BURGER_NODISCARD or BURGER_MAYBE_UNUSED
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_DEPRECATED
+	\brief Mark with __attribute__((deprecated))
+
+	If a function or class is considered to be deprecated, use this macro to
+	alert that the function or class should no longer be used in the future.
+
+	[Docs are found here
+	](https://en.cppreference.com/w/cpp/language/attributes/deprecated)
+
+	\note If the compiler doesn't support this keyword, it will do nothing.
+
+	\param __x String with a message to explain why this object is deprecated.
 
 	\sa BURGER_NODISCARD or BURGER_MAYBE_UNUSED
 
@@ -3233,16 +3180,16 @@ supplied callback. It will ensure that the linkage will be correct. This will
 
 	\code
 	struct foo {
-		int m_member;
-		int m_member2;
+		int32_t m_member;
+		int32_t m_member2;
 	};
 
-	// Will equal to 4 (Usually)
-	int offsetofmember2 = BURGER_OFFSETOF(foo,m_member2);
+	// Will equal to 4
+	intptr_t offsetofmember2 = BURGER_OFFSETOF(foo,m_member2);
 
 	\endcode
 
-	\sa BURGER_GET_BASE_PTR
+	\sa BURGER_GET_BASE_PTR, or BURGER_CONST_GET_BASE_PTR
 
 ***************************************/
 
@@ -3251,11 +3198,8 @@ supplied callback. It will ensure that the linkage will be correct. This will
 	\def BURGER_GET_BASE_PTR
 	\brief Define to return the base pointer of a class from a class member
 
-	Return the pointer to the parent class a member variable resides.
-
-	\param x Pointer to the member variable that needs fix up
-	\param __type Name of the class / struct type
-	\param __member Name of the member in the type to determine the offset of.
+	Given a pointer to a member variable of a class, calculate the base pointer
+	of the class using the name of the member variable.
 
 	\code
 	struct foo {
@@ -3266,19 +3210,23 @@ supplied callback. It will ensure that the linkage will be correct. This will
 	struct bar {
 		int m_Temp;
 		int m_Temp2;
-		foo m_Foo;
+		foo m_Foo;		// Member for the test
 	};
 
 	// Structure to work with
 	bar Test;
 
 	// Get pointer to a member variable
-	foo *pFoo = &Test;
+	foo *pFoo = &Test.m_Foo;
 
 	// Use the macro to convert the member pointer back into a bar *
-	bar *pBar = BURGER_GET_BASE_PTR(pFoo,bar,m_Foo);
+	bar *pBar = BURGER_GET_BASE_PTR(pFoo, bar, m_Foo);
 
 	\endcode
+
+	\param x Pointer to the member variable that needs fix up
+	\param __type Name of the class / struct type
+	\param __member Name of the member in the type to determine the offset of.
 
 	\sa BURGER_OFFSETOF, BURGER_CONST_GET_BASE_PTR
 
@@ -3290,11 +3238,8 @@ supplied callback. It will ensure that the linkage will be correct. This will
 	\brief Define to return the const base pointer of a class from a class
 		member
 
-	Return the const pointer to the parent class a member variable resides.
-
-	\param x Const pointer to the member variable that needs fix up
-	\param __type Name of the class / struct type
-	\param __member Name of the member in the type to determine the offset of.
+	Given a const pointer to a member variable of a class, calculate the const
+	base pointer of the class using the name of the member variable.
 
 	\code
 	struct foo {
@@ -3305,56 +3250,25 @@ supplied callback. It will ensure that the linkage will be correct. This will
 	struct bar {
 		int m_Temp;
 		int m_Temp2;
-		foo m_Foo;
+		foo m_Foo;		// Member for the test
 	};
 
 	// Structure to work with
 	bar Test;
 
 	// Get pointer to a member variable
-	const foo *pFoo = &Test;
+	const foo *pFoo = &Test.m_Foo;
 
 	// Use the macro to convert the member pointer back into a bar *
-	const bar *pBar = BURGER_CONST_GET_BASE_PTR(pFoo,bar,m_Foo);
+	const bar *pBar = BURGER_CONST_GET_BASE_PTR(pFoo, bar, m_Foo);
 
 	\endcode
+
+	\param x Const pointer to the member variable that needs fix up
+	\param __type Name of the class / struct type
+	\param __member Name of the member in the type to determine the offset of.
 
 	\sa BURGER_OFFSETOF, BURGER_GET_BASE_PTR
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_ARRAYSIZE
-	\brief Define to return the number of elements in an array.
-
-	For arrays where the size is known at compile time, this macro will return
-	the number of elements found in the array
-
-	\param x Name of the array to determine the size
-
-	\code
-	int Foo[100];
-
-	// Will equal to 100
-	int ElementsInFoo = BURGER_ARRAYSIZE(Foo);
-
-	\endcode
-	\sa _BurgerArraySize
-
-***************************************/
-
-/*! ************************************
-
-	\fn const char(*_BurgerArraySize(T(&)[N]))[N]
-	\brief Helper for \ref BURGER_ARRAYSIZE
-
-	Non-existent array for determining array element size.
-
-	\tparam T Data type of the elements of the array/
-	\tparam N Number of elements in the array
-
-	\sa BURGER_ARRAYSIZE
 
 ***************************************/
 
@@ -3382,7 +3296,7 @@ supplied callback. It will ensure that the linkage will be correct. This will
 	// Disable unused variable warning
 	BURGER_UNUSED(iError);
 
-	I_FEAR_NOTHING(printf("Error code %d",iError));
+	I_FEAR_NOTHING(printf("Error code %d", iError));
 
 	\endcode
 
@@ -3400,9 +3314,6 @@ supplied callback. It will ensure that the linkage will be correct. This will
 
 	\note If __alignment is not a power of 2, undefined behavior will occur.
 
-	\param __value Integer value to apply the alignment
-	\param __alignment Integer power of 2.
-
 	\code
 
 	struct V {
@@ -3413,6 +3324,11 @@ supplied callback. It will ensure that the linkage will be correct. This will
 	uintptr_t uNewSize = BURGER_ROUNDUP(sizeof(Value), 8);
 
 	\endcode
+
+	\param __value Integer value to apply the alignment
+	\param __alignment Integer power of 2.
+
+	\sa Burger::power_of_two(uint32_t), or Burger::power_of_two(uint64_t)
 
 ***************************************/
 
@@ -3428,8 +3344,6 @@ supplied callback. It will ensure that the linkage will be correct. This will
 
 	\note On non-Microsoft compilers, this macro does nothing.
 
-	\param __T Integer warning number to suppress
-
 	\code
 
 	// Suppress the warning on the variable below
@@ -3440,6 +3354,13 @@ supplied callback. It will ensure that the linkage will be correct. This will
 	static DWORD gStorage = TlsAlloc();
 
 	\endcode
+
+	\note Visual Studio 2003 doesn't support the suppress keyword, so disable is
+		used instead.
+
+	\param __T Integer warning number to suppress
+
+	\sa BURGER_MSVC
 
 ***************************************/
 
@@ -3457,8 +3378,6 @@ supplied callback. It will ensure that the linkage will be correct. This will
 	inadvertently declare that there are copy constructors in existence which
 	could lead to mysterious link errors.
 
-	\param x Name of the class that the macro resides in
-
 	\code
 	class DontCopyMe {
 		// Disallow copying of this class
@@ -3469,6 +3388,8 @@ supplied callback. It will ensure that the linkage will be correct. This will
 	\endcode
 
 	\note This macro will set the class setting to "private"
+
+	\param x Name of the class that the macro resides in
 
 	\sa BURGER_EQUALS_DELETE
 
@@ -3482,15 +3403,11 @@ supplied callback. It will ensure that the linkage will be correct. This will
 	This macro maps to ``enum eSample {`` on older compilers.
 
 	Newer compilers support enum types where the data type can be declared for
-	space or sign. Older compilers declare enum as ``int`` or data type size. To
-	allow the usage of the ``enum eSample : int {``, use this macro.
-
+	space or if signed. Older compilers declare enum as ``int`` or data type
+	size. To allow the usage of the ``enum eSample : int {``, use this macro.
 
 	\note The enum is unscoped, hence all members are declared in the current
 		namespace.
-
-	\param x Name of the new enum
-	\param y Desired data type for the new enum on modern compilers
 
 	\code
 
@@ -3522,7 +3439,122 @@ supplied callback. It will ensure that the linkage will be correct. This will
 
 	\endcode
 
+	\param x Name of the new enum
+	\param y Desired data type for the new enum on modern compilers
+
 	\sa BURGER_ENUM_CLASS_START and BURGER_ENUM_MATH
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_ENUM_CLASS_START(x,y)
+	\brief Creates a cross platform "enum class : int {" instance
+
+	This macro maps to "struct x { enum Type {" on older compilers.
+
+	Newer compilers support strong enum types where it's impossible to test one
+	enum type with another due to the implicit conversion to integer. This is
+	called "enum class". This macro offers this support while still offering
+	backwards compatibility with C89 and C99 compilers. The solution was to use
+	"enum class" on compilers that support it, and use a namespace to
+	encapsulate the enum members on older compilers (Or compilers that have
+	extensions turned off).
+
+	There were compromises made, enums need to be generated with a start and end
+	macro so they could ensure the members are either inside a namespace or an
+	enum class. However, this caused a difference in the final type, with it
+	either being a global type name or a name embedded in a namespace. To get
+	around this, a unified type was generated called "???Type" where the ??? is
+	replaces with the name of the new enum and it's declared as a typedef to
+	either the enum class or "enum Type" that resides in the namespace.
+
+	\note Always use the declared enum type to reference the members and ???
+	Type to declare the enum as a member variable or parameter. Secondly, the
+	size of the data is only enforced on compilers that offer "enum class foo :
+	char" or "enum foo : char" type declarations, otherwise, the compiler will
+	likely map the enum to a signed integer.
+
+	\code
+
+	// Declare eTestEnum members and the eTestEnumType
+
+	BURGER_ENUM_CLASS_START(eTestEnum,uint_t) {
+		value0,
+		value1,
+		value2
+	} BURGER_ENUM_CLASS_END(eTestEnum)
+
+	// Call this function with the global enum type of eTestEnumType
+
+	void foo(eTestEnumType uValue)
+	{
+		// Test each value with eTestEnum:: prefixes
+		switch (uValue) {
+		case eTestEnum::value0:
+			printf("value0\n");
+			break;
+		case eTestEnum::value1:
+			printf("value1\n");
+			break;
+		case eTestEnum::value0:
+			printf("value2\n");
+			break;
+		}
+	}
+
+	\endcode
+
+	\param x Name of the new enum
+	\param y Desired data type for the new enum
+
+	\sa BURGER_ENUM_TYPE, BURGER_ENUM_CLASS_END and BURGER_ENUM_CLASS_END_MATH
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_ENUM_CLASS_END(x)
+	\brief Finish a cross platform "enum class : int {" instance
+
+	This macro maps to "; x() {}; }" on older compilers.
+
+	\note Read the description of \ref BURGER_ENUM_CLASS_START for full details.
+
+	\code
+
+	// Declare eTestEnum members and the eTestEnumType
+
+	BURGER_ENUM_CLASS_START(eTestEnum,uint_t) {
+		value0,
+		value1,
+		value2
+	} BURGER_ENUM_CLASS_END(eTestEnum)
+
+	// Call this function with the global enum type of eTestEnumType
+
+	void foo(eTestEnumType uValue)
+	{
+		// Test each value with eTestEnum:: prefixes
+		switch (uValue) {
+		case eTestEnum::value0:
+			printf("value0\n");
+			break;
+		case eTestEnum::value1:
+			printf("value1\n");
+			break;
+		case eTestEnum::value0:
+			printf("value2\n");
+			break;
+		}
+	}
+
+	\endcode
+
+	\param x Name of the new enum (Must match the name used in preceding \ref
+		BURGER_ENUM_CLASS_START(x)
+
+	\sa BURGER_ENUM_CLASS_START and BURGER_ENUM_CLASS_END_MATH
 
 ***************************************/
 
@@ -3542,11 +3574,6 @@ supplied callback. It will ensure that the linkage will be correct. This will
 	underlying type.
 
 	\note Read the description of \ref BURGER_ENUM_CLASS_START for full details.
-
-	\param x Name of the enum to accept as input.
-
-	\param y Data type of the enum, must match the type used on the enum's
-		declaration.
 
 	\code
 
@@ -3595,119 +3622,12 @@ supplied callback. It will ensure that the linkage will be correct. This will
 
 	\endcode
 
+	\param x Name of the enum to accept as input.
+
+	\param y Data type of the enum, must match the type used on the enum's
+		declaration.
+
 	\sa BURGER_ENUM_TYPE and BURGER_ENUM_CLASS_END_MATH
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_ENUM_CLASS_START(x,y)
-	\brief Creates a cross platform "enum class : int {" instance
-
-	This macro maps to "namespace x { enum Type {" on older compilers.
-
-	Newer compilers support strong enum types where it's impossible to test one
-	enum type with another due to the implicit conversion to integer. This is
-	called "enum class". This macro offers this support while still offering
-	backwards compatibility with C89 and C99 compilers. The solution was to use
-	"enum class" on compilers that support it, and use a namespace to
-	encapsulate the enum members on older compilers (Or compilers that have
-	extensions turned off).
-
-	There were compromises made, enums need to be generated with a start and end
-	macro so they could ensure the members are either inside a namespace or an
-	enum class. However, this caused a difference in the final type, with it
-	either being a global type name or a name embedded in a namespace. To get
-	around this, a unified type was generated called "???Type" where the ??? is
-	replaces with the name of the new enum and it's declared as a typedef to
-	either the enum class or "enum Type" that resides in the namespace.
-
-	\note Always use the declared enum type to reference the members and ???
-	Type to declare the enum as a member variable or parameter. Secondly, the
-	size of the data is only enforced on compilers that offer "enum class foo :
-	char" or "enum foo : char" type declarations, otherwise, the compiler will
-	likely map the enum to a signed integer.
-
-	\param x Name of the new enum
-	\param y Desired data type for the new enum
-
-	\code
-
-	// Declare eTestEnum members and the eTestEnumType
-
-	BURGER_ENUM_CLASS_START(eTestEnum,uint_t) {
-		value0,
-		value1,
-		value2
-	} BURGER_ENUM_CLASS_END(eTestEnum)
-
-	// Call this function with the global enum type of eTestEnumType
-
-	void foo(eTestEnumType uValue)
-	{
-		// Test each value with eTestEnum:: prefixes
-		switch (uValue) {
-		case eTestEnum::value0:
-			printf("value0\n");
-			break;
-		case eTestEnum::value1:
-			printf("value1\n");
-			break;
-		case eTestEnum::value0:
-			printf("value2\n");
-			break;
-		}
-	}
-
-	\endcode
-
-	\sa BURGER_ENUM_TYPE, BURGER_ENUM_CLASS_END and BURGER_ENUM_CLASS_END_MATH
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_ENUM_CLASS_END(x)
-	\brief Finish a cross platform "enum class : int {" instance
-
-	This macro maps to "}; } typedef x::Type x ## Type;" on older compilers.
-
-	\param x Name of the new enum (Must match the name used in preceding \ref
-		BURGER_ENUM_CLASS_START(x)
-
-	\note Read the description of \ref BURGER_ENUM_CLASS_START for full details.
-
-	\code
-
-	// Declare eTestEnum members and the eTestEnumType
-
-	BURGER_ENUM_CLASS_START(eTestEnum,uint_t) {
-		value0,
-		value1,
-		value2
-	} BURGER_ENUM_CLASS_END(eTestEnum)
-
-	// Call this function with the global enum type of eTestEnumType
-
-	void foo(eTestEnumType uValue)
-	{
-		// Test each value with eTestEnum:: prefixes
-		switch (uValue) {
-		case eTestEnum::value0:
-			printf("value0\n");
-			break;
-		case eTestEnum::value1:
-			printf("value1\n");
-			break;
-		case eTestEnum::value0:
-			printf("value2\n");
-			break;
-		}
-	}
-
-	\endcode
-
-	\sa BURGER_ENUM_CLASS_START and BURGER_ENUM_CLASS_END_MATH
 
 ***************************************/
 
@@ -3728,11 +3648,6 @@ supplied callback. It will ensure that the linkage will be correct. This will
 	underlying type.
 
 	\note Read the description of \ref BURGER_ENUM_CLASS_START for full details.
-
-	\param x Name of the new enum (Must match the name used in preceding \ref
-		BURGER_ENUM_CLASS_START(z)
-
-	\param y Desired data type for the new enum
 
 	\code
 
@@ -3781,6 +3696,11 @@ supplied callback. It will ensure that the linkage will be correct. This will
 
 	\endcode
 
+	\param x Name of the new enum (Must match the name used in preceding \ref
+		BURGER_ENUM_CLASS_START(z)
+
+	\param y Desired data type for the new enum
+
 	\sa BURGER_ENUM_CLASS_START and BURGER_ENUM_CLASS_END_MATH
 
 ***************************************/
@@ -3790,22 +3710,11 @@ supplied callback. It will ensure that the linkage will be correct. This will
 	\def BURGER_SIZEOF_INT
 	\brief Size in bytes of the intrinsic int
 
-	Define that has the number of bytes an int occupies. This value can be 2, 4
-	or 8. Default is 4
+	Define that has the number of bytes an `int` occupies. This value can be 2,
+	4 or 8. Default is 4. This exists so `sizeof(int)` can be used as a macro
+	parameter on older compilers.
 
 	\sa BURGER_SIZEOF_LONG
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_SIZEOF_LONG
-	\brief Size in bytes of the intrinsic long
-
-	Define that has the number of bytes a long occupies. This value can be 4
-	or 8. Default is 4.
-
-	\sa BURGER_SIZEOF_INT
 
 ***************************************/
 
@@ -3815,6 +3724,7 @@ supplied callback. It will ensure that the linkage will be correct. This will
 	\brief Signed 64 bit integer type specific to the current compiler.
 
 	Define that has the compiler keyword that defines a 64 bit signed integer.
+	Examples include `__int64`, `long`, or `long long`.
 
 	\sa BURGER_ULONGLONG
 
@@ -3826,6 +3736,8 @@ supplied callback. It will ensure that the linkage will be correct. This will
 	\brief Unsigned 64 bit integer type specific to the current compiler.
 
 	Define that has the compiler keyword that defines a 64 bit unsigned integer.
+	Examples include `unsigned __int64`, `unsigned long`, or unsigned `long
+	long`.
 
 	\sa BURGER_LONGLONG
 
@@ -3833,38 +3745,14 @@ supplied callback. It will ensure that the linkage will be correct. This will
 
 /*! ************************************
 
-	\def BURGER_HAS_WCHAR_T
-	\brief Data type wchar_t is native
+	\def BURGER_SIZEOF_LONG
+	\brief Size in bytes of the intrinsic long
 
-	If this define is present, wchar_t is a native type for the compiler,
-	otherwise, it's a typedef cast from an unsigned short, which may cause
-	collisions for classes that want to treat wchar_t and uint16_t as unique
-	data types.
+	Define that has the number of bytes a `long` occupies. This value can be 4
+	or 8. Default is 4. This exists so `sizeof(long)` can be used as a macro
+	parameter on older compilers.
 
-	\sa BURGER_HAS_CHAR8_T or BURGER_HAS_CHAR16_T
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_HAS_CHAR8_T
-	\brief Data type char8_t is native
-
-	If this define is present, char8_t is a native type for the compiler.
-
-	\sa BURGER_CPP20, BURGER_HAS_WCHAR_T or BURGER_HAS_CHAR16_T
-
-***************************************/
-
-/*! ************************************
-
-	\def BURGER_HAS_CHAR16_T
-	\brief Data type char16_t and char32_t are native
-
-	If this define is present, char16_t and char32_t are a native types for the
-	compiler.
-
-	\sa BURGER_CPP11, BURGER_HAS_CHAR8_T or BURGER_HAS_WCHAR_T
+	\sa BURGER_SIZEOF_INT
 
 ***************************************/
 
@@ -3893,243 +3781,6 @@ supplied callback. It will ensure that the linkage will be correct. This will
 	using `long` as an input must be declared.
 
 	\sa BURGER_INT_NOT_IN_STDINT
-
-***************************************/
-
-/*! ************************************
-
-	\typedef Word8
-	\brief 8 bit unsigned integer.
-
-	This integer can contain the number 0 through 255. It is compiler switch
-	setting safe.
-
-	\sa Int8
-
-***************************************/
-
-/*! ************************************
-
-	\typedef Int8
-	\brief 8 bit signed integer.
-
-	This integer can contain the number -128 through 127. It is compiler switch
-	setting safe.
-
-	\sa Word8
-
-***************************************/
-
-/*! ************************************
-
-	\typedef Word16
-	\brief 16bit unsigned integer.
-
-	This integer can contain the number 0 through 65535. It is compiler switch
-	setting safe.
-
-	\sa Int16
-
-***************************************/
-
-/*! ************************************
-
-	\typedef Int16
-	\brief 16 bit signed integer.
-
-	This integer can contain the number -32768 through 32767. It is compiler
-	switch setting safe.
-
-	\sa Word16
-
-***************************************/
-
-/*! ************************************
-
-	\typedef Int32
-	\brief 32 bit signed integer.
-
-	This integer can contain the number -2,147,483,648 through 2,147,483,647. It
-	is compiler switch setting safe.
-
-	\note This is cast as a signed int on the Playstation 2.
-
-	\sa Word32 or Word
-
-***************************************/
-
-/*! ************************************
-
-	\typedef Word32
-	\brief 32 bit unsigned integer.
-
-	This integer can contain the number 0 through 4,294,967,295. It is compiler
-	switch setting safe.
-
-	\note This is cast as an unsigned int on the Playstation 2.
-
-	\sa Int32 or Int
-
-***************************************/
-
-/*! ************************************
-
-	\typedef Int64
-	\brief 64 bit signed integer.
-
-	This integer can contain the number -9,223,372,036,854,775,808 through
-	9,223,372,036,854,775,807. It is compiler switch setting safe.
-
-	\note This is cast as a signed long on the Playstation 2.
-
-	\note Some processors like the 680x0 do not have registers this large and as
-	a result it will incur a performance penalty. Use this type carefully.
-
-	\sa Word64
-
-***************************************/
-
-/*! ************************************
-
-	\typedef Word64
-	\brief 64 bit unsigned integer.
-
-	This integer can contain the number 0 through 18,446,744,073,709,551,615. It
-	is compiler switch setting safe.
-
-	\note This is cast as an unsigned long on the Playstation 2.
-
-	\note Some processors like the 680x0 do not have registers this large and as
-	a result it will incur a performance penalty. Use this type carefully.
-
-	\sa Int64
-
-***************************************/
-
-/*! ************************************
-
-	\typedef WordPtr
-	\brief Unsigned integer that matches in size to a void *.
-
-	Since address pointers can be 64 bit on some platforms, this type allows the
-	casting and storing of this type into an unsigned integer.
-
-	\note Caution should be used when using this type in data structures due to
-	it being 64 or 32 bit on different platforms.
-
-	\sa IntPtr
-
-***************************************/
-
-/*! ************************************
-
-	\typedef IntPtr
-	\brief Signed integer that matches in size to a void *.
-
-	Since address pointers can be 64 bit on some platforms, this type allows the
-	casting and storing of this type into an signed integer.
-
-	\note Caution should be used when using this type in data structures due to
-	it being 64 or 32 bit on different platforms.
-
-	\sa WordPtr
-
-***************************************/
-
-/*! ************************************
-
-	\typedef Bool
-	\brief Unsigned 8 bit integer for boolean operations.
-
-	When data storage is at a premium, this data type can be used to alert
-	programmers that only a true or not true can be stored inside. Using the
-	Word8 data type could imply that the data has a wider range.
-
-	\sa Word8 or Int8.
-
-***************************************/
-
-/*! ************************************
-
-	\typedef Fixed32
-	\brief Signed 32 bit integer for fixed point operations.
-
-	All 16.16 fixed point integer math uses this data type to alert the
-	programmer of the special nature of the 32 bits. The upper 16 bits is an
-	integer of the range of -32768 through 32767 and the lower 16 bits is a
-	fraction of x/65536.
-
-	\sa \ref BURGER_FLOAT_TO_FIXED, \ref BURGER_FIXED_TO_FLOAT, Int32 or Frac32.
-
-***************************************/
-
-/*! ************************************
-
-	\typedef Frac32
-	\brief Signed 32 bit integer for fixed point operations.
-
-	All 2.30 fixed point integer math uses this data type to alert the
-	programmer of the special nature of the 32 bits. The upper 2 bits is an
-	integer of the range of -2 through 1 and the lower 30 bits is a fraction of
-	x/1,073,741,824.
-
-	\sa Int32 or Fixed32.
-
-***************************************/
-
-/*! ************************************
-
-	\typedef Word
-	\brief Unsigned integer.
-
-	This is the most common data type in BurgerLib. On most platforms, this is
-	an unsigned 32 bit integer but it can be 64 bit if the processor handles 64
-	bit data more efficiently than 32 bit. To date, all CPUs handle 32 bit data
-	with no penalty so it's locked at 32 bits.
-
-	\sa Int
-
-***************************************/
-
-/*! ************************************
-
-	\typedef Int
-	\brief Signed integer.
-
-	This is the second most common data type in BurgerLib. On most platforms,
-	this is an signed 32 bit integer but it can be 64 bit if the processor
-	handles 64 bit data more efficiently than 32 bit. To date, all CPUs handle
-	32 bit data with no penalty so it's locked at 32 bits.
-
-	\sa Word
-
-***************************************/
-
-/*! ************************************
-
-	\typedef uint_t
-	\brief Unsigned integer.
-
-	This is the most common data type in BurgerLib. On most platforms, this is
-	an unsigned 32 bit integer but it can be 64 bit if the processor handles 64
-	bit data more efficiently than 32 bit. To date, all CPUs handle 32 bit data
-	with no penalty so it's locked at 32 bits.
-
-	\sa int_t
-
-***************************************/
-
-/*! ************************************
-
-	\typedef int_t
-	\brief Signed integer.
-
-	This is the second most common data type in BurgerLib. On most platforms,
-	this is an signed 32 bit integer but it can be 64 bit if the processor
-	handles 64 bit data more efficiently than 32 bit. To date, all CPUs handle
-	32 bit data with no penalty so it's locked at 32 bits.
-
-	\sa uint_t
 
 ***************************************/
 
@@ -4178,6 +3829,191 @@ supplied callback. It will ensure that the linkage will be correct. This will
 	`uint64_t` or other compatible type that reflects the proper size.
 
 	\sa long2int_t
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_HAS_WCHAR_T
+	\brief Data type `wchar_t` is native
+
+	If this define is present, `wchar_t` is a native type for the compiler,
+	otherwise, it's a typedef cast from an `unsigned short`, which may cause
+	collisions for classes that want to treat `wchar_t` and `uint16_t` as unique
+	data types.
+
+	\sa BURGER_HAS_CHAR8_T or BURGER_HAS_CHAR16_T
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_HAS_CHAR8_T
+	\brief Data type `char8_t` is native
+
+	If this define is present, `char8_t` is a native type for the compiler.
+
+	\sa BURGER_CPP20, BURGER_HAS_WCHAR_T or BURGER_HAS_CHAR16_T
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_HAS_CHAR16_T
+	\brief Data type `char16_t` and `char32_t` are native
+
+	If this define is present, `char16_t` and `char32_t` are a native types for
+	the compiler.
+
+	\sa BURGER_CPP11, BURGER_HAS_CHAR8_T or BURGER_HAS_WCHAR_T
+
+***************************************/
+
+/*! ************************************
+
+	\struct Burger::longlong_t
+	\brief 64 bit signed integer as 2 32 bit integers.
+
+	To fake 64 bit support on old compilers that don't natively support 64 bit
+	integers, this structure is declared as a replacement to create limited 64
+	bit support.
+
+	\sa ulonglong_t
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::longlong_t::operator ulonglong_t&()
+	\brief Convert unsigned to signed fake 64 bit integer
+
+	To fake 64 bit support on old compilers that don't natively support 64 bit
+	integers, this structure is declared as a replacement to create limited 64
+	bit support.
+
+	\sa ulonglong_t::operator longlong_t&()
+
+***************************************/
+
+/*! ************************************
+
+	\struct Burger::ulonglong_t
+	\brief 64 bit unsigned integer as 2 32 bit integers.
+
+	To fake 64 bit support on old compilers that don't natively support 64 bit
+	integers, this structure is declared as a replacement to create limited 64
+	bit support.
+
+	\sa longlong_t
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::ulonglong_t::operator longlong_t&()
+	\brief Convert signed to unsigned fake 64 bit integer
+
+	To fake 64 bit support on old compilers that don't natively support 64 bit
+	integers, this structure is declared as a replacement to create limited 64
+	bit support.
+
+	\sa longlong_t::operator ulonglong_t&()
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_ARRAYSIZE
+	\brief Define to return the number of elements in an array.
+
+	For arrays where the size is known at compile time, this macro will return
+	the number of elements found in the array
+
+	\note On most compilers, this is implemented as a template. On older
+	compilers it's declared as a simple division operation.
+
+	\code
+
+	int Foo[100];
+
+	// Will equal to 100
+	int ElementsInFoo = BURGER_ARRAYSIZE(Foo);
+
+	\endcode
+
+	\param x Name of the array to determine the size
+
+	\sa _BurgerArraySize
+
+***************************************/
+
+/*! ************************************
+
+	\fn const char(*_BurgerArraySize(T(&)[N]))[N]
+	\brief Helper for \ref BURGER_ARRAYSIZE
+
+	Non-existent array for determining array element size.
+
+	\tparam T Data type of the elements of the array/
+	\tparam N Number of elements in the array
+
+	\sa BURGER_ARRAYSIZE
+
+***************************************/
+
+/*! ************************************
+
+	\typedef fixed16_16_t
+	\brief Signed 32 bit integer for fixed point operations.
+
+	All 16.16 fixed point integer math uses this data type to alert the
+	programmer of the special nature of the 32 bits. The upper 16 bits is an
+	integer of the range of -32768 through 32767 and the lower 16 bits is a
+	fraction of x/65536.
+
+	\sa \ref BURGER_FLOAT_TO_FIXED, \ref BURGER_FIXED_TO_FLOAT, fixed2_30_t.
+
+***************************************/
+
+/*! ************************************
+
+	\typedef fixed2_30_t
+	\brief Signed 32 bit integer for fixed point operations.
+
+	All 2.30 fixed point integer math uses this data type to alert the
+	programmer of the special nature of the 32 bits. The upper 2 bits is an
+	integer of the range of -2 through 1 and the lower 30 bits is a fraction of
+	x/1,073,741,824.
+
+	\sa fixed16_16_t
+
+***************************************/
+
+/*! ************************************
+
+	\typedef uint_t
+	\brief Unsigned integer.
+
+	This is the most common data type in BurgerLib. On most platforms, this is
+	an unsigned 32 bit integer but it can be 64 bit if the processor handles 64
+	bit data more efficiently than 32 bit. To date, all CPUs handle 32 bit data
+	with no penalty so it's locked at 32 bits.
+
+	\sa int_t
+
+***************************************/
+
+/*! ************************************
+
+	\typedef int_t
+	\brief Signed integer.
+
+	This is the second most common data type in BurgerLib. On most platforms,
+	this is an signed 32 bit integer but it can be 64 bit if the processor
+	handles 64 bit data more efficiently than 32 bit. To date, all CPUs handle
+	32 bit data with no penalty so it's locked at 32 bits.
+
+	\sa uint_t
 
 ***************************************/
 

@@ -42,7 +42,7 @@
 	Fills in all of the entries with zero, thereby
 	initializing the structure to a known state.
 	
-	\sa Set(Fixed32,Fixed32), SetX(Fixed32) or SetY(Fixed32)
+	\sa Set(fixed16_16_t,fixed16_16_t), SetX(fixed16_16_t) or SetY(fixed16_16_t)
 	
 ***************************************/
 
@@ -54,57 +54,57 @@
 	Fills in all of the entries with zero, thereby
 	initializing the structure to a known state.
 	
-	\sa Set(Fixed32,Fixed32), SetX(Fixed32) or SetY(Fixed32)
+	\sa Set(fixed16_16_t,fixed16_16_t), SetX(fixed16_16_t) or SetY(fixed16_16_t)
 	
 ***************************************/
 
 /*! ************************************
 
-	\fn Fixed32 Burger::FixedVector2D_t::GetX(void) const
+	\fn fixed16_16_t Burger::FixedVector2D_t::GetX(void) const
 	\brief Return the x component of the vector.
 	
 	\return The x component of the vector.
 	
-	\sa GetY(void) const or SetX(Fixed32)
+	\sa GetY(void) const or SetX(fixed16_16_t)
 	
 ***************************************/
 
 /*! ************************************
 
-	\fn Fixed32 Burger::FixedVector2D_t::GetY(void) const
+	\fn fixed16_16_t Burger::FixedVector2D_t::GetY(void) const
 	\brief Return the y component of the vector.
 	
 	\return The y component of the vector.
 
-	\sa GetX(void) const or SetY(Fixed32)
+	\sa GetX(void) const or SetY(fixed16_16_t)
 	
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::FixedVector2D_t::SetX(Fixed32 fX)
+	\fn void Burger::FixedVector2D_t::SetX(fixed16_16_t fX)
 	\brief Set the x component of the vector.
 	
 	\param fX The new x component of the vector.
 	
-	\sa GetX(void) const or SetY(Fixed32)
+	\sa GetX(void) const or SetY(fixed16_16_t)
 	
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::FixedVector2D_t::SetY(Fixed32 fY)
+	\fn void Burger::FixedVector2D_t::SetY(fixed16_16_t fY)
 	\brief Set the y component of the vector.
 	
 	\param fY The new y component of the vector.
 	
-	\sa GetY(void) const or SetX(Fixed32)
+	\sa GetY(void) const or SetX(fixed16_16_t)
 	
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::FixedVector2D_t::Set(Fixed32 fX,Fixed32 fY)
+	\fn void Burger::FixedVector2D_t::Set(fixed16_16_t fX,fixed16_16_t fY)
 	\brief Initialize the vector elements to specific values,
 	
 	Given the new values for x and y, store them into the structure.
@@ -112,7 +112,7 @@
 	\param fX The new x component to store in the vector.
 	\param fY The new y component to store in the vector.
 		
-	\sa Zero(void), SetX(Fixed32) or SetY(Fixed32)
+	\sa Zero(void), SetX(fixed16_16_t) or SetY(fixed16_16_t)
 	
 ***************************************/
 
@@ -122,13 +122,13 @@
 	\brief Negate a 2D vector
 
 	Set the x and y value to -x and -y respectively
-	\sa Negate(const FixedVector2D_t *) or Negate(Fixed32,Fixed32)
+	\sa Negate(const FixedVector2D_t *) or Negate(fixed16_16_t,fixed16_16_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::FixedVector2D_t::Negate(Fixed32 fX,Fixed32 fY)
+	\fn void Burger::FixedVector2D_t::Negate(fixed16_16_t fX,fixed16_16_t fY)
 	\brief Negate the input and store it in this structure
 
 	Set the x and y value to -fX and -fY respectively
@@ -147,6 +147,6 @@
 	Copy the input data and negate it.
 
 	\param pInput Valid pointer to a FixedVector2D_t structure to copy and negate
-	\sa Negate(Fixed32,Fixed32) or Negate(void)
+	\sa Negate(fixed16_16_t,fixed16_16_t) or Negate(void)
 
 ***************************************/

@@ -30,18 +30,18 @@
 /* BEGIN */
 namespace Burger {
 struct FixedVector3D_t {
-	Fixed32 x;			///< X value for the 3D Vector
-	Fixed32 y;			///< Y value for the 3D Vector
-	Fixed32 z;			///< Z value for the 3D Vector
+	fixed16_16_t x;			///< X value for the 3D Vector
+	fixed16_16_t y;			///< Y value for the 3D Vector
+	fixed16_16_t z;			///< Z value for the 3D Vector
 	BURGER_INLINE void Zero(void) { x=0; y=0; z=0; }
 	BURGER_INLINE void One(void) { x = 65536; y = 65536; z = 65536; }
-	BURGER_INLINE Fixed32 GetX(void) const { return x; }
-	BURGER_INLINE Fixed32 GetY(void) const { return y; }
-	BURGER_INLINE Fixed32 GetZ(void) const { return z; }
-	BURGER_INLINE void SetX(Fixed32 fX) { x=fX; }
-	BURGER_INLINE void SetY(Fixed32 fY) { y=fY; }
-	BURGER_INLINE void SetZ(Fixed32 fZ) { z=fZ; }
-	BURGER_INLINE void Set(Fixed32 fX,Fixed32 fY,Fixed32 fZ) { x=fX; y=fY; z=fZ; }
+	BURGER_INLINE fixed16_16_t GetX(void) const { return x; }
+	BURGER_INLINE fixed16_16_t GetY(void) const { return y; }
+	BURGER_INLINE fixed16_16_t GetZ(void) const { return z; }
+	BURGER_INLINE void SetX(fixed16_16_t fX) { x=fX; }
+	BURGER_INLINE void SetY(fixed16_16_t fY) { y=fY; }
+	BURGER_INLINE void SetZ(fixed16_16_t fZ) { z=fZ; }
+	BURGER_INLINE void Set(fixed16_16_t fX,fixed16_16_t fY,fixed16_16_t fZ) { x=fX; y=fY; z=fZ; }
 	BURGER_INLINE void Set(const FixedVector3D_t *pInput) { *this = *pInput; }
 	void BURGER_API Set(const Vector3D_t *pInput);
 	void BURGER_API SetAsInt(const Vector3D_t *pInput);
@@ -51,7 +51,7 @@ struct FixedVector3D_t {
 	void BURGER_API Add(const FixedVector3D_t *pInput1,const FixedVector3D_t *pInput2);
 	void BURGER_API Sub(const FixedVector3D_t *pInput);
 	void BURGER_API Sub(const FixedVector3D_t *pInput1,const FixedVector3D_t *pInput2);
-	Fixed32 BURGER_API Dot(const FixedVector3D_t *pInput) const;
+	fixed16_16_t BURGER_API Dot(const FixedVector3D_t *pInput) const;
 	void BURGER_API Cross(const FixedVector3D_t *pInput1,const FixedVector3D_t *pInput2);
 };
 extern const FixedVector3D_t s_FixedVector3DZero;

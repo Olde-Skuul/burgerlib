@@ -1,15 +1,15 @@
 /***************************************
 
-    Time Manager Class
-    Xbox 360 specific code
+	Time Manager Class
+	Xbox 360 specific code
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -32,10 +32,10 @@
 
 void Burger::TimeDate_t::GetTime(void) BURGER_NOEXCEPT
 {
-	SYSTEMTIME MySystemTime;			// Windows time structure
-	::GetLocalTime(&MySystemTime);		// Call windows
+	SYSTEMTIME MySystemTime;       // Windows time structure
+	::GetLocalTime(&MySystemTime); // Call windows
 
-	m_uYear = MySystemTime.wYear;		// Windows has 16 bit values
+	m_uYear = MySystemTime.wYear; // Windows has 16 bit values
 	m_usMilliseconds = MySystemTime.wMilliseconds;
 	m_bMonth = static_cast<uint8_t>(MySystemTime.wMonth);
 	m_bDay = static_cast<uint8_t>(MySystemTime.wDay);
@@ -53,22 +53,23 @@ void Burger::TimeDate_t::GetTime(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-Burger::eError Burger::TimeDate_t::Load(const _FILETIME *pFileTime)
+Burger::eError Burger::TimeDate_t::Load(const _FILETIME* pFileTime)
 {
 	Clear();
 	FILETIME Local;
 	eError uResult = kErrorReadFailure;
-	if (FileTimeToLocalFileTime(pFileTime,&Local)) {	// Convert to local time
+	if (FileTimeToLocalFileTime(pFileTime, &Local)) { // Convert to local time
 		SYSTEMTIME Temp2;
-		if (FileTimeToSystemTime(&Local,&Temp2)) {	// Convert the time to sections
+		if (FileTimeToSystemTime(
+				&Local, &Temp2)) { // Convert the time to sections
 			m_usMilliseconds = static_cast<uint16_t>(Temp2.wMilliseconds);
-			m_bSecond = static_cast<uint8_t>(Temp2.wSecond);		// Get the seconds
-			m_bMinute = static_cast<uint8_t>(Temp2.wMinute);		// Get the minute
-			m_bHour = static_cast<uint8_t>(Temp2.wHour);			// Get the hour
-			m_bDay = static_cast<uint8_t>(Temp2.wDay);			// Get the day
-			m_bDayOfWeek = static_cast<uint8_t>(Temp2.wDayOfWeek);	// Weekday
-			m_bMonth = static_cast<uint8_t>(Temp2.wMonth);		// Get the month
-			m_uYear = static_cast<uint16_t>(Temp2.wYear);			// Get the year
+			m_bSecond = static_cast<uint8_t>(Temp2.wSecond); // Get the seconds
+			m_bMinute = static_cast<uint8_t>(Temp2.wMinute); // Get the minute
+			m_bHour = static_cast<uint8_t>(Temp2.wHour);     // Get the hour
+			m_bDay = static_cast<uint8_t>(Temp2.wDay);       // Get the day
+			m_bDayOfWeek = static_cast<uint8_t>(Temp2.wDayOfWeek); // Weekday
+			m_bMonth = static_cast<uint8_t>(Temp2.wMonth); // Get the month
+			m_uYear = static_cast<uint16_t>(Temp2.wYear);  // Get the year
 			uResult = kErrorNone;
 		}
 	}
@@ -83,21 +84,22 @@ Burger::eError Burger::TimeDate_t::Load(const _FILETIME *pFileTime)
 
 ***************************************/
 
-Burger::eError Burger::TimeDate_t::Store(_FILETIME *pFileTime) const
+Burger::eError Burger::TimeDate_t::Store(_FILETIME* pFileTime) const
 {
 	eError uResult = kErrorReadFailure;
 	SYSTEMTIME Temp2;
 	Temp2.wMilliseconds = m_usMilliseconds;
-	Temp2.wSecond = m_bSecond;				// Get the seconds
-	Temp2.wMinute = m_bMinute;				// Get the minute
-	Temp2.wHour = m_bHour;					// Get the hour
-	Temp2.wDay = m_bDay;					// Get the day
-	Temp2.wDayOfWeek = m_bDayOfWeek;		// Weekday
-	Temp2.wMonth = m_bMonth;				// Get the month
-	Temp2.wYear = static_cast<WORD>(m_uYear);	// Get the year
+	Temp2.wSecond = m_bSecond;                // Get the seconds
+	Temp2.wMinute = m_bMinute;                // Get the minute
+	Temp2.wHour = m_bHour;                    // Get the hour
+	Temp2.wDay = m_bDay;                      // Get the day
+	Temp2.wDayOfWeek = m_bDayOfWeek;          // Weekday
+	Temp2.wMonth = m_bMonth;                  // Get the month
+	Temp2.wYear = static_cast<WORD>(m_uYear); // Get the year
 	FILETIME Local;
-	if (SystemTimeToFileTime(&Temp2,&Local)) {	// Convert from sections to timestamp
-		if (LocalFileTimeToFileTime(&Local,pFileTime)) {	// Convert to GMT
+	if (SystemTimeToFileTime(
+			&Temp2, &Local)) { // Convert from sections to timestamp
+		if (LocalFileTimeToFileTime(&Local, pFileTime)) { // Convert to GMT
 			uResult = kErrorNone;
 		}
 	}

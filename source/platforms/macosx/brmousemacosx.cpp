@@ -176,7 +176,7 @@ void Burger::Mouse::InputCallback(
 			IOHIDElementRef pElement = IOHIDValueGetElement(pValue);
 #if 0
 			IOHIDDeviceRef pDevice = IOHIDElementGetDevice(pElement);
-			uint_t uRatNumber = BURGER_MAXUINT;
+			uint_t uRatNumber = UINT32_MAX;
 			const DeviceStruct *pRat = pMouse->m_Mice;
 			do {
 				if (pRat->m_pDevice == pDevice) {
@@ -185,7 +185,7 @@ void Burger::Mouse::InputCallback(
 				}
 				++pRat;
 			} while (--uCount);
-			if (uRatNumber==BURGER_MAXUINT) {
+			if (uRatNumber==UINT32_MAX) {
 			}
 #endif
 			uint32_t uTime = static_cast<uint32_t>(IOHIDValueGetTimeStamp(pValue));

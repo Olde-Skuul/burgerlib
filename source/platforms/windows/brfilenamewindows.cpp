@@ -92,7 +92,7 @@ const char* Burger::Filename::get_native(void) BURGER_NOEXCEPT
 		const uint8_t* pPath = reinterpret_cast<uint8_t*>(m_Filename.c_str());
 
 		// Init the default drive number
-		uint_t uDeviceNum = BURGER_MAXUINT;
+		uint_t uDeviceNum = UINT32_MAX;
 
 		// Fully qualified pathname?
 		if (pPath[0] == ':') {
@@ -113,9 +113,9 @@ const char* Burger::Filename::get_native(void) BURGER_NOEXCEPT
 			uDeviceNum = FileManager::get_volume_number(VolumeName);
 
 			// Can't find the volume?!?
-			if (uDeviceNum == BURGER_MAXUINT) {
+			if (uDeviceNum == UINT32_MAX) {
 				// Ignore the leading colon
-				uDeviceNum = BURGER_MAXUINT - 1;
+				uDeviceNum = UINT32_MAX - 1;
 				++pPath;
 			} else {
 				// Accept the name
@@ -137,7 +137,7 @@ const char* Burger::Filename::get_native(void) BURGER_NOEXCEPT
 							reinterpret_cast<const char*>(pPath), ':')) +
 					1;
 			} else {
-				uDeviceNum = BURGER_MAXUINT;
+				uDeviceNum = UINT32_MAX;
 			}
 		}
 
@@ -152,12 +152,12 @@ const char* Burger::Filename::get_native(void) BURGER_NOEXCEPT
 
 		// Insert the prefix, if any, to the output string
 
-		if (uDeviceNum == (BURGER_MAXUINT - 1)) {
+		if (uDeviceNum == (UINT32_MAX - 1)) {
 			// Since I didn't find the volume name, I'll assume it's
 			// a network volume
 			m_NativeFilename.push_back('\\');
 			m_NativeFilename.push_back('\\');
-		} else if (uDeviceNum != BURGER_MAXUINT) {
+		} else if (uDeviceNum != UINT32_MAX) {
 			m_NativeFilename.push_back(static_cast<char>(uDeviceNum + 'A'));
 			m_NativeFilename.push_back(':');
 			m_NativeFilename.push_back('\\');

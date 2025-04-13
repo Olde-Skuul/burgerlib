@@ -1,23 +1,24 @@
 /***************************************
 
-    Texture for rendering class, DirectX9 version
+	Texture for rendering class, DirectX9 version
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
 #include "brtexture.h"
 #if defined(BURGER_XBOX360)
 
-#include "brglobalmemorymanager.h"
 #include "brdisplay.h"
+#include "brglobalmemorymanager.h"
 #include "brmemoryfunctions.h"
+
 #define NONET
 #include <xtl.h>
 
@@ -29,7 +30,7 @@
 
 ***************************************/
 
-Burger::Texture::Texture() :
+Burger::Texture::Texture():
 	m_pLoader(NULL),
 	m_pUserData(NULL),
 	m_Image(),
@@ -37,12 +38,12 @@ Burger::Texture::Texture() :
 	m_eWrappingT(WRAP_REPEAT),
 	m_eMinFilter(FILTER_NEAREST),
 	m_eMagFilter(FILTER_NEAREST),
-	m_uDirty(BURGER_MAXUINT),
+	m_uDirty(UINT32_MAX),
 	m_pD3DTexture(NULL)
 {
 }
 
-Burger::Texture::Texture(eWrapping uWrapping,eFilter uFilter) :
+Burger::Texture::Texture(eWrapping uWrapping, eFilter uFilter):
 	m_pLoader(NULL),
 	m_pUserData(NULL),
 	m_Image(),
@@ -50,7 +51,7 @@ Burger::Texture::Texture(eWrapping uWrapping,eFilter uFilter) :
 	m_eWrappingT(uWrapping),
 	m_eMinFilter(uFilter),
 	m_eMagFilter(uFilter),
-	m_uDirty(BURGER_MAXUINT),
+	m_uDirty(UINT32_MAX),
 	m_pD3DTexture(NULL)
 {
 }
@@ -69,10 +70,10 @@ Burger::Texture::~Texture()
 {
 	if (m_pD3DTexture) {
 		// Make sure there is no connection to a D3D device
-		IDirect3DDevice9 *pDevice;
+		IDirect3DDevice9* pDevice;
 		m_pD3DTexture->GetDevice(&pDevice);
 		if (pDevice) {
-			pDevice->SetTexture(0,0);
+			pDevice->SetTexture(0, 0);
 		}
 		m_pD3DTexture->Release();
 		m_pD3DTexture = NULL;
@@ -81,46 +82,52 @@ Burger::Texture::~Texture()
 	ShutdownImageMemory();
 }
 
-uint_t Burger::Texture::CheckLoad(Display *pDisplay)
+uint_t Burger::Texture::CheckLoad(Display* pDisplay)
 {
 	uint_t bLoaded = FALSE;
-	D3DTexture *pTexture = m_pD3DTexture;
-	D3DDevice *pDevice = pDisplay->GetD3DDevice();
+	D3DTexture* pTexture = m_pD3DTexture;
+	D3DDevice* pDevice = pDisplay->GetD3DDevice();
 	if (!pTexture) {
 		if (LoadImageMemory()) {
 			return 10;
 		}
 		bLoaded = TRUE;
-		if (pDevice->CreateTexture(m_Image.GetWidth(),m_Image.GetHeight(),1,0,static_cast<D3DFORMAT>(GetD3DFormat()),D3DPOOL_MANAGED,&m_pD3DTexture,0)<0) {
+		if (pDevice->CreateTexture(m_Image.GetWidth(), m_Image.GetHeight(), 1,
+				0, static_cast<D3DFORMAT>(GetD3DFormat()), D3DPOOL_MANAGED,
+				&m_pD3DTexture, 0) < 0) {
 			UnloadImageMemory();
 			return 10;
 		}
 		pTexture = m_pD3DTexture;
 		// Copy the images into the DirectX surfaces.
 		for (uint_t i = 0; i < m_Image.GetMipMapCount(); i++) {
-			D3DSurface *pD3DSurface;
-			pTexture->GetSurfaceLevel(i,&pD3DSurface);
+			D3DSurface* pD3DSurface;
+			pTexture->GetSurfaceLevel(i, &pD3DSurface);
 			D3DLOCKED_RECT DestRect;
-			pTexture->LockRect(i,&DestRect,NULL,0);
+			pTexture->LockRect(i, &DestRect, NULL, 0);
 			uintptr_t uBufferSize = m_Image.GetImageSize(i);
-			const uint8_t *pImage = m_Image.GetImage(i);
-			if (m_Image.GetType()==Image::PIXELTYPE8888) {
-				uBufferSize>>=2U;
+			const uint8_t* pImage = m_Image.GetImage(i);
+			if (m_Image.GetType() == Image::PIXELTYPE8888) {
+				uBufferSize >>= 2U;
 				if (uBufferSize) {
-					uint32_t *pDest = static_cast<uint32_t *>(DestRect.pBits);
+					uint32_t* pDest = static_cast<uint32_t*>(DestRect.pBits);
 					do {
-						uint32_t uPixel = static_cast<uint32_t>((pImage[0]<<16U) + (pImage[1]<<8U) + (pImage[2]) + (pImage[3]<<24U));
+						uint32_t uPixel = static_cast<uint32_t>(
+							(pImage[0] << 16U) + (pImage[1] << 8U) +
+							(pImage[2]) + (pImage[3] << 24U));
 						pDest[0] = uPixel;
 						pImage += 4;
 						++pDest;
 					} while (--uBufferSize);
 				}
-			} else if (m_Image.GetType()==Image::PIXELTYPE888) {
-				uBufferSize = uBufferSize/3;
+			} else if (m_Image.GetType() == Image::PIXELTYPE888) {
+				uBufferSize = uBufferSize / 3;
 				if (uBufferSize) {
-					uint32_t *pDest = static_cast<uint32_t *>(DestRect.pBits);
+					uint32_t* pDest = static_cast<uint32_t*>(DestRect.pBits);
 					do {
-						uint32_t uPixel = static_cast<uint32_t>((pImage[0]<<16U) + (pImage[1]<<8U) + (pImage[2]) + 0xFF000000U);
+						uint32_t uPixel =
+							static_cast<uint32_t>((pImage[0] << 16U) +
+								(pImage[1] << 8U) + (pImage[2]) + 0xFF000000U);
 						pDest[0] = uPixel;
 						pImage += 3;
 						++pDest;
@@ -128,17 +135,17 @@ uint_t Burger::Texture::CheckLoad(Display *pDisplay)
 				}
 
 			} else {
-				if (static_cast<uintptr_t>(DestRect.Pitch)==m_Image.GetStride(i)) {
-					MemoryCopy(DestRect.pBits,m_Image.GetImage(),uBufferSize);
+				if (static_cast<uintptr_t>(DestRect.Pitch) ==
+					m_Image.GetStride(i)) {
+					MemoryCopy(DestRect.pBits, m_Image.GetImage(), uBufferSize);
 				} else {
 					uint_t uHeight = m_Image.GetHeight(i);
-					uint32_t *pDest = static_cast<uint32_t *>(DestRect.pBits);
+					uint32_t* pDest = static_cast<uint32_t*>(DestRect.pBits);
 					do {
-						MemoryCopy(pDest,pImage,m_Image.GetStride());
+						MemoryCopy(pDest, pImage, m_Image.GetStride());
 						pDest += DestRect.Pitch;
 						pImage += m_Image.GetStride();
 					} while (--uHeight);
-
 				}
 			}
 			pTexture->UnlockRect(i);
@@ -147,7 +154,7 @@ uint_t Burger::Texture::CheckLoad(Display *pDisplay)
 		UnloadImageMemory();
 	}
 	uint_t uResult = 0;
-	if (pDevice->SetTexture(0,pTexture)<0) {
+	if (pDevice->SetTexture(0, pTexture) < 0) {
 		uResult = 10;
 	} else if (m_uDirty) {
 		m_uDirty = 0;
@@ -155,13 +162,13 @@ uint_t Burger::Texture::CheckLoad(Display *pDisplay)
 	return uResult;
 }
 
-void Burger::Texture::Release(Display * /* pDisplay */)
+void Burger::Texture::Release(Display* /* pDisplay */)
 {
 	if (m_pD3DTexture) {
 		m_pD3DTexture->Release();
 		m_pD3DTexture = NULL;
 	}
-	m_uDirty = BURGER_MAXUINT;
+	m_uDirty = UINT32_MAX;
 }
 
 //

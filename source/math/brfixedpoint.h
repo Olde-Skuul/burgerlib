@@ -28,28 +28,28 @@
 #endif
 
 /* BEGIN */
-#define BURGER_FLOAT_TO_FIXED(x) static_cast<Fixed32>((x)*65536.0f)
+#define BURGER_FLOAT_TO_FIXED(x) static_cast<fixed16_16_t>((x)*65536.0f)
 #define BURGER_FIXED_TO_FLOAT(x) (static_cast<float>(x) * (1.0f / 65536.0f))
-#define BURGER_INT_TO_FIXED(x) static_cast<Fixed32>((x) << 16)
+#define BURGER_INT_TO_FIXED(x) static_cast<fixed16_16_t>((x) << 16)
 #define BURGER_FIXED_TO_INT(x) \
 	static_cast<int>((x + ((x >> 31) & 0xFFFF)) >> 16)
 
 namespace Burger {
 
-/** Minimum value for \ref Frac32 */
-BURGER_CONSTEXPR const Frac32 kMinFrac32 = (-0x7FFFFFFF) - 1;
+/** Minimum value for \ref fixed2_30_t */
+BURGER_CONSTEXPR const fixed2_30_t kMinFrac32 = (-0x7FFFFFFF) - 1;
 
-/** Maximum value for \ref Frac32 */
-BURGER_CONSTEXPR const Frac32 kMaxFrac32 = 0x7FFFFFFF;
+/** Maximum value for \ref fixed2_30_t */
+BURGER_CONSTEXPR const fixed2_30_t kMaxFrac32 = 0x7FFFFFFF;
 
-/** Minimum value for \ref Fixed32 */
-BURGER_CONSTEXPR const Fixed32 kMinFixed32 = (-0x7FFFFFFF) - 1;
+/** Minimum value for \ref fixed16_16_t */
+BURGER_CONSTEXPR const fixed16_16_t kMinFixed32 = (-0x7FFFFFFF) - 1;
 
-/** Maximum value for \ref Fixed32 */
-BURGER_CONSTEXPR const Fixed32 kMaxFixed32 = 0x7FFFFFFF;
+/** Maximum value for \ref fixed16_16_t */
+BURGER_CONSTEXPR const fixed16_16_t kMaxFixed32 = 0x7FFFFFFF;
 
-/** Pi in \ref Fixed32 format (3.141... * 65536 = 205887.416) */
-BURGER_CONSTEXPR const Fixed32 kPiFixed32 = 0x003243F;
+/** Pi in \ref fixed16_16_t format (3.141... * 65536 = 205887.416) */
+BURGER_CONSTEXPR const fixed16_16_t kPiFixed32 = 0x003243F;
 
 BURGER_INLINE uint_t get_low_word(uint32_t uInput) BURGER_NOEXCEPT
 {
@@ -61,29 +61,29 @@ BURGER_INLINE uint_t get_high_word(uint32_t uInput) BURGER_NOEXCEPT
 	return static_cast<uint_t>(uInput >> 16U);
 }
 
-BURGER_INLINE Fixed32 int_to_fixed(int32_t iInput) BURGER_NOEXCEPT
+BURGER_INLINE fixed16_16_t int_to_fixed(int32_t iInput) BURGER_NOEXCEPT
 {
-	return static_cast<Fixed32>(iInput << 16);
+	return static_cast<fixed16_16_t>(iInput << 16);
 }
 
-extern Fixed32 BURGER_API int_to_fixed_saturate(int32_t iInput) BURGER_NOEXCEPT;
+extern fixed16_16_t BURGER_API int_to_fixed_saturate(int32_t iInput) BURGER_NOEXCEPT;
 
-BURGER_INLINE int32_t fixed_to_int_floor(Fixed32 fInput) BURGER_NOEXCEPT
+BURGER_INLINE int32_t fixed_to_int_floor(fixed16_16_t fInput) BURGER_NOEXCEPT
 {
 	return static_cast<int32_t>(fInput >> 16);
 }
 
-BURGER_INLINE int32_t fixed_to_int(Fixed32 fInput) BURGER_NOEXCEPT
+BURGER_INLINE int32_t fixed_to_int(fixed16_16_t fInput) BURGER_NOEXCEPT
 {
 	return static_cast<int32_t>((fInput + ((fInput >> 31) & 0xFFFF)) >> 16);
 }
 
-BURGER_INLINE int32_t fixed_to_int_ceil(Fixed32 fInput) BURGER_NOEXCEPT
+BURGER_INLINE int32_t fixed_to_int_ceil(fixed16_16_t fInput) BURGER_NOEXCEPT
 {
 	return static_cast<int32_t>((fInput + 0xFFFF) >> 16);
 }
 
-BURGER_INLINE int32_t fixed_to_int_nearest(Fixed32 fInput) BURGER_NOEXCEPT
+BURGER_INLINE int32_t fixed_to_int_nearest(fixed16_16_t fInput) BURGER_NOEXCEPT
 {
 	return static_cast<int32_t>(
 			   (fInput + 0x8000 - (static_cast<uint32_t>(fInput) >> 31U))) >>
@@ -104,19 +104,19 @@ extern int32_t BURGER_API float_to_int_round_to_zero(
 extern void BURGER_API float_to_int_round_to_zero(
 	int32_t* pOutput, float fInput) BURGER_NOEXCEPT;
 
-extern Fixed32 BURGER_API float_to_fixed_floor(float fInput) BURGER_NOEXCEPT;
+extern fixed16_16_t BURGER_API float_to_fixed_floor(float fInput) BURGER_NOEXCEPT;
 extern void BURGER_API float_to_fixed_floor(
-	Fixed32* pOutput, float fInput) BURGER_NOEXCEPT;
-extern Fixed32 BURGER_API float_to_fixed_ceil(float fInput) BURGER_NOEXCEPT;
+	fixed16_16_t* pOutput, float fInput) BURGER_NOEXCEPT;
+extern fixed16_16_t BURGER_API float_to_fixed_ceil(float fInput) BURGER_NOEXCEPT;
 extern void BURGER_API float_to_fixed_ceil(
-	Fixed32* pOutput, float fInput) BURGER_NOEXCEPT;
-extern Fixed32 BURGER_API float_to_fixed_round(float fInput) BURGER_NOEXCEPT;
+	fixed16_16_t* pOutput, float fInput) BURGER_NOEXCEPT;
+extern fixed16_16_t BURGER_API float_to_fixed_round(float fInput) BURGER_NOEXCEPT;
 extern void BURGER_API float_to_fixed_round(
-	Fixed32* pOutput, float fInput) BURGER_NOEXCEPT;
-extern Fixed32 BURGER_API float_to_fixed_round_to_zero(
+	fixed16_16_t* pOutput, float fInput) BURGER_NOEXCEPT;
+extern fixed16_16_t BURGER_API float_to_fixed_round_to_zero(
 	float fInput) BURGER_NOEXCEPT;
 extern void BURGER_API float_to_fixed_round_to_zero(
-	Fixed32* pOutput, float fInput) BURGER_NOEXCEPT;
+	fixed16_16_t* pOutput, float fInput) BURGER_NOEXCEPT;
 
 #if defined(BURGER_ARM) || defined(BURGER_AMD64) || \
 	(defined(BURGER_X86) && !defined(BURGER_WINDOWS)) || defined(DOXYGEN)
@@ -237,21 +237,21 @@ BURGER_INLINE BURGER_CONSTEXPR int64_t get_sign(int64_t iInput) BURGER_NOEXCEPT
 }
 
 #if defined(BURGER_WATCOM)
-BURGER_INLINE Fixed32 FixedMultiply(Fixed32 fInput1, Fixed32 fInput2)
+BURGER_INLINE fixed16_16_t FixedMultiply(fixed16_16_t fInput1, fixed16_16_t fInput2)
 {
 	return BurgerFixedMathMultiply(fInput1, fInput2);
 }
-BURGER_INLINE Fixed32 FixedDivide(
-	Fixed32 fInputNumerator, Fixed32 fInputDenominator)
+BURGER_INLINE fixed16_16_t FixedDivide(
+	fixed16_16_t fInputNumerator, fixed16_16_t fInputDenominator)
 {
 	return BurgerFixedMathDivide(fInputNumerator, fInputDenominator);
 }
-BURGER_INLINE Fixed32 FixedReciprocal(Fixed32 fInput)
+BURGER_INLINE fixed16_16_t FixedReciprocal(fixed16_16_t fInput)
 {
 	return BurgerFixedMathReciprocal(fInput);
 }
 #elif defined(BURGER_X86) && defined(BURGER_METROWERKS)
-BURGER_INLINE Fixed32 FixedMultiply(Fixed32 fInput1, Fixed32 fInput2)
+BURGER_INLINE fixed16_16_t FixedMultiply(fixed16_16_t fInput1, fixed16_16_t fInput2)
 {
 	// clang-format off
 	asm mov eax, fInput1
@@ -261,8 +261,8 @@ BURGER_INLINE Fixed32 FixedMultiply(Fixed32 fInput1, Fixed32 fInput2)
 		// clang-format on
 		return fInput1;
 }
-BURGER_INLINE Fixed32 FixedDivide(
-	Fixed32 fInputNumerator, Fixed32 fInputDenominator)
+BURGER_INLINE fixed16_16_t FixedDivide(
+	fixed16_16_t fInputNumerator, fixed16_16_t fInputDenominator)
 {
 	// clang-format off
 	asm mov eax, fInputNumerator
@@ -274,7 +274,7 @@ BURGER_INLINE Fixed32 FixedDivide(
 		// clang-format on
 		return fInputNumerator;
 }
-BURGER_INLINE Fixed32 FixedReciprocal(Fixed32 fInput)
+BURGER_INLINE fixed16_16_t FixedReciprocal(fixed16_16_t fInput)
 {
 	// clang-format off
 	asm mov ecx, fInput
@@ -293,7 +293,7 @@ Done:
 							 return fInput;
 }
 #elif defined(BURGER_X86) && defined(BURGER_MSVC)
-BURGER_INLINE Fixed32 FixedMultiply(Fixed32 fInput1, Fixed32 fInput2)
+BURGER_INLINE fixed16_16_t FixedMultiply(fixed16_16_t fInput1, fixed16_16_t fInput2)
 {
 	// clang-format off
 	__asm mov eax, fInput1
@@ -304,8 +304,8 @@ BURGER_INLINE Fixed32 FixedMultiply(Fixed32 fInput1, Fixed32 fInput2)
 		// clang-format on
 		return fInput1;
 }
-BURGER_INLINE Fixed32 FixedDivide(
-	Fixed32 fInputNumerator, Fixed32 fInputDenominator)
+BURGER_INLINE fixed16_16_t FixedDivide(
+	fixed16_16_t fInputNumerator, fixed16_16_t fInputDenominator)
 {
 	// clang-format off
 	__asm mov eax, fInputNumerator
@@ -318,7 +318,7 @@ BURGER_INLINE Fixed32 FixedDivide(
 		// clang-format on
 		return fInputNumerator;
 }
-BURGER_INLINE Fixed32 FixedReciprocal(Fixed32 fInput)
+BURGER_INLINE fixed16_16_t FixedReciprocal(fixed16_16_t fInput)
 {
 	if (fInput == -1) { // Note: Visual C does not like branches in inline asm
 		fInput = 0x80000000;
@@ -336,20 +336,20 @@ BURGER_INLINE Fixed32 FixedReciprocal(Fixed32 fInput)
 	return fInput;
 }
 #elif defined(BURGER_PPC) || defined(BURGER_64BITCPU) && !defined(DOXYGEN)
-BURGER_INLINE Fixed32 FixedMultiply(Fixed32 fInput1, Fixed32 fInput2)
+BURGER_INLINE fixed16_16_t FixedMultiply(fixed16_16_t fInput1, fixed16_16_t fInput2)
 {
-	return static_cast<Fixed32>(
+	return static_cast<fixed16_16_t>(
 		((static_cast<int64_t>(fInput1) * static_cast<int64_t>(fInput2)) >>
 			16) &
 		0xFFFFFFFF);
 }
-BURGER_INLINE Fixed32 FixedDivide(
-	Fixed32 fInputNumerator, Fixed32 fInputDenominator)
+BURGER_INLINE fixed16_16_t FixedDivide(
+	fixed16_16_t fInputNumerator, fixed16_16_t fInputDenominator)
 {
-	return static_cast<Fixed32>(
+	return static_cast<fixed16_16_t>(
 		(static_cast<int64_t>(fInputNumerator) << 16) / fInputDenominator);
 }
-BURGER_INLINE Fixed32 FixedReciprocal(Fixed32 fInput)
+BURGER_INLINE fixed16_16_t FixedReciprocal(fixed16_16_t fInput)
 {
 	if (fInput == -1) {
 		fInput = 0x80000000;
@@ -357,20 +357,20 @@ BURGER_INLINE Fixed32 FixedReciprocal(Fixed32 fInput)
 		fInput = 0x7FFFFFFF;
 	} else {
 		fInput =
-			static_cast<Fixed32>(0x100000000LL / static_cast<int64_t>(fInput));
+			static_cast<fixed16_16_t>(0x100000000LL / static_cast<int64_t>(fInput));
 	}
 	return fInput;
 }
 #else
-extern Fixed32 BURGER_API FixedMultiply(Fixed32 fInput1, Fixed32 fInput2);
-extern Fixed32 BURGER_API FixedDivide(
-	Fixed32 fInputNumerator, Fixed32 fInputDenominator);
-extern Fixed32 BURGER_API FixedReciprocal(Fixed32 fInput);
+extern fixed16_16_t BURGER_API FixedMultiply(fixed16_16_t fInput1, fixed16_16_t fInput2);
+extern fixed16_16_t BURGER_API FixedDivide(
+	fixed16_16_t fInputNumerator, fixed16_16_t fInputDenominator);
+extern fixed16_16_t BURGER_API FixedReciprocal(fixed16_16_t fInput);
 #endif
 
 extern uint32_t BURGER_API square_root(uint32_t uInput);
-extern uint32_t BURGER_API SqrtFixedToWord32(Fixed32 fInput);
-extern Fixed32 BURGER_API square_root(Fixed32 uInput);
+extern uint32_t BURGER_API SqrtFixedToWord32(fixed16_16_t fInput);
+extern fixed16_16_t BURGER_API square_root(fixed16_16_t uInput);
 
 #if defined(BURGER_MSVC) || defined(BURGER_WATCOM)
 BURGER_INLINE uint32_t RotateLeft(

@@ -686,7 +686,8 @@
 
 // Is Vulkan supported on this platform?
 #if (defined(BURGER_ANDROID) || defined(BURGER_WINDOWS) || \
-	defined(BURGER_LINUX) || defined(BURGER_SWITCH)) || defined(DOXYGEN)
+	defined(BURGER_LINUX) || defined(BURGER_SWITCH)) || \
+	defined(DOXYGEN)
 #define BURGER_VULKAN
 #endif
 
@@ -1066,9 +1067,13 @@
 
 // Test for address sanitization
 #if __has_feature(address_sanitizer) || (BURGER_GNUC >= 40800) || \
-	defined(DOXYGEN)
+	defined(__SANITIZE_ADDRESS__) || defined(DOXYGEN)
 #define BURGER_ADDRESS_SANITIZER
+#if defined(BURGER_MSVC)
+#define BURGER_DISABLE_ASAN __declspec(no_sanitize_address)
+#else
 #define BURGER_DISABLE_ASAN __attribute__((no_sanitize_address))
+#endif
 #else
 #define BURGER_DISABLE_ASAN
 #endif
@@ -1130,6 +1135,20 @@
 #define BURGER_USED
 #endif
 
+// Determine BURGER_DEPRECATED
+#if defined(BURGER_CPP14) || defined(DOXYGEN)
+#define BURGER_DEPRECATED(__x) [[deprecated(__x)]]
+#elif (BURGER_GNUC >= 40500) || \
+	__has_extension(attribute_deprecated_with_message)
+#define BURGER_DEPRECATED(__x) __attribute__((deprecated(__x)))
+#elif (BURGER_GNUC >= 30100)
+#define BURGER_DEPRECATED(__x) __attribute__((__deprecated__))
+#elif (BURGER_MSVC >= 130000000)
+#define BURGER_DEPRECATED(__x) __declspec(deprecated(__x))
+#else
+#define BURGER_DEPRECATED(__x)
+#endif
+
 /***************************************
 
 	Helper macros
@@ -1141,6 +1160,7 @@
 #error NDEBUG and _DEBUG are both defined. Choose one or the other
 #endif
 
+// See if it's enabled in Metrowerks to auto assign the macro
 #if !defined(NDEBUG) && !defined(_DEBUG)
 #if defined(BURGER_METROWERKS)
 #if __option(sym)
@@ -1155,7 +1175,7 @@
 
 #define BURGER_OFFSETOF(__type, __member) \
 	(reinterpret_cast<intptr_t>( \
-		 &reinterpret_cast<const __type*>(1)->__member) - \
+		 &(reinterpret_cast<const __type*>(1)->__member)) - \
 		1)
 
 #define BURGER_GET_BASE_PTR(x, __type, __member) \
@@ -1176,6 +1196,9 @@
 // Suppress warnings in Visual Studio (VS2005 or higher)
 #if (BURGER_MSVC >= 140000000)
 #define BURGER_MSVC_SUPPRESS(__T) __pragma(warning(suppress : __T))
+#elif defined(BURGER_MSVC)
+// Disable value out of range for Visual Studio 2003
+#define BURGER_MSVC_SUPPRESS(__T) __pragma(warning(disable : 4616 __T))
 #else
 #define BURGER_MSVC_SUPPRESS(__T)
 #endif
@@ -1322,6 +1345,7 @@ struct ulonglong_t;
 #endif
 #endif
 
+// Include stdint.h for all the standardized data types
 #include <stdint.h>
 
 #if defined(BURGER_METROWERKS) || (defined(BURGER_WATCOM) && defined(_M_I86))
@@ -1335,6 +1359,12 @@ struct ulonglong_t;
 #endif
 
 #endif
+
+// Simple types
+typedef int32_t fixed2_30_t;
+typedef int32_t fixed16_16_t;
+typedef unsigned int uint_t;
+typedef signed int int_t;
 
 // Helper types to convert native int to uint??_t
 #if (BURGER_SIZEOF_INT == 4)
@@ -1355,6 +1385,7 @@ typedef uint64_t ulong2uint_t;
 
 // Are wchar_t, char8_t, char16_t and char32_t native types?
 
+// Metrowerks uses an option to test for wchar_t
 #if defined(BURGER_METROWERKS)
 #if __option(wchar_type)
 #define BURGER_HAS_WCHAR_T
@@ -1428,6 +1459,7 @@ extern const char (*_BurgerArraySize(T (&)[N]))[N];
 /***************************************
 
 	In place new
+	Declared here to avoid including <new>
 
 ***************************************/
 
@@ -1471,63 +1503,13 @@ BURGER_INLINE void* operator new(uintptr_t, void* x) BURGER_NOEXCEPT { return x;
 // Hack for remapping uint_t to a uintptr_t for some compilers
 #if defined(BURGER_WATCOM)
 #define BURGER_NEED_UINTPTR_REMAP uint32_t
-#elif defined(BURGER_MACOSX) || defined(BURGER_IOS)
+#elif defined(BURGER_DARWIN)
 #if defined(__LP64__)
 #define BURGER_NEED_UINTPTR_REMAP uint64_t
 #else
 #define BURGER_NEED_UINTPTR_REMAP uint32_t
 #endif
 #endif
-
-// Standard defines (Can be overridden)
-#if !defined(BURGER_MININT)
-#define BURGER_MININT ((-0x7FFFFFFF) - 1)
-#endif
-
-#if !defined(BURGER_MAXINT)
-#define BURGER_MAXINT 0x7FFFFFFF
-#endif
-
-#if !defined(BURGER_MAXUINT)
-#define BURGER_MAXUINT 0xFFFFFFFFU
-#endif
-
-#if !defined(BURGER_MININT64)
-#define BURGER_MININT64 ((-0x7FFFFFFFFFFFFFFFLL) - 1)
-#endif
-
-#if !defined(BURGER_MAXINT64)
-#define BURGER_MAXINT64 0x7FFFFFFFFFFFFFFFLL
-#endif
-
-#if !defined(BURGER_MAXUINT64)
-#define BURGER_MAXUINT64 0xFFFFFFFFFFFFFFFFULL
-#endif
-
-// Obsolete typedefs
-typedef int8_t Int8;
-typedef uint8_t Word8;
-typedef int16_t Int16;
-typedef uint16_t Word16;
-typedef int32_t Int32;
-typedef uint32_t Word32;
-typedef int64_t Int64;
-typedef uint64_t Word64;
-typedef unsigned int uint_t;
-typedef signed int int_t;
-
-typedef uint8_t Bool;
-typedef int32_t Frac32;
-typedef int32_t Fixed32;
-typedef unsigned int Word;
-typedef signed int Int;
-
-// Pointer types cast to an integer
-
-typedef uintptr_t WordPtr;
-typedef intptr_t IntPtr;
-#define BURGER_MAXWORDPTR UINTPTR_MAX
-#define BURGER_MAXINTPTR INTPTR_MAX
 
 /* END */
 

@@ -442,7 +442,7 @@ double BURGER_API Burger::absolute(double dInput) BURGER_NOEXCEPT
 
 	\return The square root of the input.
 
-	\sa square_root(double), square_root(uint32_t), and square_root(Fixed32)
+	\sa square_root(double), square_root(uint32_t), and square_root(fixed16_16_t)
 
 ***************************************/
 
@@ -973,7 +973,7 @@ float BURGER_API Burger::square_root(float fInput) BURGER_NOEXCEPT
 
 	\param dInput A valid double precision floating point number.
 	\return The square root of the input.
-	\sa square_root(float), square_root(uint32_t), and square_root(Fixed32)
+	\sa square_root(float), square_root(uint32_t), and square_root(fixed16_16_t)
 
 ***************************************/
 
@@ -1360,46 +1360,46 @@ double BURGER_API Burger::square_root(double dInput) BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\fn Burger::fixed_to_float(Fixed32 iInput)
+	\fn Burger::fixed_to_float(fixed16_16_t iInput)
 	\brief 32 bit 16.16 fixed point integer to floating point conversion
 
 	\param iInput 32 bit 16.16 fixed point integer to convert
 	\return Floating point representation of the integer input
 
-	\sa fixed_to_float(const Fixed32 *), fixed_to_float(float *,Fixed32) or
-		fixed_to_float(float *,const Fixed32 *)
+	\sa fixed_to_float(const fixed16_16_t *), fixed_to_float(float *,fixed16_16_t) or
+		fixed_to_float(float *,const fixed16_16_t *)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::fixed_to_float(const Fixed32 *pInput)
+	\fn Burger::fixed_to_float(const fixed16_16_t *pInput)
 	\brief 32 bit 16.16 fixed point integer to floating point conversion
 
 	\param pInput Pointer to a 32 bit 16.16 fixed point integer to convert
 	\return Floating point representation of the integer input
 
-	\sa fixed_to_float(Fixed32), fixed_to_float(float *,Fixed32) or
-		fixed_to_float(float *,const Fixed32 *)
+	\sa fixed_to_float(fixed16_16_t), fixed_to_float(float *,fixed16_16_t) or
+		fixed_to_float(float *,const fixed16_16_t *)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::fixed_to_float(float *pOutput,Fixed32 iInput)
+	\fn Burger::fixed_to_float(float *pOutput,fixed16_16_t iInput)
 	\brief 32 bit 16.16 fixed point integer to floating point conversion
 
 	\param iInput 32 bit 16.16 fixed point integer to convert
 	\param pOutput Pointer to a 32 bit float to receive the converted integer
 
-	\sa fixed_to_float(Fixed32), fixed_to_float(const Fixed32 *) or
-		fixed_to_float(float *,const Fixed32 *)
+	\sa fixed_to_float(fixed16_16_t), fixed_to_float(const fixed16_16_t *) or
+		fixed_to_float(float *,const fixed16_16_t *)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::fixed_to_float(float *pOutput,const Fixed32 *pInput)
+	\fn Burger::fixed_to_float(float *pOutput,const fixed16_16_t *pInput)
 	\brief 32 bit 16.16 fixed point integer to floating point conversion
 
 	\note This function is fast on the Xbox 360, PS3 and PowerPC64 MacOSX due to
@@ -1408,8 +1408,8 @@ double BURGER_API Burger::square_root(double dInput) BURGER_NOEXCEPT
 	\param pInput Pointer to a 32 bit 16.16 fixed point integer to convert
 	\param pOutput Pointer to a 32 bit float to receive the converted integer
 
-	\sa fixed_to_float(Fixed32), fixed_to_float(const Fixed32 *) or
-		fixed_to_float(float *,Fixed32)
+	\sa fixed_to_float(fixed16_16_t), fixed_to_float(const fixed16_16_t *) or
+		fixed_to_float(float *,fixed16_16_t)
 
 ***************************************/
 
@@ -2036,7 +2036,7 @@ uint_t BURGER_API Burger::equal_with_epsilon(
 	\endcode
 
 	\sa get_floor(double), get_ceiling(float), get_round(float),
-		round_to_zero(float), or fixed_to_int_floor(Fixed32)
+		round_to_zero(float), or fixed_to_int_floor(fixed16_16_t)
 
 ***************************************/
 
@@ -2096,7 +2096,7 @@ float BURGER_API Burger::get_floor(float fInput) BURGER_NOEXCEPT
 	\endcode
 
 	\sa get_floor(float), get_ceiling(double), get_round(double),
-		round_to_zero(double), or fixed_to_int_floor(Fixed32)
+		round_to_zero(double), or fixed_to_int_floor(fixed16_16_t)
 
 ***************************************/
 
@@ -2155,7 +2155,7 @@ double BURGER_API Burger::get_floor(double dInput) BURGER_NOEXCEPT
 	\endcode
 
 	\sa get_ceiling(double), get_floor(float), get_round(float),
-		round_to_zero(float), or fixed_to_int_ceil(Fixed32)
+		round_to_zero(float), or fixed_to_int_ceil(fixed16_16_t)
 
 ***************************************/
 
@@ -2213,7 +2213,7 @@ float BURGER_API Burger::get_ceiling(float fInput) BURGER_NOEXCEPT
 	\endcode
 
 	\sa get_ceiling(float), get_floor(double), get_round(double),
-		round_to_zero(double), or fixed_to_int_ceil(Fixed32)
+		round_to_zero(double), or fixed_to_int_ceil(fixed16_16_t)
 
 ***************************************/
 
@@ -2274,7 +2274,7 @@ double BURGER_API Burger::get_ceiling(double dInput) BURGER_NOEXCEPT
 	\endcode
 
 	\sa get_round(double), get_floor(float), get_ceiling(float),
-		round_to_zero(float), or fixed_to_int_nearest(Fixed32)
+		round_to_zero(float), or fixed_to_int_nearest(fixed16_16_t)
 
 ***************************************/
 
@@ -2408,7 +2408,7 @@ float BURGER_API Burger::get_round(float fInput) BURGER_NOEXCEPT
 	\endcode
 
 	\sa get_round(float), get_floor(double), get_ceiling(double),
-		round_to_zero(double), or fixed_to_int_nearest(Fixed32)
+		round_to_zero(double), or fixed_to_int_nearest(fixed16_16_t)
 
 ***************************************/
 
@@ -2558,7 +2558,7 @@ double BURGER_API Burger::get_round(double dInput) BURGER_NOEXCEPT
 	\endcode
 
 	\sa round_to_zero(double), get_floor(float), get_ceiling(float),
-		get_round(float), or fixed_to_int(Fixed32)
+		get_round(float), or fixed_to_int(fixed16_16_t)
 
 ***************************************/
 
@@ -2595,7 +2595,7 @@ float BURGER_API Burger::round_to_zero(float fInput) BURGER_NOEXCEPT
 	\endcode
 
 	\sa round_to_zero(float), get_floor(double), get_ceiling(double),
-		get_round(double), or fixed_to_int(Fixed32)
+		get_round(double), or fixed_to_int(fixed16_16_t)
 
 ***************************************/
 

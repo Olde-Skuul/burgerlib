@@ -17,7 +17,7 @@
 /*! ************************************
 
 	\struct Burger::FixedMatrix4D_t
-	\brief 4x4 \ref Fixed32 matrix.
+	\brief 4x4 \ref fixed16_16_t matrix.
 	
 	This 64 byte matrix contains x,y,z and w 32 bit 16.16 fixed point rows and columns. A
 	set of common functions for simple 4 dimensional math are part of the structure.
@@ -45,7 +45,7 @@
 
 void BURGER_API Burger::FixedMatrix4D_t::Zero(void)
 {
-	Fixed32 fTemp = BURGER_FLOAT_TO_FIXED(0.0f);		// Force the compiler to use a register
+	fixed16_16_t fTemp = BURGER_FLOAT_TO_FIXED(0.0f);		// Force the compiler to use a register
 	x.x = fTemp;		// Fill all the elements with zero
 	x.y = fTemp;
 	x.z = fTemp;
@@ -96,14 +96,14 @@ void BURGER_API Burger::FixedMatrix4D_t::Identity(void)
 
 /*! ************************************
 
-	\brief Convert a floating point matrix into a \ref Fixed32 matrix
+	\brief Convert a floating point matrix into a \ref fixed16_16_t matrix
 	
 	Using round to nearest, convert a matrix using floating point
-	values into one that has \ref Fixed32 values.
+	values into one that has \ref fixed16_16_t values.
 	The destination matrix is assumed to be uninitialized.
 
 	\param pInput Pointer to a valid Matrix4D_t
-	\sa Set(const FixedMatrix4D_t *) or float_to_fixed_round(Fixed32 *,float)
+	\sa Set(const FixedMatrix4D_t *) or float_to_fixed_round(fixed16_16_t *,float)
 
 ***************************************/
 
@@ -172,7 +172,7 @@ void BURGER_API Burger::FixedMatrix4D_t::Set(const FixedMatrix4D_t *pInput)
 
 ***************************************/
 
-void BURGER_API Burger::FixedMatrix4D_t::SetTranslate(Fixed32 fX,Fixed32 fY,Fixed32 fZ)
+void BURGER_API Burger::FixedMatrix4D_t::SetTranslate(fixed16_16_t fX,fixed16_16_t fY,fixed16_16_t fZ)
 {
 	w.x = fX;
 	w.y = fY;
@@ -206,7 +206,7 @@ void BURGER_API Burger::FixedMatrix4D_t::SetTranslate(Fixed32 fX,Fixed32 fY,Fixe
 
 ***************************************/
 
-void BURGER_API Burger::FixedMatrix4D_t::SetScale(Fixed32 fX,Fixed32 fY,Fixed32 fZ)
+void BURGER_API Burger::FixedMatrix4D_t::SetScale(fixed16_16_t fX,fixed16_16_t fY,fixed16_16_t fZ)
 {
 	x.x = fX;
 	x.y = BURGER_FLOAT_TO_FIXED(0.0f);
@@ -241,7 +241,7 @@ void BURGER_API Burger::FixedMatrix4D_t::SetScale(Fixed32 fX,Fixed32 fY,Fixed32 
 
 ***************************************/
 
-void BURGER_API Burger::FixedMatrix4D_t::SetScale(Fixed32 fX,Fixed32 fY,Fixed32 fZ,Fixed32 fW)
+void BURGER_API Burger::FixedMatrix4D_t::SetScale(fixed16_16_t fX,fixed16_16_t fY,fixed16_16_t fZ,fixed16_16_t fW)
 {
 	x.x = fX;
 	x.y = BURGER_FLOAT_TO_FIXED(0.0f);

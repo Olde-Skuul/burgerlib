@@ -138,7 +138,7 @@ Burger::eError BURGER_API Burger::Semaphore::wait_for_signal(
 		}
 
 		// FOREVER?
-	} else if (uMilliseconds == BURGER_MAXUINT) {
+	} else if (uMilliseconds == UINT32_MAX) {
 
 		// Use the special function for halt until acquired
 		int iSemResult;

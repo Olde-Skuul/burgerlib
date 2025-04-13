@@ -145,11 +145,11 @@ void BURGER_API Burger::Matrix4D_t::Set(
 
     \brief Convert a fixed point matrix into a floating point matrix
 
-    Using fixed_to_float(float *,Fixed32), convert all of the entries from a
+    Using fixed_to_float(float *,fixed16_16_t), convert all of the entries from a
     4x4 16.16 fixed point matrix into a floating point matrix
 
     \param pInput Pointer to a valid FixedMatrix4D_t for conversion
-    \sa fixed_to_float(float *,Fixed32)
+    \sa fixed_to_float(float *,fixed16_16_t)
 
 ***************************************/
 

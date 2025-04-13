@@ -381,8 +381,8 @@ signed long Burger::SoundManager::Voice::PlayCallback(void* pData,
 Burger::SoundManager::Voice::Voice() :
 	m_uCurrentMark(0), m_pBuffer(), m_pCallBack(nullptr),
 	m_pCallBackData(nullptr), m_uLoopStart(0), m_uLoopEnd(0), m_uPausedMark(0),
-	m_uSampleRate(BURGER_MAXUINT), m_uPan(BURGER_MAXUINT),
-	m_uVolume(BURGER_MAXUINT), m_bPlaying(FALSE), m_bPaused(FALSE),
+	m_uSampleRate(UINT32_MAX), m_uPan(UINT32_MAX),
+	m_uVolume(UINT32_MAX), m_bPlaying(FALSE), m_bPaused(FALSE),
 	m_bAvailable(TRUE), m_bIsHeld(FALSE)
 {
 }

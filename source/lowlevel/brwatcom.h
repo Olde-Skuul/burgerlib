@@ -96,21 +96,21 @@ extern int32_t BurgerIntMathMul32x32To64Div32(
 	"imul edx" \
 	"idiv ebx" parm[eax][edx][ebx] value[eax] modify exact[eax edx];
 
-extern Fixed32 BurgerFixedMathMultiply(Fixed32 fInputMulA, Fixed32 fInputMulB);
+extern fixed16_16_t BurgerFixedMathMultiply(fixed16_16_t fInputMulA, fixed16_16_t fInputMulB);
 #pragma aux BurgerFixedMathMultiply = \
 	"imul edx" \
 	"shrd eax,edx,16" parm[eax][edx] value[eax] modify \
 	exact[eax edx] nomemory;
 
-extern Fixed32 BurgerFixedMathDivide(
-	Fixed32 fInputNumerator, Fixed32 fInputDenominator);
+extern fixed16_16_t BurgerFixedMathDivide(
+	fixed16_16_t fInputNumerator, fixed16_16_t fInputDenominator);
 #pragma aux BurgerFixedMathDivide = \
 	"mov edx,eax" \
 	"shl eax,16" \
 	"sar edx,16" \
 	"idiv ebx" parm[eax][ebx] value[eax] modify exact[eax edx] nomemory;
 
-extern Fixed32 BurgerFixedMathReciprocal(Fixed32 fInput);
+extern fixed16_16_t BurgerFixedMathReciprocal(fixed16_16_t fInput);
 #pragma aux BurgerFixedMathReciprocal = \
 	"cmp ecx,-1" \
 	"mov eax,080000000H" \

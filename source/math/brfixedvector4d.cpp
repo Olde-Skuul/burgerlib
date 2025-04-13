@@ -41,7 +41,7 @@
 	Fills in all of the entries with zero, thereby
 	initializing the structure to a known state.
 	
-	\sa Identity(void), Set(Fixed32,Fixed32,Fixed32,Fixed32)
+	\sa Identity(void), Set(fixed16_16_t,fixed16_16_t,fixed16_16_t,fixed16_16_t)
 	
 ***************************************/
 
@@ -53,7 +53,7 @@
 	Fills in all of the entries with zero, thereby
 	initializing the structure to a known state.
 	
-	\sa Identity(void), Set(Fixed32,Fixed32,Fixed32,Fixed32)
+	\sa Identity(void), Set(fixed16_16_t,fixed16_16_t,fixed16_16_t,fixed16_16_t)
 	
 ***************************************/
 
@@ -65,57 +65,57 @@
 	Fills x, y, and z with \ref BURGER_FLOAT_TO_FIXED(0.0f) and w is filled in with \ref BURGER_FLOAT_TO_FIXED(1.0f).
 	Thereby initializing the structure to the equivalant of a quaternion identity..
 	
-	\sa Zero(void) or Set(Fixed32,Fixed32,Fixed32,Fixed32)
+	\sa Zero(void) or Set(fixed16_16_t,fixed16_16_t,fixed16_16_t,fixed16_16_t)
 	
 ***************************************/
 
 /*! ************************************
 
-	\fn Fixed32 Burger::FixedVector4D_t::GetX(void) const
+	\fn fixed16_16_t Burger::FixedVector4D_t::GetX(void) const
 	\brief Return the x component of the vector.
 	
 	\return The x component of the vector.
 	
-	\sa SetX(Fixed32)
+	\sa SetX(fixed16_16_t)
 	
 ***************************************/
 
 /*! ************************************
 
-	\fn Fixed32 Burger::FixedVector4D_t::GetY(void) const
+	\fn fixed16_16_t Burger::FixedVector4D_t::GetY(void) const
 	\brief Return the y component of the vector.
 	
 	\return The y component of the vector.
 
-	\sa SetY(Fixed32)
+	\sa SetY(fixed16_16_t)
 	
 ***************************************/
 
 /*! ************************************
 
-	\fn Fixed32 Burger::FixedVector4D_t::GetZ(void) const
+	\fn fixed16_16_t Burger::FixedVector4D_t::GetZ(void) const
 	\brief Return the z component of the vector.
 	
 	\return The z component of the vector.
 
-	\sa SetZ(Fixed32)
+	\sa SetZ(fixed16_16_t)
 	
 ***************************************/
 
 /*! ************************************
 
-	\fn Fixed32 Burger::FixedVector4D_t::GetW(void) const
+	\fn fixed16_16_t Burger::FixedVector4D_t::GetW(void) const
 	\brief Return the w component of the vector.
 	
 	\return The w component of the vector.
 
-	\sa SetW(Fixed32)
+	\sa SetW(fixed16_16_t)
 	
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::FixedVector4D_t::SetX(Fixed32 fX)
+	\fn void Burger::FixedVector4D_t::SetX(fixed16_16_t fX)
 	\brief Set the x component of the vector.
 	
 	\param fX The new x component of the vector.
@@ -126,7 +126,7 @@
 
 /*! ************************************
 
-	\fn void Burger::FixedVector4D_t::SetY(Fixed32 fY)
+	\fn void Burger::FixedVector4D_t::SetY(fixed16_16_t fY)
 	\brief Set the y component of the vector.
 	
 	\param fY The new y component of the vector.
@@ -137,7 +137,7 @@
 
 /*! ************************************
 
-	\fn void Burger::FixedVector4D_t::SetZ(Fixed32 fZ)
+	\fn void Burger::FixedVector4D_t::SetZ(fixed16_16_t fZ)
 	\brief Set the z component of the vector.
 	
 	\param fZ The new z component of the vector.
@@ -148,7 +148,7 @@
 
 /*! ************************************
 
-	\fn void Burger::FixedVector4D_t::SetW(Fixed32 fW)
+	\fn void Burger::FixedVector4D_t::SetW(fixed16_16_t fW)
 	\brief Set the w component of the vector.
 	
 	\param fW The new w component of the vector.
@@ -159,7 +159,7 @@
 
 /*! ************************************
 
-	\fn void Burger::FixedVector4D_t::Set(Fixed32 fX,Fixed32 fY,Fixed32 fZ)
+	\fn void Burger::FixedVector4D_t::Set(fixed16_16_t fX,fixed16_16_t fY,fixed16_16_t fZ)
 	\brief Set the values to specific values
 
 	Sets the x, y and z values to specific values. w is set to \ref BURGER_FLOAT_TO_FIXED(1.0f)
@@ -173,7 +173,7 @@
 
 /*! ************************************
 
-	\fn void Burger::FixedVector4D_t::Set(Fixed32 fX,Fixed32 fY,Fixed32 fZ,Fixed32 fW)
+	\fn void Burger::FixedVector4D_t::Set(fixed16_16_t fX,fixed16_16_t fY,fixed16_16_t fZ,fixed16_16_t fW)
 	\brief Initialize the vector elements to specific values,
 	
 	Given the new values for x, y, z and w, store them into the structure.
@@ -182,7 +182,7 @@
 	\param fY The new y component to store in the vector.
 	\param fZ The new z component to store in the vector.
 	\param fW The new w component to store in the vector.
-	\sa Zero(void), Identity(void) or Set(Fixed32,Fixed32,Fixed32)
+	\sa Zero(void), Identity(void) or Set(fixed16_16_t,fixed16_16_t,fixed16_16_t)
 	
 ***************************************/
 
@@ -194,7 +194,7 @@
 	Make a copy of a FixedVector4D_t
 
 	\param pInput Valid pointer to a FixedVector4D_t structure to copy 
-	\sa Zero(void), Identity(void) or Set(Fixed32,Fixed32,Fixed32,Fixed32)
+	\sa Zero(void), Identity(void) or Set(fixed16_16_t,fixed16_16_t,fixed16_16_t,fixed16_16_t)
 
 ***************************************/
 
@@ -204,13 +204,13 @@
 	\brief Negate a 4D vector
 
 	Set the x,y,z and w values to -x,-y,-z and -w respectively
-	\sa Negate(const FixedVector4D_t *) or Negate(Fixed32,Fixed32,Fixed32,Fixed32)
+	\sa Negate(const FixedVector4D_t *) or Negate(fixed16_16_t,fixed16_16_t,fixed16_16_t,fixed16_16_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::FixedVector4D_t::Negate(Fixed32 fX,Fixed32 fY,Fixed32 fZ,Fixed32 fW)
+	\fn void Burger::FixedVector4D_t::Negate(fixed16_16_t fX,fixed16_16_t fY,fixed16_16_t fZ,fixed16_16_t fW)
 	\brief Negate the input and store it in this structure
 
 	Set the x,y,z and w values to -fX,-fY,-fZ and -fW respectively
@@ -231,7 +231,7 @@
 	Copy the input data and negate it.
 
 	\param pInput Valid pointer to a FixedVector4D_t structure to copy and negate
-	\sa Negate(Fixed32,Fixed32,Fixed32,Fixed32) or Negate(void)
+	\sa Negate(fixed16_16_t,fixed16_16_t,fixed16_16_t,fixed16_16_t) or Negate(void)
 
 ***************************************/
 

@@ -1249,7 +1249,7 @@ float BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::RankDevice(
 
 	// Resolution
 	uint_t bResolutionFound = FALSE;
-	uint_t uBest = BURGER_MAXUINT;
+	uint_t uBest = UINT32_MAX;
 	uintptr_t uBestModeIndex = 0; // Default to the first one
 	uintptr_t uModeCount = m_pAdapterInfo->GetDisplayModeListSize();
 	if (uModeCount) {
@@ -1400,11 +1400,11 @@ Burger::DisplayDirectX9::Enumerator::Enumerator():
 	m_PresentIntervalList(),
 	m_AdapterInfoList(),
 	m_uMinWidth(640),
-	m_uMaxWidth(BURGER_MAXUINT),
+	m_uMaxWidth(UINT32_MAX),
 	m_uMinHeight(480),
-	m_uMaxHeight(BURGER_MAXUINT),
+	m_uMaxHeight(UINT32_MAX),
 	m_uRefreshMin(0),
-	m_uRefreshMax(BURGER_MAXUINT),
+	m_uRefreshMax(UINT32_MAX),
 	m_uMultisampleQualityMax(65535),
 	m_bHasEnumerated(FALSE),
 	m_bRequirePostPixelShaderBlending(TRUE),

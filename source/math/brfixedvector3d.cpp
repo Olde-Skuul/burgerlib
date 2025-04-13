@@ -17,7 +17,7 @@
 /*! ************************************
 
 	\struct Burger::FixedVector3D_t
-	\brief 3D \ref Fixed32 vector.
+	\brief 3D \ref fixed16_16_t vector.
 	
 	This 12 byte structure contains 3 32-bit
 	Fixed point values as a 3D vector.
@@ -36,7 +36,7 @@
 	Fills in all of the entries with zero, thereby
 	initializing the structure to a known state.
 	
-	\sa Set(Fixed32,Fixed32,Fixed32)
+	\sa Set(fixed16_16_t,fixed16_16_t,fixed16_16_t)
 	
 ***************************************/
 
@@ -48,7 +48,7 @@
 	Fills in all of the entries with zero, thereby
 	initializing the structure to a known state.
 	
-	\sa Set(Fixed32,Fixed32,Fixed32)
+	\sa Set(fixed16_16_t,fixed16_16_t,fixed16_16_t)
 	
 ***************************************/
 
@@ -59,7 +59,7 @@
 	
 	\return The x component of the vector.
 	
-	\sa SetX(Fixed32)
+	\sa SetX(fixed16_16_t)
 	
 ***************************************/
 
@@ -70,7 +70,7 @@
 	
 	\return The y component of the vector.
 
-	\sa SetY(Fixed32)
+	\sa SetY(fixed16_16_t)
 	
 ***************************************/
 
@@ -81,13 +81,13 @@
 	
 	\return The z component of the vector.
 
-	\sa SetZ(Fixed32)
+	\sa SetZ(fixed16_16_t)
 	
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::FixedVector3D_t::SetX(Fixed32 fX)
+	\fn Burger::FixedVector3D_t::SetX(fixed16_16_t fX)
 	\brief Set the x component of the vector.
 	
 	\param fX The new x component of the vector.
@@ -98,7 +98,7 @@
 
 /*! ************************************
 
-	\fn Burger::FixedVector3D_t::SetY(Fixed32 fY)
+	\fn Burger::FixedVector3D_t::SetY(fixed16_16_t fY)
 	\brief Set the y component of the vector.
 	
 	\param fY The new y component of the vector.
@@ -109,7 +109,7 @@
 
 /*! ************************************
 
-	\fn Burger::FixedVector3D_t::SetZ(Fixed32 fZ)
+	\fn Burger::FixedVector3D_t::SetZ(fixed16_16_t fZ)
 	\brief Set the z component of the vector.
 	
 	\param fZ The new z component of the vector.
@@ -120,7 +120,7 @@
 
 /*! ************************************
 
-	\fn Burger::FixedVector3D_t::Set(Fixed32 fX,Fixed32 fY,Fixed32 fZ)
+	\fn Burger::FixedVector3D_t::Set(fixed16_16_t fX,fixed16_16_t fY,fixed16_16_t fZ)
 	\brief Initialize the vector elements to specific values,
 	
 	Given the new values for x,y and z, store them into the structure.
@@ -141,7 +141,7 @@
 	Make a copy of a FixedVector3D_t
 
 	\param pInput Valid pointer to a FixedVector3D_t structure to copy 
-	\sa Set(Fixed32,Fixed32,Fixed32) or Zero(void)
+	\sa Set(fixed16_16_t,fixed16_16_t,fixed16_16_t) or Zero(void)
 
 ***************************************/
 
@@ -171,12 +171,12 @@ void BURGER_API Burger::FixedVector3D_t::Set(const Vector3D_t *pInput)
 	
 	Using round to nearest, convert a \ref Vector3D_t 's data into
 	a \ref FixedVector3D_t and the conversion will place integer values
-	in the members instead of performing the float->\ref Fixed32 conversion.
+	in the members instead of performing the float->\ref fixed16_16_t conversion.
 	Saturation is performed. NaN and Infinity will yield undefined results.
 	
 	\param pInput Pointer to an initialized \ref Vector3D_t structure.
 
-	\note If \ref Fixed32 versions of the values are desired, use Set(const Vector3D_t *)
+	\note If \ref fixed16_16_t versions of the values are desired, use Set(const Vector3D_t *)
 	instead.
 	
 	\sa Set(const Vector3D_t *pInput)
@@ -306,11 +306,11 @@ void BURGER_API Burger::FixedVector3D_t::Sub(const FixedVector3D_t *pInput1,cons
 	Perform a dot product with *this and the supplied vector.
 	
 	\param pInput Pointer to a valid \ref FixedVector3D_t
-	\return \ref Fixed32 result of the dot product.
+	\return \ref fixed16_16_t result of the dot product.
 	
 ***************************************/
 
-Fixed32 BURGER_API Burger::FixedVector3D_t::Dot(const FixedVector3D_t *pInput) const
+fixed16_16_t BURGER_API Burger::FixedVector3D_t::Dot(const FixedVector3D_t *pInput) const
 {
 	return (FixedMultiply(x,pInput->x)+
 		FixedMultiply(y,pInput->y)+
@@ -332,9 +332,9 @@ Fixed32 BURGER_API Burger::FixedVector3D_t::Dot(const FixedVector3D_t *pInput) c
 
 void BURGER_API Burger::FixedVector3D_t::Cross(const FixedVector3D_t *pInput1,const FixedVector3D_t *pInput2)
 {
-	Fixed32 fx = FixedMultiply(pInput1->y,pInput2->z) - FixedMultiply(pInput1->z,pInput2->y);
-	Fixed32 fy = FixedMultiply(pInput1->z,pInput2->x) - FixedMultiply(pInput1->x,pInput2->z);
-	Fixed32 fz = FixedMultiply(pInput1->x,pInput2->y) - FixedMultiply(pInput1->y,pInput2->x);
+	fixed16_16_t fx = FixedMultiply(pInput1->y,pInput2->z) - FixedMultiply(pInput1->z,pInput2->y);
+	fixed16_16_t fy = FixedMultiply(pInput1->z,pInput2->x) - FixedMultiply(pInput1->x,pInput2->z);
+	fixed16_16_t fz = FixedMultiply(pInput1->x,pInput2->y) - FixedMultiply(pInput1->y,pInput2->x);
 	x = fx;		// Store after it's complete
 	y = fy;
 	z = fz;

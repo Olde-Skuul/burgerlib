@@ -54,8 +54,8 @@ struct FixedMatrix3D_t {
 	void BURGER_API SetXColumn(const FixedVector3D_t *pInput);
 	void BURGER_API SetYColumn(const FixedVector3D_t *pInput);
 	void BURGER_API SetZColumn(const FixedVector3D_t *pInput);
-	void BURGER_API Multiply(Fixed32 fScale);
-	void BURGER_API Multiply(const FixedMatrix3D_t *pInput,Fixed32 fScale);
+	void BURGER_API Multiply(fixed16_16_t fScale);
+	void BURGER_API Multiply(const FixedMatrix3D_t *pInput,fixed16_16_t fScale);
 };
 extern const FixedMatrix3D_t s_FixedMatrix3DIdentity;
 }

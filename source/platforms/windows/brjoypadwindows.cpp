@@ -1246,7 +1246,7 @@ uint_t BURGER_API Burger::IsDeviceXInput(const GUID* pGuid) BURGER_NOEXCEPT
 
 				// Read in the list and continue if the list has anything
 				if (GetRawInputDeviceList(pList, &uDeviceCount,
-						sizeof(RAWINPUTDEVICELIST)) != BURGER_MAXUINT) {
+						sizeof(RAWINPUTDEVICELIST)) != UINT32_MAX) {
 
 					// Iterate over the list
 
@@ -1265,7 +1265,7 @@ uint_t BURGER_API Burger::IsDeviceXInput(const GUID* pGuid) BURGER_NOEXCEPT
 							UINT uSize = sizeof(RawDeviceInfo);
 							if (GetRawInputDeviceInfoW(pWorkList->hDevice,
 									RIDI_DEVICEINFO, &RawDeviceInfo,
-									&uSize) != BURGER_MAXUINT) {
+									&uSize) != UINT32_MAX) {
 
 								// Is this device a match for the GUID?
 								if ((RawDeviceInfo.hid.dwVendorId ==
@@ -1279,7 +1279,7 @@ uint_t BURGER_API Burger::IsDeviceXInput(const GUID* pGuid) BURGER_NOEXCEPT
 									if (GetRawInputDeviceInfoW(
 											pWorkList->hDevice, RIDI_DEVICENAME,
 											DeviceName,
-											&uSize) != BURGER_MAXUINT) {
+											&uSize) != UINT32_MAX) {
 										// XInput device?
 										if (StringString(DeviceName,
 												(const uint16_t*)L"IG_")) {
