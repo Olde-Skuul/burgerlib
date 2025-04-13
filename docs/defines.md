@@ -181,9 +181,6 @@ Standard defines present on all build targets
 * \ref TRUE 1
 * \ref FALSE 0
 * \ref NULL 0
-* \ref BURGER_MAXINT
-* \ref BURGER_MININT
-* \ref BURGER_MAXUINT
 * \ref BURGER_INLINE Force inlining this function.
 * \ref BURGER_NO_INLINE Disable inlining this function.
 * \ref BURGER_API Burgerlib function call API type (Usually fastcall)
@@ -237,5 +234,7 @@ Handy macros {#sect_handy_macros}
 * \ref nullptr 0 on compilers that don't support this keyword.
 * \ref __underlying_type `int` on compilers that don't support this keyword.
 * \ref BURGER_RVALUE_REFERENCES Test for && operations.
+* \ref BURGER_ADDRESS_SANITIZER Is address sanitization active
+* \ref BURGER_MEMORY_SANITIZER Is memory sanitization active
 * \ref BURGER_HAS_64_BIT_SUPPORT 64 bit integers are supported
 * \ref BURGER_HAS_SFINAE Compiler supports SFINAE

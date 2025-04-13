@@ -50,7 +50,7 @@ public:
 	uint32_t BURGER_API GetEncodedU32(void);
 	uint_t BURGER_API GetWord(uint_t uBitCount);
 	int_t BURGER_API GetInt(uint_t uBitCount);
-	BURGER_INLINE float GetFixedAsFloat(void) { m_uBitsRemaining = 0; return BURGER_FIXED_TO_FLOAT(static_cast<Fixed32>(m_pStream->GetWord32())); }
+	BURGER_INLINE float GetFixedAsFloat(void) { m_uBitsRemaining = 0; return BURGER_FIXED_TO_FLOAT(static_cast<fixed16_16_t>(m_pStream->GetWord32())); }
 	float BURGER_API GetFloat16(void);
 	BURGER_INLINE float GetFloat(void) { m_uBitsRemaining = 0; return m_pStream->GetFloat(); }
 	BURGER_INLINE double GetDouble(void) { m_uBitsRemaining = 0; return m_pStream->GetDouble(); }

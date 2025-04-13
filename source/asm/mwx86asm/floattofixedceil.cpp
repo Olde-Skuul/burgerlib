@@ -6,7 +6,7 @@
 
 	Build with the Metrowerks 9.0 Pro C compiler
 
-	Fixed32 __fastcall float_to_fixed_ceil(float fInput)
+	fixed16_16_t __fastcall float_to_fixed_ceil(float fInput)
 	eax, ecx and edx are volatile
 	Result in eax
 	fInput = [esp+4]
@@ -16,7 +16,7 @@
 #include "brfixedpoint.h"
 #include "brstructs.h"
 
-__declspec(naked) Fixed32 BURGER_API Burger::float_to_fixed_ceil(
+__declspec(naked) fixed16_16_t BURGER_API Burger::float_to_fixed_ceil(
 	float /* fInput */) BURGER_NOEXCEPT
 {
 	// clang-format off

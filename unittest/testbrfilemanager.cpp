@@ -286,18 +286,18 @@ struct IsTests_t {
 static const IsTests_t IsFullTests[] = {
 	{".d3:foo", TRUE, FALSE, FileManager::kPrefixInvalid, 3},
 	{".d31:foo", TRUE, FALSE, FileManager::kPrefixInvalid, 31},
-	{".d:foo", FALSE, TRUE, FileManager::kPrefixInvalid, BURGER_MAXUINT},
-	{":foo:bar", TRUE, FALSE, FileManager::kPrefixInvalid, BURGER_MAXUINT},
-	{".:folder", FALSE, TRUE, FileManager::kPrefixInvalid, BURGER_MAXUINT},
-	{"temp.txt", FALSE, TRUE, FileManager::kPrefixInvalid, BURGER_MAXUINT},
-	{"temp", FALSE, TRUE, FileManager::kPrefixInvalid, BURGER_MAXUINT},
-	{"8:", FALSE, FALSE, 8, BURGER_MAXUINT},
-	{"12:this:is:a:path", FALSE, FALSE, 12, BURGER_MAXUINT},
-	{"20:twenty.txt", FALSE, FALSE, 20, BURGER_MAXUINT},
-	{"8:foo", FALSE, FALSE, 8, BURGER_MAXUINT},
-	{"$:foo", FALSE, FALSE, FileManager::kPrefixSystem, BURGER_MAXUINT},
-	{"@:foo", FALSE, FALSE, FileManager::kPrefixPrefs, BURGER_MAXUINT},
-	{"*:foo", FALSE, FALSE, FileManager::kPrefixBoot, BURGER_MAXUINT}};
+	{".d:foo", FALSE, TRUE, FileManager::kPrefixInvalid, UINT32_MAX},
+	{":foo:bar", TRUE, FALSE, FileManager::kPrefixInvalid, UINT32_MAX},
+	{".:folder", FALSE, TRUE, FileManager::kPrefixInvalid, UINT32_MAX},
+	{"temp.txt", FALSE, TRUE, FileManager::kPrefixInvalid, UINT32_MAX},
+	{"temp", FALSE, TRUE, FileManager::kPrefixInvalid, UINT32_MAX},
+	{"8:", FALSE, FALSE, 8, UINT32_MAX},
+	{"12:this:is:a:path", FALSE, FALSE, 12, UINT32_MAX},
+	{"20:twenty.txt", FALSE, FALSE, 20, UINT32_MAX},
+	{"8:foo", FALSE, FALSE, 8, UINT32_MAX},
+	{"$:foo", FALSE, FALSE, FileManager::kPrefixSystem, UINT32_MAX},
+	{"@:foo", FALSE, FALSE, FileManager::kPrefixPrefs, UINT32_MAX},
+	{"*:foo", FALSE, FALSE, FileManager::kPrefixBoot, UINT32_MAX}};
 
 static uint_t BURGER_API TestFilenameIs(void) BURGER_NOEXCEPT
 {
@@ -1420,7 +1420,7 @@ static uint_t BURGER_API TestDirectorySearch(uint_t uVerbose) BURGER_NOEXCEPT
 	const DirectoryTests_t* pDirTests = g_DirectoryFiles;
 	do {
 		HitTable[i] = FALSE;
-		DirTable[i] = BURGER_MAXUINT;
+		DirTable[i] = UINT32_MAX;
 		Filename TestName("20:");
 		TestName.join(pDirTests->m_pName);
 		if (pDirTests->m_uDir) {

@@ -72,7 +72,7 @@ static uint_t TestFileXML(void) BURGER_NOEXCEPT
 					pElement->ElementGetWord("DropoffMode", FALSE, 0, 1);
 				uint_t LowResolutionMode =
 					pElement->ElementGetWord("LowResolutionMode", FALSE, 0, 1);
-				Fixed32 MouseSpeed = BURGER_FLOAT_TO_FIXED(pElement->ElementGetFloat(
+					fixed16_16_t MouseSpeed = BURGER_FLOAT_TO_FIXED(pElement->ElementGetFloat(
 					"MouseSpeed", 1.0f, 0.001f, 999999.0f));
 				uint_t BoolVal = pElement->ElementGetBoolean("Boolean", FALSE);
 				pElement->ElementSetWord("FireRateEvent", 666);
@@ -129,7 +129,7 @@ static uint_t TestFileINI(void) BURGER_NOEXCEPT
 					pSection->GetWord("DropoffMode", FALSE, 0, 1);
 				uint_t LowResolutionMode =
 					pSection->GetWord("LowResolutionMode", FALSE, 0, 1);
-				Fixed32 MouseSpeed = BURGER_FLOAT_TO_FIXED(
+					fixed16_16_t MouseSpeed = BURGER_FLOAT_TO_FIXED(
 					pSection->GetFloat("MouseSpeed", 1.0f, 0.001f, 999999.0f));
 				uint_t BoolVal = pSection->GetBoolean("Boolean", FALSE);
 				pSection->SetWord("FireRateEvent", 666);

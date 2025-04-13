@@ -1313,8 +1313,8 @@ void Burger::Rect_t::Clip(const Rect_t* pInput) BURGER_NOEXCEPT
 void BURGER_API LBRectMapPoint(LBPoint *Output,const LBRect *SrcBoundsRect,
 	const LBRect *DestBoundsRect,const Burger::Point2D_t *Input)
 {
-	Fixed32 WidthRatio;
-	Fixed32 HeightRatio;
+	fixed16_16_t WidthRatio;
+	fixed16_16_t HeightRatio;
 	
 	/* First thing i do is get the ratios between the width and heigths */
 	/* of the two bounds rects */
@@ -1351,8 +1351,8 @@ void BURGER_API LBRectMapPoint(LBPoint *Output,const LBRect *SrcBoundsRect,
 void BURGER_API LBRectMapRect(LBRect *Output,const LBRect *SrcBoundsRect,
 	const LBRect *DestBoundsRect,const LBRect *Input)
 {
-	Fixed32 WidthRatio;
-	Fixed32 HeightRatio;
+	fixed16_16_t WidthRatio;
+	fixed16_16_t HeightRatio;
 	
 	/* First thing i do is get the ratios between the width and heigths */
 	/* of the two bounds rects */

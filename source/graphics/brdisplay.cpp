@@ -1495,7 +1495,7 @@ void BURGER_API Burger::Display::FadeTo(
 
 		{
 			// Palette scale temp 0.0-1.0
-			Fixed32 fScale;
+			fixed16_16_t fScale;
 			// Initialize the callback constant
 			uint_t LastCall = 0;
 
@@ -1508,8 +1508,8 @@ void BURGER_API Burger::Display::FadeTo(
 				m_pGameApp->Poll();
 
 				// Get elapsed time
-				fScale = static_cast<Fixed32>(Tick::read() - uMark);
-				fScale = fScale * (0x10000 / static_cast<Fixed32>(uTotalTicks));
+				fScale = static_cast<fixed16_16_t>(Tick::read() - uMark);
+				fScale = fScale * (0x10000 / static_cast<fixed16_16_t>(uTotalTicks));
 				if (fScale > 0x10000) { // Overflow?
 					fScale = 0x10000;   // Cap at 1.0f fixed
 				}
@@ -1518,7 +1518,7 @@ void BURGER_API Burger::Display::FadeTo(
 				int* pDelta = DeltaPalette;
 				do {
 					// Get a delta
-					Fixed32 Foo = pDelta[0];
+					fixed16_16_t Foo = pDelta[0];
 					// Scale the delta by 0.0 to 1.0
 					Foo = Foo * fScale;
 					// Div by 16 (Signed) (Result is -255 to 255)

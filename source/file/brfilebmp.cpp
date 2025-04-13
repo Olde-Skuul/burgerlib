@@ -173,7 +173,7 @@ void BURGER_API Burger::FileBMP::CompressRLE8(OutputMemoryStream* pOutput,
 
 	// Send the End of Page or End of Line token
 
-	bSendEOP = (bSendEOP == TRUE); // Line = 1 for EOP (Force Bool)
+	bSendEOP = (bSendEOP == TRUE); // Line = 1 for EOP (Force uint8_t)
 	TempBuffer[uCount] = 0;        // END token
 	++uCount;
 	TempBuffer[uCount] = static_cast<uint8_t>(bSendEOP); // EOL or EOP (0 or 1)

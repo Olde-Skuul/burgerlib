@@ -6,7 +6,7 @@
 
 	Build with the Metrowerks 9.0 Pro C compiler
 
-	void __fastcall float_to_fixed_ceil(Fixed32* pOutput, float fInput)
+	void __fastcall float_to_fixed_ceil(fixed16_16_t* pOutput, float fInput)
 	eax, ecx and edx are volatile
 	Result in 8087 FPU
 	ecx = pOutput
@@ -18,7 +18,7 @@
 #include "brstructs.h"
 
 __declspec(naked) void BURGER_API Burger::float_to_fixed_ceil(
-	Fixed32* /* pOutput */, float /* fInput */) BURGER_NOEXCEPT
+	fixed16_16_t* /* pOutput */, float /* fInput */) BURGER_NOEXCEPT
 {
 	// clang-format off
 	asm {

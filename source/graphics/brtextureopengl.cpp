@@ -82,7 +82,7 @@ Burger::Texture::Texture() :
 	m_eWrappingT(WRAP_REPEAT),
 	m_eMinFilter(FILTER_NEAREST),
 	m_eMagFilter(FILTER_NEAREST),
-	m_uDirty(BURGER_MAXUINT)
+	m_uDirty(UINT32_MAX)
 {
 }
 
@@ -95,7 +95,7 @@ Burger::Texture::Texture(eWrapping uWrapping,eFilter uFilter) :
 	m_eWrappingT(uWrapping),
 	m_eMinFilter(uFilter),
 	m_eMagFilter(uFilter),
-	m_uDirty(BURGER_MAXUINT)
+	m_uDirty(UINT32_MAX)
 {
 }
 #endif
@@ -255,7 +255,7 @@ void Burger::TextureOpenGL::Release(Display * /*pDisplay */)
 		glDeleteTextures(1,&uID);
 		m_uTextureID = 0;
 	}
-	m_uDirty = BURGER_MAXUINT;
+	m_uDirty = UINT32_MAX;
 }
 
 

@@ -316,7 +316,7 @@ uint_t BURGER_API Burger::FileManager::get_volume_number(
 #endif
 
 	// Assume failure
-	uint_t uResult = BURGER_MAXUINT;
+	uint_t uResult = UINT32_MAX;
 	Filename TempFilename;
 	do {
 		// Convert to name

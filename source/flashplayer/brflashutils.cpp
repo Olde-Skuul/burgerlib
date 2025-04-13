@@ -482,15 +482,15 @@ void Burger::Flash::BaseExecute::ExecuteStateReverse(Flash::CharacterObject *pOb
 	If there is an ID, return the depth of recursion in the upper
 	16 bit and the ID in the lower 16 bits.
 
-	Return \ref BURGER_MAXUINT this value is not applicable.
+	Return UINT32_MAX this value is not applicable.
 
-	\return Depth in the upper 16 bits, ID in the lower 16 bits or \ref BURGER_MAXUINT
+	\return Depth in the upper 16 bits, ID in the lower 16 bits or UINT32_MAX
 
 ***************************************/
 
 uint32_t Burger::Flash::BaseExecute::GetDepthIDOfReplaceOrAddTag(void) const 
 {
-	return BURGER_MAXUINT; 
+	return UINT32_MAX; 
 }
 
 /*! ************************************

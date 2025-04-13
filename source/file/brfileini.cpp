@@ -62,6 +62,8 @@
 ***************************************/
 
 Burger::FileINI::Generic::Generic(eType uType) : 
+	// "this" pointer used in initializer
+	BURGER_MSVC_SUPPRESS(4355)
 	m_Link(this),			// Initialize the linked list parent
 	m_eType(uType)			// Set the type
 {

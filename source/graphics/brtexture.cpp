@@ -108,7 +108,7 @@ Burger::Texture::Texture() :
 	m_eWrappingT(WRAP_REPEAT),
 	m_eMinFilter(FILTER_NEAREST),
 	m_eMagFilter(FILTER_NEAREST),
-	m_uDirty(BURGER_MAXUINT)
+	m_uDirty(UINT32_MAX)
 {
 }
 
@@ -130,7 +130,7 @@ Burger::Texture::Texture(eWrapping uWrapping,eFilter uFilter) :
 	m_eWrappingT(uWrapping),
 	m_eMinFilter(uFilter),
 	m_eMagFilter(uFilter),
-	m_uDirty(BURGER_MAXUINT)
+	m_uDirty(UINT32_MAX)
 {
 }
 
@@ -182,7 +182,7 @@ uint_t Burger::Texture::CheckLoad(Display * /*pDisplay */)
 
 void Burger::Texture::Release(Display * /*pDisplay */)
 {
-	m_uDirty = BURGER_MAXUINT;
+	m_uDirty = UINT32_MAX;
 }
 #endif
 #endif

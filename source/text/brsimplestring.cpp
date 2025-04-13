@@ -1,14 +1,14 @@
 /***************************************
 
-    Simple String Manager
+	Simple String Manager
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -20,7 +20,7 @@
 
 	\class Burger::SimpleString
 	\brief Simple "C" string container.
-	
+
 	Most times, an application or class needs to store a copy of
 	a string of unknown length. This class will take a string, allocate
 	memory to hold it and make a copy so the application doesn't
@@ -483,95 +483,95 @@ Burger::SimpleString & Burger::SimpleString::operator = (const Burger::SimpleStr
 
 	\fn Burger::SimpleString::operator const char *() const
 	\brief Convert a Burger::SimpleString into a const char *.
-	
+
 	Most functions passed a Burger::SimpleString will want
 	a const char * instead. This inline accessor will allow access
 	to the contained string.
-	
+
 	\note It is not advised to cast away the const and modify the string.
 	You can do this on a non-empty string as long as you do not attempt
 	to write past the terminating zero.
-	
+
 	\return A pointer to the contained "C" string. Modify with caution.
-			
+
 	\sa Burger::SimpleString::GetPtr(void) const.
-	
+
 ***************************************/
 
 /*! ************************************
 
 	\fn const char *Burger::SimpleString::GetPtr(void) const
 	\brief Convert a Burger::SimpleString into a const char *.
-	
+
 	Most functions passed a Burger::SimpleString will want
 	a const char * instead. This inline accessor will allow access
 	to the contained string.
-	
+
 	\note It is not advised to cast away the const and modify the string.
 	You can do this on a non-empty string as long as you do not attempt
 	to write past the terminating zero.
-			
+
 	\return A pointer to the contained "C" string. Modify with caution.
-			
+
 	\sa Burger::SimpleString::operator char*() const.
-	
+
 ***************************************/
 
 /*! ************************************
 
 	\fn char Burger::SimpleString::operator[](uintptr_t uIndex) const
 	\brief Access a character inside of the string.
-	
-	Returns a single character inside the string by using 
+
+	Returns a single character inside the string by using
 	a supplied index.
-	
+
 	\note No bounds checking is done. It's possible for you to access
 	invalid data. Make sure that your index is valid before accessing
 	the string in this manner.
-			
-	\param uIndex Index into the string, 0 to less than Burger::SimpleString::GetLength(void) const.
-	\return Character at the supplied index.
-	\sa Burger::SimpleString::operator[](uintptr_t)
-	
+
+	\param uIndex Index into the string, 0 to less than
+Burger::SimpleString::GetLength(void) const. \return Character at the supplied
+index. \sa Burger::SimpleString::operator[](uintptr_t)
+
 ***************************************/
 
 /*! ************************************
 
 	\fn const char &Burger::SimpleString::operator[](uintptr_t uIndex)
 	\brief Access a character reference inside of the string.
-	
-	Returns a reference to a single character inside the string by using 
+
+	Returns a reference to a single character inside the string by using
 	a supplied index.
-	
+
 	\note No bounds checking is done. It's possible for you to access
 	invalid data. Make sure that your index is valid before accessing
 	the string in this manner.
-	
-	\param uIndex Index into the string, 0 to less than Burger::SimpleString::GetLength(void) const.
-	\return Character reference at the supplied index.
-	\sa Burger::SimpleString::operator[](uintptr_t) const
-	
+
+	\param uIndex Index into the string, 0 to less than
+Burger::SimpleString::GetLength(void) const. \return Character reference at the
+supplied index. \sa Burger::SimpleString::operator[](uintptr_t) const
+
 ***************************************/
 
 /*! ************************************
 
 	\brief Force the assignment of an empty string.
-	
+
 	Dispose of the previous string and assign
 	the global Burger::g_EmptyString ("") as the string. This
 	has the effect of releasing all used memory and
 	this instance having an empty string.
-	
+
 	\sa Burger::SimpleString::IsEmpty(void) const
-	
+
 ***************************************/
 
 void Burger::SimpleString::Clear(void)
 {
-	const char *pData = m_pData;
-	if (pData!=g_EmptyString) {
-		m_pData = g_EmptyString;		// Set to empty
-		Free(pData);					// Dispose of the memory
+	const char* pData = m_pData;
+	if (pData != g_EmptyString) {
+		m_pData = g_EmptyString; // Set to empty
+		Free(pData);             // Dispose of the memory
 	}
 }
 
@@ -579,32 +579,34 @@ void Burger::SimpleString::Clear(void)
 
 	\fn uint_t Burger::SimpleString::IsEmpty(void) const
 	\brief Determine if a string is empty.
-	
+
 	Return \ref TRUE if the string is only a terminating zero
 	and nothing else. \ref FALSE is returned if the string has
 	any data inside.
-		
+
 	\return \ref TRUE if the string is an empty one, \ref FALSE if it isn't.
-	\sa Burger::SimpleString::GetLength(void) const or Burger::SimpleString::Clear(void)
-	
+	\sa Burger::SimpleString::GetLength(void) const or
+Burger::SimpleString::Clear(void)
+
 ***************************************/
 
 /*! ************************************
 
 	\fn uintptr_t Burger::SimpleString::GetLength(void) const
 	\brief Return the length of the string in bytes.
-	
+
 	Return the length (in bytes) of the "C" string contained
 	inside of this class. The terminating zero will not count
 	towards the total. The length is the same as if you called
 	Burger::StringLength(const char *) on the "C" string.
-	
+
 	\note It isn't recommended to use this member function in
 	a bottleneck routine because the length is calculated and
 	not cached.
-	
-	\return The length of the "C" string in bytes (Without counting the terminating zero).
-	
+
+	\return The length of the "C" string in bytes (Without counting the
+terminating zero).
+
 	\sa Burger::SimpleString::IsEmpty(void) const
-	
+
 ***************************************/

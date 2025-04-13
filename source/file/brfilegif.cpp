@@ -279,7 +279,7 @@ void Burger::GIFEncoder::ClearHash(void)
 	uint_t *pWork = m_HashTable;
 	uintptr_t uCounter = BURGER_ARRAYSIZE(m_HashTable);
 	do {
-		pWork[0] = BURGER_MAXUINT;
+		pWork[0] = UINT32_MAX;
 		++pWork;
 	} while (--uCounter);
 }
@@ -289,10 +289,10 @@ void Burger::GIFEncoder::ClearHash(void)
 	\brief Given a code, create a hash index
 	
 	Scan the hash table for a LZW token or return 
-	\ref BURGER_MAXUINT if there is no matching entry.
+	UINT32_MAX if there is no matching entry.
 
 	\param uInput Encoded pixel and previous pixel
-	\return \ref BURGER_MAXUINT on error or a valid 12 bit hash index
+	\return UINT32_MAX on error or a valid 12 bit hash index
 
 ***************************************/
 
@@ -304,9 +304,9 @@ uint_t Burger::GIFEncoder::LookupHash(uint_t uInput)
 	for (;;) {
 		// Is this a valid entry?
 		uint_t uKey = GetKey(m_HashTable[uHashKey]);
-		if (uKey == (BURGER_MAXUINT>>cLZBits)) {
+		if (uKey == (UINT32_MAX>>cLZBits)) {
 			// Not in the hash
-			uResult = BURGER_MAXUINT;	
+			uResult = UINT32_MAX;	
 			break;
 		}
 		// Match?
@@ -337,7 +337,7 @@ void Burger::GIFEncoder::AddHashEntry(uint_t uKey,uint_t uCode)
 {
 	uint_t uHashKey = GetHashKey(uKey);
 
-	while (GetKey(m_HashTable[uHashKey]) != (BURGER_MAXUINT>>cLZBits)) {
+	while (GetKey(m_HashTable[uHashKey]) != (UINT32_MAX>>cLZBits)) {
 		// Keep going while wrapping around
 		uHashKey = (uHashKey+1) & cHashKeyMask;
 	}
@@ -482,7 +482,7 @@ void Burger::GIFEncoder::WritePixels(const uint8_t *pInput,uintptr_t uInputLengt
 			// Create a hash key based on the current pixel and the previous one
 			uint_t uKey = (uCurrentCode << 8U) + uPixel;
 			uint_t uHashCode = LookupHash(uKey);
-			if (uHashCode != BURGER_MAXUINT) {
+			if (uHashCode != UINT32_MAX) {
 				// Key is found!
 				uCurrentCode = uHashCode;
 			} else {

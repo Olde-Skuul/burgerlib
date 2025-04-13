@@ -106,131 +106,131 @@ uint32_t BURGER_API Burger::AsciiToInteger(
 				if (pDest) {
 					// Skip past trailing white space
 
-                    if (uAscii10 == ' ' || uAscii10 == '\t') {
-                        do {
-                            ++pInput;
-                            // Remove whitespace
-                            uAscii10 =
-                                reinterpret_cast<const uint8_t*>(pInput)[0];
-                        } while ((uAscii10 == ' ') || (uAscii10 == '\t'));
-                    }
-                    pDest[0] = pInput; // Store the ASCII address
-                }
-                return uValue10; // Return the result
-            }
-            return 0; // No input, error
-        }
-    }
+					if (uAscii10 == ' ' || uAscii10 == '\t') {
+						do {
+							++pInput;
+							// Remove whitespace
+							uAscii10 =
+								reinterpret_cast<const uint8_t*>(pInput)[0];
+						} while ((uAscii10 == ' ') || (uAscii10 == '\t'));
+					}
+					pDest[0] = pInput; // Store the ASCII address
+				}
+				return uValue10; // Return the result
+			}
+			return 0; // No input, error
+		}
+	}
 
-    // Base 16
+	// Base 16
 
-    {
-        uint32_t uValue16 =
-            g_AsciiToWord8Table[reinterpret_cast<const uint8_t*>(pInput)[0]];
-        if (uValue16 < 16) {
-            ++pInput;
-            uint_t uAscii16 = reinterpret_cast<const uint8_t*>(pInput)[0];
-            uLetter = g_AsciiToWord8Table[uAscii16];
-            if (uLetter < 16) { // Second char valid?
-                do {
-                    ++pInput;
-                    if (uValue16 >= 0x10000000) {
-                        return 0xFFFFFFFFU; // Tilt
-                    }
-                    uValue16 = (uValue16 << 4) + uLetter;
-                    // Convert char to value
-                    uAscii16 = reinterpret_cast<const uint8_t*>(pInput)[0];
-                    uLetter = g_AsciiToWord8Table[uAscii16];
-                } while (uLetter < 16);
-            }
+	{
+		uint32_t uValue16 =
+			g_AsciiToWord8Table[reinterpret_cast<const uint8_t*>(pInput)[0]];
+		if (uValue16 < 16) {
+			++pInput;
+			uint_t uAscii16 = reinterpret_cast<const uint8_t*>(pInput)[0];
+			uLetter = g_AsciiToWord8Table[uAscii16];
+			if (uLetter < 16) { // Second char valid?
+				do {
+					++pInput;
+					if (uValue16 >= 0x10000000) {
+						return 0xFFFFFFFFU; // Tilt
+					}
+					uValue16 = (uValue16 << 4) + uLetter;
+					// Convert char to value
+					uAscii16 = reinterpret_cast<const uint8_t*>(pInput)[0];
+					uLetter = g_AsciiToWord8Table[uAscii16];
+				} while (uLetter < 16);
+			}
 
-            // Perform negation?
-            uValue16 = (uValue16 ^ uNegate) - uNegate;
+			// Perform negation?
+			uValue16 = (uValue16 ^ uNegate) - uNegate;
 
-            // Does the caller want the end address?
+			// Does the caller want the end address?
 
-            if (pDest) {
-                // Skip past trailing white space
+			if (pDest) {
+				// Skip past trailing white space
 
-                if (uAscii16 == ' ' || uAscii16 == '\t') {
-                    do {
-                        ++pInput;
-                        uAscii16 = reinterpret_cast<const uint8_t*>(
-                            pInput)[0]; // Remove whitespace
-                    } while ((uAscii16 == ' ') || (uAscii16 == '\t'));
-                }
-                pDest[0] = pInput; // Store the ASCII address
-            }
-            return uValue16; // Return the result
-        }
-    }
-    return 0; // Bad value
+				if (uAscii16 == ' ' || uAscii16 == '\t') {
+					do {
+						++pInput;
+						uAscii16 = reinterpret_cast<const uint8_t*>(
+							pInput)[0]; // Remove whitespace
+					} while ((uAscii16 == ' ') || (uAscii16 == '\t'));
+				}
+				pDest[0] = pInput; // Store the ASCII address
+			}
+			return uValue16; // Return the result
+		}
+	}
+	return 0; // Bad value
 }
 
 /*! ************************************
 
-    \brief Return a signed integer value
+	\brief Return a signed integer value
 
-    Scan the value string as a 32 bit signed integer or hex value and if
-    successful, test it against the valid range and return the value clamped to
-    that range. If it's not a number, return the default.
+	Scan the value string as a 32 bit signed integer or hex value and if
+	successful, test it against the valid range and return the value clamped to
+	that range. If it's not a number, return the default.
 
-    Hex strings are acceptable input in the form of $1234 and 0x1234. 0xFFFFFFFF
-    will be converted to -1.
+	Hex strings are acceptable input in the form of $1234 and 0x1234. 0xFFFFFFFF
+	will be converted to -1.
 
-    \param pInput Pointer to the string to convert. nullptr will force the
-        default
-    \param iDefault Value to return on error
-    \param iMin Minimum acceptable value
-    \param iMax Maximum acceptable value
+	\param pInput Pointer to the string to convert. nullptr will force the
+		default
+	\param iDefault Value to return on error
+	\param iMin Minimum acceptable value
+	\param iMax Maximum acceptable value
 
-    \return Value in between iMin and iMax or iDefault
+	\return Value in between iMin and iMax or iDefault
 
-    \sa AsciiToInteger(const char *,const char **) or AsciiToWord(const char
-        *,uint_t,uint_t,uint_t)
+	\sa AsciiToInteger(const char *,const char **) or AsciiToWord(const char
+		*,uint_t,uint_t,uint_t)
 
 ***************************************/
 
 int_t BURGER_API Burger::AsciiToInteger(
-    const char* pInput, int_t iDefault, int_t iMin, int_t iMax) BURGER_NOEXCEPT
+	const char* pInput, int_t iDefault, int_t iMin, int_t iMax) BURGER_NOEXCEPT
 {
-    if (pInput) {
-        const char* pDest;
-        // Parse as signed
-        const int_t iValue = static_cast<int_t>(AsciiToInteger(pInput, &pDest));
-        if (pDest != pInput) {
-            // Do a signed bounds check
-            if (iValue < iMin) {
-                iDefault = iMin;
-            } else if (iValue > iMax) {
-                iDefault = iMax;
-            } else {
-                iDefault = iValue;
-            }
-        }
-    }
-    return iDefault;
+	if (pInput) {
+		const char* pDest;
+		// Parse as signed
+		const int_t iValue = static_cast<int_t>(AsciiToInteger(pInput, &pDest));
+		if (pDest != pInput) {
+			// Do a signed bounds check
+			if (iValue < iMin) {
+				iDefault = iMin;
+			} else if (iValue > iMax) {
+				iDefault = iMax;
+			} else {
+				iDefault = iValue;
+			}
+		}
+	}
+	return iDefault;
 }
 
 /*! ************************************
 
-    \brief Convert a 32 bit integer and signal if successful
+	\brief Convert a 32 bit integer and signal if successful
 
-    Scan the value string as a 32 bit integer or hex value and if successful,
-    return \ref TRUE.
+	Scan the value string as a 32 bit integer or hex value and if successful,
+	return \ref TRUE.
 
-    Hex strings are acceptable input in the form of $1234 and 0x1234. 0xFFFFFFFF
-    will be converted to -1.
+	Hex strings are acceptable input in the form of $1234 and 0x1234. 0xFFFFFFFF
+	will be converted to -1.
 
-    \param pOutput Pointer to the value to return
-    \param pInput Pointer to the string to convert. nullptr will force the
-        default
+	\param pOutput Pointer to the value to return
+	\param pInput Pointer to the string to convert. nullptr will force the
+		default
 
-    \return \ref TRUE if a value was parsed, \ref FALSE if the ASCII string
-        was not a number
+	\return \ref TRUE if a value was parsed, \ref FALSE if the ASCII string
+		was not a number
 
-    \sa AsciiToInteger(const char *,const char **) or AsciiToInteger(const
-        char *,int_t,int_t,int_t)
+	\sa AsciiToInteger(const char *,const char **) or AsciiToInteger(const
+		char *,int_t,int_t,int_t)
 
 ***************************************/
 

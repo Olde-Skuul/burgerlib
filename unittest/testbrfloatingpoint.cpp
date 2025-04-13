@@ -78,6 +78,9 @@ static BURGER_CONSTEXPR const uint32_t g_fPi = 0x40490FDBU;
 // rely on these tests passing.
 //
 
+// Overflow in constant arithmetic
+BURGER_MSVC_SUPPRESS(4756)
+
 static uint_t BURGER_API TestFPConsts(void) BURGER_NOEXCEPT
 {
 	union {
@@ -1273,7 +1276,7 @@ static uint_t BURGER_API TestIntToFloat(void) BURGER_NOEXCEPT
 }
 
 //
-// Test fixed_to_float(float *,const Fixed32 *)
+// Test fixed_to_float(float *,const fixed16_16_t *)
 //
 
 static const Burger::uint32_float_t FixedToFloatArray[][2] = {

@@ -29,7 +29,7 @@ extern int_t BURGER_API AsciiToInteger(const char* pInput, int_t iDefault,
 extern uint_t BURGER_API AsciiToInteger(
 	uint32_t* pOutput, const char* pInput) BURGER_NOEXCEPT;
 extern uint_t BURGER_API AsciiToWord(const char* pInput, uint_t uDefault,
-	uint_t uMin = 0, uint_t uMax = BURGER_MAXUINT) BURGER_NOEXCEPT;
+	uint_t uMin = 0, uint_t uMax = UINT32_MAX) BURGER_NOEXCEPT;
 extern uint64_t BURGER_API AsciiToInteger64(
 	const char* pInput, const char** pDest = nullptr) BURGER_NOEXCEPT;
 extern int64_t BURGER_API AsciiToInteger64(const char* pInput, int64_t iDefault,
@@ -37,7 +37,7 @@ extern int64_t BURGER_API AsciiToInteger64(const char* pInput, int64_t iDefault,
 extern uint_t BURGER_API AsciiToInteger64(
 	uint64_t* pOutput, const char* pInput) BURGER_NOEXCEPT;
 extern uint64_t BURGER_API AsciiToWord64(const char* pInput, uint64_t uDefault,
-	uint64_t uMin = 0, uint64_t uMax = BURGER_MAXUINT64) BURGER_NOEXCEPT;
+	uint64_t uMin = 0, uint64_t uMax = UINT64_MAX) BURGER_NOEXCEPT;
 extern float BURGER_API AsciiToFloat(
 	const char* pInput, const char** pDest = nullptr) BURGER_NOEXCEPT;
 extern double BURGER_API AsciiToDouble(

@@ -343,15 +343,15 @@ public:
 	void BURGER_API SetTrueFalse(uint_t bInput) BURGER_NOEXCEPT;
 	void BURGER_API SetYesNo(uint_t bInput) BURGER_NOEXCEPT;
 	BURGER_INLINE uint_t GetWord(uint_t uDefault, uint_t uMin = 0,
-		uint_t uMax = BURGER_MAXUINT) const BURGER_NOEXCEPT
+		uint_t uMax = UINT32_MAX) const BURGER_NOEXCEPT
 	{
 		return AsciiToWord(m_pData, uDefault, uMin, uMax);
 	}
 	void BURGER_API SetWord(uint_t uInput) BURGER_NOEXCEPT;
 	void BURGER_API SetWordHex(uint_t uInput) BURGER_NOEXCEPT;
 	BURGER_INLINE int_t GetInt(int_t iDefault,
-		int_t iMin = (-BURGER_MAXINT) - 1,
-		int_t iMax = BURGER_MAXINT) const BURGER_NOEXCEPT
+		int_t iMin = INT32_MIN,
+		int_t iMax = INT32_MAX) const BURGER_NOEXCEPT
 	{
 		return AsciiToInteger(m_pData, iDefault, iMin, iMax);
 	}

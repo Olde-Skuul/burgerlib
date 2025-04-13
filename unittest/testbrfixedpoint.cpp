@@ -47,8 +47,8 @@ struct IntTest32_t {
 };
 
 struct FixedTest32_t {
-	Fixed32 m_iInput;  // Source value
-	Fixed32 m_iOutput; // Expected output
+	fixed16_16_t m_iInput;  // Source value
+	fixed16_16_t m_iOutput; // Expected output
 };
 
 struct IntTest64_t {
@@ -1005,7 +1005,7 @@ static uint_t BURGER_API TestSqrt32(void) BURGER_NOEXCEPT
 }
 
 //
-// Test SqrtFixedToWord32(Fixed32)
+// Test SqrtFixedToWord32(fixed16_16_t)
 //
 
 static const FixedTest32_t SqrtFixedToWord32TestTable[] = {
@@ -1033,7 +1033,7 @@ static uint_t BURGER_API TestSqrtFixedToWord32(void) BURGER_NOEXCEPT
 		const uint_t uTest = uReturn != static_cast<uint32_t>(pWork->m_iOutput);
 		uFailure |= uTest;
 		ReportFailure(
-			"Burger::SqrtFixedToWord32((Fixed32)0x%08X) = 0x%08X, expected 0x%08X",
+			"Burger::SqrtFixedToWord32((fixed16_16_t)0x%08X) = 0x%08X, expected 0x%08X",
 			uTest, pWork->m_iInput, uReturn, pWork->m_iOutput);
 		++pWork;
 	} while (--uCount);
@@ -1041,7 +1041,7 @@ static uint_t BURGER_API TestSqrtFixedToWord32(void) BURGER_NOEXCEPT
 }
 
 //
-// Test square_root(Fixed32)
+// Test square_root(fixed16_16_t)
 //
 
 static const FixedTest32_t SqrtFixed32TestTable[] = {{0x00000000, 0x00000000},
@@ -1068,11 +1068,11 @@ static uint_t BURGER_API TestSqrtFixed32(void) BURGER_NOEXCEPT
 	const FixedTest32_t* pWork = SqrtFixed32TestTable;
 	uintptr_t uCount = BURGER_ARRAYSIZE(SqrtFixed32TestTable);
 	do {
-		const Fixed32 iReturn = Burger::square_root(pWork->m_iInput);
+		const fixed16_16_t iReturn = Burger::square_root(pWork->m_iInput);
 		const uint_t uTest = iReturn != pWork->m_iOutput;
 		uFailure |= uTest;
 		ReportFailure(
-			"Burger::square_root((Fixed32)0x%08X) = 0x%08X, expected 0x%08X",
+			"Burger::square_root((fixed16_16_t)0x%08X) = 0x%08X, expected 0x%08X",
 			uTest, pWork->m_iInput, iReturn, pWork->m_iOutput);
 		++pWork;
 	} while (--uCount);

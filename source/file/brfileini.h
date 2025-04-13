@@ -106,10 +106,10 @@ public:
 		BURGER_INLINE void SetValue(const String *pInput) { m_Value = pInput[0]; }
 		uint_t BURGER_API GetBoolean(uint_t bDefault) const;
 		void BURGER_API SetBoolean(uint_t bValue);
-		uint_t BURGER_API GetWord(uint_t uDefault,uint_t uMin=0,uint_t uMax=BURGER_MAXUINT) const;
+		uint_t BURGER_API GetWord(uint_t uDefault,uint_t uMin=0,uint_t uMax=UINT32_MAX) const;
 		void BURGER_API SetWord(uint_t uValue);
 		void BURGER_API SetWordHex(uint_t uValue);
-		int_t BURGER_API GetInt(int_t iDefault,int_t iMin=(-BURGER_MAXINT)-1,int_t iMax=BURGER_MAXINT) const;
+		int_t BURGER_API GetInt(int_t iDefault,int_t iMin=INT32_MIN,int_t iMax=INT32_MAX) const;
 		void BURGER_API SetInt(int_t iValue);
 		float BURGER_API GetFloat(float fDefault,float fMin,float fMax) const;
 		void BURGER_API SetFloat(float fValue);
@@ -141,10 +141,10 @@ public:
 		void BURGER_API SetValue(const char *pKey,const String *pInput);
 		uint_t BURGER_API GetBoolean(const char *pKey,uint_t bDefault) const;
 		void BURGER_API SetBoolean(const char *pKey,uint_t bValue);
-		uint_t BURGER_API GetWord(const char *pKey,uint_t uDefault,uint_t uMin=0,uint_t uMax=BURGER_MAXUINT) const;
+		uint_t BURGER_API GetWord(const char *pKey,uint_t uDefault,uint_t uMin=0,uint_t uMax=UINT32_MAX) const;
 		void BURGER_API SetWord(const char *pKey,uint_t uValue);
 		void BURGER_API SetWordHex(const char *pKey,uint_t uValue);
-		int_t BURGER_API GetInt(const char *pKey,int_t iDefault,int_t iMin=(-BURGER_MAXINT)-1,int_t iMax=BURGER_MAXINT) const;
+		int_t BURGER_API GetInt(const char *pKey,int_t iDefault,int_t iMin=INT32_MIN,int_t iMax=INT32_MAX) const;
 		void BURGER_API SetInt(const char *pKey,int_t iValue);
 		float BURGER_API GetFloat(const char *pKey,float fDefault,float fMin,float fMax) const;
 		void BURGER_API SetFloat(const char *pKey,float fValue);

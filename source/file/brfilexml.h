@@ -165,10 +165,10 @@ public:
 		BURGER_INLINE void SetValue(const String *pInput) { m_Value = pInput[0]; }
 		BURGER_INLINE uint_t GetBoolean(uint_t bDefault) const { return m_Value.GetBoolean(bDefault); }
 		BURGER_INLINE void SetBoolean(uint_t bValue) { m_Value.SetYesNo(bValue); }
-		BURGER_INLINE uint_t GetWord(uint_t uDefault,uint_t uMin=0,uint_t uMax=BURGER_MAXUINT) const { return m_Value.GetWord(uDefault,uMin,uMax); }
+		BURGER_INLINE uint_t GetWord(uint_t uDefault,uint_t uMin=0,uint_t uMax=UINT32_MAX) const { return m_Value.GetWord(uDefault,uMin,uMax); }
 		BURGER_INLINE void SetWord(uint_t uValue) { m_Value.SetWord(uValue); }
 		BURGER_INLINE void SetWordHex(uint_t uValue) { m_Value.SetWordHex(uValue); }
-		BURGER_INLINE int_t GetInt(int_t iDefault,int_t iMin=(-BURGER_MAXINT)-1,int_t iMax=BURGER_MAXINT) const { return m_Value.GetInt(iDefault,iMin,iMax); }
+		BURGER_INLINE int_t GetInt(int_t iDefault,int_t iMin=INT32_MIN,int_t iMax=INT32_MAX) const { return m_Value.GetInt(iDefault,iMin,iMax); }
 		BURGER_INLINE void SetInt(int_t iValue) { m_Value.SetInt(iValue); }
 		BURGER_INLINE float GetFloat(float fDefault) const { return m_Value.GetFloat(fDefault); }
 		BURGER_INLINE float GetFloat(float fDefault,float fMin,float fMax) const { return m_Value.GetFloat(fDefault,fMin,fMax); }
@@ -215,10 +215,10 @@ public:
 		BURGER_INLINE void SetText(const String *pInput) { m_Text = pInput[0]; }
 		BURGER_INLINE uint_t GetBoolean(uint_t bDefault) const { return m_Text.GetBoolean(bDefault); }
 		BURGER_INLINE void SetBoolean(uint_t bValue) { m_Text.SetYesNo(bValue); }
-		BURGER_INLINE uint_t GetWord(uint_t uDefault,uint_t uMin=0,uint_t uMax=BURGER_MAXUINT) const { return m_Text.GetWord(uDefault,uMin,uMax); }
+		BURGER_INLINE uint_t GetWord(uint_t uDefault,uint_t uMin=0,uint_t uMax=UINT32_MAX) const { return m_Text.GetWord(uDefault,uMin,uMax); }
 		BURGER_INLINE void SetWord(uint_t uValue) { m_Text.SetWord(uValue); }
 		BURGER_INLINE void SetWordHex(uint_t uValue) { m_Text.SetWordHex(uValue); }
-		BURGER_INLINE int_t GetInt(int_t iDefault,int_t iMin=(-BURGER_MAXINT)-1,int_t iMax=BURGER_MAXINT) const { return m_Text.GetInt(iDefault,iMin,iMax); }
+		BURGER_INLINE int_t GetInt(int_t iDefault,int_t iMin=INT32_MIN,int_t iMax=INT32_MAX) const { return m_Text.GetInt(iDefault,iMin,iMax); }
 		BURGER_INLINE void SetInt(int_t iValue) { m_Text.SetInt(iValue); }
 		BURGER_INLINE float GetFloat(float fDefault) const { return m_Text.GetFloat(fDefault); }
 		BURGER_INLINE float GetFloat(float fDefault,float fMin,float fMax) const { return m_Text.GetFloat(fDefault,fMin,fMax); }
@@ -255,10 +255,10 @@ public:
 		BURGER_INLINE void SetName(const String *pInput) { m_Name = pInput[0]; }
 		uint_t BURGER_API GetBoolean(uint_t bDefault) const;
 		void BURGER_API SetBoolean(uint_t bValue);
-		uint_t BURGER_API GetWord(uint_t uDefault,uint_t uMin=0,uint_t uMax=BURGER_MAXUINT) const;
+		uint_t BURGER_API GetWord(uint_t uDefault,uint_t uMin=0,uint_t uMax=UINT32_MAX) const;
 		void BURGER_API SetWord(uint_t uValue);
 		void BURGER_API SetWordHex(uint_t uValue);
-		int_t BURGER_API GetInt(int_t iDefault,int_t iMin=(-BURGER_MAXINT)-1,int_t iMax=BURGER_MAXINT) const;
+		int_t BURGER_API GetInt(int_t iDefault,int_t iMin=INT32_MIN,int_t iMax=INT32_MAX) const;
 		void BURGER_API SetInt(int_t iValue);
 		float BURGER_API GetFloat(float fDefault) const;
 		float BURGER_API GetFloat(float fDefault,float fMin,float fMax) const;
@@ -270,10 +270,10 @@ public:
 		void BURGER_API SetString(const char *pValue);
 		uint_t BURGER_API AttributeGetBoolean(const char *pAttributeName,uint_t bDefault) const;
 		void BURGER_API AttributeSetBoolean(const char *pAttributeName,uint_t bValue);
-		uint_t BURGER_API AttributeGetWord(const char *pAttributeName,uint_t uDefault,uint_t uMin=0,uint_t uMax=BURGER_MAXUINT) const;
+		uint_t BURGER_API AttributeGetWord(const char *pAttributeName,uint_t uDefault,uint_t uMin=0,uint_t uMax=UINT32_MAX) const;
 		void BURGER_API AttributeSetWord(const char *pAttributeName,uint_t uValue);
 		void BURGER_API AttributeSetWordHex(const char *pAttributeName,uint_t uValue);
-        int_t BURGER_API AttributeGetInt(const char *pAttributeName, int_t iDefault, int_t iMin = (-BURGER_MAXINT) - 1, int_t iMax = BURGER_MAXINT) const;
+        int_t BURGER_API AttributeGetInt(const char *pAttributeName, int_t iDefault, int_t iMin =INT32_MIN, int_t iMax = INT32_MAX) const;
         void BURGER_API AttributeSetInt(const char *pAttributeName, int_t iValue);
 		float BURGER_API AttributeGetFloat(const char *pAttributeName,float fDefault) const;
 		float BURGER_API AttributeGetFloat(const char *pAttributeName,float fDefault,float fMin,float fMax) const;
@@ -285,10 +285,10 @@ public:
 		void BURGER_API AttributeSetString(const char *pAttributeName,const char *pValue);
 		uint_t BURGER_API ElementGetBoolean(const char *pElementName,uint_t bDefault) const;
 		void BURGER_API ElementSetBoolean(const char *pElementName,uint_t bValue);
-		uint_t BURGER_API ElementGetWord(const char *pElementName,uint_t uDefault,uint_t uMin=0,uint_t uMax=BURGER_MAXUINT) const;
+		uint_t BURGER_API ElementGetWord(const char *pElementName,uint_t uDefault,uint_t uMin=0,uint_t uMax=UINT32_MAX) const;
 		void BURGER_API ElementSetWord(const char *pElementName,uint_t uValue);
 		void BURGER_API ElementSetWordHex(const char *pElementName,uint_t uValue);
-		int_t BURGER_API ElementGetInt(const char *pElementName,int_t iDefault,int_t iMin=(-BURGER_MAXINT)-1,int_t iMax=BURGER_MAXINT) const;
+		int_t BURGER_API ElementGetInt(const char *pElementName,int_t iDefault,int_t iMin=INT32_MIN,int_t iMax=INT32_MAX) const;
 		void BURGER_API ElementSetInt(const char *pElementName,int_t iValue);
 		float BURGER_API ElementGetFloat(const char *pElementName,float fDefault) const;
 		float BURGER_API ElementGetFloat(const char *pElementName,float fDefault,float fMin,float fMax) const;

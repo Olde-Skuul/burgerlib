@@ -847,7 +847,7 @@
 		int8_t, 6, 9>::value;
 
 	\endcode
-	\param B Bool to determine whether to return the _True or _False value.
+	\param B bool to determine whether to return the _True or _False value.
 	\tparam T Type of the return value, must be a non floating point data type.
 	\param _True Value to return if B is true.
 	\param _False Value to return if B is false.

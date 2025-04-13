@@ -189,8 +189,8 @@
       Amiga frequency table:
       ----------------------
 
-   Period = (PeriodTab[(Note MOD 12)*8 + FineTune/16]*(1-Frac32(FineTune/16)) +
-             PeriodTab[(Note MOD 12)*8 + FineTune/16]*(Frac32(FineTune/16)))
+   Period = (PeriodTab[(Note MOD 12)*8 + FineTune/16]*(1-fixed2_30_t(FineTune/16)) +
+             PeriodTab[(Note MOD 12)*8 + FineTune/16]*(fixed2_30_t(FineTune/16)))
             *16/2^(Note DIV 12);
       (The period is interpolated for finer finetune values)
    Frequency = 8363*1712/Period;

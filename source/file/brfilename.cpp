@@ -855,11 +855,11 @@ Burger::eError BURGER_API Burger::Filename::get_dirname(
 	than 99.
 
 	This function will check if the Burgerlib pathname is a device and return
-	the device number if so. If not, \ref BURGER_MAXUINT will be returned as an
+	the device number if so. If not, UINT32_MAX will be returned as an
 	error.
 
-	\return Volume number if the path starts with a device number, \ref
-		BURGER_MAXUINT if not.
+	\return Volume number if the path starts with a device number,
+		UINT32_MAX if not.
 
 	\sa is_abs()
 
@@ -868,7 +868,7 @@ Burger::eError BURGER_API Burger::Filename::get_dirname(
 uint_t BURGER_API Burger::Filename::is_drive_number(void) const BURGER_NOEXCEPT
 {
 	// Assume failure
-	uint_t uDeviceNum = BURGER_MAXUINT;
+	uint_t uDeviceNum = UINT32_MAX;
 
 	const char* pFilename = m_Filename.c_str();
 	uint_t uTemp = reinterpret_cast<const uint8_t*>(pFilename)[0];
@@ -894,7 +894,7 @@ uint_t BURGER_API Burger::Filename::is_drive_number(void) const BURGER_NOEXCEPT
 				if (uTemp == ':') {
 					// If nothing was parsed, abort
 					if (uLength == 3) {
-						uDeviceNum = BURGER_MAXUINT;
+						uDeviceNum = UINT32_MAX;
 					}
 					break;
 				}
@@ -903,7 +903,7 @@ uint_t BURGER_API Burger::Filename::is_drive_number(void) const BURGER_NOEXCEPT
 				// Numeric value?
 				if (uTemp >= 10) {
 					// Force using the CWD
-					uDeviceNum = BURGER_MAXUINT;
+					uDeviceNum = UINT32_MAX;
 					break;
 				}
 
@@ -950,7 +950,7 @@ uint_t BURGER_API Burger::Filename::is_abs(void) const BURGER_NOEXCEPT
 		uResult = TRUE;
 
 		// Volume by number?
-	} else if (is_drive_number() != BURGER_MAXUINT) {
+	} else if (is_drive_number() != UINT32_MAX) {
 		// It's valid!!!
 		uResult = TRUE;
 	}
