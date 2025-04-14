@@ -161,10 +161,10 @@ static uint_t BURGER_API TestDataChunkSize(uint_t uVerbose) BURGER_NOEXCEPT
 	ReportFailure("sizeof(int_t) is %u instead of 4.", uTest,
 		static_cast<uint_t>(sizeof(int_t)));
 
-	uTest = sizeof(Vector_128) != 16;
+	uTest = sizeof(vector128_t) != 16;
 	uFailure |= uTest;
-	ReportFailure("sizeof(Vector_128) is %u instead of 16.", uTest,
-		static_cast<uint_t>(sizeof(Vector_128)));
+	ReportFailure("sizeof(vector128_t) is %u instead of 16.", uTest,
+		static_cast<uint_t>(sizeof(vector128_t)));
 
 	//
 	// Test BURGER_SIZEOF_LONG

@@ -445,7 +445,8 @@
 #define BURGER_68881
 #endif
 
-#if defined(__ALTIVEC__) || defined(DOXYGEN)
+#if (!defined(BURGER_METROWERKS) && defined(__ALTIVEC__)) || \
+	(defined(BURGER_METROWERKS) && defined(__VEC__)) || defined(DOXYGEN)
 #define BURGER_ALTIVEC
 #endif
 

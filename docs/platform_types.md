@@ -3,7 +3,7 @@ Platform types
 
 These data types are stable and will generate the exact same size on any platform.
 
-* \ref Vector_128 128 bit vector intrinsic.
+* \ref vector128_t 128 bit vector intrinsic.
 * \ref int_t Signed integer.
 * \ref uint_t Unsigned integer.
 * \ref fixed2_30_t Signed 2.30 32 bit integer for fixed point operations.

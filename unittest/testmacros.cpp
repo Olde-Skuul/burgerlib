@@ -439,6 +439,7 @@ static void BURGER_API ShowCompilerMacros(uint_t uVerbose) BURGER_NOEXCEPT
 		SHOW_MACRO(_M_PPCLE);
 		SHOW_MACRO(__espresso__);
 		SHOW_MACRO(__ALTIVEC__);
+		SHOW_MACRO(__VEC__);
 
 		// 8086
 
