@@ -145,7 +145,7 @@ const char* Burger::Filename::get_native(void) BURGER_NOEXCEPT
 		// Now that I have the drive number, determine the length
 		// of the output buffer and start the conversion
 		uintptr_t uPathLength =
-			StringLength(reinterpret_cast<const char*>(pPath));
+		string_length(reinterpret_cast<const char*>(pPath));
 		m_NativeFilename.clear();
 
 		// Insert the prefix, if any, to the output string
@@ -475,7 +475,7 @@ Burger::eError BURGER_API Burger::Filename::set_native(
 				const char* pWorkingDirectory =
 					static_cast<char*>(MSDos::real_to_protected(DosBuffer));
 				uintptr_t uWorkingDirectoryLength =
-					StringLength(pWorkingDirectory);
+				string_length(pWorkingDirectory);
 
 				// Is there a directory?
 				if (uWorkingDirectoryLength) {

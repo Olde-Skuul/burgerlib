@@ -161,7 +161,7 @@ void BURGER_ANSIAPI Burger::Debug::Warning(
 #else
 			vsprintf(TempBuffer, pMessage, Args);
 			// Sanity check because of unsafe call
-			BURGER_ASSERT(StringLength(TempBuffer) < sizeof(TempBuffer));
+			BURGER_ASSERT(string_length(TempBuffer) < sizeof(TempBuffer));
 #endif
 			// End parameter passing
 			va_end(Args);
@@ -209,7 +209,7 @@ void BURGER_ANSIAPI Burger::Debug::Message(
 #else
 		vsprintf(TempBuffer, pMessage, Args);
 		// Sanity check because of unsafe call
-		BURGER_ASSERT(StringLength(TempBuffer) < sizeof(TempBuffer));
+		BURGER_ASSERT(string_length(TempBuffer) < sizeof(TempBuffer));
 #endif
 		// End the parameter passing
 		va_end(Args);
@@ -238,7 +238,7 @@ void BURGER_ANSIAPI Burger::Debug::Message(
 void BURGER_API Burger::Debug::PrintString(const char* pString) BURGER_NOEXCEPT
 {
 	if (pString && !Globals::GetExitFlag()) {
-		const uintptr_t i = StringLength(pString);
+		const uintptr_t i = string_length(pString);
 		if (i) {
 
 			// MacOS 9/Carbon doesn't have a console,

@@ -725,7 +725,7 @@ uint_t BURGER_API Burger::DisplayOpenGL::CompileShader(uint_t GLEnum,const char 
 
 		// Determine the length of the code
 		if (!uShaderCodeLength) {
-			uShaderCodeLength = StringLength(pShaderCode);
+			uShaderCodeLength = string_length(pShaderCode);
 		}
 		// Any code to parse?
 		if (uShaderCodeLength) {
@@ -748,7 +748,7 @@ uint_t BURGER_API Burger::DisplayOpenGL::CompileShader(uint_t GLEnum,const char 
 
 					StringCopy(VersionString,g_Version);
 					NumberToAscii(VersionString+9,iVersion);
-					uintptr_t uLength = StringLength(VersionString);
+					uintptr_t uLength = string_length(VersionString);
 					// Append with a \n
 					VersionString[uLength] = '\n';
 					// Set the string in the array

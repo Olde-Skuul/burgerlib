@@ -291,7 +291,7 @@ uint_t BURGER_API Burger::Font::GetPixelWidthNumber(int32_t iInput)
 	char Ascii[16];
 
 	NumberToAscii(Ascii,iInput);
-	return GetPixelWidth(Ascii,StringLength(Ascii));
+	return GetPixelWidth(Ascii,string_length(Ascii));
 }
 
 /*! ************************************
@@ -311,7 +311,7 @@ uint_t BURGER_API Burger::Font::GetPixelWidthNumber(uint32_t uInput)
 	char Ascii[16];
 
 	NumberToAscii(Ascii,uInput);
-	return GetPixelWidth(Ascii,StringLength(Ascii));
+	return GetPixelWidth(Ascii,string_length(Ascii));
 }
 
 /*! ************************************
@@ -327,7 +327,7 @@ uint_t BURGER_API Burger::Font::GetPixelWidthNumber(uint32_t uInput)
 uint_t BURGER_API Burger::Font::GetPixelWidthString(const char *pInput)
 {
 	if (pInput) {
-		return GetPixelWidth(pInput,StringLength(pInput));		// Get the text width
+		return GetPixelWidth(pInput,string_length(pInput));		// Get the text width
 	}
 	return 0;
 }
@@ -349,7 +349,7 @@ void BURGER_API Burger::Font::DrawNumber(int32_t iInput)
 	char Ascii[16];
 
 	NumberToAscii(Ascii,iInput);
-	Draw(Ascii,StringLength(Ascii));
+	Draw(Ascii,string_length(Ascii));
 }
 
 /*! ************************************
@@ -369,7 +369,7 @@ void BURGER_API Burger::Font::DrawNumber(uint32_t uInput)
 	char Ascii[16];
 
 	NumberToAscii(Ascii,uInput);
-	Draw(Ascii,StringLength(Ascii));
+	Draw(Ascii,string_length(Ascii));
 }
 
 /*! ************************************
@@ -387,7 +387,7 @@ void BURGER_API Burger::Font::DrawNumber(uint32_t uInput)
 void BURGER_API Burger::Font::DrawString(const char *pInput)
 {
 	if (pInput) {
-		Draw(pInput,StringLength(pInput));		// Draw the text
+		Draw(pInput,string_length(pInput));		// Draw the text
 	}
 }
 
@@ -409,7 +409,7 @@ void BURGER_API Burger::Font::DrawString(const char *pInput)
 void BURGER_API Burger::Font::DrawStringCenterX(int iX,int iY,const char *pInput)
 {
 	if (pInput) {				// Failsafe
-		uintptr_t uLength = StringLength(pInput);			// Get the string length
+		uintptr_t uLength = string_length(pInput);			// Get the string length
 		uint_t uWidth = GetPixelWidth(pInput,uLength);	// Get the string width
 		m_iX = iX - static_cast<int>(uWidth>>1U);
 		m_iY = iY;
@@ -435,7 +435,7 @@ void BURGER_API Burger::Font::DrawStringAtXY(int iX,int iY,const char *pInput)
 	m_iX = iX;		// Set the location
 	m_iY = iY;
 	if (pInput) {	// Failsafe
-		Draw(pInput,StringLength(pInput));
+		Draw(pInput,string_length(pInput));
 	}
 }
 

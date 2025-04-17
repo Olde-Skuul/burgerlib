@@ -139,7 +139,7 @@ Burger::eError BURGER_API Burger::Filename::set_native(
 	clear(); // Clear out the previous string
 
 	// Determine the length of the string buffer
-	uintptr_t uInputLength = StringLength(pInput);
+	uintptr_t uInputLength = string_length(pInput);
 	uintptr_t uOutputLength =
 		uInputLength + 6; // Could prepend :app0:, 6 characters
 	char* pOutput = m_Filename;

@@ -526,9 +526,9 @@ extern double BURGER_API get_modulo(
 	double dInput, double dDivisor) BURGER_NOEXCEPT;
 
 extern double BURGER_API little_endian_load_extended(
-	const Float80Bit pInput) BURGER_NOEXCEPT;
+	const float80_t pInput) BURGER_NOEXCEPT;
 extern double BURGER_API big_endian_load_extended(
-	const Float80Bit pInput) BURGER_NOEXCEPT;
+	const float80_t pInput) BURGER_NOEXCEPT;
 
 extern long BURGER_API convert_to_DirectSound_volume(
 	uint_t uInput) BURGER_NOEXCEPT;

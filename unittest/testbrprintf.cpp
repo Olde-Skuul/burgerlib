@@ -1485,7 +1485,7 @@ static uint_t BURGER_API TestIntegerFormat(
 
 	const char* p32BitConversion1 = pTestConfig->m_p32BitConversion1;
 	const char* p32BitConversion2 = pTestConfig->m_p32BitConversion2;
-	uint_t bAltFormPresent = (Burger::StringLength(p32BitConversion2) != 0);
+	uint_t bAltFormPresent = (Burger::string_length(p32BitConversion2) != 0);
 
 	if (pTestConfig->m_bSigned) {
 		for (uintptr_t i = 0; i < BURGER_ARRAYSIZE(g_TestInt32s); i++) {
@@ -1544,7 +1544,7 @@ static uint_t BURGER_API TestIntegerFormat(
 	p32BitConversion1 = pTestConfig->m_p64BitConversion1;
 	p32BitConversion2 = pTestConfig->m_p64BitConversion2;
 
-	bAltFormPresent = (Burger::StringLength(pAltlocalConversion) != 0);
+	bAltFormPresent = (Burger::string_length(pAltlocalConversion) != 0);
 
 	if (pTestConfig->m_bSigned) {
 		for (uintptr_t i = 0; i < BURGER_ARRAYSIZE(g_TestInt64s); i++) {

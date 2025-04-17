@@ -66,7 +66,7 @@ public:
 	}
 	BURGER_INLINE uintptr_t GetLength(void) const
 	{
-		return Burger::StringLength(m_pData);
+		return Burger::string_length(m_pData);
 	}
 };
 }

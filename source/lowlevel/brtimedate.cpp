@@ -210,7 +210,7 @@ void Burger::TimeDate_t::DateToStringVerbose(
 		uFailsafe = 0;
 	}
 	StringConcatenate(pOutput, g_Months[uFailsafe]);
-	pOutput = pOutput + StringLength(pOutput);
+	pOutput = pOutput + string_length(pOutput);
 	pOutput[0] = ' ';
 	pOutput = NumberToAscii(pOutput + 1, static_cast<uint32_t>(m_bDay));
 	pOutput[0] = ',';

@@ -350,7 +350,7 @@ uint_t BURGER_API Burger::WriteCString(FILE* fp, const char* pInput)
 {
 	// Write the string with the terminating zero.
 	uint_t uResult = 0;
-	uintptr_t uLength = StringLength(pInput) + 1;
+	uintptr_t uLength = string_length(pInput) + 1;
 	if (fwrite(pInput, 1, uLength, fp) != uLength) {
 		uResult = static_cast<uint_t>(errno);
 	}

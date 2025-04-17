@@ -207,7 +207,7 @@ static uint_t TestAdler16(void) BURGER_NOEXCEPT
 	uintptr_t uCount = BURGER_ARRAYSIZE(g_HashTestTable);
 	do {
 		const uint32_t uTester = Burger::calc_adler16(
-			pWork->m_pString, Burger::StringLength(pWork->m_pString));
+			pWork->m_pString, Burger::string_length(pWork->m_pString));
 		const uint_t uTest = (uTester != pWork->m_Adler16);
 		uFailure |= uTest;
 		if (uTest) {
@@ -231,7 +231,7 @@ static uint_t TestAdler32(void) BURGER_NOEXCEPT
 	uintptr_t uCount = BURGER_ARRAYSIZE(g_HashTestTable);
 	do {
 		const uint32_t uTester = Burger::calc_adler32(
-			pWork->m_pString, Burger::StringLength(pWork->m_pString));
+			pWork->m_pString, Burger::string_length(pWork->m_pString));
 		const uint_t uTest = (uTester != pWork->m_Adler32);
 		uFailure |= uTest;
 		if (uTest) {
@@ -255,7 +255,7 @@ static uint_t TestCRC32B(void) BURGER_NOEXCEPT
 	uintptr_t uCount = BURGER_ARRAYSIZE(g_HashTestTable);
 	do {
 		const uint32_t uTester = Burger::calc_crc32b(
-			pWork->m_pString, Burger::StringLength(pWork->m_pString));
+			pWork->m_pString, Burger::string_length(pWork->m_pString));
 		const uint_t uTest = (uTester != pWork->m_CRC32B);
 		uFailure |= uTest;
 		if (uTest) {
@@ -279,7 +279,7 @@ static uint_t TestCRC32(void) BURGER_NOEXCEPT
 	uintptr_t uCount = BURGER_ARRAYSIZE(g_HashTestTable);
 	do {
 		const uint32_t uTester = Burger::calc_crc32(
-			pWork->m_pString, Burger::StringLength(pWork->m_pString));
+			pWork->m_pString, Burger::string_length(pWork->m_pString));
 		const uint_t uTest = (uTester != pWork->m_CRC32);
 		uFailure |= uTest;
 		if (uTest) {
@@ -302,7 +302,7 @@ static uint_t TestCRC16IBM(void) BURGER_NOEXCEPT
 	uintptr_t uCount = BURGER_ARRAYSIZE(g_HashTestTable);
 	do {
 		const uint16_t uTester = Burger::calc_crc16IBM(
-			pWork->m_pString, Burger::StringLength(pWork->m_pString));
+			pWork->m_pString, Burger::string_length(pWork->m_pString));
 		const uint_t uTest = (uTester != pWork->m_CRC16IBM);
 		uFailure |= uTest;
 		if (uTest) {
@@ -327,7 +327,7 @@ static uint_t TestMD2(void) BURGER_NOEXCEPT
 	do {
 		Burger::MD2_t Tester;
 		Burger::hash(
-			&Tester, pWork->m_pString, Burger::StringLength(pWork->m_pString));
+			&Tester, pWork->m_pString, Burger::string_length(pWork->m_pString));
 		const uint_t uTest = static_cast<uint_t>(Burger::MemoryCompare(
 			Tester.m_Hash, pWork->m_HashMD2.m_Hash, sizeof(Tester)));
 		uFailure |= uTest;
@@ -357,7 +357,7 @@ static uint_t TestMD4(void) BURGER_NOEXCEPT
 		Burger::MD4_t Tester;
 		Burger::hash(&Tester,
 			reinterpret_cast<const uint8_t*>(pWork->m_pString),
-			Burger::StringLength(pWork->m_pString));
+			Burger::string_length(pWork->m_pString));
 		const uint_t uTest = static_cast<uint_t>(Burger::MemoryCompare(
 			Tester.m_Hash, pWork->m_HashMD4.m_Hash, sizeof(Tester)));
 		uFailure |= uTest;
@@ -387,7 +387,7 @@ static uint_t TestMD5(void) BURGER_NOEXCEPT
 		Burger::MD5_t Tester;
 		Burger::hash(&Tester,
 			reinterpret_cast<const uint8_t*>(pWork->m_pString),
-			Burger::StringLength(pWork->m_pString));
+			Burger::string_length(pWork->m_pString));
 		const uint_t uTest = static_cast<uint_t>(Burger::MemoryCompare(
 			Tester.m_Hash, pWork->m_HashMD5.m_Hash, sizeof(Tester)));
 		uFailure |= uTest;
@@ -417,7 +417,7 @@ static uint_t TestSHA1(void) BURGER_NOEXCEPT
 		Burger::SHA1_t Tester;
 		Burger::hash(&Tester,
 			reinterpret_cast<const uint8_t*>(pWork->m_pString),
-			Burger::StringLength(pWork->m_pString));
+			Burger::string_length(pWork->m_pString));
 		const uint_t uTest = static_cast<uint_t>(Burger::MemoryCompare(
 			Tester.m_Hash, pWork->m_HashSHA1.m_Hash, sizeof(Tester)));
 		uFailure |= uTest;
@@ -447,7 +447,7 @@ static uint_t TestGOST(void) BURGER_NOEXCEPT
 		Burger::GOST_t Tester;
 		Burger::hash(&Tester,
 			reinterpret_cast<const uint8_t*>(pWork->m_pString),
-			Burger::StringLength(pWork->m_pString));
+			Burger::string_length(pWork->m_pString));
 		const uint_t uTest = static_cast<uint_t>(Burger::MemoryCompare(
 			Tester.m_Hash, pWork->m_HashGOST.m_Hash, sizeof(Tester)));
 		uFailure |= uTest;

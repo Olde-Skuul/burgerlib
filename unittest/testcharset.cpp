@@ -354,7 +354,7 @@ static uint_t BURGER_API TestMacRoman(void) BURGER_NOEXCEPT
 	if (CFStringGetCString(
 			pStringRef, Buffer2, sizeof(Buffer2), kCFStringEncodingUTF8)) {
 		// Success!
-		uBuffer2Size = Burger::StringLength(Buffer2);
+		uBuffer2Size = Burger::string_length(Buffer2);
 	}
 	CFRelease(pStringRef);
 
@@ -386,7 +386,7 @@ static uint_t BURGER_API TestMacRoman(void) BURGER_NOEXCEPT
 		if (CFStringGetCString(
 				pStringRef, Buffer2, sizeof(Buffer2), kCFStringEncodingUTF8)) {
 			// Success!
-			uBuffer2Size = Burger::StringLength(Buffer2);
+			uBuffer2Size = Burger::string_length(Buffer2);
 		}
 		CFRelease(pStringRef);
 

@@ -42,7 +42,7 @@ uint_t BURGER_API Burger::Globals::LaunchURL(const char* pURL)
 #endif
 			{
 				long startSel = 0;
-				long endSel = static_cast<long>(StringLength(pURL));
+				long endSel = static_cast<long>(string_length(pURL));
 				err = ICLaunchURL(inst, "\p", const_cast<char*>(pURL), endSel,
 					&startSel, &endSel);
 			}

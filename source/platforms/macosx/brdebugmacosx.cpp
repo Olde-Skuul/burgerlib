@@ -52,7 +52,7 @@ void BURGER_API Burger::Debug::PrintString(const char* pString) BURGER_NOEXCEPT
 	// Allow multiple threads to call me!
 
 	if (pString) {
-		uintptr_t i = StringLength(pString);
+		uintptr_t i = string_length(pString);
 		if (i) {
 			if (!is_debugger_present()) {
 				// Send the string to the log file

@@ -145,7 +145,7 @@ const char* Burger::Filename::get_native(void) BURGER_NOEXCEPT
 		// of the output buffer and start the conversion
 
 		uintptr_t uPathLength =
-			StringLength(reinterpret_cast<const char*>(pPath));
+		string_length(reinterpret_cast<const char*>(pPath));
 
 		// Init the native string buffer.
 		m_NativeFilename.clear();

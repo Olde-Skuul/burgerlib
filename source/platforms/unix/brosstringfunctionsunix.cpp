@@ -104,7 +104,7 @@ Burger::eError BURGER_API Burger::GetUserRealName(
 			uLength = pEnd - pPasswd->pw_gecos;
 		} else {
 			// Use the entire string
-			uLength = StringLength(pPasswd->pw_gecos);
+			uLength = string_length(pPasswd->pw_gecos);
 		}
 		// Only use it if there is a string
 		if (uLength) {
@@ -260,7 +260,7 @@ Burger::eError BURGER_API Burger::get_abspath(
 			if (pTemp) {
 				// Insert the directory
 				pOutput->insert(0, "/", 1U);
-				pOutput->insert(0, pTemp, StringLength(pTemp));
+				pOutput->insert(0, pTemp, string_length(pTemp));
 				free(pTemp);
 			}
 		}

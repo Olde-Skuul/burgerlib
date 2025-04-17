@@ -108,7 +108,7 @@ char* BURGER_API Burger::String::constructor_reserve(
 void BURGER_API Burger::String::assign_small(const char* pInput) BURGER_NOEXCEPT
 {
 	// Get the length of the string
-	uintptr_t uLength = StringLength(pInput);
+	uintptr_t uLength = string_length(pInput);
 	m_uLength = uLength;
 	// The string already has a terminating zero
 	MemoryCopy(m_pData, pInput, uLength + 1);
@@ -313,7 +313,7 @@ Burger::String::String(const char* pInput) BURGER_NOEXCEPT
 	if (!pInput) {
 		pInput = g_EmptyString;
 	}
-	uintptr_t uInputLength = StringLength(pInput);
+	uintptr_t uInputLength = string_length(pInput);
 
 	// Reserve a buffer
 	char* pWork = constructor_reserve(uInputLength);
@@ -346,7 +346,7 @@ Burger::String::String(const char* pInput, uintptr_t uPadding) BURGER_NOEXCEPT
 	if (!pInput) {
 		pInput = g_EmptyString;
 	}
-	uintptr_t uInputLength = StringLength(pInput);
+	uintptr_t uInputLength = string_length(pInput);
 
 	char* pWork = constructor_reserve(uInputLength + uPadding);
 	// Oh oh... Was it clamped?
@@ -439,7 +439,7 @@ Burger::String::String(
 	}
 
 	// Get the source length
-	uintptr_t uInputLength = StringLength(pInput);
+	uintptr_t uInputLength = string_length(pInput);
 
 	// If the start is beyond the end of the string, no text will be transferred
 	if (uStart >= uInputLength) {
@@ -545,8 +545,8 @@ Burger::String::String(const char* pInput1, const char* pInput2) BURGER_NOEXCEPT
 	if (!pInput2) {
 		pInput2 = g_EmptyString;
 	}
-	uintptr_t uLength1 = StringLength(pInput1);
-	uintptr_t uLength2 = StringLength(pInput2);
+	uintptr_t uLength1 = string_length(pInput1);
+	uintptr_t uLength2 = string_length(pInput2);
 
 	// Size of the finished string
 	uintptr_t uInputLength = uLength1 + uLength2;
@@ -594,9 +594,9 @@ Burger::String::String(const char* pInput1, const char* pInput2,
 	if (!pInput3) {
 		pInput3 = g_EmptyString;
 	}
-	uintptr_t uLength1 = StringLength(pInput1);
-	uintptr_t uLength2 = StringLength(pInput2);
-	uintptr_t uLength3 = StringLength(pInput3);
+	uintptr_t uLength1 = string_length(pInput1);
+	uintptr_t uLength2 = string_length(pInput2);
+	uintptr_t uLength3 = string_length(pInput3);
 
 	// Size of the finished string
 	uintptr_t uInputLength = uLength1 + uLength2 + uLength3;
@@ -655,10 +655,10 @@ Burger::String::String(const char* pInput1, const char* pInput2,
 	if (!pInput4) {
 		pInput4 = g_EmptyString;
 	}
-	uintptr_t uLength1 = StringLength(pInput1);
-	uintptr_t uLength2 = StringLength(pInput2);
-	uintptr_t uLength3 = StringLength(pInput3);
-	uintptr_t uLength4 = StringLength(pInput4);
+	uintptr_t uLength1 = string_length(pInput1);
+	uintptr_t uLength2 = string_length(pInput2);
+	uintptr_t uLength3 = string_length(pInput3);
+	uintptr_t uLength4 = string_length(pInput4);
 
 	// Size of the finished string
 	uintptr_t uInputLength = uLength1 + uLength2 + uLength3 + uLength4;
@@ -928,7 +928,7 @@ Burger::eError BURGER_API Burger::String::assign(
 	}
 
 	// Length of the new string
-	return assign(pInput, StringLength(pInput));
+	return assign(pInput, string_length(pInput));
 }
 
 /*! ************************************
@@ -1056,7 +1056,7 @@ Burger::eError BURGER_API Burger::String::assign_win437(
 {
 	// Test for nullptr
 	if (pInput) {
-		return assign_win437(pInput, StringLength(pInput));
+		return assign_win437(pInput, string_length(pInput));
 	}
 	// Create empty string
 	m_uLength = 0;
@@ -1117,7 +1117,7 @@ Burger::eError BURGER_API Burger::String::assign_win1252(
 	const char* pInput) BURGER_NOEXCEPT
 {
 	if (pInput) {
-		return assign_win1252(pInput, StringLength(pInput));
+		return assign_win1252(pInput, string_length(pInput));
 	}
 	// Create empty string
 	m_uLength = 0;
@@ -1178,7 +1178,7 @@ Burger::eError BURGER_API Burger::String::assign_mac_roman_us(
 	const char* pInput) BURGER_NOEXCEPT
 {
 	if (pInput) {
-		return assign_mac_roman_us(pInput, StringLength(pInput));
+		return assign_mac_roman_us(pInput, string_length(pInput));
 	}
 	// Create empty string
 	m_uLength = 0;
@@ -1231,7 +1231,7 @@ Burger::eError BURGER_API Burger::String::assign_mac_roman_us(
 
 	\note If a buffer of 100 bytes is requested, 101 bytes will be allocated to
 	hold a string up to 100 characters in length with the 101st byte being the
-	terminating zero. The output of Burger::StringLength() is acceptable as
+	terminating zero. The output of Burger::string_length() is acceptable as
 	input for a new string.
 
 	\param uSize Number of bytes to set the buffer to
@@ -1287,7 +1287,7 @@ Burger::eError BURGER_API Burger::String::resize(
 
 	\note If a buffer of 100 bytes is requested, 101 bytes will be allocated to
 	hold a string up to 100 characters in length with the 101st byte being the
-	terminating zero. The output of Burger::StringLength() is acceptable as
+	terminating zero. The output of Burger::string_length() is acceptable as
 	input for a new string.
 
 	\param uNewBufferSize Number of bytes to set the buffer to
@@ -2195,7 +2195,7 @@ Burger::eError BURGER_API Burger::String::append(
 	if (!pInput) {
 		return kErrorNone;
 	}
-	return append(pInput, StringLength(pInput));
+	return append(pInput, string_length(pInput));
 }
 
 /*! ************************************
@@ -2411,7 +2411,7 @@ uint_t BURGER_API Burger::String::starts_with(
 	const char* pInput) BURGER_NOEXCEPT
 {
 	if (pInput) {
-		return starts_with(pInput, StringLength(pInput));
+		return starts_with(pInput, string_length(pInput));
 	}
 	return FALSE;
 }
@@ -2501,7 +2501,7 @@ uint_t BURGER_API Burger::String::ends_with(char iInput) BURGER_NOEXCEPT
 uint_t BURGER_API Burger::String::ends_with(const char* pInput) BURGER_NOEXCEPT
 {
 	if (pInput) {
-		return ends_with(pInput, StringLength(pInput));
+		return ends_with(pInput, string_length(pInput));
 	}
 	return FALSE;
 }

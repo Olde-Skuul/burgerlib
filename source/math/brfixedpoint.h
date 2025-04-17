@@ -28,7 +28,38 @@
 #endif
 
 /* BEGIN */
-#define BURGER_FLOAT_TO_FIXED(x) static_cast<fixed16_16_t>((x)*65536.0f)
+#if defined(BURGER_WATCOM) && !defined(DOXYGENs)
+
+extern fixed16_16_t BurgerFixedMathMultiply(
+	fixed16_16_t fInputMulA, fixed16_16_t fInputMulB);
+#pragma aux BurgerFixedMathMultiply = \
+	"imul edx" \
+	"shrd eax,edx,16" parm[eax][edx] value[eax] modify \
+		exact[eax edx] nomemory;
+
+extern fixed16_16_t BurgerFixedMathDivide(
+	fixed16_16_t fInputNumerator, fixed16_16_t fInputDenominator);
+#pragma aux BurgerFixedMathDivide = \
+	"mov edx,eax" \
+	"shl eax,16" \
+	"sar edx,16" \
+	"idiv ebx" parm[eax][ebx] value[eax] modify exact[eax edx] nomemory;
+
+extern fixed16_16_t BurgerFixedMathReciprocal(fixed16_16_t fInput);
+#pragma aux BurgerFixedMathReciprocal = \
+	"cmp ecx,-1" \
+	"mov eax,080000000H" \
+	"je Done" \
+	"dec eax" \
+	"cmp ecx,2" \
+	"jb Done" \
+	"xor eax,eax" \
+	"mov edx,1" \
+	"idiv ecx" \
+	"Done:" parm[ecx] value[eax] modify exact[eax edx] nomemory;
+#endif
+
+#define BURGER_FLOAT_TO_FIXED(x) static_cast<fixed16_16_t>((x) * 65536.0f)
 #define BURGER_FIXED_TO_FLOAT(x) (static_cast<float>(x) * (1.0f / 65536.0f))
 #define BURGER_INT_TO_FIXED(x) static_cast<fixed16_16_t>((x) << 16)
 #define BURGER_FIXED_TO_INT(x) \
@@ -66,7 +97,8 @@ BURGER_INLINE fixed16_16_t int_to_fixed(int32_t iInput) BURGER_NOEXCEPT
 	return static_cast<fixed16_16_t>(iInput << 16);
 }
 
-extern fixed16_16_t BURGER_API int_to_fixed_saturate(int32_t iInput) BURGER_NOEXCEPT;
+extern fixed16_16_t BURGER_API int_to_fixed_saturate(
+	int32_t iInput) BURGER_NOEXCEPT;
 
 BURGER_INLINE int32_t fixed_to_int_floor(fixed16_16_t fInput) BURGER_NOEXCEPT
 {
@@ -104,13 +136,16 @@ extern int32_t BURGER_API float_to_int_round_to_zero(
 extern void BURGER_API float_to_int_round_to_zero(
 	int32_t* pOutput, float fInput) BURGER_NOEXCEPT;
 
-extern fixed16_16_t BURGER_API float_to_fixed_floor(float fInput) BURGER_NOEXCEPT;
+extern fixed16_16_t BURGER_API float_to_fixed_floor(
+	float fInput) BURGER_NOEXCEPT;
 extern void BURGER_API float_to_fixed_floor(
 	fixed16_16_t* pOutput, float fInput) BURGER_NOEXCEPT;
-extern fixed16_16_t BURGER_API float_to_fixed_ceil(float fInput) BURGER_NOEXCEPT;
+extern fixed16_16_t BURGER_API float_to_fixed_ceil(
+	float fInput) BURGER_NOEXCEPT;
 extern void BURGER_API float_to_fixed_ceil(
 	fixed16_16_t* pOutput, float fInput) BURGER_NOEXCEPT;
-extern fixed16_16_t BURGER_API float_to_fixed_round(float fInput) BURGER_NOEXCEPT;
+extern fixed16_16_t BURGER_API float_to_fixed_round(
+	float fInput) BURGER_NOEXCEPT;
 extern void BURGER_API float_to_fixed_round(
 	fixed16_16_t* pOutput, float fInput) BURGER_NOEXCEPT;
 extern fixed16_16_t BURGER_API float_to_fixed_round_to_zero(
@@ -237,7 +272,8 @@ BURGER_INLINE BURGER_CONSTEXPR int64_t get_sign(int64_t iInput) BURGER_NOEXCEPT
 }
 
 #if defined(BURGER_WATCOM)
-BURGER_INLINE fixed16_16_t FixedMultiply(fixed16_16_t fInput1, fixed16_16_t fInput2)
+BURGER_INLINE fixed16_16_t FixedMultiply(
+	fixed16_16_t fInput1, fixed16_16_t fInput2)
 {
 	return BurgerFixedMathMultiply(fInput1, fInput2);
 }
@@ -251,7 +287,8 @@ BURGER_INLINE fixed16_16_t FixedReciprocal(fixed16_16_t fInput)
 	return BurgerFixedMathReciprocal(fInput);
 }
 #elif defined(BURGER_X86) && defined(BURGER_METROWERKS)
-BURGER_INLINE fixed16_16_t FixedMultiply(fixed16_16_t fInput1, fixed16_16_t fInput2)
+BURGER_INLINE fixed16_16_t FixedMultiply(
+	fixed16_16_t fInput1, fixed16_16_t fInput2)
 {
 	// clang-format off
 	asm mov eax, fInput1
@@ -289,11 +326,12 @@ BURGER_INLINE fixed16_16_t FixedReciprocal(fixed16_16_t fInput)
 	asm idiv ecx
 Done:
 	asm mov fInput, eax
-							 // clang-format on
-							 return fInput;
+														 // clang-format on
+														 return fInput;
 }
 #elif defined(BURGER_X86) && defined(BURGER_MSVC)
-BURGER_INLINE fixed16_16_t FixedMultiply(fixed16_16_t fInput1, fixed16_16_t fInput2)
+BURGER_INLINE fixed16_16_t FixedMultiply(
+	fixed16_16_t fInput1, fixed16_16_t fInput2)
 {
 	// clang-format off
 	__asm mov eax, fInput1
@@ -336,7 +374,8 @@ BURGER_INLINE fixed16_16_t FixedReciprocal(fixed16_16_t fInput)
 	return fInput;
 }
 #elif defined(BURGER_PPC) || defined(BURGER_64BITCPU) && !defined(DOXYGEN)
-BURGER_INLINE fixed16_16_t FixedMultiply(fixed16_16_t fInput1, fixed16_16_t fInput2)
+BURGER_INLINE fixed16_16_t FixedMultiply(
+	fixed16_16_t fInput1, fixed16_16_t fInput2)
 {
 	return static_cast<fixed16_16_t>(
 		((static_cast<int64_t>(fInput1) * static_cast<int64_t>(fInput2)) >>
@@ -356,13 +395,14 @@ BURGER_INLINE fixed16_16_t FixedReciprocal(fixed16_16_t fInput)
 	} else if (static_cast<uint32_t>(fInput) < 2) {
 		fInput = 0x7FFFFFFF;
 	} else {
-		fInput =
-			static_cast<fixed16_16_t>(0x100000000LL / static_cast<int64_t>(fInput));
+		fInput = static_cast<fixed16_16_t>(
+			0x100000000LL / static_cast<int64_t>(fInput));
 	}
 	return fInput;
 }
 #else
-extern fixed16_16_t BURGER_API FixedMultiply(fixed16_16_t fInput1, fixed16_16_t fInput2);
+extern fixed16_16_t BURGER_API FixedMultiply(
+	fixed16_16_t fInput1, fixed16_16_t fInput2);
 extern fixed16_16_t BURGER_API FixedDivide(
 	fixed16_16_t fInputNumerator, fixed16_16_t fInputDenominator);
 extern fixed16_16_t BURGER_API FixedReciprocal(fixed16_16_t fInput);

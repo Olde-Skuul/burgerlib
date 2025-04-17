@@ -271,7 +271,7 @@ uint_t BURGER_API Burger::Win32::GetPathToQuickTimeFolder(
 						hQuickTime, Temp, BURGER_ARRAYSIZE(Temp))) {
 
 					// Remove the string "Quicktime.qts"
-					uintptr_t uStrLength = StringLength(Temp);
+					uintptr_t uStrLength = string_length(Temp);
 					if (uStrLength > 13) {
 						// Copy up the string minus the ending "Quicktime.qts"
 						// Note: This will end the string with a '\'
@@ -365,7 +365,7 @@ uint32_t BURGER_API Burger::Win32::GetQTSystemDirectoryA(
 	char* pBuffer, uint32_t uSize) BURGER_NOEXCEPT
 {
 	GetPathToQuickTimeFolder(pBuffer, uSize, nullptr);
-	return static_cast<uint32_t>(StringLength(pBuffer));
+	return static_cast<uint32_t>(string_length(pBuffer));
 }
 
 /*! ************************************
@@ -398,7 +398,7 @@ uint32_t BURGER_API Burger::Win32::GetQTApplicationDirectoryA(
 {
 	GetQTFolderFromRegistry("Software\\Apple Computer, Inc.\\QuickTime",
 		"InstallDir", pBuffer, uSize);
-	return static_cast<uint32_t>(StringLength(pBuffer));
+	return static_cast<uint32_t>(string_length(pBuffer));
 }
 
 /*! ************************************
@@ -462,7 +462,7 @@ uint32_t BURGER_API Burger::Win32::GetQTExtensionDirectoryA(
 			}
 		}
 	}
-	return static_cast<uint32_t>(StringLength(pBuffer));
+	return static_cast<uint32_t>(string_length(pBuffer));
 }
 
 /*! ************************************
@@ -508,7 +508,7 @@ uint32_t BURGER_API Burger::Win32::GetQTComponentDirectoryA(
 			StringConcatenate(pBuffer, "QuickTime\\");
 		}
 	}
-	return static_cast<uint32_t>(StringLength(pBuffer));
+	return static_cast<uint32_t>(string_length(pBuffer));
 }
 
 /*! ************************************
@@ -540,7 +540,7 @@ HINSTANCE BURGER_API Burger::Win32::QTLoadLibrary(
 
 	// Assume no DLL
 	HINSTANCE pResult = nullptr;
-	const uintptr_t uDLLNameLength = StringLength(pDLLName);
+	const uintptr_t uDLLNameLength = string_length(pDLLName);
 
 	// Get the path for Quicktime
 	if (GetPathToQuickTimeFolder(FinalPathname,

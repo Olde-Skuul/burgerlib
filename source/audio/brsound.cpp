@@ -78,7 +78,7 @@ struct AIFFCommon_t {			// COMM chunk
 	uint16_t m_uNumSampleFramesHI;	// Number of SAMPLES, not bytes (16 bit aligned)
 	uint16_t m_uNumSampleFramesLO;	
 	uint16_t m_uSampleSize;		// 8 or 16 bit
-	Burger::Float80Bit m_fxSampleRate;	// Extended floating point
+	Burger::float80_t m_fxSampleRate;	// Extended floating point
 	// AIFC specific data (m_uChunkLength>18)
 	char m_CompressionType[4];	// 4 character code for compression (16 bit aligned)
 	uint8_t m_CompressionString[1];	// Pascal string with the name of the compression algorithm

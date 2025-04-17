@@ -107,7 +107,7 @@ Burger::eError BURGER_API Burger::FileManager::get_volume_name(
 		uResult = kErrorVolumeNotFound;
 
 		// Drive name template ( "DVD:\\" )
-		uintptr_t uLength = StringLength(gVolumeNames[uVolumeNum]);
+		uintptr_t uLength = string_length(gVolumeNames[uVolumeNum]);
 		char InputName[16];
 		MemoryCopy(InputName, gVolumeNames[uVolumeNum], uLength);
 		InputName[uLength] = ':';
@@ -314,7 +314,7 @@ Burger::eError BURGER_API Burger::FileManager::create_directory_path(
 			// Skip to the next colon
 			pWork = StringCharacter(pWork, '\\');
 			if (!pWork) { // No colon found?
-				pWork = pNewFilename + StringLength(pNewFilename);
+				pWork = pNewFilename + string_length(pNewFilename);
 			}
 			Old = pWork[0];                // Get the previous char
 			pWork[0] = 0;                  // End the string

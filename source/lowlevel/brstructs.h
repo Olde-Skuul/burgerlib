@@ -2,7 +2,7 @@
 
 	Simple structures
 
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -29,7 +29,7 @@ struct Rect;
 namespace Burger {
 
 /** 80 bit float(Extended) */
-typedef uint8_t Float80Bit[10];
+typedef uint8_t float80_t[10];
 
 union uint32_float_t {
 
@@ -75,8 +75,10 @@ union uint64_double_t {
 
 	/** Value in binary */
 	uint64_t w;
+
 	/** Value as a 64 bit float */
 	double d;
+
 	/** Array of 2 32 bit words that map on the 64 bit value */
 	uint32_t w32[2];
 

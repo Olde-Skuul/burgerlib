@@ -893,6 +893,18 @@
 #define BURGER_DECLSPECNAKED __declspec(naked)
 #endif
 
+// Determine BURGER_THREAD_LOCAL for thread variables
+#if defined(BURGER_CPP11)
+#define BURGER_THREAD_LOCAL thread_local
+#elif defined(BURGER_CLANG) || defined(BURGER_GNUC)
+#define BURGER_THREAD_LOCAL __thread
+#elif defined(BURGER_MSVC) || \
+	(defined(BURGER_METROWERKS) && defined(BURGER_INTEL))
+#define BURGER_THREAD_LOCAL __declspec(thread)
+#else
+#define BURGER_THREAD_LOCAL
+#endif
+
 // Determine BURGER_68K_A0 etc
 #if (defined(BURGER_METROWERKS) && defined(BURGER_68K)) || defined(DOXYGEN)
 #define BURGER_68K_A0 :__A0

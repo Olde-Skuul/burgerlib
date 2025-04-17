@@ -502,7 +502,7 @@ uint_t BURGER_API Burger::Globals::LaunchURL(const char* pURL)
 	// Convert the string to a URL
 	CFURLRef URLReference =
 		CFURLCreateWithBytes(NULL, reinterpret_cast<const UInt8*>(pURL),
-			StringLength(pURL), kCFStringEncodingUTF8, NULL);
+		string_length(pURL), kCFStringEncodingUTF8, NULL);
 	OSStatus uResult = LSOpenCFURLRef(URLReference, 0);
 	CFRelease(URLReference);
 	return static_cast<uint_t>(uResult);

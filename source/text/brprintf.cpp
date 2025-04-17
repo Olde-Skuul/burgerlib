@@ -691,7 +691,7 @@ void BURGER_API Burger::SafePrint::ParamInfo_t::GetFormattedOutputLength(
 		// display as boolean text ("true" or "false")
 		// flags that modify output length: none
 	} else if (uConversionSpecifier == CONVSPEC_BOOLTEXT) {
-		uCharsCounted = StringLength(
+		uCharsCounted = string_length(
 			g_pBoolStrings[pArg->GetBool()]); // length of "true" : "false"
 
 		// Char is one character, 'nuff said
@@ -2938,7 +2938,7 @@ uint_t BURGER_API Burger::SafePrint::ProcessResults_t::FormatPreProcess(
 
 					// already specified the index?
 					if (bArgIndexSpecified) {
-						uErrorCode = kErrorDuplicateEntries;
+						uErrorCode = kErrorDuplicateEntry;
 						goto parse_error;
 					}
 
@@ -2985,7 +2985,7 @@ uint_t BURGER_API Burger::SafePrint::ProcessResults_t::FormatPreProcess(
 
 					if (pParamInfos[uCurrentCommandIndex].IsFlagSet(
 							optionFlag)) {
-						uErrorCode = kErrorDuplicateEntries;
+						uErrorCode = kErrorDuplicateEntry;
 						goto parse_error;
 					}
 
@@ -2999,7 +2999,7 @@ uint_t BURGER_API Burger::SafePrint::ProcessResults_t::FormatPreProcess(
 					// seen it before?
 					if (pParamInfos[uCurrentCommandIndex].IsFlagSet(
 							CONVFLAG_PRECISION_MARKER)) {
-						uErrorCode = kErrorDuplicateEntries;
+						uErrorCode = kErrorDuplicateEntry;
 						goto parse_error;
 					}
 
@@ -3063,7 +3063,7 @@ uint_t BURGER_API Burger::SafePrint::ProcessResults_t::FormatPreProcess(
 								CONVFLAG_INTERPRET_LLONG);
 						} else {
 							// must be an invalid length specifier combo
-							uErrorCode = kErrorDuplicateEntries;
+							uErrorCode = kErrorDuplicateEntry;
 							goto parse_error;
 						}
 					} else {
@@ -3935,7 +3935,7 @@ intptr_t BURGER_API Burger::GetFormattedLength(const char* pFormat,
 
 	// Analyze everything and determine what we'll output
 	const uint_t bParseOk = TheProcessResults.FormatPreProcess(
-		SafePrint::PARSEOPTION_DEFAULT, pFormat, StringLength(pFormat),
+		SafePrint::PARSEOPTION_DEFAULT, pFormat, string_length(pFormat),
 		uArgCount, ppArgs, BURGER_ARRAYSIZE(ParamIntoTable), ParamIntoTable);
 
 	// If there were no problems, return the output size... otherwise report 0
@@ -3989,7 +3989,7 @@ intptr_t BURGER_API Burger::SprintfUserAlloc(
 	}
 
 	// Setup for parsing engine
-	const uintptr_t uFormatLength = StringLength(pFormat);
+	const uintptr_t uFormatLength = string_length(pFormat);
 
 	SafePrint::ProcessResults_t TheProcessResults;
 	SafePrint::ParamInfo_t ParamIntoTable[SafePrint::kMAX_OUTPUT_COMMANDS];
@@ -4079,7 +4079,7 @@ intptr_t BURGER_API Burger::Sprintf(char* pOutput, const char* pFormat,
 
 	// Analyze everything and determine what we'll output
 	uint_t bParseOk = TheProcessResults.FormatPreProcess(
-		SafePrint::PARSEOPTION_DEFAULT, pFormat, StringLength(pFormat),
+		SafePrint::PARSEOPTION_DEFAULT, pFormat, string_length(pFormat),
 		uArgCount, ppArgs, BURGER_ARRAYSIZE(ParamIntoTable), ParamIntoTable);
 
 	// If there were no problems, format the output to the supplied buffer
@@ -4146,7 +4146,7 @@ intptr_t BURGER_API Burger::Snprintf(char* pOutput, uintptr_t uOutputSize,
 
 	// Analyze everything and determine what we'll output
 	const uint_t bParseOk = TheProcessResults.FormatPreProcess(
-		SafePrint::PARSEOPTION_DEFAULT, pFormat, StringLength(pFormat),
+		SafePrint::PARSEOPTION_DEFAULT, pFormat, string_length(pFormat),
 		uArgCount, ppArgs, BURGER_ARRAYSIZE(ParamIntoTable), ParamIntoTable);
 
 	// If there were no problems, format the output to the supplied buffer
@@ -4203,7 +4203,7 @@ intptr_t BURGER_API Burger::Printf(const char* pFormat, uintptr_t uArgCount,
 
 	// Analyze everything and determine what we'll output
 	const uint_t bParseOk = TheProcessResults.FormatPreProcess(
-		SafePrint::PARSEOPTION_DEFAULT, pFormat, StringLength(pFormat),
+		SafePrint::PARSEOPTION_DEFAULT, pFormat, string_length(pFormat),
 		uArgCount, ppArgs, BURGER_ARRAYSIZE(ParamIntoTable), ParamIntoTable);
 
 	// If there were no problems, format the output and send the results out via
@@ -4261,7 +4261,7 @@ intptr_t BURGER_API Burger::Fprintf(FILE* fp, const char* pFormat,
 
 	// Analyze everything and determine what we'll output
 	const uint_t bParseOk = TheProcessResults.FormatPreProcess(
-		SafePrint::PARSEOPTION_DEFAULT, pFormat, StringLength(pFormat),
+		SafePrint::PARSEOPTION_DEFAULT, pFormat, string_length(pFormat),
 		uArgCount, ppArgs, BURGER_ARRAYSIZE(ParamIntoTable), ParamIntoTable);
 
 	// If there were no problems, format the output and send the results out via
@@ -4317,7 +4317,7 @@ intptr_t BURGER_API Burger::DebugSnprintf(char* pOutput, uintptr_t uOutputSize,
 	SafePrint::ParamInfo_t ParamIntoTable[SafePrint::kMAX_OUTPUT_COMMANDS];
 	MemoryClear(ParamIntoTable, sizeof(ParamIntoTable));
 
-	const uintptr_t uFormatLength = StringLength(pFormat);
+	const uintptr_t uFormatLength = string_length(pFormat);
 	const uint_t bParseOk = TheProcessResults.FormatPreProcess(
 		SafePrint::PARSEOPTION_DEFAULT, pFormat, uFormatLength, uArgCount,
 		ppArgs, BURGER_ARRAYSIZE(ParamIntoTable), ParamIntoTable);

@@ -3,7 +3,7 @@
 	Intrinsics and subroutines exclusive to the Microsoft Visual Studio
 	compilers
 
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -90,7 +90,7 @@ long _InterlockedExchangeAdd(long volatile*, long);
 long _InterlockedCompareExchange(long volatile*, long, long);
 #endif
 #pragma intrinsic(_InterlockedExchange, _InterlockedExchangeAdd, \
-		_InterlockedCompareExchange)
+	_InterlockedCompareExchange)
 
 long __cdecl _InterlockedIncrement(long volatile*);
 long __cdecl _InterlockedDecrement(long volatile*);
@@ -103,8 +103,8 @@ __int64 _InterlockedDecrement64(__int64 volatile*);
 __int64 _InterlockedExchangeAdd64(__int64 volatile*, __int64);
 __int64 _InterlockedCompareExchange64(__int64 volatile*, __int64, __int64);
 #pragma intrinsic(_InterlockedExchange64, _InterlockedIncrement64, \
-		_InterlockedDecrement64, _InterlockedExchangeAdd64, \
-		_InterlockedCompareExchange64)
+	_InterlockedDecrement64, _InterlockedExchangeAdd64, \
+	_InterlockedCompareExchange64)
 
 // Not available on Xbox 360
 #if !defined(BURGER_XBOX360)

@@ -2,7 +2,7 @@
 
 	Simple structures
 
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -16,7 +16,7 @@
 
 /*! ************************************
 
-	\typedef Burger::Float80Bit
+	\typedef Burger::float80_t
 
 	This is a type to abstract the 80-bit floating point data type found in the
 	x8087 and 680x0 math co-processors. Currently, this type is hardly used

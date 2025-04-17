@@ -130,11 +130,11 @@ Burger::SimpleString::SimpleString(const char* pInput1, const char* pInput2)
 {
 	uintptr_t uLength1 = 0;
 	if (pInput1) {
-		uLength1 = StringLength(pInput1);
+		uLength1 = string_length(pInput1);
 	}
 	uintptr_t uLength2 = 0;
 	if (pInput2) {
-		uLength2 = StringLength(pInput2);
+		uLength2 = string_length(pInput2);
 	}
 	const char* pOutput = g_EmptyString; // Empty
 	uintptr_t uLength = uLength1 + uLength2;
@@ -176,15 +176,15 @@ Burger::SimpleString::SimpleString(
 {
 	uintptr_t uLength1 = 0;
 	if (pInput1) {
-		uLength1 = StringLength(pInput1);
+		uLength1 = string_length(pInput1);
 	}
 	uintptr_t uLength2 = 0;
 	if (pInput2) {
-		uLength2 = StringLength(pInput2);
+		uLength2 = string_length(pInput2);
 	}
 	uintptr_t uLength3 = 0;
 	if (pInput3) {
-		uLength3 = StringLength(pInput3);
+		uLength3 = string_length(pInput3);
 	}
 	const char* pOutput = g_EmptyString; // Empty
 	uintptr_t uLength = uLength1 + uLength2 + uLength3;
@@ -229,19 +229,19 @@ Burger::SimpleString::SimpleString(const char* pInput1, const char* pInput2,
 {
 	uintptr_t uLength1 = 0;
 	if (pInput1) {
-		uLength1 = StringLength(pInput1);
+		uLength1 = string_length(pInput1);
 	}
 	uintptr_t uLength2 = 0;
 	if (pInput2) {
-		uLength2 = StringLength(pInput2);
+		uLength2 = string_length(pInput2);
 	}
 	uintptr_t uLength3 = 0;
 	if (pInput3) {
-		uLength3 = StringLength(pInput3);
+		uLength3 = string_length(pInput3);
 	}
 	uintptr_t uLength4 = 0;
 	if (pInput4) {
-		uLength4 = StringLength(pInput4);
+		uLength4 = string_length(pInput4);
 	}
 	const char* pOutput = g_EmptyString; // Empty
 	uintptr_t uLength = uLength1 + uLength2 + uLength3 + uLength4;
@@ -293,23 +293,23 @@ Burger::SimpleString::SimpleString(const char* pInput1, const char* pInput2,
 {
 	uintptr_t uLength1 = 0;
 	if (pInput1) {
-		uLength1 = StringLength(pInput1);
+		uLength1 = string_length(pInput1);
 	}
 	uintptr_t uLength2 = 0;
 	if (pInput2) {
-		uLength2 = StringLength(pInput2);
+		uLength2 = string_length(pInput2);
 	}
 	uintptr_t uLength3 = 0;
 	if (pInput3) {
-		uLength3 = StringLength(pInput3);
+		uLength3 = string_length(pInput3);
 	}
 	uintptr_t uLength4 = 0;
 	if (pInput4) {
-		uLength4 = StringLength(pInput4);
+		uLength4 = string_length(pInput4);
 	}
 	uintptr_t uLength5 = 0;
 	if (pInput5) {
-		uLength5 = StringLength(pInput5);
+		uLength5 = string_length(pInput5);
 	}
 	const char* pOutput = g_EmptyString; // Empty
 	uintptr_t uLength = uLength1 + uLength2 + uLength3 + uLength4 + uLength5;
@@ -607,14 +607,14 @@ Burger::SimpleString::Clear(void)
 	Return the length (in bytes) of the "C" string contained
 	inside of this class. The terminating zero will not count
 	towards the total. The length is the same as if you called
-	Burger::StringLength(const char *) on the "C" string.
+	Burger::string_length(const char *) on the "C" string.
 
 	\note It isn't recommended to use this member function in
 	a bottleneck routine because the length is calculated and
 	not cached.
 
 	\return The length of the "C" string in bytes (Without counting the
-terminating zero).
+		terminating zero).
 
 	\sa Burger::SimpleString::IsEmpty(void) const
 

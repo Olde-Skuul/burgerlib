@@ -22,7 +22,7 @@
 
 //
 // COMPILER BUG! In Open Watcom 1.8 and 1.9, it can inline an assembly language
-// function (StringLength()) even though it's declared as __declspec(naked) This
+// function (string_length()) even though it's declared as __declspec(naked) This
 // means that the code could be inserted in a "C" function and since the
 // assembly has a ret instruction inside of it, it will return control too soon
 // resulting in a crash.
@@ -1870,7 +1870,7 @@ void BURGER_API Burger::StripLeading(
 void BURGER_API Burger::RemoveTrailingChar(
 	char* pInput, uint_t uRemove) BURGER_NOEXCEPT
 {
-	uintptr_t uLength = StringLength(pInput); // Index to the last char
+	uintptr_t uLength = string_length(pInput); // Index to the last char
 	if (uLength) {                            // Should I bother?
 		if (reinterpret_cast<uint8_t*>(pInput)[uLength - 1] == uRemove) {
 			pInput[uLength - 1] = 0;
@@ -1903,7 +1903,7 @@ void BURGER_API Burger::RemoveTrailingChar(
 void BURGER_API Burger::ForceTrailingChar(
 	char* pInput, uint_t uLast) BURGER_NOEXCEPT
 {
-	uintptr_t uLength = StringLength(pInput); // Index to the last char
+	uintptr_t uLength = string_length(pInput); // Index to the last char
 	if (!uLength ||                           // Always do it on an empty string
 		(reinterpret_cast<uint8_t*>(pInput)[uLength - 1] != uLast)) {
 		pInput[uLength] = static_cast<char>(uLast);
@@ -2452,7 +2452,7 @@ void BURGER_API Burger::SetFileExtension(
 
 /*! ************************************
 
-	\fn uintptr_t BURGER_API Burger::StringLength(const char *pInput)
+	\fn uintptr_t BURGER_API Burger::string_length(const char *pInput)
 	\brief Perform an ANSI compatible strlen().
 
 	Determine the length of a "C" string in memory. A "C" string is a random
@@ -2495,7 +2495,7 @@ void BURGER_API Burger::SetFileExtension(
 	!defined(DOXYGEN)
 
 // clang-format off
-BURGER_DECLSPECNAKED uintptr_t BURGER_API Burger::StringLength(
+BURGER_DECLSPECNAKED uintptr_t BURGER_API Burger::string_length(
 	const char* /* pInput */) BURGER_NOEXCEPT
 {
 	BURGER_ASM
@@ -2576,7 +2576,7 @@ DoAlign:			// Pre-align
 // And it compiles to excellent ARM code
 //
 
-uintptr_t BURGER_API Burger::StringLength(const char* pInput) BURGER_NOEXCEPT
+uintptr_t BURGER_API Burger::string_length(const char* pInput) BURGER_NOEXCEPT
 {
 	if (!pInput) {
 		return 0;
@@ -2659,7 +2659,7 @@ Skip1:;
 
 /*! ************************************
 
-	\fn uintptr_t BURGER_API Burger::StringLength(const uint16_t *pInput)
+	\fn uintptr_t BURGER_API Burger::string_length(const uint16_t *pInput)
 	\brief Perform an ANSI compatible strlen() for UTF16 strings..
 
 	Determine the length of a UTF16 "C" string in memory. A UTF16 "C" string is
@@ -2672,11 +2672,11 @@ Skip1:;
 
 	\param pInput Pointer to a UTF16 "C" string to determine the length
 	\return Length in values of the UTF16 "C" string sans the terminating zero.
-	\sa Burger::StringLength(const char *)
+	\sa Burger::string_length(const char *)
 
 ***************************************/
 
-uintptr_t BURGER_API Burger::StringLength(
+uintptr_t BURGER_API Burger::string_length(
 	const uint16_t* pInput) BURGER_NOEXCEPT
 {
 	uintptr_t uResult = 0; // Nothing found yet.
@@ -2708,7 +2708,7 @@ uintptr_t BURGER_API Burger::StringLength(
 	buffer. Use with caution.
 
 	\sa Burger::StringCopy(char *,uintptr_t,const char *) or
-		Burger::StringLength(const char *)
+		Burger::string_length(const char *)
 
 ***************************************/
 
@@ -2796,7 +2796,7 @@ void BURGER_API Burger::StringCopy(
 	\note This function will always zero terminate the output string and perform
 	nothing at all if the input size is zero.
 
-	\sa Burger::StringCopy(char *,const char *) or Burger::StringLength(const
+	\sa Burger::StringCopy(char *,const char *) or Burger::string_length(const
 		char *)
 
 ***************************************/
@@ -2805,7 +2805,7 @@ void BURGER_API Burger::StringCopy(
 	char* pOutput, uintptr_t uOutputSize, const char* pInput) BURGER_NOEXCEPT
 {
 	if (uOutputSize) {
-		uintptr_t uFinalLength = StringLength(pInput) + 1;
+		uintptr_t uFinalLength = string_length(pInput) + 1;
 		if (uFinalLength > uOutputSize) {
 			uFinalLength = uOutputSize - 1;
 			pOutput[uFinalLength] = 0;
@@ -2830,7 +2830,7 @@ void BURGER_API Burger::StringCopy(
 	\note This function will always zero terminate the output string and perform
 	nothing at all if the output size is zero.
 
-	\sa Burger::StringCopy(char *,const char *) or Burger::StringLength(const
+	\sa Burger::StringCopy(char *,const char *) or Burger::string_length(const
 		char *)
 
 ***************************************/
@@ -2863,7 +2863,7 @@ void BURGER_API Burger::StringCopy(char* pOutput, uintptr_t uOutputSize,
 		buffer. Use with caution.
 
 	\sa Burger::StringCopy(uint16_t *,uintptr_t,const uint16_t *) or
-		Burger::StringLength(const uint16_t *)
+		Burger::string_length(const uint16_t *)
 
 ***************************************/
 
@@ -2894,7 +2894,7 @@ void BURGER_API Burger::StringCopy(
 		nothing at all if the input size is zero.
 
 	\sa Burger::StringCopy(uint16_t *,const uint16_t *) or
-		Burger::StringLength(const uint16_t *)
+		Burger::string_length(const uint16_t *)
 
 ***************************************/
 
@@ -2902,7 +2902,7 @@ void BURGER_API Burger::StringCopy(uint16_t* pOutput, uintptr_t uOutputSize,
 	const uint16_t* pInput) BURGER_NOEXCEPT
 {
 	if (uOutputSize >= 2 && pOutput) {
-		uintptr_t uFinalLength = (StringLength(pInput) * 2) + 2;
+		uintptr_t uFinalLength = (string_length(pInput) * 2) + 2;
 		if (uFinalLength > uOutputSize) {
 			uFinalLength = uOutputSize - 2;
 			pOutput[uFinalLength / 2] = 0;
@@ -2928,7 +2928,7 @@ void BURGER_API Burger::StringCopy(uint16_t* pOutput, uintptr_t uOutputSize,
 		nothing at all if the output size is zero.
 
 	\sa Burger::StringCopy(uint16_t *,const uint16_t *) or
-		Burger::StringLength(const uint16_t *)
+		Burger::string_length(const uint16_t *)
 
 ***************************************/
 
@@ -2969,7 +2969,7 @@ void BURGER_API Burger::StringCopy(uint16_t* pOutput, uintptr_t uOutputSize,
 char* BURGER_API Burger::StringDuplicate(const char* pInput) BURGER_NOEXCEPT
 {
 	// Get the length
-	const uintptr_t uLength = StringLength(pInput) + 1;
+	const uintptr_t uLength = string_length(pInput) + 1;
 
 	// Allocate the memory
 	return static_cast<char*>(alloc_copy(pInput, uLength));
@@ -3000,7 +3000,7 @@ char* BURGER_API Burger::StringDuplicate(const char* pInput) BURGER_NOEXCEPT
 char* BURGER_API Burger::StringDuplicate(
 	const char* pInput, uintptr_t uPadding) BURGER_NOEXCEPT
 {
-	const uintptr_t uLength = StringLength(pInput) + 1; // Get the length
+	const uintptr_t uLength = string_length(pInput) + 1; // Get the length
 	char* pResult =
 		static_cast<char*>(Alloc(uLength + uPadding)); // Allocate the memory
 	if (pResult) {
@@ -3043,7 +3043,7 @@ void BURGER_API Burger::StringDelete(const char* pInput) BURGER_NOEXCEPT
 	\param pInput Pointer to the buffer with the "C" to copy from.
 
 	\sa Burger::StringConcatenate(char *,uintptr_t,const char *) or
-		Burger::StringLength(const char *)
+		Burger::string_length(const char *)
 
 ***************************************/
 
@@ -3051,7 +3051,7 @@ void BURGER_API Burger::StringConcatenate(
 	char* pOutput, const char* pInput) BURGER_NOEXCEPT
 {
 	// Get the end of the first string
-	uintptr_t uLength = StringLength(pOutput);
+	uintptr_t uLength = string_length(pOutput);
 	// Copy the string to the end of the first one
 	StringCopy(pOutput + uLength, pInput);
 }
@@ -3069,7 +3069,7 @@ void BURGER_API Burger::StringConcatenate(
 	\param pInput Pointer to the buffer with the "C" to copy from.
 
 	\sa Burger::StringConcatenate(char *,const char *) or
-		Burger::StringLength(const char *)
+		Burger::string_length(const char *)
 
 ***************************************/
 
@@ -3077,7 +3077,7 @@ void BURGER_API Burger::StringConcatenate(
 	char* pOutput, uintptr_t uOutputSize, const char* pInput) BURGER_NOEXCEPT
 {
 	// Get the end of the first string
-	uintptr_t uLength = StringLength(pOutput);
+	uintptr_t uLength = string_length(pOutput);
 	// Already out of bounds?
 	if (uLength < uOutputSize) {
 		// Adjust the output to all the data that won't be touched.
@@ -3101,7 +3101,7 @@ void BURGER_API Burger::StringConcatenate(
 	\param uInputSize Size in bytes of the input buffer
 
 	\sa Burger::StringConcatenate(char *,const char *) or
-		Burger::StringLength(const char *)
+		Burger::string_length(const char *)
 
 ***************************************/
 
@@ -3109,7 +3109,7 @@ void BURGER_API Burger::StringConcatenate(char* pOutput, uintptr_t uOutputSize,
 	const char* pInput, uintptr_t uInputSize) BURGER_NOEXCEPT
 {
 	// Get the end of the first string
-	uintptr_t uLength = StringLength(pOutput);
+	uintptr_t uLength = string_length(pOutput);
 	// Already out of bounds?
 	if (uLength < uOutputSize) {
 		// Adjust the output to all the data that won't be touched.
@@ -3133,7 +3133,7 @@ void BURGER_API Burger::StringConcatenate(char* pOutput, uintptr_t uOutputSize,
 	\param pInput Pointer to the buffer with the 16 bit "C" to copy from.
 
 	\sa Burger::StringConcatenate(uint16_t *,uintptr_t,const uint16_t *) or
-		Burger::StringLength(const uint16_t *)
+		Burger::string_length(const uint16_t *)
 
 ***************************************/
 
@@ -3141,7 +3141,7 @@ void BURGER_API Burger::StringConcatenate(
 	uint16_t* pOutput, const uint16_t* pInput) BURGER_NOEXCEPT
 {
 	// Get the end of the first string
-	uintptr_t uLength = StringLength(pOutput);
+	uintptr_t uLength = string_length(pOutput);
 	// Copy the string to the end of the first one
 	StringCopy(pOutput + uLength, pInput);
 }
@@ -3161,7 +3161,7 @@ void BURGER_API Burger::StringConcatenate(
 	\param pInput Pointer to the buffer with the 16 bit "C" to copy from.
 
 	\sa Burger::StringConcatenate(uint16_t *,const uint16_t *) or
-		Burger::StringLength(const uint16_t *)
+		Burger::string_length(const uint16_t *)
 
 ***************************************/
 
@@ -3169,7 +3169,7 @@ void BURGER_API Burger::StringConcatenate(uint16_t* pOutput,
 	uintptr_t uOutputSize, const uint16_t* pInput) BURGER_NOEXCEPT
 {
 	// Get the end of the first string
-	uintptr_t uLength = StringLength(pOutput);
+	uintptr_t uLength = string_length(pOutput);
 	// Already out of bounds?
 	if ((uLength * 2) < uOutputSize) {
 		// Adjust the output to all the data that won't be touched.
@@ -3947,7 +3947,7 @@ uint_t BURGER_API Burger::StringEndsWith(
 	if (pInput) {
 
 		// Get the length of the string
-		uintptr_t uLength = StringLength(pInput);
+		uintptr_t uLength = string_length(pInput);
 
 		// If the string is empty or the last character is not a match, then
 		// append the character
@@ -3993,7 +3993,7 @@ uint_t BURGER_API Burger::StringEndsWith(
 	if (pInput) {
 
 		// Get the length of the string
-		uintptr_t uLength = StringLength(pInput);
+		uintptr_t uLength = string_length(pInput);
 
 		// If the string is empty or the last character is not a match, then
 		// append the character
@@ -4160,7 +4160,7 @@ uintptr_t BURGER_API Burger::StringStopAt(
 		uResult = 0;
 	} else if (!pDelimiters || !pDelimiters[0]) {
 		// If there are no delimiters, return length of the string immediately
-		uResult = StringLength(pInput);
+		uResult = string_length(pInput);
 	} else {
 
 		// Scan the string
@@ -4225,7 +4225,7 @@ uintptr_t BURGER_API Burger::StringStopAt(
 		uResult = 0;
 	} else if (!pDelimiters || !pDelimiters[0]) {
 		// If there are no delimiters, return length of the string immediately
-		uResult = StringLength(pInput);
+		uResult = string_length(pInput);
 	} else {
 
 		// Scan the string

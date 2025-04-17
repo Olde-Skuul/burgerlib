@@ -252,7 +252,7 @@ void BURGER_ANSIAPI Burger::Globals::SetErrorMsg(const char* pMessage, ...)
 			Args); // Create the message
 #else
 		vsprintf(g_ErrorMsg, pMessage, Args); // Create the message
-		BURGER_ASSERT(StringLength(g_ErrorMsg) < sizeof(g_ErrorMsg));
+		BURGER_ASSERT(string_length(g_ErrorMsg) < sizeof(g_ErrorMsg));
 #endif
 		va_end(Args); // End parm passing
 	} else {

@@ -106,7 +106,7 @@ Burger::eError BURGER_API Burger::FileManager::get_volume_name(
 
 					// Prefix the volume name with a colon
 					OutputName[0] = ':';
-					uintptr_t uLength = StringLength(OutputName + 1);
+					uintptr_t uLength = string_length(OutputName + 1);
 
 					// No volume name? Make a fake one based on drive letter.
 					if (!uLength) {

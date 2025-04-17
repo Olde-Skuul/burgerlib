@@ -206,7 +206,7 @@ double BURGER_API Burger::modulo_radians(double dInput) BURGER_NOEXCEPT
 
 #if defined(BURGER_X86)
 
-static BURGER_USED const Burger::Float80Bit g_lPI2 = {
+static BURGER_USED const Burger::float80_t g_lPI2 = {
 	0x35, 0xC2, 0x68, 0x21, 0xA2, 0xDA, 0x0F, 0xC9, 0x01, 0x40};
 
 #if defined(BURGER_METROWERKS) || defined(BURGER_WATCOM) || defined(BURGER_MSVC)

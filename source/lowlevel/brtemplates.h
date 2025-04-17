@@ -2,7 +2,7 @@
 
 	Templates
 
-	Copyright (c) 2021-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 2021-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -242,14 +242,15 @@ struct remove_const<T const> {
 
 #if !(defined(BURGER_METROWERKS) && defined(BURGER_X86))
 template<class T>
-struct remove_const<T const[]>
-{
+struct remove_const<T const[]> {
 	typedef T type[];
 };
 #endif
 
 template<class T, uintptr_t N>
-struct remove_const<T const [N]> { typedef T type[N]; };
+struct remove_const<T const[N]> {
+	typedef T type[N];
+};
 #endif
 
 // Implementation of remove_volatile
@@ -266,14 +267,15 @@ struct remove_volatile<T volatile> {
 
 #if !(defined(BURGER_METROWERKS) && defined(BURGER_X86))
 template<class T>
-struct remove_volatile<T volatile[]>
-{
+struct remove_volatile<T volatile[]> {
 	typedef T type[];
 };
 #endif
 
 template<class T, uintptr_t N>
-struct remove_volatile<T volatile [N]> { typedef T type[N]; };
+struct remove_volatile<T volatile[N]> {
+	typedef T type[N];
+};
 #endif
 
 // Implementation of remove_cv

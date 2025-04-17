@@ -676,7 +676,7 @@ uint32_t BURGER_API Burger::Win32::get_DirectX_version_via_file_versions(
 		szPath[MAX_PATH - 1] = 0;
 
 		// Switch off the ddraw version
-		uintptr_t uLen = StringLength(szPath);
+		uintptr_t uLen = string_length(szPath);
 		uint16_t* pDest = szPath + uLen;
 		uintptr_t uRemaining = sizeof(szPath) - (uLen * sizeof(uint16_t));
 

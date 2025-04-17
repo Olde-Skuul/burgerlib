@@ -467,7 +467,7 @@ uint32_t BURGER_API Burger::ISOLatin1::translate_from_UTF8(
 	\param uOutputSize Size of the output buffer in bytes.
 	\param pInput A UTF8 encoded "C" string. nullptr will page fault.
 
-	\return Burger::StringLength() of the potential output. It is valid, even if
+	\return Burger::string_length() of the potential output. It is valid, even if
 		the output buffer wasn't large enough to contain everything.
 
 ***************************************/
@@ -506,7 +506,7 @@ uintptr_t BURGER_API Burger::ISOLatin1::translate_from_UTF8(
 		zero.
 	\param uInputSize Size of the input byte array.
 
-	\return Burger::StringLength() of the potential output. It is valid, even if
+	\return Burger::string_length() of the potential output. It is valid, even if
 		the output buffer wasn't large enough to contain everything.
 
 ***************************************/

@@ -56,7 +56,7 @@ enum eError {
 	/** Failed unit test */
 	kErrorFailedTest,
 	/** Data was found more than once */
-	kErrorDuplicateEntries,
+	kErrorDuplicateEntry,
 	/** Restart is required */
 	kErrorRestartRequired,
 
@@ -182,6 +182,20 @@ enum eError {
 	/** Thread not modified */
 	kErrorThreadNotModified
 };
+
+struct error_message_t {
+	/** Burgerlib error message */
+	eError m_uError;
+	/** Operating system native error code */
+	uint32_t m_uSystemError;
+	/** Error message in English */
+	char m_Message[256];
+};
+
+extern const error_message_t* BURGER_API get_last_error(
+	void) BURGER_NOEXCEPT;
+extern void BURGER_API set_last_error(eError uError, uint32_t uSystemError = 0,
+	const char* pMessage = nullptr) BURGER_NOEXCEPT;
 
 extern const char* BURGER_API error_lookup_string(
 	eError uError) BURGER_NOEXCEPT;

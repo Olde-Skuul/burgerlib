@@ -2435,7 +2435,7 @@ supplied callback. It will ensure that the linkage will be correct. This will
 	\def BURGER_DECLSPECNAKED
 	\brief "C" compiler keyword for a pure assembly function.
 
-	No one could agree on what would the keyword be to declare a "C" function
+	No one could agree on what would be the keyword be to declare a "C" function
 	that is 100% assembly. This will map to asm or __declspec(naked) depending
 	on the compiler.
 
@@ -2456,6 +2456,26 @@ supplied callback. It will ensure that the linkage will be correct. This will
 	\endcode
 
 	\sa BURGER_X86 or BURGER_FASTCALLENABLED
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_THREAD_LOCAL
+	\brief "C" compiler keyword for thread local storage.
+
+	No one could agree on what would be the keyword to declare a variable as
+	thread local storage. This will declare the variable on compilers that
+	support this feature. This was standardized on C++ 11 or higher.
+
+	\note The WiiU, MacOS classic, and Watcom do not support thread local
+		storage and this define will be empty.
+
+	\code
+	BURGER_THREAD_LOCAL uint32_t SharedInt;
+	\endcode
+
+	\sa BURGER_WATCOM, or BURGER_CPP11
 
 ***************************************/
 
@@ -2854,7 +2874,7 @@ supplied callback. It will ensure that the linkage will be correct. This will
 	BURGER_STATIC_ASSERT(sizeof(eType)==sizeof(int));
 
 	// Use BURGER_ASSERT(x) instead, since this example is resolved at runtime
-	BURGER_STATIC_ASSERT(Burger::StringLength("EpicFail")==8);
+	BURGER_STATIC_ASSERT(Burger::string_length("EpicFail")==8);
 	\endcode
 
 ***************************************/

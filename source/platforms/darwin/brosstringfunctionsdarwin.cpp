@@ -64,7 +64,7 @@ void BURGER_API Burger::StringCopy(String* pOutput, const __CFString* pInput) BU
 				// Note: Due to the manual copy, don't assume
 				// pOutput->length() returns a valid value. Once
 				// SetBufferSize() completes, the length is correct
-				pOutput->resize(StringLength(pOutput->c_str()));
+				pOutput->resize(string_length(pOutput->c_str()));
 			}
 		}
 	}

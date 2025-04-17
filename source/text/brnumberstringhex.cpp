@@ -211,7 +211,7 @@
 	\fn Burger::NumberStringHex::length() const
 	\brief Get the length of the string in bytes.
 
-	By calling Burger::StringLength(), return the length of the string contained
+	By calling Burger::string_length(), return the length of the string contained
 	within.
 
 	\note This function performs no caching. If the length of the string is not

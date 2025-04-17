@@ -216,7 +216,7 @@ Burger::String16::String16(const uint16_t* pInput)
 	if (!pInput) {
 		pInput = g_EmptyString16;
 	}
-	uintptr_t uInputLength = StringLength(pInput);
+	uintptr_t uInputLength = string_length(pInput);
 	uint16_t* pWork = m_Raw;
 	if (uInputLength >= BUFFERSIZE) { // Buffer big enough?
 		pWork = static_cast<uint16_t*>(
@@ -355,7 +355,7 @@ Burger::eError BURGER_API Burger::String16::assign(
 		pInput = g_EmptyString16;
 	}
 	uint16_t* pDest = m_Raw;
-	uintptr_t uInputLength = StringLength(pInput); // Length of the new string
+	uintptr_t uInputLength = string_length(pInput); // Length of the new string
 	if (uInputLength >= BUFFERSIZE) {              // Buffer big enough?
 		pDest = static_cast<uint16_t*>(
 			Alloc((uInputLength + 1) * sizeof(uint16_t)));
@@ -434,7 +434,7 @@ terminating zero.
 
 	\note If a buffer of 100 characters is requested, 202 bytes will be
 allocated to hold a string up to 100 characters in length with the 101st short
-being the terminating zero. The output of Burger::StringLength(const uint16_t *)
+being the terminating zero. The output of Burger::string_length(const uint16_t *)
 is acceptable as input for a new string.
 
 	\param uSize Number of characters to set the buffer to

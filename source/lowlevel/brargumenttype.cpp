@@ -1377,7 +1377,7 @@ uintptr_t BURGER_API Burger::ArgumentType::GetTextLength(
 		(m_eType <= kArgumentTypeLastCString)) {
 		// C string
 		if (m_Data.m_pChar) {
-			uResult = StringLength(m_Data.m_pChar);
+			uResult = string_length(m_Data.m_pChar);
 		} else {
 			uResult = sizeof(g_NullString) - 1;
 		}

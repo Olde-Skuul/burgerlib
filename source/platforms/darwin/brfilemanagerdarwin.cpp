@@ -52,7 +52,7 @@ void BURGER_API Burger::FileManager::platform_setup(void) BURGER_NOEXCEPT
 	if (!uResult) {
 		// Set the initial prefix
 		const char* pBootName = MyFilename.c_str();
-		m_uBootNameSize = StringLength(pBootName);
+		m_uBootNameSize = string_length(pBootName);
 		m_pBootName = StringDuplicate(pBootName);
 	}
 }

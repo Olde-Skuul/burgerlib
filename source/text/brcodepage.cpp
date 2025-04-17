@@ -141,7 +141,7 @@ uint32_t BURGER_API Burger::translate_from_UTF8(
 	\param pTranslateTable Pointer to a 128 entry code page lookup table that
 		would convert the code page to UTF8 for a reverse lookup.
 
-	\return Burger::StringLength() of the potential output. It is valid, even if
+	\return Burger::string_length() of the potential output. It is valid, even if
 		the output buffer wasn't large enough to contain everything.
 
 ***************************************/
@@ -275,7 +275,7 @@ uintptr_t BURGER_API Burger::translate_from_UTF8(char* pOutput,
 	\param pTranslateTable Pointer to a 128 entry code page lookup table that
 		would convert the code page to UTF8 for a reverse lookup.
 
-	\return Burger::StringLength() of the potential output. It is valid, even if
+	\return Burger::string_length() of the potential output. It is valid, even if
 		the output buffer wasn't large enough to contain everything.
 
 ***************************************/

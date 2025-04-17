@@ -42,7 +42,7 @@ static const ErrorLookup_t g_ErrorLookup[] = {{Burger::kErrorNone, "No error"},
 	{Burger::kErrorOutOfEntries, "Out of available entries"},
 	{Burger::kErrorOutOfBounds, "Index is beyond the allowed range"},
 	{Burger::kErrorFailedTest, "Unit test failure"},
-	{Burger::kErrorDuplicateEntries, "Data was found more than once"},
+	{Burger::kErrorDuplicateEntry, "Data was found more than once"},
 	{Burger::kErrorRestartRequired, "Restart is required"},
 	{Burger::kErrorFile, "File system failure"},
 	{Burger::kErrorFileNotFound, "File not found"},
@@ -197,7 +197,7 @@ uintptr_t BURGER_API Burger::error_get_string(
 	const char* pErrorMessage = error_lookup_string(uError);
 
 	// Return the string
-	const uintptr_t uStringLength = StringLength(pErrorMessage);
+	const uintptr_t uStringLength = string_length(pErrorMessage);
 	if (uOutputSize) {
 		StringCopy(pOutput, uOutputSize, pErrorMessage);
 	}

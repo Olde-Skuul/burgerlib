@@ -358,7 +358,7 @@ Burger::eError BURGER_API Burger::Filename::join(
 	eError uResult = kErrorNone;
 	if (pInput) {
 		// Perform the actual work
-		uResult = join(pInput, StringLength(pInput));
+		uResult = join(pInput, string_length(pInput));
 	}
 	return uResult;
 }
@@ -643,7 +643,7 @@ Burger::eError BURGER_API Burger::Filename::set_file_extension(
 		if (pExtension[0] == '.') {
 			++pExtension;
 		}
-		uExtensionLength = StringLength(pExtension);
+		uExtensionLength = string_length(pExtension);
 	}
 
 	eError uResult = kErrorNone;

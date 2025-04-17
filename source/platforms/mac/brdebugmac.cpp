@@ -91,7 +91,7 @@ void BURGER_API Burger::OkAlertMessage(
 	uintptr_t uTitleLen = 0;
 	if (pTitle) {
 		// Get the length of the title string
-		uTitleLen = StringLength(pTitle);
+		uTitleLen = string_length(pTitle);
 	}
 
 	// Convert the title to a pascal string
@@ -99,7 +99,7 @@ void BURGER_API Burger::OkAlertMessage(
 	CStringToPString(PascalTitle, pTitle);
 
 	// Size of the message
-	uint_t uMessageLength = StringLength(pMessage);
+	uint_t uMessageLength = string_length(pMessage);
 	Handle hItemList =
 		NewHandle(static_cast<Size>(sizeof(g_OkTemplate) + 1 + uMessageLength));
 
@@ -194,7 +194,7 @@ uint_t BURGER_API Burger::OkCancelAlertMessage(
 	uintptr_t uTitleLen = 0;
 	if (pTitle) {
 		// Get the length of the title string
-		uTitleLen = StringLength(pTitle);
+		uTitleLen = string_length(pTitle);
 	}
 
 	// Convert the title to a pascal string
@@ -205,7 +205,7 @@ uint_t BURGER_API Burger::OkCancelAlertMessage(
 	uint_t bResult = FALSE;
 
 	// Size of the message
-	uintptr_t uMessageLen = StringLength(pMessage);
+	uintptr_t uMessageLen = string_length(pMessage);
 	Handle hItemList = NewHandle(
 		static_cast<Size>(sizeof(g_OkCancelTemplate) + 1 + uMessageLen));
 	// Ok?

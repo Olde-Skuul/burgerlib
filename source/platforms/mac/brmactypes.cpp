@@ -2179,7 +2179,7 @@ int BURGER_API Burger::DesktopSetComment(short svRefNum, long lDirID,
 		// Make sure the comment is a maximum of 200 characters, because some
 		// file systems don't check and it's good to at least TRY to follow the
 		// documentation of the Desktop Manager
-		uintptr_t uStringLength = StringLength(pComment);
+		uintptr_t uStringLength = string_length(pComment);
 		if (uStringLength > 200U) {
 			uStringLength = 200U;
 		}

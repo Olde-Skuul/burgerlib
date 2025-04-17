@@ -451,7 +451,7 @@ Burger::eError BURGER_API Burger::Filename::set_native(
 			MyFilename.set_native(lDirID, sVRefNum); /* Get the directory */
 		if (!uResult) {                              /* Did I get a path? */
 			StringCopy(Output, MyFilename.c_str());  /* Copy to output */
-			Output = Output + StringLength(Output);  /* Fix pointer */
+			Output = Output + string_length(Output);  /* Fix pointer */
 		}
 		if (pInput[0]) { /* Was there a leading colon? */
 			++pInput;    /* Accept the leading colon */
@@ -945,7 +945,7 @@ Burger::eError BURGER_API Burger::Filename::get_native_internal(
 
 			// No colon end? Point to the terminating zero
 			if (!pEnd) {
-				pEnd = pInput + StringLength(pInput);
+				pEnd = pInput + string_length(pInput);
 			}
 
 			// Create a string from the directory name
@@ -1067,7 +1067,7 @@ Burger::eError BURGER_API Burger::Filename::get_native_Carbon(
 
 			// No colon end? Point to the terminating zero
 			if (!pEnd) {
-				pEnd = pInput + StringLength(pInput);
+				pEnd = pInput + string_length(pInput);
 			}
 
 			// Create a string from the directory name

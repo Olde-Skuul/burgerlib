@@ -709,7 +709,7 @@ Burger::eError BURGER_API Burger::FileManager::get_volume_name(
 	}
 
 	// Size of the string
-	uintptr_t uLength = StringLength(pRealBuffer + 30);
+	uintptr_t uLength = string_length(pRealBuffer + 30);
 	if (!uLength) {
 		// Generic disk name
 		StringCopy(pRealBuffer + 30, "C_DRIVE");

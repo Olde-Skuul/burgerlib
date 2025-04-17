@@ -262,7 +262,7 @@ int BURGER_API Burger::CommandParameter::Process(int argc, const char** argv,
                     do {
                         const char* pParameterName = ppParameterNames[0];
                         ++ppParameterNames;
-                        const uintptr_t uCommandLen = StringLength(pParameterName);
+                        const uintptr_t uCommandLen = string_length(pParameterName);
                         // Is this a match?
                         if (!MemoryCaseCompare(
                                 pParameterName, pParmText, uCommandLen)) {

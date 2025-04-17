@@ -41,7 +41,7 @@
 #endif
 
 // Pi * 2 in 80 bit format
-extern const Burger::Float80Bit Pi280bit = {
+extern const Burger::float80_t Pi280bit = {
 	0x35, 0xc2, 0x68, 0x21, 0xa2, 0xda, 0x0f, 0xc9, 0x00, 0x40};
 #endif
 
@@ -2800,12 +2800,12 @@ double BURGER_API Burger::get_modulo(double dInput, double dDivisor) BURGER_NOEX
 
 	\param pInput Pointer to the 80 bit floating point number
 	\return Value in the form of a double
-	\sa little_endian_load_extended(const Float80Bit)
+	\sa little_endian_load_extended(const float80_t)
 
 ***************************************/
 
 double BURGER_API Burger::big_endian_load_extended(
-	const Float80Bit pInput) BURGER_NOEXCEPT
+	const float80_t pInput) BURGER_NOEXCEPT
 {
 	// Union to expose the double
 	union {
@@ -2870,12 +2870,12 @@ double BURGER_API Burger::big_endian_load_extended(
 
 	\param pInput Pointer to the 80 bit floating point number
 	\return Value in the form of a double
-	\sa big_endian_load_extended(const Float80Bit)
+	\sa big_endian_load_extended(const float80_t)
 
 ***************************************/
 
 double BURGER_API Burger::little_endian_load_extended(
-	const Float80Bit pInput) BURGER_NOEXCEPT
+	const float80_t pInput) BURGER_NOEXCEPT
 {
 	// Union to expose the double
 	union {

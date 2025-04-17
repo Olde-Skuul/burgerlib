@@ -155,7 +155,7 @@ Burger::eError BURGER_API Burger::Filename::set_native(
 	m_NativeFilename.assign(pInput);
 
 	// Determine the length of the prefix
-	uintptr_t uInputLength = StringLength(pInput);
+	uintptr_t uInputLength = string_length(pInput);
 	const char* pBaseName;
 	uintptr_t uBaseNameLength;
 

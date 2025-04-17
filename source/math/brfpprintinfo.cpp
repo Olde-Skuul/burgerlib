@@ -244,7 +244,7 @@ void BURGER_API Burger::FPPrintInfo::analyze_float(
 		// No digits, but has a special string.
 		m_bHasIntegerPart = FALSE;
 		m_bHasFractionalPart = FALSE;
-		m_uSpecialFormDigits = static_cast<uint32_t>(StringLength(pText));
+		m_uSpecialFormDigits = static_cast<uint32_t>(string_length(pText));
 		m_uFirstNonZeroIntDigitPos = 0;
 		m_uLastNonZeroIntDigitPos = 0;
 		m_uFirstNonZeroFracDigitPos = 0;
@@ -269,7 +269,7 @@ void BURGER_API Burger::FPPrintInfo::analyze_float(
 
 		m_bHasIntegerPart = FALSE;
 		m_bHasFractionalPart = FALSE;
-		m_uSpecialFormDigits = static_cast<uint32_t>(StringLength(pText));
+		m_uSpecialFormDigits = static_cast<uint32_t>(string_length(pText));
 		m_uFirstNonZeroIntDigitPos = 0;
 		m_uLastNonZeroIntDigitPos = 0;
 		m_uFirstNonZeroFracDigitPos = 0;

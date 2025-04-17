@@ -251,8 +251,8 @@ extern char* BURGER_API GetFileExtension(const char* pInput) BURGER_NOEXCEPT;
 extern void BURGER_API SetFileExtension(
 	char* pInput, const char* pNewExtension) BURGER_NOEXCEPT;
 
-extern uintptr_t BURGER_API StringLength(const char* pInput) BURGER_NOEXCEPT;
-extern uintptr_t BURGER_API StringLength(
+extern uintptr_t BURGER_API string_length(const char* pInput) BURGER_NOEXCEPT;
+extern uintptr_t BURGER_API string_length(
 	const uint16_t* pInput) BURGER_NOEXCEPT;
 
 extern void BURGER_API StringCopy(

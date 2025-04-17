@@ -93,11 +93,11 @@ public:
 	}
 	BURGER_INLINE uintptr_t size(void) const BURGER_NOEXCEPT
 	{
-		return StringLength(m_Data);
+		return string_length(m_Data);
 	}
 	BURGER_INLINE uintptr_t length(void) const BURGER_NOEXCEPT
 	{
-		return StringLength(m_Data);
+		return string_length(m_Data);
 	}
 };
 }

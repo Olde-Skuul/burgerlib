@@ -2,7 +2,7 @@
 
 	X86 assembly for Metrowerks Codewarrior
 
-	Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright 1995-2025 by Rebecca Ann Heineman becky@burgerbecky.com
 
 	Build with the Metrowerks 9.0 Pro C compiler
 

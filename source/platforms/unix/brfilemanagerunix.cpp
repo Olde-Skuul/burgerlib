@@ -513,7 +513,7 @@ Burger::eError BURGER_API Burger::FileManager::get_volume_name(
 
 				// Ignore . and ..
 				if (pDirEntry->d_name[0] == '.') {
-					const uintptr_t uD_Namlen = StringLength(pDirEntry->d_name);
+					const uintptr_t uD_Namlen = string_length(pDirEntry->d_name);
 					if ((uD_Namlen == 1) ||
 						((uD_Namlen == 2) && (pDirEntry->d_name[1] == '.'))) {
 
@@ -531,7 +531,7 @@ Burger::eError BURGER_API Burger::FileManager::get_volume_name(
 
 							// Insert a starting and ending colon
 							TempBuffer[0] = ':';
-							uintptr_t uIndex = StringLength(pName);
+							uintptr_t uIndex = string_length(pName);
 
 							// Failsafe
 							uIndex =

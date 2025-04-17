@@ -403,7 +403,7 @@ static Burger::eError BURGER_API GetMacModelIdentifierClassic(
 			pOutput, kMachineNameStrID, static_cast<short>(lResponse));
 		// This string sometimes has extra spaces, remove them
         Burger::StripLeadingAndTrailingSpaces(pOutput->c_str());
-        pOutput->resize(Burger::StringLength(pOutput->c_str()));
+        pOutput->resize(Burger::string_length(pOutput->c_str()));
 	}
 	return uResult;
 }
@@ -645,7 +645,7 @@ void BURGER_API Burger::StringCopy(String* pOutput, CFStringRef pInput)
 				// Note: Due to the manual copy, don't assume
 				// pOutput->GetLength() returns a valid value. Once
 				// SetBufferSize() completes, the length is correct
-				pOutput->resize(StringLength(pOutput->c_str()));
+				pOutput->resize(string_length(pOutput->c_str()));
 			}
 		}
 	}

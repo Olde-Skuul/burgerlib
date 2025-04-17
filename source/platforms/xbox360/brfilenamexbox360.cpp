@@ -71,7 +71,7 @@ const char* Burger::Filename::get_native(void) BURGER_NOEXCEPT
 		// Get the path pointer and length
 		const uint8_t* pPath = reinterpret_cast<uint8_t*>(m_Filename.c_str());
 		uintptr_t uPathLength =
-			StringLength(reinterpret_cast<const char*>(pPath));
+		string_length(reinterpret_cast<const char*>(pPath));
 
 		m_NativeFilename.clear();
 

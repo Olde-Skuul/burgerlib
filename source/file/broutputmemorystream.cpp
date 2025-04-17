@@ -788,7 +788,7 @@ Burger::eError BURGER_API Burger::OutputMemoryStream::AppendCString(
 		Append(static_cast<uint8_t>(0));
 	} else {
 		// Get the length
-		const uintptr_t uLength = StringLength(pString);
+		const uintptr_t uLength = string_length(pString);
 		// Insert in one go
 		Append(pString, uLength + 1);
 	}
@@ -833,7 +833,7 @@ Burger::eError BURGER_API Burger::OutputMemoryStream::AppendPString(
 	const char* pString) BURGER_NOEXCEPT
 {
 	if (pString) {
-		uintptr_t uLength = StringLength(pString);
+		uintptr_t uLength = string_length(pString);
 		// Truncate to the maximum length of a "P" string
 		if (uLength >= 256) {
 			uLength = 255;

@@ -516,7 +516,7 @@ Burger::NumberString& Burger::NumberString::operator=(
 	\fn Burger::NumberString::size() const
 	\brief Get the length of the string in bytes.
 
-	By calling StringLength(), return the length of the string contained
+	By calling string_length(), return the length of the string contained
 	within.
 
 	\note This function performs no caching. If the length of the string is not
@@ -533,7 +533,7 @@ Burger::NumberString& Burger::NumberString::operator=(
 	\fn Burger::NumberString::length() const
 	\brief Get the length of the string in bytes.
 
-	By calling StringLength(), return the length of the string contained
+	By calling string_length(), return the length of the string contained
 	within.
 
 	\note This function performs no caching. If the length of the string is not

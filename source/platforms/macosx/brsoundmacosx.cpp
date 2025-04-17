@@ -1278,7 +1278,7 @@ uint_t BURGER_API Burger::SoundManager::GetAudioModes(
 				// Some devices have whitespace, remove it
 				StripLeadingAndTrailingSpaces(Entry.m_DeviceName.c_str());
 				Entry.m_DeviceName.resize(
-					StringLength(Entry.m_DeviceName.c_str()));
+					string_length(Entry.m_DeviceName.c_str()));
 
 				// Mac OSX performs the translation in software
 				Entry.m_b8Bit = TRUE;

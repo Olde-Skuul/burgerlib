@@ -291,7 +291,7 @@ uintptr_t BURGER_API Burger::Flash::DisassembleActionScript(const uint8_t* pInpu
 				Debug::PrintString(" \"");
 				Debug::PrintString(reinterpret_cast<const char *>(pInput+3));
 				Debug::PrintString("\", \"");
-				Debug::PrintString(reinterpret_cast<const char *>(pInput+4)+StringLength(reinterpret_cast<const char *>(pInput+3)));
+				Debug::PrintString(reinterpret_cast<const char *>(pInput+4)+string_length(reinterpret_cast<const char *>(pInput+3)));
 				Debug::PrintString("\"\n");
 				const_cast<uint8_t *>(pInput)[uResult] = uTemp;
 			}
@@ -333,7 +333,7 @@ uintptr_t BURGER_API Burger::Flash::DisassembleActionScript(const uint8_t* pInpu
 						Debug::PrintString(" STRING:\"");
 						Debug::PrintString(reinterpret_cast<const char *>(pInput));
 						Debug::PrintString("\"");
-						pInput+=StringLength(reinterpret_cast<const char *>(pInput))+1;
+						pInput+=string_length(reinterpret_cast<const char *>(pInput))+1;
 						break;
 					case 1:
 						// 32 bit float (Little endian)
@@ -393,7 +393,7 @@ uintptr_t BURGER_API Burger::Flash::DisassembleActionScript(const uint8_t* pInpu
 							Debug::PrintString(" \"");
 							Debug::PrintString(reinterpret_cast<const char *>(pInput));
 							Debug::PrintString("\"");
-							pInput+=StringLength(reinterpret_cast<const char *>(pInput))+1;
+							pInput+=string_length(reinterpret_cast<const char *>(pInput))+1;
 						} while (--uCount);
 						pTemp[0] = uTemp;
 					}
@@ -406,7 +406,7 @@ uintptr_t BURGER_API Burger::Flash::DisassembleActionScript(const uint8_t* pInpu
 				uintptr_t uLength = LittleEndian::load_unaligned(reinterpret_cast<const uint16_t *>(pInput+1));
 				uResult = uLength+3;
 				const char *pFunctionName = reinterpret_cast<const char *>(pInput+3);
-				pInput += StringLength(pFunctionName)+4;
+				pInput += string_length(pFunctionName)+4;
 				uint_t uNumParams = LittleEndian::load_unaligned(reinterpret_cast<const uint16_t *>(pInput));
 				uint_t uRegisterCount = pInput[2];
 				pInput+=3;
@@ -445,7 +445,7 @@ uintptr_t BURGER_API Burger::Flash::DisassembleActionScript(const uint8_t* pInpu
 				if (uNumParams) {
 					do {
 						Debug::Message(" Register 0x%02X:\"%s\"",static_cast<uint_t>(pInput[0]),reinterpret_cast<const char *>(pInput+1));
-						pInput += StringLength(reinterpret_cast<const char *>(pInput+1))+2;
+						pInput += string_length(reinterpret_cast<const char *>(pInput+1))+2;
 					} while (--uNumParams);
 				}
 

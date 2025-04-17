@@ -152,7 +152,7 @@ uintptr_t BURGER_API Burger::RezFile::GetRezGroupBytes(void) const
 				// Is there a name attached to this resource?
 				if (pName) {
 					// Add in the length of this string
-					uTotal += StringLength(pName)+1;
+					uTotal += string_length(pName)+1;
 				}
 				// Next entry
 				++pEntry;
@@ -648,7 +648,7 @@ void BURGER_API Burger::RezFile::FixupFilenames(char *pText)
 			const char *pNewText = pNewEntry->m_pRezName;
 			if (pNewText) {
 				pNewEntry->m_pRezName = pText;
-				uintptr_t uLength = StringLength(pNewText)+1;
+				uintptr_t uLength = string_length(pNewText)+1;
 				MemoryCopy(pText,pNewText,uLength);
 				pText+=uLength;
 			}
@@ -1093,7 +1093,7 @@ uint_t BURGER_API Burger::RezFile::AddName(const char *pRezName)
 	// Ok, RezName has the name FileName.txt
 	
 	// Length of the new string to add
-	uintptr_t uNewStringLength = StringLength(pRezName)+1;
+	uintptr_t uNewStringLength = string_length(pRezName)+1;
 
 	// Get the current group data size in bytes, so I can expand from this
 	uintptr_t uOldDictionarySize = GetRezGroupBytes();

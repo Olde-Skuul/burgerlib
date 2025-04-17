@@ -41,7 +41,7 @@ Burger::eError Burger::DirectorySearch::open(Filename* pDirName) BURGER_NOEXCEPT
 	String16 UnicodeName(pDirName->get_native(), 5);
 
 	uint16_t* pPath = UnicodeName.c_str();
-	uintptr_t uLength = StringLength(pPath);
+	uintptr_t uLength = string_length(pPath);
 
 	// Make sure the directory ends with a slash
 	if (uLength && pPath[uLength - 1] != '\\') {

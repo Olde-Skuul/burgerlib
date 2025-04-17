@@ -2,7 +2,7 @@
 
 	Compiler intrinsics.
 
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -115,6 +115,10 @@ extern "C" uint64_t BURGER_API _xgetbv(unsigned int uInput);
 extern float sqrtf(float);
 #pragma aux sqrtf = "fsqrt" parm[8087] value[8087] modify[8087] nomemory;
 
+// Intrinsics from Visual Studio
+extern void __watcall __cpuid(int a[4], int b);
+extern void __watcall __cpuidex(int a[4], int b, int c);
+
 extern uint64_t _xgetbv(unsigned int uInput);
 #pragma aux _xgetbv = "db 0x0F, 0x01, 0xD0" parm[ecx] value[eax edx] modify \
 	exact[eax edx] nomemory;
@@ -130,6 +134,47 @@ extern void _mm_setcsr(unsigned int);
 	"push eax" \
 	"ldmxcsr [esp]" \
 	"pop eax" parm[eax] modify exact[eax] nomemory;
+
+// Modern intrinsics, lifted from Visual Studio
+extern long _InterlockedExchange(long volatile*, long);
+#pragma aux _InterlockedExchange parm[edx][eax] = \
+		"lock xchg eax,[edx]" value[eax] modify exact[eax];
+
+extern long _InterlockedIncrement(long volatile*);
+#pragma aux _InterlockedIncrement parm[edx] = \
+		"mov eax,1" \
+		"lock xadd [edx],eax" \
+		"inc eax" value[eax] modify exact[eax];
+
+extern long _InterlockedDecrement(long volatile*);
+#pragma aux _InterlockedDecrement parm[edx] = \
+		"or eax,0FFFFFFFFH" \
+		"lock xadd [edx],eax" \
+		"dec eax" value[eax] modify exact[eax];
+
+extern long _InterlockedExchangeAdd(long volatile*, long);
+#pragma aux _InterlockedExchangeAdd parm[edx][eax] = \
+		"lock xadd [edx],eax" value[eax] modify exact[eax];
+
+extern long _InterlockedCompareExchange(long volatile*, long, long);
+#pragma aux _InterlockedCompareExchange parm[edx][ecx][eax] = \
+		"lock cmpxchg [edx],ecx" value[eax] modify exact[eax];
+
+// Copy of _BitScanForward() from MSVC
+// https://learn.microsoft.com/en-us/cpp/intrinsics/bitscanforward-bitscanforward64?view=msvc-170
+extern unsigned char _BitScanForward(unsigned long* Index, unsigned long Mask);
+#pragma aux _BitScanForward = \
+	"bsf eax,eax" \
+	"mov dword ptr [edx],eax" \
+	"setne al" parm[eax][ecx] value[eax] modify exact[eax];
+
+// Copy of _BitScanReverse() from MSVC
+// https://learn.microsoft.com/en-us/cpp/intrinsics/bitscanreverse-bitscanreverse64?view=msvc-170
+extern unsigned char _BitScanReverse(unsigned long* Index, unsigned long Mask);
+#pragma aux _BitScanReverse = \
+	"bsr eax,eax" \
+	"mov dword ptr [edx],eax" \
+	"setne al" parm[eax][ecx] value[eax] modify exact[eax];
 
 #elif defined(BURGER_METROWERKS) && defined(BURGER_X86)
 
@@ -154,6 +199,7 @@ extern double __builtin_fabs(double) __attribute__((nothrow))
 __attribute__((const));
 extern double __builtin_sqrt(double) __attribute__((nothrow))
 __attribute__((const));
+
 extern unsigned int __builtin___count_leading_zero32(unsigned int)
 	__attribute__((nothrow)) __attribute__((const));
 extern unsigned int __builtin___count_trailing_zero32(unsigned int)
@@ -238,24 +284,6 @@ extern void __fastcall __cpuid(int a[4], int b);
 extern void __fastcall __cpuidex(int a[4], int b, int c);
 
 #elif defined(BURGER_METROWERKS) && defined(BURGER_68K)
-
-// muls.l d1,d1:d0
-#pragma parameter __D1 BurgerIntMathMul32GetUpper32(__D0, __D1)
-int32_t BurgerIntMathMul32GetUpper32(int32_t iInputMulA, int32_t iInputMulB) = {
-	0x4c01,
-	0xc01
-};
-
-// muls.l d1,d1:d0
-// divs.l d2,d1:d0
-#pragma parameter __D0 BurgerIntMathMul32x32To64Div32(__D0, __D1, __D2)
-int32_t BurgerIntMathMul32x32To64Div32(
-	int32_t iInputMulA, int32_t iInputMulB, int32_t iInputDiv) = {
-	0x4c01,
-	0xc01,
-	0x4c42,
-	0xc01
-};
 
 extern double __fabs(double x);
 extern void* __alloca(unsigned x);
