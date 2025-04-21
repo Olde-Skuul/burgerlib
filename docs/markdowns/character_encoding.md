@@ -24,7 +24,7 @@ The functions Burger::UTF8::from_UTF16(char\* , uintptr_t, const uint16_t\*) and
 
 ### UTF-8 filenames
 
-Normally, characters such as © (Copyright) and ¿ (Spanish question) are stored as standandard UTF-8 encoded characters. But if used for filenames or text for the host's dialogs or console output, they don't show up properly due to differences in character encoding on the host platform. Any function that handles filenames or console/window output in Burgerlib will automatically translate to the native character set, if the character is available.
+Normally, characters such as © (Copyright) and ¿ (Spanish question) are stored as standard UTF-8 encoded characters. But if used for filenames or text for the host's dialogs or console output, they don't show up properly due to differences in character encoding on the host platform. Any function that handles filenames or console/window output in Burgerlib will automatically translate to the native character set, if the character is available.
 
 ```cpp
     // Output a text file with a copyright symbol

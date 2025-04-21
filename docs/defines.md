@@ -215,8 +215,8 @@ Handy macros {#sect_handy_macros}
 ------------
 
 * \ref BURGER_NULL_MACRO_PARAM A null parameter for a macro, fakes being empty
-* \ref BURGER_LEFT_PARENTHESIS (
-* \ref BURGER_RIGHT_PARENTHESIS )
+* \ref BURGER_LEFT_PARENTHESIS `(`
+* \ref BURGER_RIGHT_PARENTHESIS `)`
 * \ref BURGER_STRINGIZE Convert a macro's definition into a string
 * \ref BURGER_JOIN Join two macros together.
 * \ref BURGER_OFFSETOF Get offset of a structure member
@@ -224,13 +224,14 @@ Handy macros {#sect_handy_macros}
 * \ref BURGER_CONST_GET_BASE_PTR
 * \ref BURGER_ARRAYSIZE Get number of members in an array
 * \ref BURGER_UNUSED Mark variables as unused
-* \ref BURGER_EQUALS_DELETE Insert '= delete' on compilers that support it
-* \ref BURGER_EQUALS_DEFAULT Insert '= default' on compilers that support it
+* \ref BURGER_EQUALS_DELETE Insert `= delete` on compilers that support it
+* \ref BURGER_EQUALS_DEFAULT Insert `= default` on compilers that support it
 * \ref BURGER_DISABLE_COPY Disable the ability to copy the class
 * \ref BURGER_STATIC_ASSERT `static_assert`
 * \ref BURGER_CONSTEXPR `constexpr`
 * \ref BURGER_OVERRIDE `override`
 * \ref BURGER_FINAL `final`
+* \ref BURGER_DEPRECATED `[deprecated]`
 * \ref nullptr 0 on compilers that don't support this keyword.
 * \ref __underlying_type `int` on compilers that don't support this keyword.
 * \ref BURGER_RVALUE_REFERENCES Test for && operations.

@@ -38,7 +38,7 @@ Directory where the application binary is located. It will always be where the b
 
 ### *: Boot volume
 
-On Windows, this is usually ``.D2`` which translates to ``C:\``. On Linux or MacOSX it's likely ``:`` which becomes ``\``. Under normal circumstances, this is a protected folder, so unless the application has root access, writing to this directory will likely fail. It was a holdover from Windows 95 where it was common to install application data on a folder on the boot volume.
+On Windows, this is usually ``.D2`` which translates to ``C:\``. On Linux or MacOSX it's likely ``:`` which becomes ``/``. Under normal circumstances, this is a protected folder, so unless the application has root access, writing to this directory will likely fail. It was a holdover from Windows 95 where it was common to install application data on a folder on the boot volume.
 
 ### $: System Directory
 
@@ -87,4 +87,4 @@ Burgerlib was originally created in 1979 on an Apple ][ and in 1986 it was upgra
 
 While Burgerlib does what it can to translate UTF-8 to the underlying file system's character encoding, make sure that if UTF-8 is used, that the operating system on the platform the application is run on can support the characters after remapping. Burgerlib will replace unsupported characters with either underscores or question marks depending on which character is the right one for the underlying operating system.
 
-If the application is to be run on Windows 10, Mac OS X, or modern Linux, operating system use UTF-8 as a default, so this is not a concern. It's only if the application is run on a classic OS should this be investigated.
+If the application is to be run on Windows 10, Mac OS X, or modern Linux, the operating system uses UTF-8 as a default, so character encoding is not a concern. If the application is to be run on a classic OS should the set of characters be limited to ensure compatibility.

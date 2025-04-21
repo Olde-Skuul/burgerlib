@@ -22,12 +22,15 @@ Operating systems:
 * Sony Playstation 2
 * Sony Playstation 3
 * Sony Playstation 4
+* Sony Playstation 5
 * Microsoft Xbox classic
 * Microsoft Xbox 360
 * Microsoft Xbox ONE
+* Microsoft Xbox ONE Series X
 * Nintendo Wii
 * Nintendo WiiU
 * Nintendo Switch
+* Nintendo Switch 2
 * Nintendo 3DS
 * BeOS
 

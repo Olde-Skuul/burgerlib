@@ -1,14 +1,21 @@
-Compiler issues
-===============
+# Compiler issues
 
 Burgerlib is compiled on a myriad of compilers, and as always, not all compilers are the same.
 To use burgerlib is simplicity itself. Just add this to the beginning of your source files or headers (Or both).
+
+```cpp
+// The #ifndef __BURGER__ is optional, but useful to prevent double includes
+// if included from a user supplied header.
+#ifndef __BURGER__
+#include <burger.h>
+#endif
+```
 
 \section templates Template differences
 
 Modern compilers support the concept of **Substitution Failure Is Not An Error** or SFINAE for short. This is the backbone of modern compilers, however, Burgerlib supports older compilers that do not fully support SFINAE. The Apple MrC and SC compilers do not support SFINAE so there should be no attempt to use complex templates on them. Open Watcom 1.9 has support for SFINAE, but there are some known bugs so some Burgerlib templates are not available, while most are.
 
-### Unsupported on Open Watcom 1.9
+## Unsupported on Open Watcom 1.9
 
 * is_function
 * enable_if
@@ -19,7 +26,7 @@ Modern compilers support the concept of **Substitution Failure Is Not An Error**
 * add_volatile on arrays
 * add_cv on arrays
 
-### Unsupported on Metrowerks 68K
+## Unsupported on Metrowerks 68K
 
 * enable_if
 * remove_const on arrays
