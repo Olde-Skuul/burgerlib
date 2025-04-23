@@ -199,6 +199,7 @@
 #include "brunpackbytes.h"
 #include "brstring.h"
 #include "brstring16.h"
+#include "brstring32.h"
 #include "brunixtypes.h"
 #include "brglobals.h"
 #include "brosstringfunctions.h"

@@ -894,7 +894,7 @@ static uint_t BURGER_API UnitTestFormattingSingleChar(intptr_t iStartWidth,
 			if (iWidth >= 0) {
 				Burger::NumberString WidthString(static_cast<uint32_t>(iWidth));
 				// Insert width value
-				Burger::StringCopy(
+				Burger::string_copy(
 					FormatString + uTestLength, WidthString.c_str());
 				uTestLength += WidthString.length();
 			}
@@ -1012,7 +1012,7 @@ static uint_t BURGER_API UnitTestFormattingSingleWChar(intptr_t iStartWidth,
 			if (iWidth >= 0) {
 				Burger::NumberString WidthString(static_cast<uint32_t>(iWidth));
 				// Insert width value
-				Burger::StringCopy(
+				Burger::string_copy(
 					FormatString + uTestLength, WidthString.c_str());
 				uTestLength += WidthString.length();
 			}
@@ -1044,7 +1044,7 @@ static uint_t BURGER_API UnitTestFormattingSingleWChar(intptr_t iStartWidth,
 
 			// No padding possible.
 			if (iWidth <= static_cast<intptr_t>(uExpectedLength)) {
-				Burger::StringCopy(Expected, UTF8Buffer);
+				Burger::string_copy(Expected, UTF8Buffer);
 			} else {
 				// Fill the buffer
 				Burger::MemoryFill(
@@ -1242,7 +1242,7 @@ static uint_t BURGER_API UnitTestFormattingInt(intptr_t iStartWidth,
 	// Create the base string with the default flags
 	char BaseString[8];
 	BaseString[0] = '%';
-	Burger::StringCopy(BaseString + 1, sizeof(BaseString) - 1, pFlagsString);
+	Burger::string_copy(BaseString + 1, sizeof(BaseString) - 1, pFlagsString);
 
 	uint_t uResult = 0; // Success
 	uint_t bContinueTesting = FALSE;
@@ -1260,7 +1260,7 @@ static uint_t BURGER_API UnitTestFormattingInt(intptr_t iStartWidth,
 				char TestString[128];      // Output buffer (Burgerlib)
 
 				// Initial with the flags
-				Burger::StringCopy(ReferenceFormatString, BaseString);
+				Burger::string_copy(ReferenceFormatString, BaseString);
 
 				if (iWidth >= 0) {
 					Burger::NumberString WidthString(iWidth);
@@ -1286,7 +1286,7 @@ static uint_t BURGER_API UnitTestFormattingInt(intptr_t iStartWidth,
 				}
 
 				// Copy to the test (Format is the same)
-				Burger::StringCopy(TestFormatString, ReferenceFormatString);
+				Burger::string_copy(TestFormatString, ReferenceFormatString);
 
 				// Append the ANSI and the Burgerlib formats
 				Burger::StringConcatenate(ReferenceFormatString, pBurgerFormat);

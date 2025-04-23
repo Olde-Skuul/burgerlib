@@ -475,7 +475,7 @@ Burger::eError BURGER_API Burger::FileManager::MSDOS_expand_8_3_filename(
 		const uint32_t kNameOffset = 512;
 
 		// Copy the string to the real buffer
-		StringCopy(pRealBuffer, kNameOffset, pInput->c_str());
+		string_copy(pRealBuffer, kNameOffset, pInput->c_str());
 
 		// Convert 8.3 filename to long filename
 		// http://www.ctyme.com/intr/rb-3208.htm
@@ -530,7 +530,7 @@ Burger::eError BURGER_API Burger::FileManager::MSDOS_convert_to_8_3_filename(
 		const uint32_t kNameOffset = 512;
 
 		// Copy the string to the real buffer
-		StringCopy(pRealBuffer, kNameOffset, pInput->c_str());
+		string_copy(pRealBuffer, kNameOffset, pInput->c_str());
 
 		// Convert long filename to 8.3 filename
 		// http://www.ctyme.com/intr/rb-3207.htm
@@ -679,7 +679,7 @@ Burger::eError BURGER_API Burger::FileManager::get_volume_name(
 	MSDos::real_mode_interrupt(0x21, &Regs, &Regs);
 
 	// Copy the search string for labels
-	StringCopy(pRealBuffer + kNameOffset, "C:\\*");
+	string_copy(pRealBuffer + kNameOffset, "C:\\*");
 	// Set the drive letter AFTER the fact
 	pRealBuffer[kNameOffset] = static_cast<char>('A' + uVolumeNum);
 
@@ -712,7 +712,7 @@ Burger::eError BURGER_API Burger::FileManager::get_volume_name(
 	uintptr_t uLength = string_length(pRealBuffer + 30);
 	if (!uLength) {
 		// Generic disk name
-		StringCopy(pRealBuffer + 30, "C_DRIVE");
+		string_copy(pRealBuffer + 30, "C_DRIVE");
 		pRealBuffer[30] = static_cast<char>('A' + uVolumeNum);
 		uLength = 7;
 	}
@@ -802,7 +802,7 @@ Burger::eError BURGER_API Burger::FileManager::get_modification_time(
 		Temp = MSDos::get_temp_real_buffer();	/* Local buffer */
 		MyRegs.dx = Temp;			/* Pass the filename buffer */
 		MyRegs.ds = (Temp>>16);		/* Get the segment */
-		StringCopy(MSDos::get_temp_protected_buffer(),pFileName->get_native());
+		string_copy(MSDos::get_temp_protected_buffer(),pFileName->get_native());
 		MSDos::real_mode_interrupt(0x21,&MyRegs,&MyRegs);	/* Call Win95 */
 		if (MyRegs.flags & 1) {			/* Error? */
 			goto FooBar;

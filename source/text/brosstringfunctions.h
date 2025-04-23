@@ -55,7 +55,7 @@ extern eError BURGER_API GetMacModelIdentifier(String* pOutput) BURGER_NOEXCEPT;
 #endif
 
 #if (defined(BURGER_MACCARBON) || defined(BURGER_DARWIN)) || defined(DOXYGEN)
-extern void BURGER_API StringCopy(
+extern void BURGER_API string_copy(
 	String* pOutput, const __CFString* pInput) BURGER_NOEXCEPT;
 #endif
 

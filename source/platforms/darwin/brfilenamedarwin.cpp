@@ -313,7 +313,7 @@ Burger::eError BURGER_API Burger::Filename::set_user_prefs_directory(
 
 		// Convert to Burgerlib String
 		String Temp;
-		StringCopy(&Temp, pString);
+		string_copy(&Temp, pString);
 		if (!Temp.empty()) {
 			// Convert to path
 			set_native(Temp.c_str());
@@ -369,7 +369,7 @@ Burger::eError BURGER_API Burger::Filename::set_system_prefs_directory(
 
 		// Convert to Burgerlib String
 		String Temp;
-		StringCopy(&Temp, pString);
+		string_copy(&Temp, pString);
 		if (!Temp.empty()) {
 			// Convert to path
 			set_native(Temp.c_str());

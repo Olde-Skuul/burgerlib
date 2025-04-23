@@ -202,7 +202,7 @@ Burger::eError BURGER_API Burger::GetUserLoginName(
 				CFStringRef pStringRef = pNSUserName();
 				if (pStringRef) {
 
-					StringCopy(pOutput, pStringRef);
+					string_copy(pOutput, pStringRef);
 
 					// Dispose of the string ref
 					CFRelease(pStringRef);
@@ -275,7 +275,7 @@ Burger::eError BURGER_API Burger::GetUserRealName(
 				CFStringRef pStringRef = pNSFullUserName();
 				if (pStringRef) {
 
-					StringCopy(pOutput, pStringRef);
+					string_copy(pOutput, pStringRef);
 
 					// Dispose of the string ref
 					CFRelease(pStringRef);
@@ -347,7 +347,7 @@ Burger::eError BURGER_API Burger::GetMachineName(
 				// Return the computer name
 				CFStringRef pStringRef = pSCDynamicStoreCopyComputerName(0, 0);
 				if (pStringRef) {
-					StringCopy(pOutput, pStringRef);
+					string_copy(pOutput, pStringRef);
 
 					// Dispose of the string ref
 					CFRelease(pStringRef);
@@ -613,7 +613,7 @@ Burger::eError BURGER_API Burger::GetMacModelIdentifier(
 ***************************************/
 
 #if defined(BURGER_MACCARBON)
-void BURGER_API Burger::StringCopy(String* pOutput, CFStringRef pInput)
+void BURGER_API Burger::string_copy(String* pOutput, CFStringRef pInput)
 {
 	// Try the easy way the just yank a "C" string pointer out directly
 	const char* pResult = CFStringGetCStringPtr(pInput, kCFStringEncodingUTF8);

@@ -3148,7 +3148,7 @@ uint_t BURGER_API Burger::DisplayDirectX9::GetDesktopResolution(
 	char TempDeviceName[256];
 	TempDeviceName[0] = 0;
 	if (pAdapterInfo) {
-		StringCopy(TempDeviceName, sizeof(TempDeviceName),
+		string_copy(TempDeviceName, sizeof(TempDeviceName),
 			pAdapterInfo->GetAdapterIdentifier()->DeviceName);
 	}
 

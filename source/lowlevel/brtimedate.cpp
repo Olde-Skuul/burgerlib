@@ -203,7 +203,7 @@ void Burger::TimeDate_t::DateToStringVerbose(
 	if (uFailsafe >= 7) {
 		uFailsafe = 0;
 	}
-	StringCopy(pOutput, g_WeekDays[uFailsafe]);
+	string_copy(pOutput, g_WeekDays[uFailsafe]);
 	StringConcatenate(pOutput, ", ");
 	uFailsafe = static_cast<uint_t>(m_bMonth - 1);
 	if (uFailsafe >= 12) {

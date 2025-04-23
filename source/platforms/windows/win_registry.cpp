@@ -275,7 +275,7 @@ uint_t BURGER_API Burger::Win32::GetPathToQuickTimeFolder(
 					if (uStrLength > 13) {
 						// Copy up the string minus the ending "Quicktime.qts"
 						// Note: This will end the string with a '\'
-						StringCopy(pBuffer, uSize, Temp, uStrLength - 13);
+						string_copy(pBuffer, uSize, Temp, uStrLength - 13);
 					}
 				}
 
@@ -446,7 +446,7 @@ uint32_t BURGER_API Burger::Win32::GetQTExtensionDirectoryA(
 		if (QTFolderName[0]) {
 
 			// Copy up the Quicktime folder name
-			StringCopy(pBuffer, uSize, QTFolderName);
+			string_copy(pBuffer, uSize, QTFolderName);
 
 			// Read in the system directory name
 			GetSystemDirectoryA(SystemDirName, uSize);

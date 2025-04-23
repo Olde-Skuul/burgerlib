@@ -111,7 +111,7 @@ Burger::eError BURGER_API Burger::FileManager::get_volume_name(
 					// No volume name? Make a fake one based on drive letter.
 					if (!uLength) {
 						// Generic disk name
-						StringCopy(OutputName + 1, "C_DRIVE");
+						string_copy(OutputName + 1, "C_DRIVE");
 						OutputName[1] = static_cast<char>('A' + uVolumeNum);
 						uLength = 7;
 					}

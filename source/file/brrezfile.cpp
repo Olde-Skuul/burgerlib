@@ -1031,7 +1031,7 @@ uint_t BURGER_API Burger::RezFile::GetName(uint_t uRezNum,char *pBuffer,uintptr_
 					const char *pText = pEntry->m_pRezName;
 					if (pText) {
 						// How many bytes to copy?
-						StringCopy(pBuffer,uBufferSize,pText);
+						string_copy(pBuffer,uBufferSize,pText);
 						// Success!
 						return FALSE;
 					}
@@ -1492,7 +1492,7 @@ uint_t BURGER_API Burger::RezFile::GetIDFromHandle(const void **ppRez,uint_t *pR
 						}
 						if (pBuffer && uBufferSize) {
 							if (pEntry->m_pRezName) {
-								StringCopy(pBuffer,uBufferSize,pEntry->m_pRezName);
+								string_copy(pBuffer,uBufferSize,pEntry->m_pRezName);
 							} else {
 								pBuffer[0] = 0;
 							}
@@ -1545,7 +1545,7 @@ uint_t BURGER_API Burger::RezFile::GetIDFromPointer(const void *pRez,uint_t *pRe
 						}
 						if (pBuffer && uBufferSize) {
 							if (pEntry->m_pRezName) {
-								StringCopy(pBuffer,uBufferSize,pEntry->m_pRezName);
+								string_copy(pBuffer,uBufferSize,pEntry->m_pRezName);
 							} else {
 								pBuffer[0] = 0;
 							}

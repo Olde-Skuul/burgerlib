@@ -332,7 +332,7 @@ Burger::String::String(const char* pInput) BURGER_NOEXCEPT
 	string can be discarded after the call returns. Allocate a buffer that can
 	hold the initialization string + the uPadding number of bytes so the
 	programmer can manually append data to the end of the string with
-	Burger::StringCopy() or equivalent
+	Burger::string_copy() or equivalent
 
 	\param pInput Pointer to a valid "C" string or \ref NULL to create an empty
 		string
@@ -1030,6 +1030,73 @@ Burger::eError BURGER_API Burger::String::assign(
 		uInputLength = m_uBufferSize;
 	}
 	m_uLength = UTF8::from_UTF16(m_pData, uInputLength + 1, pInput, uLength);
+
+	// Return error
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Copy a 32 bit "C" string to a Burger::String
+
+	\param pInput Pointer to a UTF32 "C" string. \ref nullptr generates an empty
+		string.
+
+	\return Zero if no error, non zero if memory allocation failed
+
+***************************************/
+
+Burger::eError BURGER_API Burger::String::assign(
+	const uint32_t* pInput) BURGER_NOEXCEPT
+{
+	if (!pInput) {
+		pInput = g_EmptyString32;
+	}
+
+	// Length of the new string
+	uintptr_t uInputLength = UTF8::GetUTF32Size(pInput);
+
+	// Ensure the buffer is ready
+	const eError uResult = reserve(uInputLength);
+	// Only if the buffer could not be resized will it truncate.
+	if (uInputLength > m_uBufferSize) {
+		uInputLength = m_uBufferSize;
+	}
+	m_uLength = UTF8::from_UTF32(m_pData, uInputLength + 1, pInput);
+
+	// Return error
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Copy a 32 bit "C" string to a Burger::String
+
+	\param pInput Pointer to a UTF32 "C" string. \ref nullptr generates an empty
+		string.
+	\param uLength Length of the UTF32 string in characters (sizeof(buffer)/2)
+
+	\return Zero if no error, non zero if memory allocation failed
+
+***************************************/
+
+Burger::eError BURGER_API Burger::String::assign(
+	const uint32_t* pInput, uintptr_t uLength) BURGER_NOEXCEPT
+{
+	if (!pInput) {
+		pInput = g_EmptyString32;
+	}
+
+	// Length of the new string
+	uintptr_t uInputLength = UTF8::GetUTF32Size(pInput, uLength);
+
+	// Ensure the buffer is ready
+	const eError uResult = reserve(uInputLength);
+	// Only if the buffer could not be resized will it truncate.
+	if (uInputLength > m_uBufferSize) {
+		uInputLength = m_uBufferSize;
+	}
+	m_uLength = UTF8::from_UTF32(m_pData, uInputLength + 1, pInput, uLength);
 
 	// Return error
 	return uResult;

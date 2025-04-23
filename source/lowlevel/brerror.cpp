@@ -2,7 +2,7 @@
 
 	Error codes.
 
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -127,6 +127,97 @@ static const ErrorLookup_t g_ErrorLookup[] = {{Burger::kErrorNone, "No error"},
 
 /*! ************************************
 
+	\struct Burger::error_message_t
+	\brief Error message information
+
+	When a Burgerlib function fails, it will call set_last_error(eError,
+	uint32_t, const char*) to set the thread local global error message. This
+	message will remain until either cleared or overwritten with a new error
+	message. Contained is the Burgerlib error code, a native operating system
+	error code (if applicable), and a detailed message as to what the error was.
+
+	\sa set_last_error(eError, uint32_t, const char*), or
+		get_last_error(void)
+
+***************************************/
+
+#if !defined(DOXYGEN)
+static BURGER_THREAD_LOCAL Burger::error_message_t g_ErrorMessage;
+#endif
+
+/*! ************************************
+
+	\brief Return the last recorded error message.
+
+	When a Burgerlib function fails, it will call set_last_error(eError,
+	uint32_t, const char*) to set the thread local global error message. This
+	message will remain until either cleared or overwritten with a new error
+	message. This function will return a pointer to the thread local storage
+	global record. Make a copy of the data if persistence is desired.
+
+	\note The message is stored in Thread Local Storage so it can't be used
+	to get the error from another process or thread.
+
+	\return Pointer to thread local error_message_t structure
+
+	\sa set_last_error(eError, uint32_t, const char*)
+
+***************************************/
+
+const Burger::error_message_t* BURGER_API Burger::get_last_error(
+	void) BURGER_NOEXCEPT
+{
+	return &g_ErrorMessage;
+}
+
+/*! ************************************
+
+	\brief Set the global error message.
+
+	If an error occurs, the system can be globally notified by setting the error
+	message with this call. The data is stored in thread local storage so the
+	message only is for the currently running thread.
+
+	If `uError` is \ref kErrorNone but `uSystemError` is not zero, the
+	equivalent Burgerlib error code will be set as the `uError` value. Only if
+	`uError` and `uSystemError` are zero will an error condition be cleared.
+
+	\param uError Burgerlib error code
+	\param uSystemError Platform specific error code
+	\param pMessage Pointer to "C" string with error message
+
+	\sa get_last_error(void)
+
+***************************************/
+
+void BURGER_API Burger::set_last_error(
+	eError uError, uint32_t uSystemError, const char* pMessage) BURGER_NOEXCEPT
+{
+	// Got a system error but not a Burgerlib error, remap
+	if (!uError && uSystemError) {
+		uError = platform_convert_to_error(uSystemError);
+	}
+
+	// If there wasn't a message, determine what generic message it will be
+	if (!pMessage) {
+		pMessage = error_lookup_string(uError);
+	}
+
+	// Set the error entries
+	g_ErrorMessage.m_uError = uError;
+	g_ErrorMessage.m_uSystemError = uSystemError;
+
+	// Only set the string if there's an error
+	if (uError || uSystemError) {
+		string_copy(g_ErrorMessage.m_Message, sizeof(g_ErrorMessage.m_Message),
+			pMessage);
+	} else {
+		g_ErrorMessage.m_Message[0] = 0;
+	}
+}
+
+/*! ************************************
+
 	\brief Convert a Burgerlib error code into a string.
 
 	Look up a Burgerlib error code into an array of error messages and return a
@@ -199,7 +290,7 @@ uintptr_t BURGER_API Burger::error_get_string(
 	// Return the string
 	const uintptr_t uStringLength = string_length(pErrorMessage);
 	if (uOutputSize) {
-		StringCopy(pOutput, uOutputSize, pErrorMessage);
+		string_copy(pOutput, uOutputSize, pErrorMessage);
 	}
 	return uStringLength;
 }

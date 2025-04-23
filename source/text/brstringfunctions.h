@@ -109,6 +109,15 @@ extern const uint16_t g_TrueString16[5];
 extern const uint16_t g_FalseString16[6];
 extern const uint16_t g_YesString16[4];
 extern const uint16_t g_NoString16[3];
+extern const uint32_t g_EmptyString32[1];
+extern const uint32_t g_CRLFString32[3];
+extern const uint32_t g_CRString32[2];
+extern const uint32_t g_LFString32[2];
+extern const uint32_t g_TokenDelimiters32[5];
+extern const uint32_t g_TrueString32[5];
+extern const uint32_t g_FalseString32[6];
+extern const uint32_t g_YesString32[4];
+extern const uint32_t g_NoString32[3];
 
 BURGER_ALIGN(extern const uint8_t, g_AsciiTestTable[256], 16);
 BURGER_ALIGN(extern const char, g_NibbleToAsciiUppercase[16], 16);
@@ -254,18 +263,20 @@ extern void BURGER_API SetFileExtension(
 extern uintptr_t BURGER_API string_length(const char* pInput) BURGER_NOEXCEPT;
 extern uintptr_t BURGER_API string_length(
 	const uint16_t* pInput) BURGER_NOEXCEPT;
+extern uintptr_t BURGER_API string_length(
+	const uint32_t* pInput) BURGER_NOEXCEPT;
 
-extern void BURGER_API StringCopy(
+extern void BURGER_API string_copy(
 	char* pOutput, const char* pInput) BURGER_NOEXCEPT;
-extern void BURGER_API StringCopy(
+extern void BURGER_API string_copy(
 	char* pOutput, uintptr_t uOutputSize, const char* pInput) BURGER_NOEXCEPT;
-extern void BURGER_API StringCopy(char* pOutput, uintptr_t uOutputSize,
+extern void BURGER_API string_copy(char* pOutput, uintptr_t uOutputSize,
 	const char* pInput, uintptr_t uInputSize) BURGER_NOEXCEPT;
-extern void BURGER_API StringCopy(
+extern void BURGER_API string_copy(
 	uint16_t* pOutput, const uint16_t* pInput) BURGER_NOEXCEPT;
-extern void BURGER_API StringCopy(uint16_t* pOutput, uintptr_t uOutputSize,
+extern void BURGER_API string_copy(uint16_t* pOutput, uintptr_t uOutputSize,
 	const uint16_t* pInput) BURGER_NOEXCEPT;
-extern void BURGER_API StringCopy(uint16_t* pOutput, uintptr_t uOutputSize,
+extern void BURGER_API string_copy(uint16_t* pOutput, uintptr_t uOutputSize,
 	const uint16_t* pInput, uintptr_t uInputSize) BURGER_NOEXCEPT;
 
 extern char* BURGER_API StringDuplicate(const char* pInput) BURGER_NOEXCEPT;

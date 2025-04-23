@@ -746,7 +746,7 @@ uint_t BURGER_API Burger::DisplayOpenGL::CompileShader(uint_t GLEnum,const char 
 
 					// Since the first line isn't #version, create one
 
-					StringCopy(VersionString,g_Version);
+					string_copy(VersionString,g_Version);
 					NumberToAscii(VersionString+9,iVersion);
 					uintptr_t uLength = string_length(VersionString);
 					// Append with a \n

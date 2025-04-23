@@ -22,8 +22,8 @@
 
 //
 // COMPILER BUG! In Open Watcom 1.8 and 1.9, it can inline an assembly language
-// function (string_length()) even though it's declared as __declspec(naked) This
-// means that the code could be inserted in a "C" function and since the
+// function (string_length()) even though it's declared as __declspec(naked)
+// This means that the code could be inserted in a "C" function and since the
 // assembly has a ret instruction inside of it, it will return control too soon
 // resulting in a crash.
 //
@@ -389,6 +389,107 @@ const uint16_t Burger::g_YesString16[4] = {'y', 'e', 's', 0};
 ***************************************/
 
 const uint16_t Burger::g_NoString16[3] = {'n', 'o', 0};
+
+/*! ************************************
+
+	\brief "" in UTF32
+
+	This string is hard coded to be an empty string.
+	It saves space by having a singular occurrence.
+
+***************************************/
+
+const uint32_t Burger::g_EmptyString32[1] = {0};
+
+/*! ************************************
+
+	\brief "\r\n" in UTF32
+
+	This string is hard coded to have the Win32 CR/LF EOL string.
+	It saves space by having a singular occurrence.
+
+***************************************/
+
+const uint32_t Burger::g_CRLFString32[3] = {'\r', '\n', 0};
+
+/*! ************************************
+
+	\brief "\r" in UTF32
+
+	This string is hard coded to have the MacOS CR EOL string.
+	It saves space by having a singular occurrence.
+
+***************************************/
+
+const uint32_t Burger::g_CRString32[2] = {'\r', 0};
+
+/*! ************************************
+
+	\brief "\n" in UTF32
+
+	This string is hard coded to have the Linux/Unix LF EOL string.
+	It saves space by having a singular occurrence.
+
+***************************************/
+
+const uint32_t Burger::g_LFString32[2] = {'\n', 0};
+
+/*! ************************************
+
+	\brief " \t\r\n" in UTF32
+
+	This is used for StringToken(uint32_t *, const uint32_t *, uint32_t **) to
+	parse tokens using default white space.
+
+	\sa g_TokenDelimiters
+
+***************************************/
+
+const uint32_t Burger::g_TokenDelimiters32[5] = {' ', '\t', '\r', '\n', 0};
+
+/*! ************************************
+
+	\brief "true" in UTF32
+
+	This string is hard coded to have the string "true".
+	It saves space by having a singular occurrence.
+
+***************************************/
+
+const uint32_t Burger::g_TrueString32[5] = {'t', 'r', 'u', 'e', 0};
+
+/*! ************************************
+
+	\brief "false" in UTF32
+
+	This string is hard coded to have the string "false".
+	It saves space by having a singular occurrence.
+
+***************************************/
+
+const uint32_t Burger::g_FalseString32[6] = {'f', 'a', 'l', 's', 'e', 0};
+
+/*! ************************************
+
+	\brief "yes" in UTF32
+
+	This string is hard coded to have the string "yes".
+	It saves space by having a singular occurrence.
+
+***************************************/
+
+const uint32_t Burger::g_YesString32[4] = {'y', 'e', 's', 0};
+
+/*! ************************************
+
+	\brief "no" in UTF32
+
+	This string is hard coded to have the string "no".
+	It saves space by having a singular occurrence.
+
+***************************************/
+
+const uint32_t Burger::g_NoString32[3] = {'n', 'o', 0};
 
 /*! ************************************
 
@@ -939,7 +1040,7 @@ void BURGER_API Burger::CStringToPString(
 				break; // Overflow!
 			}
 			uTemp1 = uTemp2; // Get source string
-		} while (uTemp1);    // Still more?
+		} while (uTemp1); // Still more?
 		// Save the length byte for PString
 		pOutput[0] = static_cast<uint8_t>(uLength);
 	}
@@ -1016,7 +1117,7 @@ char* BURGER_API Burger::ParseBeyondWhiteSpace(
 		uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
 		++pInput;
 	} while ((uTemp == 32) || (uTemp == 9)); // Space or TAB?
-	return const_cast<char*>(--pInput);      // Return the result pointer
+	return const_cast<char*>(--pInput); // Return the result pointer
 }
 
 /*! ************************************
@@ -1044,7 +1145,7 @@ char* BURGER_API Burger::ParseToDelimiter(const char* pInput) BURGER_NOEXCEPT
 		uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
 		++pInput;
 	} while (uTemp && (uTemp != 9) && (uTemp != 10) && (uTemp != 13) &&
-		(uTemp != 32));                 // Space or TAB?
+		(uTemp != 32)); // Space or TAB?
 	return const_cast<char*>(--pInput); // Return the result pointer
 }
 
@@ -1089,7 +1190,7 @@ char* BURGER_API Burger::ParseBeyondEOL(const char* pInput) BURGER_NOEXCEPT
 			}
 			break; // Exit now
 		}
-	} while (uTemp != 10);            // Unix EOL?
+	} while (uTemp != 10); // Unix EOL?
 	return const_cast<char*>(pInput); // Return the result pointer
 }
 
@@ -1678,7 +1779,7 @@ void BURGER_API Burger::StripAllFromList(
 					break;
 				}
 				uTest = pWork[0]; // Next one in the list.
-			} while (uTest);      // Any more?
+			} while (uTest); // Any more?
 			uTemp = reinterpret_cast<uint8_t*>(pInput)[0];
 			++pInput;
 		} while (uTemp);
@@ -1791,7 +1892,7 @@ void BURGER_API Burger::StripTrailing(
 			SkipIt:
 				uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
 			} while (uTemp); // All done?
-			pEnd[0] = 0;     // Zap the final char
+			pEnd[0] = 0; // Zap the final char
 		}
 	}
 }
@@ -1846,7 +1947,7 @@ void BURGER_API Burger::StripLeading(
 		} while (uTest); // Any more?
 		--pInput;
 		if (pInput != pTemp) { // Did I remove anything?
-			StringCopy(pTemp, pInput);
+			string_copy(pTemp, pInput);
 		}
 	}
 }
@@ -1871,7 +1972,7 @@ void BURGER_API Burger::RemoveTrailingChar(
 	char* pInput, uint_t uRemove) BURGER_NOEXCEPT
 {
 	uintptr_t uLength = string_length(pInput); // Index to the last char
-	if (uLength) {                            // Should I bother?
+	if (uLength) {                             // Should I bother?
 		if (reinterpret_cast<uint8_t*>(pInput)[uLength - 1] == uRemove) {
 			pInput[uLength - 1] = 0;
 		}
@@ -1904,7 +2005,7 @@ void BURGER_API Burger::ForceTrailingChar(
 	char* pInput, uint_t uLast) BURGER_NOEXCEPT
 {
 	uintptr_t uLength = string_length(pInput); // Index to the last char
-	if (!uLength ||                           // Always do it on an empty string
+	if (!uLength || // Always do it on an empty string
 		(reinterpret_cast<uint8_t*>(pInput)[uLength - 1] != uLast)) {
 		pInput[uLength] = static_cast<char>(uLast);
 		pInput[uLength + 1] = 0;
@@ -1936,7 +2037,7 @@ void BURGER_API Burger::SlashesToColons(char* pInput) BURGER_NOEXCEPT
 			}
 			uTemp = reinterpret_cast<uint8_t*>(pInput)[1]; // Next char
 			++pInput;                                      // Inc the pointer
-		} while (uTemp);                                   // More?
+		} while (uTemp); // More?
 	}
 }
 
@@ -1969,7 +2070,7 @@ void BURGER_API Burger::SlashesToColons(
 			pOutput[0] = static_cast<char>(uTemp); // Store the new character
 			++pOutput;
 			uTemp = reinterpret_cast<const uint8_t*>(pInput)[1]; // Next char
-			++pInput;    // Inc the pointer
+			++pInput; // Inc the pointer
 		} while (uTemp); // More?
 	}
 	pOutput[0] = static_cast<char>(uTemp); // Store the zero terminator
@@ -2445,7 +2546,7 @@ void BURGER_API Burger::SetFileExtension(
 				pWork[0] = '.'; // Put the period back manually
 				++pWork;
 			}
-			StringCopy(pWork, pNewExtension); // Overwrite the extension
+			string_copy(pWork, pNewExtension); // Overwrite the extension
 		}
 	}
 }
@@ -2484,7 +2585,7 @@ void BURGER_API Burger::SetFileExtension(
 
 	\param pInput Pointer to "C" string to determine the length
 	\return Length in bytes of the "C" string sans the terminating zero.
-	\sa Burger::StringCopy(char *,const char *)
+	\sa Burger::string_copy(char *,const char *)
 
 ***************************************/
 
@@ -2696,6 +2797,43 @@ uintptr_t BURGER_API Burger::string_length(
 
 /*! ************************************
 
+	\fn uintptr_t BURGER_API Burger::string_length(const uint32_t *pInput)
+	\brief Perform an ANSI compatible strlen() for UTF32 strings..
+
+	Determine the length of a UTF32 "C" string in memory. A UTF32 "C" string is
+	a random string of shorts that terminates with a zero.
+
+	\note While the string L"Foobar" takes 28 bytes of memory to store, this
+	function will return 6 to denote the number of values that are present. Due
+	to UTF32 encoding, do not assume that this value represents the number of
+	visible characters since some encodings take 2 samples instead of one.
+
+	\param pInput Pointer to a UTF32 "C" string to determine the length
+	\return Length in values of the UTF32 "C" string sans the terminating zero.
+	\sa Burger::string_length(const char *)
+
+***************************************/
+
+uintptr_t BURGER_API Burger::string_length(
+	const uint32_t* pInput) BURGER_NOEXCEPT
+{
+	uintptr_t uResult = 0; // Nothing found yet.
+	if (pInput) {
+		uint32_t uTemp = pInput[0];
+		++pInput;
+		if (uTemp) { // Is there any string yet?
+			do {
+				uTemp = pInput[0];
+				++pInput;
+				++uResult; // Add to the count
+			} while (uTemp);
+		}
+	}
+	return uResult; // Exit with the count
+}
+
+/*! ************************************
+
 	\brief Copy a "C" string
 
 	Given a pointer to a "C" string, copy it to a destination buffer. This is a
@@ -2707,12 +2845,12 @@ uintptr_t BURGER_API Burger::string_length(
 	\note This function does not check for buffer overruns on the destination
 	buffer. Use with caution.
 
-	\sa Burger::StringCopy(char *,uintptr_t,const char *) or
+	\sa Burger::string_copy(char *,uintptr_t,const char *) or
 		Burger::string_length(const char *)
 
 ***************************************/
 
-void BURGER_API Burger::StringCopy(
+void BURGER_API Burger::string_copy(
 	char* pOutput, const char* pInput) BURGER_NOEXCEPT
 {
 	//
@@ -2765,7 +2903,7 @@ void BURGER_API Burger::StringCopy(
 	}
 
 	//
-	// This is the byte copy version of StringCopy
+	// This is the byte copy version of string_copy
 	// Used for the slow path and to write the final byte and ensuring I only
 	// write a BYTE. No buffer overruns are possible by accidentally writing a
 	// uint32_t when I mean to write a uint8_t
@@ -2796,12 +2934,12 @@ void BURGER_API Burger::StringCopy(
 	\note This function will always zero terminate the output string and perform
 	nothing at all if the input size is zero.
 
-	\sa Burger::StringCopy(char *,const char *) or Burger::string_length(const
+	\sa Burger::string_copy(char *,const char *) or Burger::string_length(const
 		char *)
 
 ***************************************/
 
-void BURGER_API Burger::StringCopy(
+void BURGER_API Burger::string_copy(
 	char* pOutput, uintptr_t uOutputSize, const char* pInput) BURGER_NOEXCEPT
 {
 	if (uOutputSize) {
@@ -2830,12 +2968,12 @@ void BURGER_API Burger::StringCopy(
 	\note This function will always zero terminate the output string and perform
 	nothing at all if the output size is zero.
 
-	\sa Burger::StringCopy(char *,const char *) or Burger::string_length(const
+	\sa Burger::string_copy(char *,const char *) or Burger::string_length(const
 		char *)
 
 ***************************************/
 
-void BURGER_API Burger::StringCopy(char* pOutput, uintptr_t uOutputSize,
+void BURGER_API Burger::string_copy(char* pOutput, uintptr_t uOutputSize,
 	const char* pInput, uintptr_t uInputSize) BURGER_NOEXCEPT
 {
 	if (uOutputSize) {
@@ -2862,12 +3000,12 @@ void BURGER_API Burger::StringCopy(char* pOutput, uintptr_t uOutputSize,
 	\note This function does not check for buffer overruns on the destination
 		buffer. Use with caution.
 
-	\sa Burger::StringCopy(uint16_t *,uintptr_t,const uint16_t *) or
+	\sa Burger::string_copy(uint16_t *,uintptr_t,const uint16_t *) or
 		Burger::string_length(const uint16_t *)
 
 ***************************************/
 
-void BURGER_API Burger::StringCopy(
+void BURGER_API Burger::string_copy(
 	uint16_t* pOutput, const uint16_t* pInput) BURGER_NOEXCEPT
 {
 	uint16_t bChar2;
@@ -2893,12 +3031,12 @@ void BURGER_API Burger::StringCopy(
 	\note This function will always zero terminate the output string and perform
 		nothing at all if the input size is zero.
 
-	\sa Burger::StringCopy(uint16_t *,const uint16_t *) or
+	\sa Burger::string_copy(uint16_t *,const uint16_t *) or
 		Burger::string_length(const uint16_t *)
 
 ***************************************/
 
-void BURGER_API Burger::StringCopy(uint16_t* pOutput, uintptr_t uOutputSize,
+void BURGER_API Burger::string_copy(uint16_t* pOutput, uintptr_t uOutputSize,
 	const uint16_t* pInput) BURGER_NOEXCEPT
 {
 	if (uOutputSize >= 2 && pOutput) {
@@ -2927,12 +3065,12 @@ void BURGER_API Burger::StringCopy(uint16_t* pOutput, uintptr_t uOutputSize,
 	\note This function will always zero terminate the output string and perform
 		nothing at all if the output size is zero.
 
-	\sa Burger::StringCopy(uint16_t *,const uint16_t *) or
+	\sa Burger::string_copy(uint16_t *,const uint16_t *) or
 		Burger::string_length(const uint16_t *)
 
 ***************************************/
 
-void BURGER_API Burger::StringCopy(uint16_t* pOutput, uintptr_t uOutputSize,
+void BURGER_API Burger::string_copy(uint16_t* pOutput, uintptr_t uOutputSize,
 	const uint16_t* pInput, uintptr_t uInputSize) BURGER_NOEXCEPT
 {
 	if (uOutputSize) {
@@ -3053,7 +3191,7 @@ void BURGER_API Burger::StringConcatenate(
 	// Get the end of the first string
 	uintptr_t uLength = string_length(pOutput);
 	// Copy the string to the end of the first one
-	StringCopy(pOutput + uLength, pInput);
+	string_copy(pOutput + uLength, pInput);
 }
 
 /*! ************************************
@@ -3083,7 +3221,7 @@ void BURGER_API Burger::StringConcatenate(
 		// Adjust the output to all the data that won't be touched.
 		uOutputSize -= uLength;
 		// Copy the rest with bounds checking
-		StringCopy(pOutput + uLength, uOutputSize, pInput);
+		string_copy(pOutput + uLength, uOutputSize, pInput);
 	}
 }
 
@@ -3115,7 +3253,7 @@ void BURGER_API Burger::StringConcatenate(char* pOutput, uintptr_t uOutputSize,
 		// Adjust the output to all the data that won't be touched.
 		uOutputSize -= uLength;
 		// Copy the rest with bounds checking
-		StringCopy(pOutput + uLength, uOutputSize, pInput, uInputSize);
+		string_copy(pOutput + uLength, uOutputSize, pInput, uInputSize);
 	}
 }
 
@@ -3143,7 +3281,7 @@ void BURGER_API Burger::StringConcatenate(
 	// Get the end of the first string
 	uintptr_t uLength = string_length(pOutput);
 	// Copy the string to the end of the first one
-	StringCopy(pOutput + uLength, pInput);
+	string_copy(pOutput + uLength, pInput);
 }
 
 /*! ************************************
@@ -3175,7 +3313,7 @@ void BURGER_API Burger::StringConcatenate(uint16_t* pOutput,
 		// Adjust the output to all the data that won't be touched.
 		uOutputSize -= (uLength * 2);
 		// Copy the rest with bounds checking
-		StringCopy(pOutput + uLength, uOutputSize, pInput);
+		string_copy(pOutput + uLength, uOutputSize, pInput);
 	}
 }
 
@@ -3214,7 +3352,7 @@ int BURGER_API Burger::StringCompare(
 			break;
 		}
 	} while (uTemp1); // End of string? (And match!!)
-	return iTemp;     // Perfect match!
+	return iTemp; // Perfect match!
 }
 
 /*! ************************************
@@ -3300,7 +3438,7 @@ int BURGER_API Burger::StringCompare(
 			break;
 		}
 	} while (uTemp1); // End of string? (And match!!)
-	return iTemp;     // Perfect match!
+	return iTemp; // Perfect match!
 }
 
 /*! ************************************
@@ -3400,7 +3538,7 @@ int BURGER_API Burger::StringCaseCompare(
 			break;
 		}
 	} while (uTemp1); // End of string? (And match!!)
-	return iTemp;     // Perfect match!
+	return iTemp; // Perfect match!
 }
 
 /*! ************************************
@@ -3549,7 +3687,7 @@ uint_t BURGER_API Burger::Wildcardcmp(
 			}
 		}
 	} while (uTemp); // Keep going?
-	return uResult;  // Return the answer
+	return uResult; // Return the answer
 }
 
 /*! ************************************
@@ -4422,9 +4560,9 @@ uint16_t* BURGER_API Burger::StringString(
 				}
 				// Get the source string
 				uTemp = pInput[i];
-				++i;                   // Ack the char
+				++i; // Ack the char
 			} while (uTemp == uTemp2); // Match?
-			++pInput;                  // Next main string char
+			++pInput; // Next main string char
 			// Next entry
 			uTemp = pInput[0];
 			// Source string still ok?
@@ -4479,7 +4617,7 @@ char* BURGER_API Burger::StringCaseString(
 					uTemp += 32;
 				}
 			} while (uTemp == uTemp2); // Match?
-			++pInput;                  // Next main string char
+			++pInput; // Next main string char
 			// Next entry
 			uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
 			// Source string still ok?
@@ -4534,7 +4672,7 @@ uint16_t* BURGER_API Burger::StringCaseString(
 					uTemp += 32;
 				}
 			} while (uTemp == uTemp2); // Match?
-			++pInput;                  // Next main string char
+			++pInput; // Next main string char
 			// Next entry
 			uTemp = pInput[0];
 			// Source string still ok?

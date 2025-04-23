@@ -117,7 +117,7 @@ public:
 		Command_t m_Commands[1];	///< Array of sequence patterns (m_uPatternSize*m_uChannelCount is the size)
 		static PatternData_t * BURGER_API New(uint_t uRows,uint_t uChannels);
 		Command_t* BURGER_API GetCommand(int iRow,int iChannel);
-		BURGER_INLINE void SetName(const char *pName) { StringCopy(m_Name,sizeof(m_Name),pName); }
+		BURGER_INLINE void SetName(const char *pName) { string_copy(m_Name,sizeof(m_Name),pName); }
 	};
 
 	class SampleDescription {
@@ -136,7 +136,7 @@ public:
 	public:
 		~SampleDescription();
 		static SampleDescription * BURGER_API New(void);
-		BURGER_INLINE void SetName(const char *pName) { StringCopy(m_Name,sizeof(m_Name),pName); }
+		BURGER_INLINE void SetName(const char *pName) { string_copy(m_Name,sizeof(m_Name),pName); }
 	};
 
 	struct EnvelopeMarker_t {
@@ -177,7 +177,7 @@ public:
 		uint8_t m_uVibratoSpeed;			///< Speed of vibrato oscillation
 		uint8_t m_uInstrumentNumber;		///< Instrument number
 		char m_Name[32];				///< Instrument name
-		BURGER_INLINE void SetName(const char *pName) { StringCopy(m_Name,sizeof(m_Name),pName); }
+		BURGER_INLINE void SetName(const char *pName) { string_copy(m_Name,sizeof(m_Name),pName); }
 		void BURGER_API Reset(void);
 	};
 
@@ -197,7 +197,7 @@ public:
 		uint_t m_ChannelVolumes[cTrackMaxCount];	///< Volume settings for each channel (0-64)
 		char m_Name[32];				///< Name of the song
 		BURGER_INLINE void Clear(void) { MemoryClear(this,sizeof(*this)); }
-		BURGER_INLINE void SetName(const char *pName) { StringCopy(m_Name,sizeof(m_Name),pName); }
+		BURGER_INLINE void SetName(const char *pName) { string_copy(m_Name,sizeof(m_Name),pName); }
 	};
 
 	struct Channel_t {

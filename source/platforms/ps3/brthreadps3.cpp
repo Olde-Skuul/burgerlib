@@ -212,7 +212,7 @@ Burger::eError BURGER_API Burger::Thread::platform_start(void) BURGER_NOEXCEPT
 	char ThreadName[28];
 	const char* pTName;
 	if (m_pName) {
-		StringCopy(ThreadName, 28, m_pName);
+		string_copy(ThreadName, 28, m_pName);
 		pTName = ThreadName;
 	} else {
 		pTName = "Burgerlib Thread";

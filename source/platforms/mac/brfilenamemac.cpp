@@ -450,7 +450,7 @@ Burger::eError BURGER_API Burger::Filename::set_native(
 		eError uResult =
 			MyFilename.set_native(lDirID, sVRefNum); /* Get the directory */
 		if (!uResult) {                              /* Did I get a path? */
-			StringCopy(Output, MyFilename.c_str());  /* Copy to output */
+			string_copy(Output, MyFilename.c_str());  /* Copy to output */
 			Output = Output + string_length(Output);  /* Fix pointer */
 		}
 		if (pInput[0]) { /* Was there a leading colon? */

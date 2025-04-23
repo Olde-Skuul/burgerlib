@@ -454,7 +454,7 @@ Burger::eError BURGER_API Burger::Filename::get_basename(
 	}
 
 	// Copy as much as possible
-	StringCopy(pOutput, uOutputLength, pInput, uLength);
+	string_copy(pOutput, uOutputLength, pInput, uLength);
 
 	// Was there a buffer issue?
 	eError uError = kErrorNone;
@@ -572,7 +572,7 @@ Burger::eError BURGER_API Burger::Filename::get_file_extension(
 			// remains at this point via pInput and uLength
 		}
 	}
-	StringCopy(pOutput, uOutputLength, pInput, uLength);
+	string_copy(pOutput, uOutputLength, pInput, uLength);
 
 	// Was there a buffer issue?
 	eError uError = kErrorNone;
@@ -776,7 +776,7 @@ Burger::eError BURGER_API Burger::Filename::get_dirname(
 	uintptr_t uLength = static_cast<uintptr_t>(pFilename - pLastColon);
 
 	// Save the string
-	StringCopy(pOutput, uOutputLength, pLastColon, uLength);
+	string_copy(pOutput, uOutputLength, pLastColon, uLength);
 
 	// Was there a buffer issue?
 	eError uError = kErrorNone;

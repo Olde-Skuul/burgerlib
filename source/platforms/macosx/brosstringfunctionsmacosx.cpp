@@ -58,7 +58,7 @@ Burger::eError BURGER_API Burger::GetMachineName(
 	CFStringRef pStringRef = SCDynamicStoreCopyComputerName(nullptr, nullptr);
 
 	if (pStringRef) {
-		StringCopy(pOutput, pStringRef);
+		string_copy(pOutput, pStringRef);
 
 		// Dispose of the string ref
 		CFRelease(pStringRef);

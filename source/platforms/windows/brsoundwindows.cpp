@@ -788,7 +788,7 @@ uint_t BURGER_API Burger::SoundManager::Init(void)
 	// Report the error condition
 	Debug::Message("%s\n", pError);
 	char OhGreat[256];
-	StringCopy(OhGreat, pError);
+	string_copy(OhGreat, pError);
 	StringConcatenate(OhGreat, ", sound is disabled");
 	OkAlertMessage(OhGreat, "Direct sound error");
 	Globals::SetErrorCode(static_cast<Burger::eError>(uResult));

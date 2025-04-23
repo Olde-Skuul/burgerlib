@@ -2,7 +2,7 @@
 
 	Error codes.
 
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -186,17 +186,15 @@ enum eError {
 struct error_message_t {
 	/** Burgerlib error message */
 	eError m_uError;
-	/** Operating system native error code */
+	/** Operating system native error code (if applicable) */
 	uint32_t m_uSystemError;
 	/** Error message in English */
 	char m_Message[256];
 };
 
-extern const error_message_t* BURGER_API get_last_error(
-	void) BURGER_NOEXCEPT;
+extern const error_message_t* BURGER_API get_last_error(void) BURGER_NOEXCEPT;
 extern void BURGER_API set_last_error(eError uError, uint32_t uSystemError = 0,
 	const char* pMessage = nullptr) BURGER_NOEXCEPT;
-
 extern const char* BURGER_API error_lookup_string(
 	eError uError) BURGER_NOEXCEPT;
 extern uintptr_t BURGER_API error_get_string(

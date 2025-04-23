@@ -261,7 +261,7 @@ Burger::eError BURGER_API Burger::Filename::set_system_working_directory(
 	// NSHomeDirectory() requires a scoped autorelease
 	String Temp;
 	BURGER_SCOPED_AUTORELEASE;
-	StringCopy(&Temp, reinterpret_cast<CFStringRef>(NSHomeDirectory()));
+	string_copy(&Temp, reinterpret_cast<CFStringRef>(NSHomeDirectory()));
 	if (!Temp.empty()) {
 		set_native(Temp.c_str());
 	}

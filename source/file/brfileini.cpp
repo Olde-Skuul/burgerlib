@@ -1696,7 +1696,7 @@ uint_t BURGER_API Burger::FileINI::Init(InputMemoryStream *pInput)
 		pInput->GetString(OneLine,sizeof(OneLine));
 
 		// Clean it up
-		StringCopy(LineCopy,OneLine);
+		string_copy(LineCopy,OneLine);
 		StripLeadingAndTrailingWhiteSpace(LineCopy);
 
 		// Let's parse the text (I can mangle it)

@@ -1274,7 +1274,7 @@ void BURGER_API Burger::Keyboard::ScanCodeToString(
 		uintptr_t uCount = BURGER_ARRAYSIZE(g_ScanCodeNames);
 		do {
 			if (pEntry->m_uScanCode == uScanCode) {
-				StringCopy(pString, uStringSize,
+				string_copy(pString, uStringSize,
 					pEntry->m_pName); // Length of the string
 				return;
 			}

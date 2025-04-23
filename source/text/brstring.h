@@ -202,6 +202,9 @@ public:
 	eError BURGER_API assign(const uint16_t* pInput) BURGER_NOEXCEPT;
 	eError BURGER_API assign(
 		const uint16_t* pInput, uintptr_t uLength) BURGER_NOEXCEPT;
+	eError BURGER_API assign(const uint32_t* pInput) BURGER_NOEXCEPT;
+	eError BURGER_API assign(
+		const uint32_t* pInput, uintptr_t uLength) BURGER_NOEXCEPT;
 
 	eError BURGER_API assign_win437(const char* pInput) BURGER_NOEXCEPT;
 	eError BURGER_API assign_win437(
@@ -349,8 +352,7 @@ public:
 	}
 	void BURGER_API SetWord(uint_t uInput) BURGER_NOEXCEPT;
 	void BURGER_API SetWordHex(uint_t uInput) BURGER_NOEXCEPT;
-	BURGER_INLINE int_t GetInt(int_t iDefault,
-		int_t iMin = INT32_MIN,
+	BURGER_INLINE int_t GetInt(int_t iDefault, int_t iMin = INT32_MIN,
 		int_t iMax = INT32_MAX) const BURGER_NOEXCEPT
 	{
 		return AsciiToInteger(m_pData, iDefault, iMin, iMax);

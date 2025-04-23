@@ -356,7 +356,7 @@ void BURGER_API Burger::Globals::GetHIDDeviceName(
 		// What???? Surrender
 		pOutput->assign("Unknown device");
 	} else {
-		StringCopy(pOutput, pCFString);
+		string_copy(pOutput, pCFString);
 		// Note: We "got" the string, so releasing isn't needed
 		// CFRelease(pCFString);
 	}
@@ -448,7 +448,7 @@ void Burger::Globals::GetDisplayName(String* pOutput, uint_t uDisplayID)
 		// Name not present? Possible it's a mac without a monitor or display
 		pOutput->assign("Inactive");
 	} else {
-		StringCopy(pOutput, rMonitorName);
+		string_copy(pOutput, rMonitorName);
 	}
 	// Release the dictionary
 	CFRelease(rInfoDictionary);

@@ -113,7 +113,7 @@ uint_t BURGER_API Burger::Globals::GetQuickTimeVersion(void) BURGER_NOEXCEPT
 		if (uPathLength) {
 
 			// Get the Quicktime DLL using the old name for 2.0 or 3.0
-			StringCopy(PathName + uPathLength, sizeof(PathName) - uPathLength,
+			string_copy(PathName + uPathLength, sizeof(PathName) - uPathLength,
 				"\\QTIM32.DLL");
 			DWORD uZeroLong = 0;
 			DWORD uFileInfoSize =
@@ -126,7 +126,7 @@ uint_t BURGER_API Burger::Globals::GetQuickTimeVersion(void) BURGER_NOEXCEPT
 				pQueryString = "\\StringFileInfo\\040904B0\\FileVersion";
 				// Try Quicktime 4.0
 				uZeroLong = 0;
-				StringCopy(PathName + uPathLength,
+				string_copy(PathName + uPathLength,
 					sizeof(PathName) - uPathLength, "\\QuickTime.qts");
 				uFileInfoSize =
 					Win32::GetFileVersionInfoSizeA(PathName, &uZeroLong);
@@ -139,7 +139,7 @@ uint_t BURGER_API Burger::Globals::GetQuickTimeVersion(void) BURGER_NOEXCEPT
 							PathName, BURGER_ARRAYSIZE(PathName));
 					}
 					if (uPathLength) {
-						StringCopy(PathName + uPathLength,
+						string_copy(PathName + uPathLength,
 							sizeof(PathName) - uPathLength,
 							"\\QuickTime\\QTSystem\\QuickTime.qts");
 						uFileInfoSize = Win32::GetFileVersionInfoSizeA(

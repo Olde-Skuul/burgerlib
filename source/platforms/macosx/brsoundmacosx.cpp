@@ -1272,7 +1272,7 @@ uint_t BURGER_API Burger::SoundManager::GetAudioModes(
 				if (uResult) {
 					continue;
 				}
-				StringCopy(&Entry.m_DeviceName, pCFString);
+				string_copy(&Entry.m_DeviceName, pCFString);
 				CFRelease(pCFString);
 
 				// Some devices have whitespace, remove it

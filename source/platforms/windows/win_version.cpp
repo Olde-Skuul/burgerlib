@@ -680,7 +680,7 @@ uint32_t BURGER_API Burger::Win32::get_DirectX_version_via_file_versions(
 		uint16_t* pDest = szPath + uLen;
 		uintptr_t uRemaining = sizeof(szPath) - (uLen * sizeof(uint16_t));
 
-		StringCopy(pDest, uRemaining,
+		string_copy(pDest, uRemaining,
 			reinterpret_cast<const uint16_t*>(L"\\ddraw.dll"));
 
 		uint64_t uVersionDDraw = Win32::get_file_version64(szPath);
@@ -699,7 +699,7 @@ uint32_t BURGER_API Burger::Win32::get_DirectX_version_via_file_versions(
 		}
 
 		// Switch off the d3drg8x.dll version
-		StringCopy(pDest, uRemaining,
+		string_copy(pDest, uRemaining,
 			reinterpret_cast<const uint16_t*>(L"\\d3drg8x.dll"));
 		uint64_t uVersionD3Drg8x = Win32::get_file_version64(szPath);
 		if (uVersionD3Drg8x >= 0x0004000400000046ULL) { // Win9x version
@@ -728,7 +728,7 @@ uint32_t BURGER_API Burger::Win32::get_DirectX_version_via_file_versions(
 		}
 
 		// Switch off the dplayx.dll version
-		StringCopy(pDest, uRemaining,
+		string_copy(pDest, uRemaining,
 			reinterpret_cast<const uint16_t*>(L"\\dplayx.dll"));
 		uint64_t uVersionDPlayx = Win32::get_file_version64(szPath);
 		if (uVersionDPlayx >= 0x0004000600030206ULL) { // Win9x version
@@ -743,7 +743,7 @@ uint32_t BURGER_API Burger::Win32::get_DirectX_version_via_file_versions(
 		}
 
 		// Switch off the dinput version
-		StringCopy(pDest, uRemaining,
+		string_copy(pDest, uRemaining,
 			reinterpret_cast<const uint16_t*>(L"\\dinput.dll"));
 		uint64_t uVersionDInput = Win32::get_file_version64(szPath);
 		if (uVersionDInput >= 0x00040007000002CC) { // Win9x version
@@ -765,7 +765,7 @@ uint32_t BURGER_API Burger::Win32::get_DirectX_version_via_file_versions(
 		}
 
 		// Switch off the d3d8 version
-		StringCopy(pDest, uRemaining,
+		string_copy(pDest, uRemaining,
 			reinterpret_cast<const uint16_t*>(L"\\d3d8.dll"));
 		uint64_t uVersionD3D8 = Win32::get_file_version64(szPath);
 		if ((((uVersionD3D8 & 0xFFFF000000000000ULL) ==
@@ -791,7 +791,7 @@ uint32_t BURGER_API Burger::Win32::get_DirectX_version_via_file_versions(
 		}
 
 		// Switch off the Mpg2splt version
-		StringCopy(pDest, uRemaining,
+		string_copy(pDest, uRemaining,
 			reinterpret_cast<const uint16_t*>(L"\\mpg2splt.ax"));
 		uint64_t uVersionMPG2Splt = Win32::get_file_version64(szPath);
 		if (uVersionMPG2Splt >=
@@ -801,7 +801,7 @@ uint32_t BURGER_API Burger::Win32::get_DirectX_version_via_file_versions(
 		}
 
 		// Switch off the dpnet version
-		StringCopy(pDest, uRemaining,
+		string_copy(pDest, uRemaining,
 			reinterpret_cast<const uint16_t*>(L"\\dpnet.dll"));
 		uint64_t uVersionDPNet = Win32::get_file_version64(szPath);
 		if ((((uVersionDPNet & 0xFFFF000000000000ULL) ==
@@ -816,7 +816,7 @@ uint32_t BURGER_API Burger::Win32::get_DirectX_version_via_file_versions(
 		}
 
 		// Switch off the d3d9 version
-		StringCopy(pDest, uRemaining,
+		string_copy(pDest, uRemaining,
 			reinterpret_cast<const uint16_t*>(L"\\d3d9.dll"));
 		uint64_t uVersionD3D9 = Win32::get_file_version64(szPath);
 

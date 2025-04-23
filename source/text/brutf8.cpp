@@ -583,7 +583,8 @@ uintptr_t BURGER_API Burger::UTF8::GetMacRomanUSSize(
 			// ASCII?
 			if (uTemp >= 0x80U) {
 				// The MacRomanUS table only has 2 or 3 byte tokens
-				const uint8_t* pTable = MacRomanUS::g_ToUTF8Table[uTemp - 0x80U];
+				const uint8_t* pTable =
+					MacRomanUS::g_ToUTF8Table[uTemp - 0x80U];
 				uResult += 2U;
 				// Is there a third character?
 				if (pTable[2]) {
@@ -627,7 +628,8 @@ uintptr_t BURGER_API Burger::UTF8::GetMacRomanUSSize(
 			// ASCII?
 			if (uTemp >= 0x80U) {
 				// The MacRomanUS table only has 2 or 3 byte tokens
-				const uint8_t* pTable = MacRomanUS::g_ToUTF8Table[uTemp - 0x80U];
+				const uint8_t* pTable =
+					MacRomanUS::g_ToUTF8Table[uTemp - 0x80U];
 				uResult += 2U;
 				// Is there a third character?
 				if (pTable[2]) {
@@ -2995,7 +2997,8 @@ uintptr_t BURGER_API Burger::UTF8::from_UTF16(char* pOutput,
 
 ***************************************/
 
-char* BURGER_API Burger::UTF8::from_UTF16(const uint16_t* pInput) BURGER_NOEXCEPT
+char* BURGER_API Burger::UTF8::from_UTF16(
+	const uint16_t* pInput) BURGER_NOEXCEPT
 {
 	const uintptr_t uInputLength = GetUTF16Size(pInput);
 	char* pWork = static_cast<char*>(Alloc(uInputLength + 1));
@@ -3004,6 +3007,148 @@ char* BURGER_API Burger::UTF8::from_UTF16(const uint16_t* pInput) BURGER_NOEXCEP
 		from_UTF16(pWork, uInputLength + 1, pInput);
 	}
 	return pWork;
+}
+
+/*! ************************************
+
+	\brief Determine the size of the UTF8 stream for a UTF32 value
+
+	Take the unsigned 32 bit value of the UTF32 character and return the
+	number of UTF8 bytes it will occupy. The answer is either 1, 2, 3, or 4
+	bytes. If the input is greater than 0xFF, the returned value is zero.
+
+	\param uInput UTF32 encoded 8 bit character
+
+	\return The number of bytes needed to UTF8 encode. 1, 2, 3, 4, or 0 if
+		uInput is >=256.
+
+	\sa GetUTF32Size(const uint32_t*) or GetUTF32Size(
+		const uint32_t*, uintptr_t)
+
+***************************************/
+
+uintptr_t BURGER_API Burger::UTF8::GetUTF32Size(uint32_t uInput) BURGER_NOEXCEPT
+{
+	uintptr_t uResult;
+	// ASCII?
+	if (uInput >= 0x80U) {
+		// 0x80-0x7FF (11 bit encoding) ?
+		if (uInput < 0x800U) {
+			uResult = 2U;
+		} else if (((uInput >= 0xD800U) && (uInput < 0xE000U)) ||
+			(uInput >= 0x110000U)) {
+			// 0xD800-0xDFFF or >=0x110000 are bad.
+			uResult = 0U;
+		} else if (uInput < 0x10000U) {
+			// 24 bit encoding
+			uResult = 3U;
+		} else {
+			// 32 bit encoding
+			uResult = 4U;
+		}
+	} else {
+		// 0x00 - 0x7F is literal ASCII
+		uResult = 1U;
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Determine the size of the UTF8 stream for a UTF32 "C" string.
+
+	Take a "C" string, encoded with UTF32, and determine the length in
+	bytes this string would require if encoded in UTF8.
+
+	\param pInput Pointer to a "C" string encoded in UTF32
+
+	\return The number of bytes the string would require if converted.
+
+	\sa GetUTF32Size(uint32_t uInput) or GetUTF32Size(
+		const uint32_t*, uintptr_t)
+
+***************************************/
+
+uintptr_t BURGER_API Burger::UTF8::GetUTF32Size(
+	const uint32_t* pInput) BURGER_NOEXCEPT
+{
+	uintptr_t uResult = 0;
+
+	uint_t uTemp = pInput[0];
+	if (uTemp) {
+		do {
+			++pInput;
+			// ASCII?
+			if (uTemp >= 0x80U) {
+				// 0x80-0x7FF (11 bit encoding) ?
+				if (uTemp < 0x800U) {
+					uResult += 2U;
+				} else if ((uTemp >= 0xD800U) && (uTemp < 0xE000U)) {
+				} else if (uTemp < 0x10000U) {
+					// 24 bit encoding
+					uResult += 3U;
+					// Valid start token?
+				} else if (uTemp < 0x110000U) {
+					// Special case for 21 bit encoding? (0x10000-0x10FFFF)
+					uResult += 4U;
+				}
+			} else {
+				// 0x00 - 0x7F is literal ASCII
+				++uResult;
+			}
+			uTemp = pInput[0];
+		} while (uTemp);
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Determine the size of the UTF8 stream for a UTF32 buffer.
+
+	Take a buffer, encoded with UTF32, and determine the length in bytes
+	this buffer would require if encoded in UTF8.
+
+	\param pInput Pointer to a buffer encoded in UTF32
+	\param uInputSize Number of elements in the buffer
+
+	\return The number of bytes the buffer would require if converted.
+
+	\sa GetUTF32Size(uint_t uInput) or GetUTF32Size(
+		const uint32_t *, uintptr_t)
+
+***************************************/
+
+uintptr_t BURGER_API Burger::UTF8::GetUTF32Size(
+	const uint32_t* pInput, uintptr_t uInputSize) BURGER_NOEXCEPT
+{
+	uintptr_t uResult = 0;
+
+	if (uInputSize) {
+		do {
+			uint_t uTemp = pInput[0];
+			++pInput;
+			// ASCII?
+			if (uTemp >= 0x80U) {
+				// 0x80-0x7FF (11 bit encoding) ?
+				if (uTemp < 0x800U) {
+					uResult += 2U;
+				} else if ((uTemp >= 0xD800U) && (uTemp < 0xE000U)) {
+				} else if (uTemp < 0x10000U) {
+					// 24 bit encoding
+					uResult += 3U;
+					// Valid start token?
+				} else if (uTemp < 0x110000U) {
+					// Special case for 21 bit encoding? (0x10000-0x10FFFF)
+					uResult += 4U;
+				}
+			} else {
+				// 0x00 - 0x7F is literal ASCII
+				++uResult;
+			}
+		} while (--uInputSize);
+	}
+	return uResult;
 }
 
 /*! ************************************
@@ -3388,7 +3533,8 @@ uintptr_t BURGER_API Burger::UTF8::from_UTF32(char* pOutput,
 
 ***************************************/
 
-char* BURGER_API Burger::UTF8::from_UTF32(const uint32_t* pInput) BURGER_NOEXCEPT
+char* BURGER_API Burger::UTF8::from_UTF32(
+	const uint32_t* pInput) BURGER_NOEXCEPT
 {
 	const uintptr_t uInputLength = from_UTF32(nullptr, 0, pInput);
 	char* pWork = static_cast<char*>(Alloc(uInputLength + 1));
