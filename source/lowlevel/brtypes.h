@@ -896,7 +896,7 @@
 // Determine BURGER_THREAD_LOCAL for thread variables
 #if defined(BURGER_CPP11)
 #define BURGER_THREAD_LOCAL thread_local
-#elif defined(BURGER_CLANG) || defined(BURGER_GNUC)
+#elif defined(BURGER_CLANG) || (BURGER_GNUC >= 40800)
 #define BURGER_THREAD_LOCAL __thread
 #elif defined(BURGER_MSVC) || \
 	(defined(BURGER_METROWERKS) && defined(BURGER_INTEL))
