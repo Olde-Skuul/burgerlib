@@ -1207,13 +1207,23 @@
 	(((__value) + (__alignment) - 1) & ~((__alignment) - 1))
 
 // Suppress warnings in Visual Studio (VS2005 or higher)
-#if (BURGER_MSVC >= 140000000)
+#if (BURGER_MSVC >= 140000000) || defined(DOXYGEN)
 #define BURGER_MSVC_SUPPRESS(__T) __pragma(warning(suppress : __T))
 #elif defined(BURGER_MSVC)
 // Disable value out of range for Visual Studio 2003
 #define BURGER_MSVC_SUPPRESS(__T) __pragma(warning(disable : 4616 __T))
 #else
 #define BURGER_MSVC_SUPPRESS(__T)
+#endif
+
+// Handle disabling and enabling warnings on Visual Studio
+#if defined(BURGER_MSVC) || defined(DOXYGEN)
+#define BURGER_MSVC_PUSH_DISABLE_WARNING(__T) \
+	__pragma(warning(push)) __pragma(warning(disable : __T))
+#define BURGER_MSVC_POP_WARNING __pragma(warning(pop))
+#else
+#define BURGER_MSVC_PUSH_DISABLE_WARNING(__T)
+#define BURGER_MSVC_POP_WARNING
 #endif
 
 // Macro to create copy constructors to disable the feature

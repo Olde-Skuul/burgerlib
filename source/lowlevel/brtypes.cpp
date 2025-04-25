@@ -3380,7 +3380,69 @@ supplied callback. It will ensure that the linkage will be correct. This will
 
 	\param __T Integer warning number to suppress
 
-	\sa BURGER_MSVC
+	\sa BURGER_MSVC_PUSH_DISABLE_WARNING, or BURGER_MSVC_POP_WARNING
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_MSVC_PUSH_DISABLE_WARNING
+	\brief Invoke \#pragma warning(push disable:) in Microsoft Compilers
+
+	Push the state of the warning level and disable the requested warning.
+	Eventually follow this macro with \ref BURGER_MSVC_POP_WARNING to revert to
+	the previous warning state.
+
+	\note On non-Microsoft compilers, this macro does nothing.
+
+	\code
+
+	// Suppress the warning on the variable below
+	// Global initializer calls a non-constexpr function 'symbol'
+	BURGER_MSVC_PUSH_DISABLE_WARNING(26426)
+
+	// Init value on startup
+	static DWORD gStorage = TlsAlloc();
+
+	// Restore warning level
+	BURGER_MSVC_POP_WARNING
+
+	\endcode
+
+	\note Visual Studio 2003 doesn't support the suppress keyword, so disable is
+		used instead.
+
+	\param __T Integer warning number to suppress
+
+	\sa BURGER_MSVC_POP_WARNING, or BURGER_MSVC_SUPPRESS
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_MSVC_POP_WARNING
+	\brief Pop disabled warnings
+
+	If \ref BURGER_MSVC_PUSH_DISABLE_WARNING is invoked, it must eventually be
+	followed with this macro to revert the warnings back to the IDE defaults.
+
+	\note On non-Microsoft compilers, this macro does nothing.
+
+	\code
+
+	// Suppress the warning on the variable below
+	// Global initializer calls a non-constexpr function 'symbol'
+	BURGER_MSVC_PUSH_DISABLE_WARNING(26426)
+
+	// Init value on startup
+	static DWORD gStorage = TlsAlloc();
+
+	// Restore warning level
+	BURGER_MSVC_POP_WARNING
+
+	\endcode
+
+	\sa BURGER_MSVC_PUSH_DISABLE_WARNING, or BURGER_MSVC_SUPPRESS
 
 ***************************************/
 

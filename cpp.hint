@@ -17,6 +17,7 @@
 #define BURGER_EQUALS_DELETE = delete
 #define BURGER_EQUALS_DEFAULT = default
 #define BURGER_FINAL final
+#define BURGER_DEPRECATED(__x) __declspec(deprecated(__x))
 #define BURGER_ENUMSTART(x, y) enum class x : y
 #define BURGER_ENUMEND(x) ; typedef x x##Type;
 #define BURGER_UNUSED(x)
@@ -26,6 +27,8 @@
 #define BURGER_PREALIGN(s) alignas(s)
 #define BURGER_POSTALIGN(s)
 #define BURGER_MSVC_SUPPRESS(__T)
+#define BURGER_MSVC_PUSH_DISABLE_WARNING(__T) __pragma(warning(push)) __pragma(warning(disable : __T))
+#define BURGER_MSVC_POP_WARNING __pragma(warning(pop))
 
 #define BURGER_DISABLE_COPY(x) \
 private: \
