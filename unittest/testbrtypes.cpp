@@ -66,19 +66,6 @@
 #pragma warning 14 9
 #endif
 
-#if defined(BURGER_MSVC)
-// Disable not enough actual parameters for macro
-#pragma warning(disable : 4003)
-// Disable structure was padded due to __declspec(align())
-#pragma warning(disable : 4324)
-// VC 2005 or higher
-#if (BURGER_MSVC >= 140000000)
-// Disable Potential comparison of a comparison of a constant with another
-// constant
-#pragma warning(disable : 6326)
-#endif
-#endif
-
 /***************************************
 
 	Test default data chunk sizes
@@ -200,6 +187,9 @@ static uint_t BURGER_API TestDataChunkSize(uint_t uVerbose) BURGER_NOEXCEPT
 	Test structure alignment
 
 ***************************************/
+
+// structure was padded due to alignment specifier
+BURGER_MSVC_PUSH_DISABLE_WARNING(4324)
 
 static uint_t BURGER_API TestStructureAlignment(uint_t uVerbose) BURGER_NOEXCEPT
 {
@@ -437,6 +427,8 @@ static uint_t BURGER_API TestStructureAlignment(uint_t uVerbose) BURGER_NOEXCEPT
 	}
 	return uFailure;
 }
+
+BURGER_MSVC_POP_WARNING
 
 /***************************************
 

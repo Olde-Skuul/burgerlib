@@ -34,7 +34,11 @@
 
 #include <Shellapi.h>
 #include <objbase.h>
+
+// 'typedef ': ignored on left of 'tagGPFIDL_FLAGS' when no variable is declared
+BURGER_MSVC_PUSH_DISABLE_WARNING(4091)
 #include <shlobj.h>
+BURGER_MSVC_POP_WARNING
 
 //
 // GUIDs needed for locating folders in Vista or higher

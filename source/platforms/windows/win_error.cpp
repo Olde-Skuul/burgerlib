@@ -51,6 +51,10 @@
 #include <d3d11.h>
 #include <ddraw.h>
 
+
+// declaration of 'a' hides class member
+BURGER_MSVC_PUSH_DISABLE_WARNING(4458)
+
 #if !defined(BURGER_WATCOM)
 #include <d2d1.h>
 #else
@@ -58,6 +62,7 @@
 #endif
 
 #include <dwrite.h>
+BURGER_MSVC_POP_WARNING
 #endif
 
 #if defined(BURGER_METROWERKS)

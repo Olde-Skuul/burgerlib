@@ -35,11 +35,6 @@
 //
 
 #if defined(BURGER_X86)
-#if defined(BURGER_MSVC)
-// Disable Intel instruction not accurate on some CPUs (FPREM1)
-#pragma warning(disable : 4725)
-#endif
-
 // Pi * 2 in 80 bit format
 extern const Burger::float80_t Pi280bit = {
 	0x35, 0xc2, 0x68, 0x21, 0xa2, 0xda, 0x0f, 0xc9, 0x00, 0x40};

@@ -18,11 +18,6 @@
 #include "brfixedpoint.h"
 #include "brmacros.h"
 
-#if defined(BURGER_MSVC) && defined(BURGER_X86)
-// Instruction may be inaccurate on some Pentiums
-#pragma warning(disable : 4725)
-#endif
-
 //
 // Note: The Xbox 360 PPC compiler has a bug. It's not acknowledging
 // that fcmpu modifies the condition code register, so the inline assembler

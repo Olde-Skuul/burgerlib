@@ -32,17 +32,6 @@
 #pragma warning 14 9
 #endif
 
-#if defined(BURGER_MSVC)
-// Disable conditional expression is constant
-#pragma warning(disable : 4127)
-
-// Available with Visual Studio 2005 and higher
-#if (BURGER_MSVC >= 140000000)
-// Disable potential comparison of a constant with another constant
-#pragma warning(disable : 6326)
-#endif
-#endif
-
 struct undefined_struct;
 
 typedef void call_type1();
@@ -410,13 +399,6 @@ typename Burger::disable_if<Burger::is_floating_point<T>::value,
 
 #endif
 
-// Triggers with Visual Studio 2010 and higher
-#if (BURGER_MSVC >= 160000000)
-#pragma warning(push, 3)
-// Disable local variable is initialized but not referenced
-#pragma warning(disable : 4189)
-#endif
-
 static uint_t BURGER_API Test_enable_if(void) BURGER_NOEXCEPT
 {
 	uint_t uFailure = FALSE;
@@ -455,11 +437,6 @@ static uint_t BURGER_API Test_enable_if(void) BURGER_NOEXCEPT
 #endif
 	return uFailure;
 }
-
-// Triggers with Visual Studio 2010 and higher
-#if (BURGER_MSVC >= 160000000)
-#pragma warning(pop)
-#endif
 
 /***************************************
 
@@ -502,6 +479,9 @@ static uint_t BURGER_API Test_integral_constant(void) BURGER_NOEXCEPT
 	Test is_same<>
 
 ***************************************/
+
+// conditional expression is constant
+BURGER_MSVC_PUSH_DISABLE_WARNING(4127)
 
 #define TEST_IS_SAME(input1, input2, result) \
 	if (Burger::is_same<input1, input2>::value != result) { \
@@ -1809,6 +1789,8 @@ static uint_t BURGER_API Test_is_function(void) BURGER_NOEXCEPT
 	return uFailure;
 #endif
 }
+
+BURGER_MSVC_POP_WARNING
 
 /***************************************
 

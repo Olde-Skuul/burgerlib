@@ -72,8 +72,12 @@
 #include <dsound.h>
 #include <io.h>
 #include <shellapi.h>
-#include <shlobj.h>
 #include <winnt.h>
+
+// 'typedef ': ignored on left of 'tagGPFIDL_FLAGS' when no variable is declared
+BURGER_MSVC_PUSH_DISABLE_WARNING(4091)
+#include <shlobj.h>
+BURGER_MSVC_POP_WARNING
 
 #if defined(BURGER_METROWERKS)
 #pragma warn_emptydecl reset

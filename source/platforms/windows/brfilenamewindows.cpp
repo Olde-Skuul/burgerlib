@@ -29,7 +29,10 @@
 #include <ObjBase.h>
 #include <shellapi.h>
 
+// 'typedef ': ignored on left of 'tagGPFIDL_FLAGS' when no variable is declared
+BURGER_MSVC_PUSH_DISABLE_WARNING(4091)
 #include <shlobj.h>
+BURGER_MSVC_POP_WARNING
 
 EXTERN_C const GUID DECLSPEC_SELECTANY FOLDERID_LocalAppData = {
 	0xF1B32785, 0x6FBA, 0x4FCF, 0x9D, 0x55, 0x7B, 0x8E, 0x7F, 0x15, 0x70, 0x91};

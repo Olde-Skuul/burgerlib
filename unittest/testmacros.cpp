@@ -39,13 +39,6 @@
 #pragma pack()
 #endif
 
-#if defined(BURGER_MSVC)
-// Disable not enough actual parameters for macro
-#pragma warning(disable : 4003)
-// Disable structure was padded due to __declspec(align())
-#pragma warning(disable : 4324)
-#endif
-
 /***************************************
 
 	SHOW_DEFAULT_SIGN will pass an intrinsic data type to the template function

@@ -62,17 +62,6 @@
 #include "brutf8.h"
 #include "common.h"
 
-#if defined(BURGER_MSVC)
-// Disable conditional expression is constant
-#pragma warning(disable : 4127)
-
-// Available with Visual Studio 2005 and higher
-#if (BURGER_MSVC >= 140000000)
-// Disable potential comparison of a constant with another constant
-#pragma warning(disable : 6326)
-#endif
-#endif
-
 #if defined(BURGER_WATCOM)
 // Integral constant will be truncated during assignment
 #pragma warning 388 9

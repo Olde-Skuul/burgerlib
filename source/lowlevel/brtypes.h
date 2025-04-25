@@ -264,11 +264,6 @@
 
 #endif
 
-// Disable ``noexcept`` used with no exception handling mode specified
-#if (BURGER_MSVC >= 190000000)
-#pragma warning(disable : 4577)
-#endif
-
 #if defined(BURGER_WATCOM)
 // Conditional expression is always true
 #pragma warning 367 9
@@ -1014,11 +1009,13 @@
 #define BURGER_CONSTEXPR
 #endif
 
-// Test for noexcept support
-
-#if defined(BURGER_CPP11) || __has_feature(cxx_noexcept) || \
-	((BURGER_GNUC >= 40600) && defined(__GXX_EXPERIMENTAL_CXX0X__)) || \
-	(BURGER_MSVC >= 190023026) || defined(DOXYGEN)
+// Test for noexcept support (Disable on Microsoft compilers if exceptions are
+// off)
+#if ((!defined(BURGER_MSVC) || defined(_CPPUNWIND)) && \
+	(defined(BURGER_CPP11) || __has_feature(cxx_noexcept) || \
+		((BURGER_GNUC >= 40600) && defined(__GXX_EXPERIMENTAL_CXX0X__)) || \
+		(BURGER_MSVC >= 190023026))) || \
+	defined(DOXYGEN)
 #define BURGER_NOEXCEPT noexcept
 #else
 #define BURGER_NOEXCEPT
@@ -1535,14 +1532,5 @@ BURGER_INLINE void* operator new(uintptr_t, void* x) BURGER_NOEXCEPT { return x;
 #endif
 
 /* END */
-
-#if defined(BURGER_MSVC)
-// 'typedef ': ignored on left of 'tagGPFIDL_FLAGS' when no variable is declared
-#pragma warning(disable : 4091)
-#endif
-
-#if (BURGER_MSVC >= 192000000)
-#pragma warning(disable : 26429 26446 26472 26481 26482 26485 26490)
-#endif
 
 #endif

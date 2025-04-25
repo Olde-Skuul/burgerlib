@@ -20,10 +20,6 @@
 #include "brnumberstringhex.h"
 #include "brfloatingpoint.h"
 
-#if defined(BURGER_MSVC)
-#pragma warning(disable:4355)		// "this" pointer used in initializer
-#endif
-
 #if defined(BURGER_WATCOM)
 // Disable 'sizeof' operand contains compiler generated information
 #pragma disable_message(549)
