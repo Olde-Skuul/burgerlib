@@ -183,7 +183,7 @@ void Burger::Mutex::unlock(void) BURGER_NOEXCEPT
 
 		// Are we screwed?
 		if (m_uOwnerThreadID != GetCurrentThreadId()) {
-			Assert("Unlocking a Mutex that's not owned by this thread!",
+			do_assert("Unlocking a Mutex that's not owned by this thread!",
 				__FILE__, __LINE__);
 		} else {
 

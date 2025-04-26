@@ -53,6 +53,9 @@
 
 ***************************************/
 
+// 'this' : used in base member initializer list
+BURGER_MSVC_PUSH_DISABLE_WARNING(4355)
+
 /*! ************************************
 
 	\brief Initialize a generic object
@@ -65,6 +68,7 @@ Burger::FileXML::Generic::Generic(eType uType) :
 	m_eType(uType)			// Set the type
 {
 }
+BURGER_MSVC_POP_WARNING
 
 /*! ************************************
 

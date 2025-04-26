@@ -60,9 +60,10 @@
 		action and generate no code so the conditional will never be tested
 
 	\param conditional A boolean that evaluates to \ref FALSE to call the assert
-		function \ref Burger::Assert(const char *,const char *,uint32_t)
+		function \ref Burger::do_assert(const char*, const char*, uint32_t)
 
-	\sa BURGER_ASSERTTEST or Burger::Assert(const char *,const char *,uint32_t)
+	\sa BURGER_ASSERTTEST, or Burger::do_assert(
+		const char*, const char*, uint32_t)
 
 ***************************************/
 
@@ -73,35 +74,35 @@
 	\brief Always test a condition and if it's false, invoke the debugger.
 
 	\param conditional A boolean that evaluates to \ref FALSE to call the assert
-		function \ref Burger::Assert(const char *,const char *,uint32_t)
+		function \ref Burger::do_assert(const char*, const char*, uint32_t)
 
 	\note This macro will always invoke the conditional and will return the
 		boolean of \ref TRUE or \ref FALSE in Release builds. If it's executing
-		a Debug build, the \ref Burger::Assert(
-		const char *,const char*,uint32_t) function is called if the conditional
-		evaluates to \ref FALSE
+		a Debug build, the \ref Burger::do_assert(
+		const char*, const char*, uint32_t) function is called if the
+		conditional evaluates to \ref FALSE
 
 	\return The boolean evaluation of the conditional.
 
-	\sa BURGER_ASSERT or Burger::Assert(const char *,const char *,uint32_t)
+	\sa BURGER_ASSERT or Burger::do_assert(const char*, const char*, uint32_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\struct Burger::Assert_t
-	\brief Container structure for Assert support
+	\struct Burger::assert_t
+	\brief Container structure for assert support
 
 	This global assert structure is used for supporting the ability to redirect
-	an \ref Assert(const char *,const char *,uint32_t) call.
+	an \ref do_assert(const char *, const char*, uint32_t) call.
 
-	\sa Assert(const char *,const char *,uint32_t), or BURGER_ASSERT
+	\sa do_assert(const char*, const char*, uint32_t), or BURGER_ASSERT
 
 ***************************************/
 
 /*! ************************************
 
-	\typedef Burger::Assert_t::CallbackProc
+	\typedef Burger::assert_t::callback_t
 
 	\brief Redirect an assert to the application's assert function
 
@@ -111,9 +112,9 @@
 
 	\param pThis Pointer to the application supplied data pointer
 	\param pCondition String of the test condition that fired off the assert
-	\param pFilename The value of the "__FILE__" macro at the location of the
+	\param pFilename The value of the `__FILE__` macro at the location of the
 		\ref BURGER_ASSERT macro
-	\param uLineNumber The value of the "__LINE__" macro at the location of the
+	\param uLineNumber The value of the `__LINE__` macro at the location of the
 		\ref BURGER_ASSERT macro
 
 	\return \ref FALSE. Only return a non-false value if a very special
@@ -124,40 +125,41 @@
 
 /*! ************************************
 
-	\brief Singleton instance for Assert_t
-	\sa Assert_t or Assert_t::DefaultAssert
+	\brief Singleton instance for assert_t
+
+	\sa assert_t or assert_t::default_assert
 
 ***************************************/
 
-Burger::Assert_t Burger::Assert_t::g_Instance = {
-	DefaultAssert, // default Function pointer
-	nullptr        // default "this" pointer
+Burger::assert_t Burger::assert_t::g_Instance = {
+	default_assert, // default Function pointer
+	nullptr         // default "this" pointer
 };
 
 /*! ************************************
 
-	\brief Overrides the default Assert function
+	\brief Overrides the default do_assert function
 
-	The normal behavior for \ref Assert(const char *,const char *,uint32_t) is
-	to call printf() with the failure condition and then call
-	\ref Debug::Fatal(). This behavior can be overridden by passing	a new
-	function pointer via this call.
+	The normal behavior for \ref do_assert(const char*, const char*, uint32_t)
+	is to call printf() with the failure condition and then call \ref
+	Debug::Fatal(). This behavior can be overridden by passing a new function
+	pointer via this call.
 
-	The default behavior can be restored by passing \ref nullptr for the pAssert
-	parameter.
+	The default behavior can be restored by passing \ref nullptr for the
+	pCallback parameter.
 
 	\param pCallback Function to call when an assert is triggered, \ref nullptr
 		restores defaults
-	\param pThis void * of data to be passed to the assert function if triggered
+	\param pThis void* of data to be passed to the assert function if triggered
 
 ***************************************/
 
-void BURGER_API Burger::Assert_t::SetCallback(
-	CallbackProc pCallback, void* pThis) BURGER_NOEXCEPT
+void BURGER_API Burger::assert_t::set_callback(
+	callback_t pCallback, void* pThis) BURGER_NOEXCEPT
 {
 	// nullptr?
 	if (!pCallback) {
-		pCallback = DefaultAssert;
+		pCallback = default_assert;
 	}
 	m_pCallback = pCallback;
 	m_pThis = pThis;
@@ -186,12 +188,12 @@ void BURGER_API Burger::Assert_t::SetCallback(
 
 	\returns 0 (However, this function should never return)
 
-	\sa Debug::Message(), Debug::Fatal(), and Assert(
-		const char *,const char *,uint32_t)
+	\sa Debug::Message(), Debug::Fatal(), and do_assert(
+		const char*, const char*, uint32_t)
 
 ***************************************/
 
-int BURGER_API Burger::Assert_t::DefaultAssert(void* /* pThis */,
+int BURGER_API Burger::assert_t::default_assert(void* /* pThis */,
 	const char* pCondition, const char* pFilename,
 	uint32_t uLineNumber) BURGER_NOEXCEPT
 {
@@ -204,6 +206,8 @@ int BURGER_API Burger::Assert_t::DefaultAssert(void* /* pThis */,
 	// Exit to operating system
 	Debug::Fatal("Assertion from \"%s\" in file %s at line %u.\n", pCondition,
 		pFilename, uLineNumber);
+
+	// Always return 0, however Fatal() should abort execution
 	return 0;
 }
 
@@ -226,21 +230,21 @@ int BURGER_API Burger::Assert_t::DefaultAssert(void* /* pThis */,
 		usually 0 to match the condition that triggered the assert.
 
 	\param pCondition "C" string of the test condition that fired off the assert
-	\param pFilename The value of the "__FILE__" macro at the location of the
+	\param pFilename The value of the `__FILE__` macro at the location of the
 		\ref BURGER_ASSERT macro
-	\param uLineNumber The value of the "__LINE__" macro at the location of the
+	\param uLineNumber The value of the `__LINE__` macro at the location of the
 		\ref BURGER_ASSERT macro
 
-	\return Defaults to 0.
+	\return Always 0.
 
-	\sa Assert_t::DefaultAssert(), BURGER_ASSERT, or BURGER_ASSERTTEST
+	\sa assert_t::default_assert(), BURGER_ASSERT, or BURGER_ASSERTTEST
 
 ***************************************/
 
-int BURGER_API Burger::Assert(const char* pCondition, const char* pFilename,
+int BURGER_API Burger::do_assert(const char* pCondition, const char* pFilename,
 	uint32_t uLineNumber) BURGER_NOEXCEPT
 {
-	const Assert_t* pInstance = &Assert_t::g_Instance;
+	const assert_t* pInstance = &assert_t::g_Instance;
 	return pInstance->m_pCallback(
 		pInstance->m_pThis, pCondition, pFilename, uLineNumber);
 }

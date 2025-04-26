@@ -385,6 +385,9 @@ static uint_t BURGER_API TestMaxInt64(void) BURGER_NOEXCEPT
 
 ***************************************/
 
+// local variable is initialized but not referenced
+BURGER_MSVC_PUSH_DISABLE_WARNING(4189)
+
 // BECKY TODO, fix watcom for enable_if, Open Watcom 1.9 crashes
 // when using enable_if<>
 
@@ -437,6 +440,7 @@ static uint_t BURGER_API Test_enable_if(void) BURGER_NOEXCEPT
 #endif
 	return uFailure;
 }
+BURGER_MSVC_POP_WARNING
 
 /***************************************
 

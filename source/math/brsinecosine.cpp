@@ -58,8 +58,8 @@
 		(defined(BURGER_PPC) || defined(BURGER_X86))) || \
 	((defined(BURGER_SNSYSTEMS) || defined(BURGER_GHS)) && \
 		defined(BURGER_PPC)) || \
-	(defined(BURGER_MSVC) && (defined(BURGER_X86) || defined(BURGER_PPC)))) \
-	&& !(defined(BURGER_MACOSX) && defined(BURGER_ARM))
+	(defined(BURGER_MSVC) && (defined(BURGER_X86) || defined(BURGER_PPC)))) && \
+	!(defined(BURGER_MACOSX) && defined(BURGER_ARM))
 
 #else
 
@@ -206,6 +206,9 @@ static BURGER_USED const Burger::float80_t g_lPI2 = {
 
 #if defined(BURGER_METROWERKS) || defined(BURGER_WATCOM) || defined(BURGER_MSVC)
 
+// fprem instruction may be inaccurate on some Pentiums
+BURGER_MSVC_PUSH_DISABLE_WARNING(4725)
+
 BURGER_DECLSPECNAKED float BURGER_API Burger::sine_387(
 	float /* fInput */) BURGER_NOEXCEPT
 {
@@ -343,6 +346,7 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::cosine_387(
     }
 	// clang-format on
 }
+BURGER_MSVC_POP_WARNING
 
 #elif defined(BURGER_CLANG) || defined(BURGER_GNUC)
 // __ZN6Burger8sine_387Ef = float BURGER_API Burger::sine_387(float fInput)
@@ -1124,126 +1128,147 @@ BURGER_DECLSPECNAKED float BURGER_API Burger::get_cosine(
         faddp st(1), st(0)
         ret 4 // Clean up and exit
     }
-    // clang-format on
+	// clang-format on
 }
 #elif defined(BURGER_X86) && (defined(BURGER_MACOSX) || defined(BURGER_IOS))
 // __ZN6Burger10get_cosineEf = float BURGER_API Burger::get_cosine(float fInput)
 __asm__(
-    ".globl __ZN6Burger10get_cosineEf\n"
-    "__ZN6Burger10get_cosineEf:\n"
-    "	flds	(__ZN6Burger6g_fOneE)\n"            // Initial 1
-    "	flds	4(%esp)\n"                          // Load into the FPU
-    "	flds	(__ZN6Burger16g_fReciprocalPi2E)\n" // Load in 1/2Pi
-    "	fmul	%st(1),%st(0)\n"          // Multiply (Really fInput/2Pi)
-    "	fadds	(__ZN6Burger7g_fHalfE)\n" // Add half for rounding
-    "	fsts	4(%esp)\n" // Round to nearest in 24 bit to force consistent
-                           // precision
-    "	frndint\n"         // Convert to integer
-    "	fcoms	4(%esp)\n" // Compare the two and get rid of the prerounded
-    "	fnstsw	%ax\n"
-    "	testb	$0x41,%ah\n"             // ble
-    "	jne		1f\n"                    // Did it round up?
-    "	fsubs	(__ZN6Burger6g_fOneE)\n" // Fixup
-    "1:\n"
-    "	fmuls	(__ZN6Burger6g_fPi2E)\n"      // Mul by 2 pi
-    "	fsubrp	%st(1),%st(0)\n"              // Subtract and clean up
-    "	fmul	%st(0),%st(0)\n"              // Square the input
-    "	fld		%st(0)\n"                     // Copy the Power of 2
-    "	flds	(__ZL23g_fInverseCosineFactors)\n" // Start iterating
-    "	fmul	%st(1),%st(0)\n"              // fInput*(1/2!)
-    "	faddp	%st(0),%st(3)\n"              // fResult + fInput*(1/2!)
-    "	fmul	%st(1),%st(0)\n"              // Up the power by 2
-    "	flds	(__ZL23g_fInverseCosineFactors+4)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	faddp	%st(0),%st(3)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	flds	(__ZL23g_fInverseCosineFactors+8)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	faddp	%st(0),%st(3)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	flds	(__ZL23g_fInverseCosineFactors+12)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	faddp	%st(0),%st(3)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	flds	(__ZL23g_fInverseCosineFactors+16)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	faddp	%st(0),%st(3)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	flds	(__ZL23g_fInverseCosineFactors+20)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	faddp	%st(0),%st(3)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	flds	(__ZL23g_fInverseCosineFactors+24)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	faddp	%st(0),%st(3)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	flds	(__ZL23g_fInverseCosineFactors+28)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	faddp	%st(0),%st(3)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	flds	(__ZL23g_fInverseCosineFactors+32)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	faddp	%st(0),%st(3)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	flds	(__ZL23g_fInverseCosineFactors+36)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	faddp	%st(0),%st(3)\n"
-    "	fmulp	%st(0),%st(1)\n"
-    "	fmuls	(__ZL23g_fInverseCosineFactors+40)\n"
-    "	faddp	%st(0),%st(1)\n"
-    "	ret\n" // Clean up and exit
+	".globl __ZN6Burger10get_cosineEf\n"
+	"__ZN6Burger10get_cosineEf:\n"
+	"	flds	(__ZN6Burger6g_fOneE)\n"            // Initial 1
+	"	flds	4(%esp)\n"                          // Load into the FPU
+	"	flds	(__ZN6Burger16g_fReciprocalPi2E)\n" // Load in 1/2Pi
+	"	fmul	%st(1),%st(0)\n"          // Multiply (Really fInput/2Pi)
+	"	fadds	(__ZN6Burger7g_fHalfE)\n" // Add half for rounding
+	"	fsts	4(%esp)\n" // Round to nearest in 24 bit to force consistent
+						   // precision
+	"	frndint\n"         // Convert to integer
+	"	fcoms	4(%esp)\n" // Compare the two and get rid of the prerounded
+	"	fnstsw	%ax\n"
+	"	testb	$0x41,%ah\n"             // ble
+	"	jne		1f\n"                    // Did it round up?
+	"	fsubs	(__ZN6Burger6g_fOneE)\n" // Fixup
+	"1:\n"
+	"	fmuls	(__ZN6Burger6g_fPi2E)\n"           // Mul by 2 pi
+	"	fsubrp	%st(1),%st(0)\n"                   // Subtract and clean up
+	"	fmul	%st(0),%st(0)\n"                   // Square the input
+	"	fld		%st(0)\n"                          // Copy the Power of 2
+	"	flds	(__ZL23g_fInverseCosineFactors)\n" // Start iterating
+	"	fmul	%st(1),%st(0)\n"                   // fInput*(1/2!)
+	"	faddp	%st(0),%st(3)\n"                   // fResult + fInput*(1/2!)
+	"	fmul	%st(1),%st(0)\n"                   // Up the power by 2
+	"	flds	(__ZL23g_fInverseCosineFactors+4)\n"
+	"	fmul	%st(1),%st(0)\n"
+	"	faddp	%st(0),%st(3)\n"
+	"	fmul	%st(1),%st(0)\n"
+	"	flds	(__ZL23g_fInverseCosineFactors+8)\n"
+	"	fmul	%st(1),%st(0)\n"
+	"	faddp	%st(0),%st(3)\n"
+	"	fmul	%st(1),%st(0)\n"
+	"	flds	(__ZL23g_fInverseCosineFactors+12)\n"
+	"	fmul	%st(1),%st(0)\n"
+	"	faddp	%st(0),%st(3)\n"
+	"	fmul	%st(1),%st(0)\n"
+	"	flds	(__ZL23g_fInverseCosineFactors+16)\n"
+	"	fmul	%st(1),%st(0)\n"
+	"	faddp	%st(0),%st(3)\n"
+	"	fmul	%st(1),%st(0)\n"
+	"	flds	(__ZL23g_fInverseCosineFactors+20)\n"
+	"	fmul	%st(1),%st(0)\n"
+	"	faddp	%st(0),%st(3)\n"
+	"	fmul	%st(1),%st(0)\n"
+	"	flds	(__ZL23g_fInverseCosineFactors+24)\n"
+	"	fmul	%st(1),%st(0)\n"
+	"	faddp	%st(0),%st(3)\n"
+	"	fmul	%st(1),%st(0)\n"
+	"	flds	(__ZL23g_fInverseCosineFactors+28)\n"
+	"	fmul	%st(1),%st(0)\n"
+	"	faddp	%st(0),%st(3)\n"
+	"	fmul	%st(1),%st(0)\n"
+	"	flds	(__ZL23g_fInverseCosineFactors+32)\n"
+	"	fmul	%st(1),%st(0)\n"
+	"	faddp	%st(0),%st(3)\n"
+	"	fmul	%st(1),%st(0)\n"
+	"	flds	(__ZL23g_fInverseCosineFactors+36)\n"
+	"	fmul	%st(1),%st(0)\n"
+	"	faddp	%st(0),%st(3)\n"
+	"	fmulp	%st(0),%st(1)\n"
+	"	fmuls	(__ZL23g_fInverseCosineFactors+40)\n"
+	"	faddp	%st(0),%st(1)\n"
+	"	ret\n" // Clean up and exit
 );
 
 #else
 float BURGER_API Burger::get_cosine(float fInput) BURGER_NOEXCEPT
 {
-    //return xcosf(fInput);
+	// return xcosf(fInput);
 
-    // Start by rounding the radians to reduce the chance
-    // of floating point rounding errors
-    fInput = modulo_radians(fInput);
+	// Start by rounding the radians to reduce the chance
+	// of floating point rounding errors
+	fInput = modulo_radians(fInput);
 
-    // To calculate cosine...
-    // Note: ! is factoral so 2! = 1*2, and 4! = 1*2*3*4
-    // cos(x) = 1 - ((x^2)/ 2!) + ((x^4)/ 4!) - ((x^6)/ 6!) + ((x^8)/ 8!)
-    // Repeat the pattern by reversing the sign of the addition and adding
-    // 2 for the square for every iteration
+	// To calculate cosine...
+	// Note: ! is factoral so 2! = 1*2, and 4! = 1*2*3*4
+	// cos(x) = 1 - ((x^2)/ 2!) + ((x^4)/ 4!) - ((x^6)/ 6!) + ((x^8)/ 8!)
+	// Repeat the pattern by reversing the sign of the addition and adding
+	// 2 for the square for every iteration
 
-    const float fInput2 = (fInput * fInput);
+	const float fInput2 = (fInput * fInput);
 
-    //- ((x^2)/ 2!)
-    float fResult = (fInput2 * static_cast<float>(g_fInverseCosineFactors[0])) + 1.0f;
-    //+ ((x^4)/ 4!)
-    float fInputFactorial = fInput2 * fInput2;
-    fResult = (fInputFactorial * static_cast<float>(g_fInverseCosineFactors[1])) + fResult;
-    //- ((x^6)/ 6!)
-    fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * static_cast<float>(g_fInverseCosineFactors[2])) + fResult;
-    //+ ((x^8)/ 8!)
-    fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * static_cast<float>(g_fInverseCosineFactors[3])) + fResult;
-    //- ((x^10)/ 10!)
-    fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * static_cast<float>(g_fInverseCosineFactors[4])) + fResult;
-    //+ ((x^12)/ 12!)
-    fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * static_cast<float>(g_fInverseCosineFactors[5])) + fResult;
-    //- ((x^14)/ 14!)
-    fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * static_cast<float>(g_fInverseCosineFactors[6])) + fResult;
-    //+ ((x^16)/ 16!)
-    fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * static_cast<float>(g_fInverseCosineFactors[7])) + fResult;
-    //- ((x^18)/ 18!)
-    fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * static_cast<float>(g_fInverseCosineFactors[8])) + fResult;
-    //+ ((x^20)/ 20!)
-    fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * static_cast<float>(g_fInverseCosineFactors[9])) + fResult;
-    //- ((x^22)/ 22!)
-    fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * static_cast<float>(g_fInverseCosineFactors[10])) + fResult;
-    return fResult;
+	//- ((x^2)/ 2!)
+	float fResult =
+		(fInput2 * static_cast<float>(g_fInverseCosineFactors[0])) + 1.0f;
+	//+ ((x^4)/ 4!)
+	float fInputFactorial = fInput2 * fInput2;
+	fResult =
+		(fInputFactorial * static_cast<float>(g_fInverseCosineFactors[1])) +
+		fResult;
+	//- ((x^6)/ 6!)
+	fInputFactorial = fInputFactorial * fInput2;
+	fResult =
+		(fInputFactorial * static_cast<float>(g_fInverseCosineFactors[2])) +
+		fResult;
+	//+ ((x^8)/ 8!)
+	fInputFactorial = fInputFactorial * fInput2;
+	fResult =
+		(fInputFactorial * static_cast<float>(g_fInverseCosineFactors[3])) +
+		fResult;
+	//- ((x^10)/ 10!)
+	fInputFactorial = fInputFactorial * fInput2;
+	fResult =
+		(fInputFactorial * static_cast<float>(g_fInverseCosineFactors[4])) +
+		fResult;
+	//+ ((x^12)/ 12!)
+	fInputFactorial = fInputFactorial * fInput2;
+	fResult =
+		(fInputFactorial * static_cast<float>(g_fInverseCosineFactors[5])) +
+		fResult;
+	//- ((x^14)/ 14!)
+	fInputFactorial = fInputFactorial * fInput2;
+	fResult =
+		(fInputFactorial * static_cast<float>(g_fInverseCosineFactors[6])) +
+		fResult;
+	//+ ((x^16)/ 16!)
+	fInputFactorial = fInputFactorial * fInput2;
+	fResult =
+		(fInputFactorial * static_cast<float>(g_fInverseCosineFactors[7])) +
+		fResult;
+	//- ((x^18)/ 18!)
+	fInputFactorial = fInputFactorial * fInput2;
+	fResult =
+		(fInputFactorial * static_cast<float>(g_fInverseCosineFactors[8])) +
+		fResult;
+	//+ ((x^20)/ 20!)
+	fInputFactorial = fInputFactorial * fInput2;
+	fResult =
+		(fInputFactorial * static_cast<float>(g_fInverseCosineFactors[9])) +
+		fResult;
+	//- ((x^22)/ 22!)
+	fInputFactorial = fInputFactorial * fInput2;
+	fResult =
+		(fInputFactorial * static_cast<float>(g_fInverseCosineFactors[10])) +
+		fResult;
+	return fResult;
 }
 #endif
 // clang-format on

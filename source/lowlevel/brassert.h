@@ -23,70 +23,71 @@
 
 namespace Burger {
 
-struct Assert_t {
-	typedef int(BURGER_API* CallbackProc)(void* pThis, const char* pCondition,
+struct assert_t {
+	typedef int(BURGER_API* callback_t)(void* pThis, const char* pCondition,
 		const char* pFilename, uint32_t uLineNumber);
 
-	/** Function pointer to the redirected Assert function */
-	CallbackProc m_pCallback;
-	/** "this" pointer passed to the m_pProcAssert function */
+	/** Function pointer to the redirected do_assert function */
+	callback_t m_pCallback;
+	/** "this" pointer passed to the m_pCallback function */
 	void* m_pThis;
 
-	/** Global instance of the Assert redirection */
-	static Assert_t g_Instance;
+	/** Global instance of the do_assert redirection */
+	static assert_t g_Instance;
 
-	void BURGER_API SetCallback(
-		CallbackProc pCallback, void* pThis) BURGER_NOEXCEPT;
-	static int BURGER_API DefaultAssert(void* pThis, const char* pCondition,
+	void BURGER_API set_callback(
+		callback_t pCallback, void* pThis) BURGER_NOEXCEPT;
+	static int BURGER_API default_assert(void* pThis, const char* pCondition,
 		const char* pFilename, uint32_t uLineNumber) BURGER_NOEXCEPT;
 };
 
-extern int BURGER_API Assert(const char* pCondition, const char* pFilename,
+extern int BURGER_API do_assert(const char* pCondition, const char* pFilename,
 	uint32_t uLineNumber) BURGER_NOEXCEPT;
 extern void BURGER_API invoke_debugger(void) BURGER_NOEXCEPT;
 
 }
 
-// Use WatcomAssertNothing() as a null function to shut up Watcom's warnings
+// Use watcom_assert() as a null function to shut up Watcom's warnings
 // Clang requires a pragma to get rid of a compiler warning triggered by
 // constant folding
 
 #if defined(BURGER_WATCOM) && !defined(DOXYGEN)
-extern void WatcomAssertNothing(void);
-#pragma aux WatcomAssertNothing = modify exact[] nomemory;
+extern void watcom_assert(void);
+#pragma aux watcom_assert = modify exact[] nomemory;
 #endif
 
 #if defined(_DEBUG) || defined(DOXYGEN)
 
 #if defined(BURGER_WATCOM) && !defined(DOXYGEN)
 #define BURGER_ASSERT(conditional) \
-	((conditional) ? WatcomAssertNothing() : \
-					 static_cast<void>( \
-						 ::Burger::Assert(#conditional, __FILE__, __LINE__)))
+	((conditional) ? watcom_assert() : \
+					 static_cast<void>(::Burger::do_assert( \
+						 #conditional, __FILE__, __LINE__)))
 
 #elif defined(BURGER_CLANG) && !defined(DOXYGEN)
 #define BURGER_ASSERT(conditional) \
 	_Pragma("clang diagnostic push") _Pragma( \
 		"clang diagnostic ignored \"-Wtautological-compare\"")((conditional) ? \
 			static_cast<void>(0) : \
-			static_cast<void>(::Burger::Assert(#conditional, __FILE__, \
+			static_cast<void>(::Burger::do_assert(#conditional, __FILE__, \
 				__LINE__))) _Pragma("clang diagnostic pop")
 #else
 
 #define BURGER_ASSERT(conditional) \
 	((conditional) ? static_cast<void>(0) : \
-					 static_cast<void>( \
-						 ::Burger::Assert(#conditional, __FILE__, __LINE__)))
+					 static_cast<void>(::Burger::do_assert( \
+						 #conditional, __FILE__, __LINE__)))
 #endif
 
 #define BURGER_ASSERTTEST(conditional) \
-	((conditional) ? TRUE : ::Burger::Assert(#conditional, __FILE__, __LINE__))
+	((conditional) ? TRUE : \
+					 ::Burger::do_assert(#conditional, __FILE__, __LINE__))
 
 #else
 
 // Disable BURGER_ASSERT
 #if defined(BURGER_WATCOM)
-#define BURGER_ASSERT(conditional) WatcomAssertNothing()
+#define BURGER_ASSERT(conditional) watcom_assert()
 #else
 #define BURGER_ASSERT(conditional) static_cast<void>(0)
 #endif
