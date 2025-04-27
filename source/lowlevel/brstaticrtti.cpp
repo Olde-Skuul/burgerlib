@@ -2,7 +2,7 @@
 
 	Run Time Type Information class
 
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -98,10 +98,10 @@
 	// Return a string with the true class name
 
 	Debug::Message(pBar->get_class_name());		// "foo"
-	Debug::Message(pBar2->get_class_name());		// "foo2"
-	Debug::Message(pBar3->get_class_name());		// "foo3"
-	Debug::Message(pBar4->get_class_name());		// "foo4"
-	Debug::Message(pBar5->get_class_name());		// "foo5"
+	Debug::Message(pBar2->get_class_name());	// "foo2"
+	Debug::Message(pBar3->get_class_name());	// "foo3"
+	Debug::Message(pBar4->get_class_name());	// "foo4"
+	Debug::Message(pBar5->get_class_name());	// "foo5"
 
 	// Demonstrate a truth table for class interactions
 
@@ -218,11 +218,12 @@ uint_t BURGER_API Burger::StaticRTTI::is_in_list(
 /*! ************************************
 
 	\def BURGER_RTTI_IN_BASE_CLASS()
-	\brief Macro for StaticRTTI support in a base class
+	\brief Macro for Burger::StaticRTTI support in a base class
 
-	If a class needs to support StaticRTTI, insert this macro in the class
-	declaration. Unlike the macro BURGER_RTTI_IN_CLASS(), this one adds the
-	inline function get_class_name() to retrieve the name of the class easily.
+	If a class needs to support Burger::StaticRTTI, insert this macro in the
+	class declaration. Unlike the macro BURGER_RTTI_IN_CLASS(), this one adds
+	the inline function Burger::StaticRTTI::get_class_name() to retrieve the
+	name of the class easily.
 
 	\note This macro will set the class setting to "public"
 
@@ -234,10 +235,10 @@ uint_t BURGER_API Burger::StaticRTTI::is_in_list(
 /*! ************************************
 
 	\def BURGER_RTTI_IN_CLASS()
-	\brief Macro for StaticRTTI support in a class
+	\brief Macro for Burger::StaticRTTI support in a class
 
-	If a class needs to support StaticRTTI, insert this macro in the class
-	declaration.
+	If a class needs to support Burger::StaticRTTI, insert this macro in the
+	class declaration.
 
 	\note This macro will set the class setting to "public"
 
@@ -249,7 +250,7 @@ uint_t BURGER_API Burger::StaticRTTI::is_in_list(
 /*! ************************************
 
 	\def BURGER_CREATE_STATICRTTI_BASE(__ClassName)
-	\brief Define to create a StaticRTTI for a base class.
+	\brief Define to create a Burger::StaticRTTI for a base class.
 
 	For a class that's not derived from anything, use this macro to generate a
 	terminating linked list entry
@@ -264,7 +265,7 @@ uint_t BURGER_API Burger::StaticRTTI::is_in_list(
 /*! ************************************
 
 	\def BURGER_CREATE_STATICRTTI_PARENT(__ClassName,__ParentClass)
-	\brief Define to create a StaticRTTI for a derived class.
+	\brief Define to create a Burger::StaticRTTI for a derived class.
 
 	For a class that's derived, use this macro to generate  a linked list entry
 	that connects to its parent

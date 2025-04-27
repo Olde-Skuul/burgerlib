@@ -1,7 +1,7 @@
 ;
 ; X86 assembly for Open Watcom
 ;
-; Copyright 1995-2023 by Rebecca Ann Heineman becky@burgerbecky.com
+; Copyright 1995-2025 by Rebecca Ann Heineman becky@burgerbecky.com
 ;
 ; Build with wasm.exe
 ;
@@ -21,7 +21,6 @@ _TEXT segment para 'CODE'
 
 ; Save registers
 	push	ecx
-	push	ebx
 
 ; Force 0x40000000 to be 0x3FFFFFFF so in the end
 ; it's changed back to 0x40000000 (64 bit)
@@ -29,57 +28,52 @@ _TEXT segment para 'CODE'
 	sub		eax, 1
 	sbb		edx, 0
 
-; Implement the C code, but use shrd
-; uInput |= uInput>>1
+; Check if the upper bits are clear
+	bsr		edx, edx
+	jz		low32
+
+; Shift has to use ecx
+	mov		ecx, edx
+
+; Prepare for shift
+	mov		edx, 1
+
+; edx has the power of 2, but it needs one more left shift
+	shl		edx, cl
+
+; Do the final shift, if overflow, return zero
+	add		edx, edx
+
+; Low 32 bits are always clear
+	xor		eax, eax
+	pop		ecx
+	ret
+
+; Input value resolves to low 32 bits.
+; Answer is 0x1 to 0x100000000
+low32:
+; Shift value has to be in ecx
 	mov		ecx, eax
-	mov		ebx, edx
-	shr		edx, 1
-	rcr		eax, 1
-	or		ecx, eax
-	or		ebx, edx
 
-; uInput |= uInput>>2
-	mov		eax, ecx
-	mov		edx, ebx
-	shrd	eax, ebx, 2
-	shr		edx, 2
-	or		ecx, eax
-	or		ebx, edx
+; Prepare for shift
+	mov		eax, 1
 
-; uInput |= uInput>>4
-	mov		eax, ecx
-	mov		edx, ebx
-	shrd	eax, ebx, 4
-	shr		edx, 4
-	or		ecx, eax
-	or		ebx, edx
+; Clear high word
+	xor		edx, edx
 
-; uInput |= uInput>>8
-	mov		eax, ecx
-	mov		edx, ebx
-	shrd	eax, ebx, 8
-	shr		edx, 8
-	or		ecx, eax
-	or		ebx, edx
+; Find the LEFTMOST bit, ecx will have 0x00 to 0x1F
+	bsr		ecx, ecx
 
-; uInput |= uInput>>16
-	mov		eax, ecx
-	mov		edx, ebx
-	shrd	eax, ebx, 16
-	shr		edx, 16
-	or		eax, ecx
-	or		edx, ebx
+; Smallest number
+	jz		one
 
-; Perform the final or in one instruction
-; uInput |= uInput>>32
-	or		eax, edx
+; eax has the power of 2, but it needs one more left shift
+	shl		eax, cl
 
-; Increment to get the final power of 2
-	add		eax, 1
+; Do the final shift, if overflow, set edx to 1
+	add		eax, eax
 	adc		edx, 0
-
-; Restore registers
-	pop		ebx
+one:
 	pop		ecx
 	ret
 

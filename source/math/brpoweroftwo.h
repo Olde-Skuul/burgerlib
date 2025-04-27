@@ -2,7 +2,7 @@
 
 	Power of two and other simple math functions
 
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -26,7 +26,7 @@
 /* BEGIN */
 namespace Burger {
 
-extern uint32_t BURGER_API power_of_two(uint32_t uInput) BURGER_NOEXCEPT;
+extern uint32_t BURGER_API power_of_two(uint32_t uInput BURGER_68K_D0) BURGER_NOEXCEPT;
 extern uint64_t BURGER_API power_of_two(uint64_t uInput) BURGER_NOEXCEPT;
 extern float BURGER_API power_of_two(float fInput) BURGER_NOEXCEPT;
 extern double BURGER_API power_of_two(double dInput) BURGER_NOEXCEPT;
