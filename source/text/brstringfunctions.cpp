@@ -908,13 +908,13 @@ const uint64_t Burger::g_TensTable64[20] = {
 
 	\param iInput ASCII character
 	\return Non zero if the character was 0 through 9, zero if not.
-	\sa IsHex(char), IsWhitespace(char), IsLowercase(char) or IsUppercase(char)
+	\sa is_hex(char), IsWhitespace(char), IsLowercase(char) or IsUppercase(char)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn uint_t Burger::IsHex(char iInput)
+	\fn uint_t Burger::is_hex(char iInput)
 	\brief Test if a character is 0-9, A-F or a-f
 
 	If the character is ASCII 0 through 9, A through F or a through f, return
@@ -937,7 +937,7 @@ const uint64_t Burger::g_TensTable64[20] = {
 
 	\param iInput ASCII character
 	\return Non zero if the character was TAB or SPACE, zero if not.
-	\sa IsDigit(char), IsHex(char), IsLowercase(char) or IsUppercase(char)
+	\sa IsDigit(char), is_hex(char), IsLowercase(char) or IsUppercase(char)
 
 ***************************************/
 
@@ -953,7 +953,7 @@ const uint64_t Burger::g_TensTable64[20] = {
 
 	\param iInput ASCII character
 	\return Non zero if the character was white space, zero if not.
-	\sa IsDigit(char), IsHex(char), IsLowercase(char) or IsUppercase(char)
+	\sa IsDigit(char), is_hex(char), IsLowercase(char) or IsUppercase(char)
 
 ***************************************/
 
@@ -967,7 +967,7 @@ const uint64_t Burger::g_TensTable64[20] = {
 
 	\param iInput ASCII character
 	\return Non zero if the character was a through z, zero if not.
-	\sa IsDigit(char), IsHex(char), IsWhitespace(char) or IsUppercase(char)
+	\sa IsDigit(char), is_hex(char), IsWhitespace(char) or IsUppercase(char)
 
 ***************************************/
 
@@ -981,7 +981,7 @@ const uint64_t Burger::g_TensTable64[20] = {
 
 	\param iInput ASCII character
 	\return Non zero if the character was A through Z, zero if not.
-	\sa IsDigit(char), IsHex(char), IsWhitespace(char) or IsLowercase(char)
+	\sa IsDigit(char), is_hex(char), IsWhitespace(char) or IsLowercase(char)
 
 ***************************************/
 

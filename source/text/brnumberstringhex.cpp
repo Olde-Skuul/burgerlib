@@ -71,7 +71,7 @@
 	\tparam T input data type, tested with is_integral.
 
 	\param input Integral value to print in HEX to a string.
-	\sa NumberToAsciiHex(char *, T) or
+	\sa to_hex_ascii(char *, T) or
 		NumberStringHex::NumberStringHex(T, uint_t)
 
 ***************************************/
@@ -86,14 +86,14 @@
 	depending on the number of bytes the integral occupies. Formatting will have
 	some influence on the string's length.
 
-	The format parameter is passed directly to NumberToAsciiHex(char*,T,uint_t),
+	The format parameter is passed directly to to_hex_ascii(char*,T,uint_t),
 	please see that function's documentation for what values you can pass.
 
 	\tparam T input data type, tested with is_integral.
 
 	\param input Integral value to print in HEX to a string.
 	\param uFormat Formatting parameter.
-	\sa NumberToAsciiHex(char *, T, uint_t) or NumberStringHex(T, uint_t)
+	\sa to_hex_ascii(char *, T, uint_t) or NumberStringHex(T, uint_t)
 
 ***************************************/
 

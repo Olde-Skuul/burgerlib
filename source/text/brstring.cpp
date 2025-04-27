@@ -2945,7 +2945,7 @@ void BURGER_API Burger::String::SetWordHex(uint_t uValue) BURGER_NOEXCEPT
 	m_pData[0] = '0';
 	m_pData[1] = 'x';
 	m_uLength = static_cast<uintptr_t>(
-		NumberToAsciiHex(m_pData + 2, static_cast<uint32_t>(uValue), 0) -
+		to_hex_ascii(m_pData + 2, static_cast<uint32_t>(uValue), 0) -
 		m_pData);
 }
 

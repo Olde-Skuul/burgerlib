@@ -28,9 +28,9 @@ namespace Burger {
 
 BURGER_ENUM_TYPE(eNumericConversionFlags, uint_t) {
 	/** Pass this flag to disable storing a terminating zero. */
-	NOENDINGNULL = 0x4000,
+	kDisableEndingNull = 0x4000,
 	/** Pass this flag to enable leading ASCII zeros output. */
-		LEADINGZEROS = 0x8000
+	kEnableLeadingZeros = 0x8000
 };
 
 BURGER_ENUM_TYPE(eASCIITypeFlag, uint8_t) {
@@ -170,7 +170,7 @@ BURGER_INLINE uint_t IsDigit(char iInput) BURGER_NOEXCEPT
 	return static_cast<uint_t>(
 		g_AsciiTestTable[static_cast<uint8_t>(iInput)] & ASCII_DIGIT);
 }
-BURGER_INLINE uint_t IsHex(char iInput) BURGER_NOEXCEPT
+BURGER_INLINE uint_t is_hex(char iInput) BURGER_NOEXCEPT
 {
 	return static_cast<uint_t>(
 		g_AsciiTestTable[static_cast<uint8_t>(iInput)] & kASCIITypeFlagHex);

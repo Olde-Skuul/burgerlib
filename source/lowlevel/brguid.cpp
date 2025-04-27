@@ -2,7 +2,7 @@
 
 	Create and work with Windows style GUID structures
 
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -87,28 +87,6 @@ const GUID Burger::g_GUID_zero = {0x00000000, 0x0000, 0x0000,
 
 /***************************************
 
-	Return TRUE if the ASCII char is 0-9, A-F or a-f or zero
-
-	Input must be 0-255. It will buffer overrun if over 255
-
-***************************************/
-
-static uint_t GUID_char_is_hex(uint_t uInput) BURGER_NOEXCEPT
-{
-	// Assume it's bad
-
-	uint_t uResult = FALSE;
-	if (!uInput ||
-		(Burger::g_AsciiTestTable[uInput] & Burger::kASCIITypeFlagHex)) {
-
-		// It's good!
-		uResult = TRUE;
-	}
-	return uResult;
-}
-
-/***************************************
-
 	Parse a hex strip and return the value in native endian
 
 	Before parsing, skip over whitespace
@@ -120,49 +98,62 @@ static uint32_t BURGER_API GUID_from_hex(
 {
 	const char* pInput = ppInput[0];
 
-	while (!GUID_char_is_hex(reinterpret_cast<const uint8_t*>(pInput)[0])) {
-		++pInput;
-	}
-
 	// Init the value
 	uint32_t uValue = 0;
-	do {
-		// End of string???
-		uint_t uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
-		if (!uTemp) {
 
-			// Abort NOW
-			break;
-		}
+	uint_t uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
+	if (uTemp) {
 
-		// Accept this char
-		++pInput;
+		// Skip all non-hex characters, like {} and -
+		do {
+			if (Burger::is_hex(static_cast<char>(uTemp))) {
+				break;
+			}
+			++pInput;
+			uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
+		} while (uTemp);
 
-		// Convert '0'-'9' to 0-9
-		uTemp -= '0';
+		// Convert the hex to integer
+		do {
+			// End of string???
+			if (!uTemp) {
 
-		// Not in range?
-		if (uTemp >= 10U) {
-
-			// Convert 'A'-'F' to 0-5
-			uTemp -= static_cast<uint_t>('A' - '0');
-			if (uTemp >= 6U) {
-
-				// Convert 'a'-'f' to 0-5
-				uTemp -= 'a' - 'A';
-				if (uTemp >= 6U) {
-					// Not valid!
-					break;
-				}
+				// Abort NOW
+				break;
 			}
 
-			// Convert 0-5 to 10-15
-			uTemp += 10U;
-		}
+			// Convert '0'-'9' to 0-9
+			uTemp -= '0';
 
-		// Blend
-		uValue = (uValue << 4U) | uTemp;
-	} while (--uDigits);
+			// Not in range?
+			if (uTemp >= 10U) {
+
+				// Convert 'A'-'F' to 0-5
+				uTemp -= static_cast<uint_t>('A' - '0');
+				if (uTemp >= 6U) {
+
+					// Convert 'a'-'f' to 0-5
+					uTemp -= static_cast<uint_t>('a' - 'A');
+					if (uTemp >= 6U) {
+						// Not valid!
+						break;
+					}
+				}
+
+				// Convert 0-5 to 10-15
+				uTemp += 10U;
+			}
+
+			// Accept this char
+			++pInput;
+
+			// Blend
+			uValue = (uValue << 4U) | uTemp;
+
+			// Fetch the next character
+			uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
+		} while (--uDigits);
+	}
 
 	// Save the location of the end of string
 	ppInput[0] = pInput;
@@ -190,16 +181,20 @@ static uint32_t BURGER_API GUID_from_hex(
 	defined(BURGER_PS5) || defined(BURGER_XBOXONE) || defined(BURGER_LINUX) || \
 	defined(BURGER_WIIU) || defined(BURGER_SWITCH)) || \
 	defined(DOXYGEN)
+
 void BURGER_API Burger::GUID_init(GUID* pOutput) BURGER_NOEXCEPT
 {
+	uint32_t* pTemp = reinterpret_cast<uint32_t*>(pOutput);
 	// For unsupported platforms, punt
-	pOutput->Data1 = LittleEndian::load(Tick::read_us());
-	reinterpret_cast<uint32_t*>(pOutput)[1] =
-		LittleEndian::load(Tick::read_us());
-	reinterpret_cast<uint32_t*>(pOutput)[2] =
-		LittleEndian::load(Tick::read_us());
-	reinterpret_cast<uint32_t*>(pOutput)[3] =
-		LittleEndian::load(Tick::read_us());
+	LittleEndian::store(&pTemp[0], Tick::read_us());
+
+	// Make sure it's marked as version 4, variant 1
+	// which marks it as a random number
+	LittleEndian::store(
+		&pTemp[1], (Tick::read_us() & 0xFFF0FFFFU) | 0x00040000U);
+	LittleEndian::store(
+		&pTemp[2], (Tick::read_us() & 0xFFFFFFF3U) | 0x00000008U);
+	LittleEndian::store(&pTemp[3], Tick::read_us());
 }
 #endif
 
@@ -208,7 +203,11 @@ void BURGER_API Burger::GUID_init(GUID* pOutput) BURGER_NOEXCEPT
 	\brief Convert a GUID to a string
 
 	Convert a GUID into a string that looks like
-	``8641FBDE-7F8F-11D4-AAC5-000A27DD93F2``
+	`8641FBDE-7F8F-11D4-AAC5-000A27DD93F2`
+
+	\note This function assumes the GUID is stored in Microsoft mixed endian
+		format where the first three groups are little endian and the remaining
+		2 groups as big endian.
 
 	\param pOutput Pointer to a buffer that's at least 36 bytes in length.
 	\param pInput Pointer to a GUID to convert to an ASCII string
@@ -220,32 +219,33 @@ void BURGER_API Burger::GUID_init(GUID* pOutput) BURGER_NOEXCEPT
 void BURGER_API Burger::GUID_to_string(
 	char* pOutput, const GUID* pInput) BURGER_NOEXCEPT
 {
-	pOutput = NumberToAsciiHex(
-		pOutput, LittleEndian::load(&pInput->Data1), LEADINGZEROS | 8U);
+	pOutput = to_hex_ascii(
+		pOutput, LittleEndian::load(&pInput->Data1), kEnableLeadingZeros | 8U);
 
 	pOutput[0] = '-';
 
-	pOutput = NumberToAsciiHex(
-		pOutput + 1, LittleEndian::load(&pInput->Data2), LEADINGZEROS | 4U);
+	pOutput = to_hex_ascii(pOutput + 1, LittleEndian::load(&pInput->Data2),
+		kEnableLeadingZeros | 4U);
 
 	pOutput[0] = '-';
 
-	pOutput = NumberToAsciiHex(
-		pOutput + 1, LittleEndian::load(&pInput->Data3), LEADINGZEROS | 4U);
+	pOutput = to_hex_ascii(pOutput + 1, LittleEndian::load(&pInput->Data3),
+		kEnableLeadingZeros | 4U);
 
 	pOutput[0] = '-';
 
+	// Print as big endian 16 bit
 	pOutput =
-		NumberToAsciiHex(pOutput + 1, pInput->Data4[0], LEADINGZEROS | 2U);
-	pOutput = NumberToAsciiHex(pOutput, pInput->Data4[1], LEADINGZEROS | 2U);
+		to_hex_ascii(pOutput + 1, pInput->Data4[0], kEnableLeadingZeros | 2U);
+	pOutput = to_hex_ascii(pOutput, pInput->Data4[1], kEnableLeadingZeros | 2U);
 
 	pOutput[0] = '-';
 	++pOutput;
 
-	uint_t i = 0;
+	uintptr_t i = 0;
 	do {
-		pOutput =
-			NumberToAsciiHex(pOutput, pInput->Data4[i + 2], LEADINGZEROS | 2U);
+		pOutput = to_hex_ascii(
+			pOutput, pInput->Data4[i + 2], kEnableLeadingZeros | 2U);
 	} while (++i < 6U);
 
 	// End the "C" string
@@ -256,7 +256,7 @@ void BURGER_API Burger::GUID_to_string(
 
 	\brief Convert a GUID string into a GUID
 
-	A string in the format of ``8641FBDE-7F8F-11D4-AAC5-000A27DD93F2``
+	A string in the format of `8641FBDE-7F8F-11D4-AAC5-000A27DD93F2`
 	will be parsed and converted into a GUID structure
 
 	\param pOutput Pointer to an uninitialized GUID structure
@@ -271,32 +271,37 @@ Burger::eError BURGER_API Burger::GUID_from_string(
 	GUID* pOutput, const char* pInput) BURGER_NOEXCEPT
 {
 	// Get the timestamp
-	pOutput->Data1 = LittleEndian::load(GUID_from_hex(&pInput, 8U));
+	LittleEndian::store(&pOutput->Data1, GUID_from_hex(&pInput, 8U));
 
 	// The shorts
-	pOutput->Data2 =
-		LittleEndian::load(static_cast<uint16_t>(GUID_from_hex(&pInput, 4U)));
-	pOutput->Data3 =
-		LittleEndian::load(static_cast<uint16_t>(GUID_from_hex(&pInput, 4U)));
+	LittleEndian::store(
+		&pOutput->Data2, static_cast<uint16_t>(GUID_from_hex(&pInput, 4U)));
+	LittleEndian::store(
+		&pOutput->Data3, static_cast<uint16_t>(GUID_from_hex(&pInput, 4U)));
 
-	uint_t i = 0;
+	uintptr_t i = 0;
 	do {
 		// The last 8 bytes
 		pOutput->Data4[i] = static_cast<uint8_t>(GUID_from_hex(&pInput, 2U));
 	} while (++i < 8U);
 
-	// Skip over trailing whitespace
-	while (!GUID_char_is_hex(reinterpret_cast<const uint8_t*>(pInput)[0])) {
-		++pInput;
-	}
-
-	if (reinterpret_cast<const uint8_t*>(pInput)[0]) {
-		// Error
-		return kErrorInvalidArgument;
+	// Skip over trailing non hex characters
+	eError uResult = kErrorNone;
+	uint_t uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
+	if (uTemp) {
+		do {
+			if (is_hex(static_cast<char>(uTemp))) {
+				// Error
+				uResult = kErrorInvalidArgument;
+				break;
+			}
+			++pInput;
+			uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
+		} while (uTemp);
 	}
 
 	// It's ok!
-	return kErrorNone;
+	return uResult;
 }
 
 /*! ************************************
@@ -307,6 +312,7 @@ Burger::eError BURGER_API Burger::GUID_from_string(
 	16 bit hash value.
 
 	\param pInput Pointer to a valid GUID
+
 	\return The 16 bit hash value
 
 ***************************************/
@@ -435,6 +441,7 @@ int BURGER_API Burger::GUID_compare(
 				iResult = 1;
 			} else {
 
+				// Scan from 0 to 7 to simulate big endian
 				uintptr_t i = 0;
 				iResult = 0;
 				do {

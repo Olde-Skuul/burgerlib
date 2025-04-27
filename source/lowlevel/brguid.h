@@ -2,7 +2,7 @@
 
 	Create and work with Windows style GUID structures
 
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -44,7 +44,7 @@ typedef struct _GUID {
 	uint16_t Data2;
 	/** Third value little endian */
 	uint16_t Data3;
-	/** Remaining 64 bits as 8 bytes */
+	/** Remaining 64 bits as 8 bytes big endian */
 	uint8_t Data4[8];
 } GUID;
 #endif

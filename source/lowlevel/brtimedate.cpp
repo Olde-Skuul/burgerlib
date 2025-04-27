@@ -119,10 +119,10 @@ void Burger::TimeDate_t::TimeToString(char* pOutput) const BURGER_NOEXCEPT
 	pOutput = NumberToAscii(pOutput, static_cast<uint32_t>(m_bHour));
 	pOutput[0] = ':';
 	pOutput = NumberToAscii(
-		pOutput + 1, static_cast<uint32_t>(m_bMinute), LEADINGZEROS | 2);
+		pOutput + 1, static_cast<uint32_t>(m_bMinute), kEnableLeadingZeros | 2);
 	pOutput[0] = ':';
 	NumberToAscii(
-		pOutput + 1, static_cast<uint32_t>(m_bSecond), LEADINGZEROS | 2);
+		pOutput + 1, static_cast<uint32_t>(m_bSecond), kEnableLeadingZeros | 2);
 }
 
 /*! ************************************
@@ -153,10 +153,10 @@ void Burger::TimeDate_t::TimeToStringPM(char* pOutput) const BURGER_NOEXCEPT
 	pOutput = NumberToAscii(pOutput, uHour);
 	pOutput[0] = ':';
 	pOutput = NumberToAscii(
-		pOutput + 1, static_cast<uint32_t>(m_bMinute), LEADINGZEROS | 2);
+		pOutput + 1, static_cast<uint32_t>(m_bMinute), kEnableLeadingZeros | 2);
 	pOutput[0] = ':';
 	pOutput = NumberToAscii(
-		pOutput + 1, static_cast<uint32_t>(m_bSecond), LEADINGZEROS | 2);
+		pOutput + 1, static_cast<uint32_t>(m_bSecond), kEnableLeadingZeros | 2);
 	pOutput[0] = PM;
 	pOutput[1] = 'M';
 	pOutput[2] = 0;
@@ -178,10 +178,10 @@ void Burger::TimeDate_t::DateToString(char* pOutput) const BURGER_NOEXCEPT
 	pOutput = NumberToAscii(pOutput, static_cast<uint32_t>(m_bMonth));
 	pOutput[0] = '/';
 	pOutput = NumberToAscii(
-		pOutput + 1, static_cast<uint32_t>(m_bDay), LEADINGZEROS | 2);
+		pOutput + 1, static_cast<uint32_t>(m_bDay), kEnableLeadingZeros | 2);
 	pOutput[0] = '/';
 	NumberToAscii(
-		pOutput + 1, static_cast<uint32_t>(m_uYear % 100U), LEADINGZEROS | 2);
+		pOutput + 1, static_cast<uint32_t>(m_uYear % 100U), kEnableLeadingZeros | 2);
 }
 
 /*! ************************************

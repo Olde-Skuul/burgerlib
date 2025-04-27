@@ -161,7 +161,7 @@ static void DumpTheHex(
 	pOutput[0] = 0;
 	if (uCount) {
 		do {
-			NumberStringHex Hex(pInput[0], LEADINGZEROS + 2);
+			NumberStringHex Hex(pInput[0], kEnableLeadingZeros + 2);
 			StringConcatenate(pOutput, Hex.c_str());
 			if (uCount != 1) {
 				StringConcatenate(pOutput, " ");
@@ -248,7 +248,7 @@ static uint_t TestILBMDecompress(void) BURGER_NOEXCEPT
 			Buffer, uSplit, ILBMCompressed, sizeof(ILBMCompressed));
 		uintptr_t uBytesProcessed = pTester->GetProcessedInputSize();
 		if (Error != kErrorBufferTooSmall) {
-			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
+			NumberStringHex Hex(uSplit, kEnableLeadingZeros + 4);
 			ReportFailure(
 				"DecompressILBMRLE::Process(Buffer,0x%s,ILBMCompressed,sizeof(ILBMCompressed)) = %d, expected kErrorBufferTooSmall",
 				TRUE, Hex.c_str(), Error);
@@ -258,7 +258,7 @@ static uint_t TestILBMDecompress(void) BURGER_NOEXCEPT
 			ILBMCompressed + uBytesProcessed,
 			sizeof(ILBMCompressed) - uBytesProcessed);
 		if (Error != kErrorNone) {
-			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
+			NumberStringHex Hex(uSplit, kEnableLeadingZeros + 4);
 			ReportFailure(
 				"DecompressILBMRLE::Process(Buffer+0x%s,sizeof(RawData)-0x%s,ILBMCompressed+uBytesProcessed,sizeof(ILBMCompressed)-uBytesProcessed) = %d, expected kErrorNone",
 				TRUE, Hex.c_str(), Hex.c_str(), Error);
@@ -277,7 +277,7 @@ static uint_t TestILBMDecompress(void) BURGER_NOEXCEPT
 			pTester->Process(Buffer, sizeof(RawData), ILBMCompressed, uSplit);
 		uintptr_t uBytesProcessed = pTester->GetProcessedOutputSize();
 		if (Error != kErrorDataStarvation) {
-			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
+			NumberStringHex Hex(uSplit, kEnableLeadingZeros + 4);
 			ReportFailure(
 				"DecompressILBMRLE::Process(Buffer,sizeof(RawData),ILBMCompressed,0x%s) = %d, expected kErrorDataStarvation",
 				TRUE, Hex.c_str(), Error);
@@ -287,7 +287,7 @@ static uint_t TestILBMDecompress(void) BURGER_NOEXCEPT
 			sizeof(RawData) - uBytesProcessed, ILBMCompressed + uSplit,
 			sizeof(ILBMCompressed) - uSplit);
 		if (Error != kErrorNone) {
-			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
+			NumberStringHex Hex(uSplit, kEnableLeadingZeros + 4);
 			ReportFailure(
 				"DecompressILBMRLE::Process(Buffer+uBytesProcessed,sizeof(RawData)-uBytesProcessed,ILBMCompressed+0x%s,sizeof(ILBMCompressed)-0x%s) = %d, expected kErrorNone",
 				TRUE, Hex.c_str(), Hex.c_str(), Error);
@@ -397,7 +397,7 @@ static uint_t TestILBMCompress(void) BURGER_NOEXCEPT
 		pTester->Init();
 		Error = pTester->Process(RawData, uSplit);
 		if (Error != kErrorNone) {
-			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
+			NumberStringHex Hex(uSplit, kEnableLeadingZeros + 4);
 			ReportFailure(
 				"CompressILBMRLE::Process(RawData,0x%s) = %d, expected kErrorNone",
 				TRUE, Hex.c_str(), Error);
@@ -405,7 +405,7 @@ static uint_t TestILBMCompress(void) BURGER_NOEXCEPT
 		}
 		Error = pTester->Process(RawData + uSplit, sizeof(RawData) - uSplit);
 		if (Error != kErrorNone) {
-			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
+			NumberStringHex Hex(uSplit, kEnableLeadingZeros + 4);
 			ReportFailure(
 				"CompressILBMRLE::Process(RawData+0x%s,sizeof(RawData)-0x%s) = %d, expected kErrorNone",
 				TRUE, Hex.c_str(), Hex.c_str(), Error);
@@ -442,7 +442,7 @@ static uint_t TestILBMCompress(void) BURGER_NOEXCEPT
 	do {
 		Error = pTester->Process(RawData + uSplit, 1);
 		if (Error != kErrorNone) {
-			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
+			NumberStringHex Hex(uSplit, kEnableLeadingZeros + 4);
 			ReportFailure(
 				"CompressILBMRLE::Process(RawData+0x%s,1) = %d, expected kErrorNone",
 				TRUE, Hex.c_str(), Error);
@@ -507,7 +507,7 @@ static uint_t TestLZSSDecompress(void) BURGER_NOEXCEPT
 			Buffer, uSplit, LZSSCompressed, sizeof(LZSSCompressed));
 		uintptr_t uBytesProcessed = pTester->GetProcessedInputSize();
 		if (Error != kErrorBufferTooSmall) {
-			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
+			NumberStringHex Hex(uSplit, kEnableLeadingZeros + 4);
 			ReportFailure(
 				"DecompressLZSS::Process(Buffer,0x%s,LZSSCompressed,sizeof(LZSSCompressed)) = %d, expected kErrorBufferTooSmall",
 				TRUE, Hex.c_str(), Error);
@@ -517,7 +517,7 @@ static uint_t TestLZSSDecompress(void) BURGER_NOEXCEPT
 			LZSSCompressed + uBytesProcessed,
 			sizeof(LZSSCompressed) - uBytesProcessed);
 		if (Error != kErrorNone) {
-			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
+			NumberStringHex Hex(uSplit, kEnableLeadingZeros + 4);
 			ReportFailure(
 				"DecompressLZSS::Process(Buffer+0x%s,sizeof(RawData)-0x%s,LZSSCompressed+uBytesProcessed,sizeof(LZSSCompressed)-uBytesProcessed) = %d, expected kErrorNone",
 				TRUE, Hex.c_str(), Hex.c_str(), Error);
@@ -536,7 +536,7 @@ static uint_t TestLZSSDecompress(void) BURGER_NOEXCEPT
 			pTester->Process(Buffer, sizeof(RawData), LZSSCompressed, uSplit);
 		uintptr_t uBytesProcessed = pTester->GetProcessedOutputSize();
 		if (Error != kErrorDataStarvation) {
-			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
+			NumberStringHex Hex(uSplit, kEnableLeadingZeros + 4);
 			ReportFailure(
 				"DecompressLZSS::Process(Buffer,sizeof(RawData),LZSSCompressed,0x%s) = %d, expected kErrorDataStarvation",
 				TRUE, Hex.c_str(), Error);
@@ -546,7 +546,7 @@ static uint_t TestLZSSDecompress(void) BURGER_NOEXCEPT
 			sizeof(RawData) - uBytesProcessed, LZSSCompressed + uSplit,
 			sizeof(LZSSCompressed) - uSplit);
 		if (Error != kErrorNone) {
-			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
+			NumberStringHex Hex(uSplit, kEnableLeadingZeros + 4);
 			ReportFailure(
 				"DecompressLZSS::Process(Buffer+uBytesProcessed,sizeof(RawData)-uBytesProcessed,LZSSCompressed+0x%s,sizeof(LZSSCompressed)-0x%s) = %d, expected kErrorNone",
 				TRUE, Hex.c_str(), Hex.c_str(), Error);
@@ -656,7 +656,7 @@ static uint_t TestLZSSCompress(void) BURGER_NOEXCEPT
 		pTester->Init();
 		Error = pTester->Process(RawData, uSplit);
 		if (Error != kErrorNone) {
-			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
+			NumberStringHex Hex(uSplit, kEnableLeadingZeros + 4);
 			ReportFailure(
 				"CompressLZSS::Process(RawData,0x%s) = %d, expected kErrorNone",
 				TRUE, Hex.c_str(), Error);
@@ -664,7 +664,7 @@ static uint_t TestLZSSCompress(void) BURGER_NOEXCEPT
 		}
 		Error = pTester->Process(RawData + uSplit, sizeof(RawData) - uSplit);
 		if (Error != kErrorNone) {
-			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
+			NumberStringHex Hex(uSplit, kEnableLeadingZeros + 4);
 			ReportFailure(
 				"CompressLZSS::Process(RawData+0x%s,sizeof(RawData)-0x%s) = %d, expected kErrorNone",
 				TRUE, Hex.c_str(), Hex.c_str(), Error);
@@ -700,7 +700,7 @@ static uint_t TestLZSSCompress(void) BURGER_NOEXCEPT
 	do {
 		Error = pTester->Process(RawData + uSplit, 1);
 		if (Error != kErrorNone) {
-			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
+			NumberStringHex Hex(uSplit, kEnableLeadingZeros + 4);
 			ReportFailure(
 				"CompressLZSS::Process(RawData+0x%s,1) = %d, expected kErrorNone",
 				TRUE, Hex.c_str(), Error);
@@ -765,7 +765,7 @@ static uint_t TestDeflateDecompress(void) BURGER_NOEXCEPT
 			Buffer, uSplit, DeflateCompressed, sizeof(DeflateCompressed));
 		uintptr_t uBytesProcessed = pTester->GetProcessedInputSize();
 		if (Error != kErrorBufferTooSmall) {
-			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
+			NumberStringHex Hex(uSplit, kEnableLeadingZeros + 4);
 			ReportFailure(
 				"DecompressDeflate::Process(Buffer,0x%s,DeflateCompressed,sizeof(DeflateCompressed)) = %d, expected kErrorBufferTooSmall",
 				TRUE, Hex.c_str(), Error);
@@ -775,7 +775,7 @@ static uint_t TestDeflateDecompress(void) BURGER_NOEXCEPT
 			DeflateCompressed + uBytesProcessed,
 			sizeof(DeflateCompressed) - uBytesProcessed);
 		if (Error != kErrorNone) {
-			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
+			NumberStringHex Hex(uSplit, kEnableLeadingZeros + 4);
 			ReportFailure(
 				"DecompressDeflate::Process(Buffer+0x%s,sizeof(RawData)-0x%s,DeflateCompressed+uBytesProcessed,sizeof(DeflateCompressed)-uBytesProcessed) = %d, expected kErrorNone",
 				TRUE, Hex.c_str(), Hex.c_str(), Error);
@@ -794,7 +794,7 @@ static uint_t TestDeflateDecompress(void) BURGER_NOEXCEPT
 			Buffer, sizeof(RawData), DeflateCompressed, uSplit);
 		uintptr_t uBytesProcessed = pTester->GetProcessedOutputSize();
 		if (Error != kErrorDataStarvation) {
-			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
+			NumberStringHex Hex(uSplit, kEnableLeadingZeros + 4);
 			ReportFailure(
 				"DecompressDeflate::Process(Buffer,sizeof(RawData),DeflateCompressed,0x%s) = %d, expected kErrorDataStarvation",
 				TRUE, Hex.c_str(), Error);
@@ -804,7 +804,7 @@ static uint_t TestDeflateDecompress(void) BURGER_NOEXCEPT
 			sizeof(RawData) - uBytesProcessed, DeflateCompressed + uSplit,
 			sizeof(DeflateCompressed) - uSplit);
 		if (Error != kErrorNone) {
-			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
+			NumberStringHex Hex(uSplit, kEnableLeadingZeros + 4);
 			ReportFailure(
 				"DecompressDeflate::Process(Buffer+uBytesProcessed,sizeof(RawData)-uBytesProcessed,DeflateCompressed+0x%s,sizeof(DeflateCompressed)-0x%s) = %d, expected kErrorNone",
 				TRUE, Hex.c_str(), Hex.c_str(), Error);
@@ -916,7 +916,7 @@ static uint_t TestDeflateCompress(void) BURGER_NOEXCEPT
 		pTester->Init();
 		Error = pTester->Process(RawData, uSplit);
 		if (Error != kErrorNone) {
-			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
+			NumberStringHex Hex(uSplit, kEnableLeadingZeros + 4);
 			ReportFailure(
 				"CompressDeflate::Process(RawData,0x%s) = %d, expected kErrorNone",
 				TRUE, Hex.c_str(), Error);
@@ -924,7 +924,7 @@ static uint_t TestDeflateCompress(void) BURGER_NOEXCEPT
 		}
 		Error = pTester->Process(RawData + uSplit, sizeof(RawData) - uSplit);
 		if (Error != kErrorNone) {
-			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
+			NumberStringHex Hex(uSplit, kEnableLeadingZeros + 4);
 			ReportFailure(
 				"CompressDeflate::Process(RawData+0x%s,sizeof(RawData)-0x%s) = %d, expected kErrorNone",
 				TRUE, Hex.c_str(), Hex.c_str(), Error);
@@ -961,7 +961,7 @@ static uint_t TestDeflateCompress(void) BURGER_NOEXCEPT
 	do {
 		Error = pTester->Process(RawData + uSplit, 1);
 		if (Error != kErrorNone) {
-			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
+			NumberStringHex Hex(uSplit, kEnableLeadingZeros + 4);
 			ReportFailure(
 				"CompressDeflate::Process(RawData+0x%s,1) = %d, expected kErrorNone",
 				TRUE, Hex.c_str(), Error);

@@ -26,59 +26,59 @@
 /* BEGIN */
 namespace Burger {
 
-extern char* BURGER_API NumberToAsciiHex(
+extern char* BURGER_API to_hex_ascii(
 	char* pOutput, uint8_t uInput) BURGER_NOEXCEPT;
-extern char* BURGER_API NumberToAsciiHex(
+extern char* BURGER_API to_hex_ascii(
 	char* pOutput, uint16_t uInput) BURGER_NOEXCEPT;
-extern char* BURGER_API NumberToAsciiHex(
+extern char* BURGER_API to_hex_ascii(
 	char* pOutput, uint32_t uInput) BURGER_NOEXCEPT;
-extern char* BURGER_API NumberToAsciiHex(
+extern char* BURGER_API to_hex_ascii(
 	char* pOutput, uint64_t uInput) BURGER_NOEXCEPT;
-extern char* BURGER_API NumberToAsciiHex(
+extern char* BURGER_API to_hex_ascii(
 	char* pOutput, float fInput) BURGER_NOEXCEPT;
-extern char* BURGER_API NumberToAsciiHex(
+extern char* BURGER_API to_hex_ascii(
 	char* pOutput, double dInput) BURGER_NOEXCEPT;
 
 template<class T>
-BURGER_INLINE char* NumberToAsciiHex(char* pOutput, T input) BURGER_NOEXCEPT
+BURGER_INLINE char* to_hex_ascii(char* pOutput, T input) BURGER_NOEXCEPT
 {
 	BURGER_STATIC_ASSERT(is_integral<T>::value);
 	typedef typename conditional<sizeof(T) == 1, uint8_t,
 		typename conditional<sizeof(T) == 2, uint16_t,
 			typename conditional<sizeof(T) == 4, uint32_t,
 				uint64_t>::type>::type>::type _tSwitch;
-	return NumberToAsciiHex(pOutput, static_cast<_tSwitch>(input));
+	return to_hex_ascii(pOutput, static_cast<_tSwitch>(input));
 }
 
-extern char* BURGER_API NumberToAsciiHex(
+extern char* BURGER_API to_hex_ascii(
 	char* pOutput, uint32_t uInput, uint_t uDigits) BURGER_NOEXCEPT;
-extern char* BURGER_API NumberToAsciiHex(
+extern char* BURGER_API to_hex_ascii(
 	char* pOutput, uint64_t uInput, uint_t uDigits) BURGER_NOEXCEPT;
-extern char* BURGER_API NumberToAsciiHex(
+extern char* BURGER_API to_hex_ascii(
 	char* pOutput, float fInput, uint_t uDigits) BURGER_NOEXCEPT;
-extern char* BURGER_API NumberToAsciiHex(
+extern char* BURGER_API to_hex_ascii(
 	char* pOutput, double dInput, uint_t uDigits) BURGER_NOEXCEPT;
 
-BURGER_INLINE char* BURGER_API NumberToAsciiHex(
+BURGER_INLINE char* BURGER_API to_hex_ascii(
 	char* pOutput, uint8_t uInput, uint_t uDigits) BURGER_NOEXCEPT
 {
 	if (!(uDigits & 0xFFU)) {
 		uDigits += 2;
 	}
-	return NumberToAsciiHex(pOutput, static_cast<uint32_t>(uInput), uDigits);
+	return to_hex_ascii(pOutput, static_cast<uint32_t>(uInput), uDigits);
 }
 
-BURGER_INLINE char* BURGER_API NumberToAsciiHex(
+BURGER_INLINE char* BURGER_API to_hex_ascii(
 	char* pOutput, uint16_t uInput, uint_t uDigits) BURGER_NOEXCEPT
 {
 	if (!(uDigits & 0xFFU)) {
 		uDigits += 4;
 	}
-	return NumberToAsciiHex(pOutput, static_cast<uint32_t>(uInput), uDigits);
+	return to_hex_ascii(pOutput, static_cast<uint32_t>(uInput), uDigits);
 }
 
 template<class T>
-BURGER_INLINE char* NumberToAsciiHex(
+BURGER_INLINE char* to_hex_ascii(
 	char* pOutput, T input, uint_t uDigits) BURGER_NOEXCEPT
 {
 	BURGER_STATIC_ASSERT(is_integral<T>::value);
@@ -86,7 +86,7 @@ BURGER_INLINE char* NumberToAsciiHex(
 		typename conditional<sizeof(T) == 2, uint16_t,
 			typename conditional<sizeof(T) == 4, uint32_t,
 				uint64_t>::type>::type>::type _tSwitch;
-	return NumberToAsciiHex(pOutput, static_cast<_tSwitch>(input), uDigits);
+	return to_hex_ascii(pOutput, static_cast<_tSwitch>(input), uDigits);
 }
 
 extern char* BURGER_API NumberToAscii(

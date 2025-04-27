@@ -53,7 +53,7 @@ void BURGER_API Burger::PrintHex(uint8_t uInput) BURGER_NOEXCEPT
 {
 	// Convert to a string
 	char temp_string[(sizeof(uint8_t) * 2) + 1];
-	NumberToAsciiHex(temp_string, uInput);
+	to_hex_ascii(temp_string, uInput);
 
 	// Send the string to stdout
 	fputs(temp_string, stdout);
@@ -74,7 +74,7 @@ void BURGER_API Burger::PrintHex(uint16_t uInput) BURGER_NOEXCEPT
 {
 	// Convert to a string
 	char temp_string[(sizeof(uint16_t) * 2) + 1];
-	NumberToAsciiHex(temp_string, uInput);
+	to_hex_ascii(temp_string, uInput);
 
 	// Send the string to stdout
 	fputs(temp_string, stdout);
@@ -96,7 +96,7 @@ void BURGER_API Burger::PrintHex(uint32_t uInput) BURGER_NOEXCEPT
 {
 	// Convert to a string
 	char temp_string[(sizeof(uint32_t) * 2) + 1];
-	NumberToAsciiHex(temp_string, uInput);
+	to_hex_ascii(temp_string, uInput);
 
 	// Send the string to stdout
 	fputs(temp_string, stdout);
@@ -118,7 +118,7 @@ void BURGER_API Burger::PrintHex(uint64_t uInput) BURGER_NOEXCEPT
 {
 	// Convert to a string
 	char temp_string[(sizeof(uint64_t) * 2) + 1];
-	NumberToAsciiHex(temp_string, uInput);
+	to_hex_ascii(temp_string, uInput);
 
 	// Send the string to stdout
 	fputs(temp_string, stdout);
@@ -139,7 +139,7 @@ void BURGER_API Burger::PrintHex(float fInput) BURGER_NOEXCEPT
 {
 	// Convert to a string
 	char temp_string[(sizeof(float) * 2) + 1];
-	NumberToAsciiHex(temp_string, fInput);
+	to_hex_ascii(temp_string, fInput);
 
 	// Send the string to stdout
 	fputs(temp_string, stdout);
@@ -160,7 +160,7 @@ void BURGER_API Burger::PrintHex(double dInput) BURGER_NOEXCEPT
 {
 	// Convert to a string
 	char temp_string[(sizeof(double) * 2) + 1];
-	NumberToAsciiHex(temp_string, dInput);
+	to_hex_ascii(temp_string, dInput);
 
 	// Send the string to stdout
 	fputs(temp_string, stdout);

@@ -19,7 +19,7 @@
 
 /***************************************
 
-	Test NumberToAsciiHex(char *, T)
+	Test to_hex_ascii(char *, T)
 
 ***************************************/
 
@@ -28,61 +28,61 @@ static uint_t BURGER_API TestNumberToAsciiHex(void) BURGER_NOEXCEPT
 	char Buffer[32];
 	uint_t uFailure = FALSE;
 
-	Burger::NumberToAsciiHex(Buffer, static_cast<uint8_t>(0x1));
+	Burger::to_hex_ascii(Buffer, static_cast<uint8_t>(0x1));
 	uint_t uTest = static_cast<uint_t>(Burger::StringCompare(Buffer, "01"));
 	uFailure |= uTest;
 	ReportFailure(
-		"Burger::NumberToAsciiHex(Buffer, static_cast<uint8_t>(0x1)) = %s",
+		"Burger::to_hex_ascii(Buffer, static_cast<uint8_t>(0x1)) = %s",
 		uTest, Buffer);
 
-	Burger::NumberToAsciiHex(Buffer, static_cast<int16_t>(0x123));
+	Burger::to_hex_ascii(Buffer, static_cast<int16_t>(0x123));
 	uTest = static_cast<uint_t>(Burger::StringCompare(Buffer, "0123"));
 	uFailure |= uTest;
 	ReportFailure(
-		"Burger::NumberToAsciiHex(Buffer, static_cast<int16_t>(0x123)) = %s",
+		"Burger::to_hex_ascii(Buffer, static_cast<int16_t>(0x123)) = %s",
 		uTest, Buffer);
 
-	Burger::NumberToAsciiHex(Buffer, static_cast<int32_t>(0x123));
+	Burger::to_hex_ascii(Buffer, static_cast<int32_t>(0x123));
 	uTest = static_cast<uint_t>(Burger::StringCompare(Buffer, "00000123"));
 	uFailure |= uTest;
 	ReportFailure(
-		"Burger::NumberToAsciiHex(Buffer, static_cast<int32_t>(0x123)) = %s",
+		"Burger::to_hex_ascii(Buffer, static_cast<int32_t>(0x123)) = %s",
 		uTest, Buffer);
 
-	Burger::NumberToAsciiHex(Buffer, static_cast<int64_t>(0x123333));
+	Burger::to_hex_ascii(Buffer, static_cast<int64_t>(0x123333));
 	uTest =
 		static_cast<uint_t>(Burger::StringCompare(Buffer, "0000000000123333"));
 	uFailure |= uTest;
 	ReportFailure(
-		"Burger::NumberToAsciiHex(Buffer, static_cast<int64_t>(0x123333)) = %s",
+		"Burger::to_hex_ascii(Buffer, static_cast<int64_t>(0x123333)) = %s",
 		uTest, Buffer);
 
-	Burger::NumberToAsciiHex(Buffer, 2.0f);
+	Burger::to_hex_ascii(Buffer, 2.0f);
 	uTest = static_cast<uint_t>(Burger::StringCompare(Buffer, "40000000"));
 	uFailure |= uTest;
-	ReportFailure("Burger::NumberToAsciiHex(Buffer, 2.0f) = %s", uTest, Buffer);
+	ReportFailure("Burger::to_hex_ascii(Buffer, 2.0f) = %s", uTest, Buffer);
 
-	Burger::NumberToAsciiHex(Buffer, 6.0);
+	Burger::to_hex_ascii(Buffer, 6.0);
 	uTest =
 		static_cast<uint_t>(Burger::StringCompare(Buffer, "4018000000000000"));
 	uFailure |= uTest;
-	ReportFailure("Burger::NumberToAsciiHex(Buffer, 6.0) = %s", uTest, Buffer);
+	ReportFailure("Burger::to_hex_ascii(Buffer, 6.0) = %s", uTest, Buffer);
 
-	Burger::NumberToAsciiHex(Buffer, static_cast<char>(0));
-	Burger::NumberToAsciiHex(Buffer, static_cast<short>(0));
-	Burger::NumberToAsciiHex(Buffer, static_cast<int>(0));
-	Burger::NumberToAsciiHex(Buffer, static_cast<long>(0));
-	Burger::NumberToAsciiHex(Buffer, static_cast<unsigned char>(0));
-	Burger::NumberToAsciiHex(Buffer, static_cast<unsigned short>(0));
-	Burger::NumberToAsciiHex(Buffer, static_cast<unsigned int>(0));
-	Burger::NumberToAsciiHex(Buffer, static_cast<unsigned long>(0));
-	Burger::NumberToAsciiHex(Buffer, static_cast<uintptr_t>(0));
+	Burger::to_hex_ascii(Buffer, static_cast<char>(0));
+	Burger::to_hex_ascii(Buffer, static_cast<short>(0));
+	Burger::to_hex_ascii(Buffer, static_cast<int>(0));
+	Burger::to_hex_ascii(Buffer, static_cast<long>(0));
+	Burger::to_hex_ascii(Buffer, static_cast<unsigned char>(0));
+	Burger::to_hex_ascii(Buffer, static_cast<unsigned short>(0));
+	Burger::to_hex_ascii(Buffer, static_cast<unsigned int>(0));
+	Burger::to_hex_ascii(Buffer, static_cast<unsigned long>(0));
+	Burger::to_hex_ascii(Buffer, static_cast<uintptr_t>(0));
 	return uFailure;
 }
 
 /***************************************
 
-	Test NumberToAsciiHex(char *, T, uint_t)
+	Test to_hex_ascii(char *, T, uint_t)
 
 ***************************************/
 
@@ -94,126 +94,126 @@ static uint_t BURGER_API TestNumberToAsciiHexDigits(void) BURGER_NOEXCEPT
 
 	uint_t uLength = 1;
 	do {
-		Burger::NumberToAsciiHex(
+		Burger::to_hex_ascii(
 			Buffer, static_cast<uint32_t>(0x12345678), uLength);
 		uTest = static_cast<uint_t>(
 			Burger::StringCompare(Buffer, &"12345678"[8 - uLength]));
 		uFailure |= uTest;
-		ReportFailure("Burger::NumberToAsciiHex(Buffer,0x12345678, %u) = %s",
+		ReportFailure("Burger::to_hex_ascii(Buffer,0x12345678, %u) = %s",
 			uTest, uLength, Buffer);
 
-		Burger::NumberToAsciiHex(
-			Buffer, static_cast<uint32_t>(3), uLength | Burger::LEADINGZEROS);
+		Burger::to_hex_ascii(
+			Buffer, static_cast<uint32_t>(3), uLength | Burger::kEnableLeadingZeros);
 		uTest = static_cast<uint_t>(
 			Burger::StringCompare(Buffer, &"00000003"[8 - uLength]));
 		uFailure |= uTest;
 		ReportFailure(
-			"Burger::NumberToAsciiHex(Buffer, static_cast<uint32_t>(3), %u | Burger::LEADINGZEROS) = %s",
+			"Burger::to_hex_ascii(Buffer, static_cast<uint32_t>(3), %u | Burger::kEnableLeadingZeros) = %s",
 			uTest, uLength, Buffer);
 
 	} while (++uLength < 9);
 
 	uLength = 1;
 	do {
-		Burger::NumberToAsciiHex(
+		Burger::to_hex_ascii(
 			Buffer, static_cast<uint64_t>(0x123456789ABCDEF0ULL), uLength);
 		uTest = static_cast<uint_t>(
 			Burger::StringCompare(Buffer, &"123456789ABCDEF0"[16 - uLength]));
 		uFailure |= uTest;
 		ReportFailure(
-			"Burger::NumberToAsciiHex(Buffer,0x123456789ABCDEF0, %u) = %s",
+			"Burger::to_hex_ascii(Buffer,0x123456789ABCDEF0, %u) = %s",
 			uTest, uLength, Buffer);
 
-		Burger::NumberToAsciiHex(
-			Buffer, static_cast<uint64_t>(3), uLength | Burger::LEADINGZEROS);
+		Burger::to_hex_ascii(
+			Buffer, static_cast<uint64_t>(3), uLength | Burger::kEnableLeadingZeros);
 		uTest = static_cast<uint_t>(
 			Burger::StringCompare(Buffer, &"0000000000000003"[16 - uLength]));
 		uFailure |= uTest;
 		ReportFailure(
-			"Burger::NumberToAsciiHex(Buffer, static_cast<uint64_t>(3), %u | Burger::LEADINGZEROS) = %s",
+			"Burger::to_hex_ascii(Buffer, static_cast<uint64_t>(3), %u | Burger::kEnableLeadingZeros) = %s",
 			uTest, uLength, Buffer);
 	} while (++uLength < 17);
 
 	// Test template for byte
-	Burger::NumberToAsciiHex(Buffer, static_cast<int8_t>(1), 0);
+	Burger::to_hex_ascii(Buffer, static_cast<int8_t>(1), 0);
 	uTest = static_cast<uint_t>(Burger::StringCompare(Buffer, "1"));
 	uFailure |= uTest;
 	ReportFailure(
-		"Burger::NumberToAsciiHex(Buffer,static_cast<uint8_t>(1), %u) = %s",
+		"Burger::to_hex_ascii(Buffer,static_cast<uint8_t>(1), %u) = %s",
 		uTest, 0, Buffer);
-	Burger::NumberToAsciiHex(
-		Buffer, static_cast<uint8_t>(1), Burger::LEADINGZEROS);
+	Burger::to_hex_ascii(
+		Buffer, static_cast<uint8_t>(1), Burger::kEnableLeadingZeros);
 	uTest = static_cast<uint_t>(Burger::StringCompare(Buffer, "01"));
 	uFailure |= uTest;
 	ReportFailure(
-		"Burger::NumberToAsciiHex(Buffer,static_cast<uint8_t>(1), %u) = %s",
-		uTest, Burger::LEADINGZEROS, Buffer);
+		"Burger::to_hex_ascii(Buffer,static_cast<uint8_t>(1), %u) = %s",
+		uTest, Burger::kEnableLeadingZeros, Buffer);
 
 	// Test template for short
-	Burger::NumberToAsciiHex(Buffer, static_cast<int16_t>(1), 0);
+	Burger::to_hex_ascii(Buffer, static_cast<int16_t>(1), 0);
 	uTest = static_cast<uint_t>(Burger::StringCompare(Buffer, "1"));
 	uFailure |= uTest;
 	ReportFailure(
-		"Burger::NumberToAsciiHex(Buffer,static_cast<uint16_t>(1), %u) = %s",
+		"Burger::to_hex_ascii(Buffer,static_cast<uint16_t>(1), %u) = %s",
 		uTest, 0, Buffer);
-	Burger::NumberToAsciiHex(
-		Buffer, static_cast<uint16_t>(1), Burger::LEADINGZEROS);
+	Burger::to_hex_ascii(
+		Buffer, static_cast<uint16_t>(1), Burger::kEnableLeadingZeros);
 	uTest = static_cast<uint_t>(Burger::StringCompare(Buffer, "0001"));
 	uFailure |= uTest;
 	ReportFailure(
-		"Burger::NumberToAsciiHex(Buffer,static_cast<uint16_t>(1), %u) = %s",
-		uTest, Burger::LEADINGZEROS, Buffer);
+		"Burger::to_hex_ascii(Buffer,static_cast<uint16_t>(1), %u) = %s",
+		uTest, Burger::kEnableLeadingZeros, Buffer);
 
 	// Test signed int32
-	Burger::NumberToAsciiHex(
-		Buffer, static_cast<int32_t>(1), Burger::LEADINGZEROS);
+	Burger::to_hex_ascii(
+		Buffer, static_cast<int32_t>(1), Burger::kEnableLeadingZeros);
 	uTest = static_cast<uint_t>(Burger::StringCompare(Buffer, "00000001"));
 	uFailure |= uTest;
 	ReportFailure(
-		"Burger::NumberToAsciiHex(Buffer,static_cast<int32_t>(1), %u) = %s",
-		uTest, Burger::LEADINGZEROS, Buffer);
+		"Burger::to_hex_ascii(Buffer,static_cast<int32_t>(1), %u) = %s",
+		uTest, Burger::kEnableLeadingZeros, Buffer);
 
 	// Test float
-	Burger::NumberToAsciiHex(Buffer, static_cast<float>(1.26218e-29f), 4);
+	Burger::to_hex_ascii(Buffer, static_cast<float>(1.26218e-29f), 4);
 	uTest = static_cast<uint_t>(Burger::StringCompare(Buffer, "11"));
 	uFailure |= uTest;
 	ReportFailure(
-		"Burger::NumberToAsciiHex(Buffer,static_cast<float>(1.26218e-29f), %u) = %s",
-		uTest, Burger::LEADINGZEROS, Buffer);
-	Burger::NumberToAsciiHex(
-		Buffer, static_cast<float>(1.26218e-29f), Burger::LEADINGZEROS);
+		"Burger::to_hex_ascii(Buffer,static_cast<float>(1.26218e-29f), %u) = %s",
+		uTest, Burger::kEnableLeadingZeros, Buffer);
+	Burger::to_hex_ascii(
+		Buffer, static_cast<float>(1.26218e-29f), Burger::kEnableLeadingZeros);
 	uTest = static_cast<uint_t>(Burger::StringCompare(Buffer, "0F800011"));
 	uFailure |= uTest;
 	ReportFailure(
-		"Burger::NumberToAsciiHex(Buffer,static_cast<float>(1.26218e-29f), %u) = %s",
-		uTest, Burger::LEADINGZEROS, Buffer);
+		"Burger::to_hex_ascii(Buffer,static_cast<float>(1.26218e-29f), %u) = %s",
+		uTest, Burger::kEnableLeadingZeros, Buffer);
 
 	// Test double
-	Burger::NumberToAsciiHex(
+	Burger::to_hex_ascii(
 		Buffer, static_cast<double>(8.12988915401011e-262), 4);
 	uTest = static_cast<uint_t>(Burger::StringCompare(Buffer, "5962"));
 	uFailure |= uTest;
 	ReportFailure(
-		"Burger::NumberToAsciiHex(Buffer,static_cast<double>(8.12988915401011e-262), %u) = %s",
-		uTest, Burger::LEADINGZEROS, Buffer);
-	Burger::NumberToAsciiHex(Buffer, static_cast<double>(8.12988915401011e-262),
-		Burger::LEADINGZEROS);
+		"Burger::to_hex_ascii(Buffer,static_cast<double>(8.12988915401011e-262), %u) = %s",
+		uTest, Burger::kEnableLeadingZeros, Buffer);
+	Burger::to_hex_ascii(Buffer, static_cast<double>(8.12988915401011e-262),
+		Burger::kEnableLeadingZeros);
 	uTest =
 		static_cast<uint_t>(Burger::StringCompare(Buffer, "09B9999CFDE15962"));
 	uFailure |= uTest;
 	ReportFailure(
-		"Burger::NumberToAsciiHex(Buffer,static_cast<double>(8.12988915401011e-262), %u) = %s",
-		uTest, Burger::LEADINGZEROS, Buffer);
+		"Burger::NumberToAsto_hex_asciiciiHex(Buffer,static_cast<double>(8.12988915401011e-262), %u) = %s",
+		uTest, Burger::kEnableLeadingZeros, Buffer);
 
-	Burger::NumberToAsciiHex(Buffer, static_cast<char>(0), 0);
-	Burger::NumberToAsciiHex(Buffer, static_cast<short>(0), 0);
-	Burger::NumberToAsciiHex(Buffer, static_cast<int>(0), 0);
-	Burger::NumberToAsciiHex(Buffer, static_cast<long>(0), 0);
-	Burger::NumberToAsciiHex(Buffer, static_cast<unsigned char>(0), 0);
-	Burger::NumberToAsciiHex(Buffer, static_cast<unsigned short>(0), 0);
-	Burger::NumberToAsciiHex(Buffer, static_cast<unsigned int>(0), 0);
-	Burger::NumberToAsciiHex(Buffer, static_cast<unsigned long>(0), 0);
-	Burger::NumberToAsciiHex(Buffer, static_cast<uintptr_t>(0), 0);
+	Burger::to_hex_ascii(Buffer, static_cast<char>(0), 0);
+	Burger::to_hex_ascii(Buffer, static_cast<short>(0), 0);
+	Burger::to_hex_ascii(Buffer, static_cast<int>(0), 0);
+	Burger::to_hex_ascii(Buffer, static_cast<long>(0), 0);
+	Burger::to_hex_ascii(Buffer, static_cast<unsigned char>(0), 0);
+	Burger::to_hex_ascii(Buffer, static_cast<unsigned short>(0), 0);
+	Burger::to_hex_ascii(Buffer, static_cast<unsigned int>(0), 0);
+	Burger::to_hex_ascii(Buffer, static_cast<unsigned long>(0), 0);
+	Burger::to_hex_ascii(Buffer, static_cast<uintptr_t>(0), 0);
 	return uFailure;
 }
 
@@ -240,12 +240,12 @@ static uint_t BURGER_API TestNumberToAscii(void) BURGER_NOEXCEPT
 			uLength, Buffer);
 
 		Burger::NumberToAscii(
-			Buffer, static_cast<uint32_t>(3), uLength | Burger::LEADINGZEROS);
+			Buffer, static_cast<uint32_t>(3), uLength | Burger::kEnableLeadingZeros);
 		uTest = static_cast<uint_t>(
 			Burger::StringCompare(Buffer, &"000000003"[9 - uLength]));
 		uFailure |= uTest;
 		ReportFailure(
-			"Burger::NumberToAscii(Buffer, static_cast<uint32_t>(3), %u | Burger::LEADINGZEROS) = %s",
+			"Burger::NumberToAscii(Buffer, static_cast<uint32_t>(3), %u | Burger::kEnableLeadingZeros) = %s",
 			uTest, uLength, Buffer);
 
 	} while (++uLength < 10);
@@ -262,12 +262,12 @@ static uint_t BURGER_API TestNumberToAscii(void) BURGER_NOEXCEPT
 			uTest, uLength, Buffer);
 
 		Burger::NumberToAscii(
-			Buffer, static_cast<uint64_t>(3), uLength | Burger::LEADINGZEROS);
+			Buffer, static_cast<uint64_t>(3), uLength | Burger::kEnableLeadingZeros);
 		uTest = static_cast<uint_t>(Burger::StringCompare(
 			Buffer, &"0000000000000000003"[19 - uLength]));
 		uFailure |= uTest;
 		ReportFailure(
-			"Burger::NumberToAscii(Buffer, static_cast<uint64_t>(3), %u | Burger::LEADINGZEROS) = %s",
+			"Burger::NumberToAscii(Buffer, static_cast<uint64_t>(3), %u | Burger::kEnableLeadingZeros) = %s",
 			uTest, uLength, Buffer);
 	} while (++uLength < 20);
 
@@ -279,12 +279,12 @@ static uint_t BURGER_API TestNumberToAscii(void) BURGER_NOEXCEPT
 		"Burger::NumberToAscii(Buffer,static_cast<uint8_t>(1), %u) = %s", uTest,
 		0, Buffer);
 	Burger::NumberToAscii(
-		Buffer, static_cast<uint8_t>(1), Burger::LEADINGZEROS);
+		Buffer, static_cast<uint8_t>(1), Burger::kEnableLeadingZeros);
 	uTest = static_cast<uint_t>(Burger::StringCompare(Buffer, "001"));
 	uFailure |= uTest;
 	ReportFailure(
 		"Burger::NumberToAscii(Buffer,static_cast<uint8_t>(1), %u) = %s", uTest,
-		Burger::LEADINGZEROS, Buffer);
+		Burger::kEnableLeadingZeros, Buffer);
 
 	// Test template for short
 	Burger::NumberToAscii(Buffer, static_cast<int16_t>(-3921), 0);
@@ -294,29 +294,29 @@ static uint_t BURGER_API TestNumberToAscii(void) BURGER_NOEXCEPT
 		"Burger::NumberToAscii(Buffer,static_cast<uint16_t>(1), %u) = %s",
 		uTest, 0, Buffer);
 	Burger::NumberToAscii(
-		Buffer, static_cast<uint16_t>(1), Burger::LEADINGZEROS);
+		Buffer, static_cast<uint16_t>(1), Burger::kEnableLeadingZeros);
 	uTest = static_cast<uint_t>(Burger::StringCompare(Buffer, "00001"));
 	uFailure |= uTest;
 	ReportFailure(
 		"Burger::NumberToAscii(Buffer,static_cast<uint16_t>(1), %u) = %s",
-		uTest, Burger::LEADINGZEROS, Buffer);
+		uTest, Burger::kEnableLeadingZeros, Buffer);
 
 	Burger::NumberToAscii(
-		Buffer, static_cast<int16_t>(-1), Burger::LEADINGZEROS);
+		Buffer, static_cast<int16_t>(-1), Burger::kEnableLeadingZeros);
 	uTest = static_cast<uint_t>(Burger::StringCompare(Buffer, "-00001"));
 	uFailure |= uTest;
 	ReportFailure(
 		"Burger::NumberToAscii(Buffer,static_cast<int16_t>(-1), %u) = %s",
-		uTest, Burger::LEADINGZEROS, Buffer);
+		uTest, Burger::kEnableLeadingZeros, Buffer);
 
 	// Test signed int32
 	Burger::NumberToAscii(
-		Buffer, static_cast<int32_t>(1), Burger::LEADINGZEROS);
+		Buffer, static_cast<int32_t>(1), Burger::kEnableLeadingZeros);
 	uTest = static_cast<uint_t>(Burger::StringCompare(Buffer, "0000000001"));
 	uFailure |= uTest;
 	ReportFailure(
 		"Burger::NumberToAscii(Buffer,static_cast<int32_t>(1), %u) = %s", uTest,
-		Burger::LEADINGZEROS, Buffer);
+		Burger::kEnableLeadingZeros, Buffer);
 
 	// Test float
 	Burger::NumberToAscii(Buffer, static_cast<float>(1.25f), 4);
@@ -324,14 +324,14 @@ static uint_t BURGER_API TestNumberToAscii(void) BURGER_NOEXCEPT
 	uFailure |= uTest;
 	ReportFailure(
 		"Burger::NumberToAscii(Buffer,static_cast<float>(1.25f), %u) = %s",
-		uTest, Burger::LEADINGZEROS, Buffer);
+		uTest, Burger::kEnableLeadingZeros, Buffer);
 	Burger::NumberToAscii(
-		Buffer, static_cast<float>(1.26f), Burger::LEADINGZEROS);
+		Buffer, static_cast<float>(1.26f), Burger::kEnableLeadingZeros);
 	uTest = static_cast<uint_t>(Burger::StringCompare(Buffer, "1.260000"));
 	uFailure |= uTest;
 	ReportFailure(
 		"Burger::NumberToAscii(Buffer,static_cast<float>(1.26218e-29f), %u) = %s",
-		uTest, Burger::LEADINGZEROS, Buffer);
+		uTest, Burger::kEnableLeadingZeros, Buffer);
 
 	// Test double
 	Burger::NumberToAscii(Buffer, static_cast<double>(1.667), 4);
@@ -339,15 +339,15 @@ static uint_t BURGER_API TestNumberToAscii(void) BURGER_NOEXCEPT
 	uFailure |= uTest;
 	ReportFailure(
 		"Burger::NumberToAscii(Buffer,static_cast<double>(1.667), %u) = %s",
-		uTest, Burger::LEADINGZEROS, Buffer);
+		uTest, Burger::kEnableLeadingZeros, Buffer);
 
 	Burger::NumberToAscii(
-		Buffer, static_cast<double>(1.667), Burger::LEADINGZEROS);
+		Buffer, static_cast<double>(1.667), Burger::kEnableLeadingZeros);
 	uTest = static_cast<uint_t>(Burger::StringCompare(Buffer, "1.667000"));
 	uFailure |= uTest;
 	ReportFailure(
 		"Burger::NumberToAscii(Buffer,static_cast<double>(1.667), %u) = %s",
-		uTest, Burger::LEADINGZEROS, Buffer);
+		uTest, Burger::kEnableLeadingZeros, Buffer);
 
 	Burger::NumberToAscii(Buffer, static_cast<char>(0));
 	Burger::NumberToAscii(Buffer, static_cast<short>(0));
@@ -683,7 +683,7 @@ int BURGER_API TestBrnumberto(uint_t uVerbose) BURGER_NOEXCEPT
 
 	// Intentional failures
 	// char Buffer[32];
-	// Burger::NumberToAsciiHex(Buffer, "Will not compile");
+	// Burger::to_hex_ascii(Buffer, "Will not compile");
 
 	if (!uResult && (uVerbose & VERBOSE_MSG)) {
 		Message("Passed all Number to tests!");

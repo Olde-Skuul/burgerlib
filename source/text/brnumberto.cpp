@@ -30,15 +30,15 @@
 	\param uInput 8 bit value to print in HEX to a string.
 	\return Pointer to terminating zero at the end of the string
 
-	\sa NumberToAsciiHex(char *,uint16_t), NumberToAsciiHex(char *,uint32_t),
-		NumberToAsciiHex(char *,uint64_t), NumberToAsciiHex(char *,float),
-		NumberToAsciiHex(char *,double),
-		NumberToAsciiHex(char *,uint32_t,uint_t), or
-		NumberToAsciiHex(char *,uint64_t,uint_t)
+	\sa to_hex_ascii(char *,uint16_t), to_hex_ascii(char *,uint32_t),
+		to_hex_ascii(char *,uint64_t), to_hex_ascii(char *,float),
+		to_hex_ascii(char *,double),
+		to_hex_ascii(char *,uint32_t,uint_t), or
+		to_hex_ascii(char *,uint64_t,uint_t)
 
 ***************************************/
 
-char* BURGER_API Burger::NumberToAsciiHex(
+char* BURGER_API Burger::to_hex_ascii(
 	char* pOutput, uint8_t uInput) BURGER_NOEXCEPT
 {
 	// Convert the string and store in the buffer
@@ -62,15 +62,15 @@ char* BURGER_API Burger::NumberToAsciiHex(
 
 	\return Pointer to terminating zero at the end of the string
 
-	\sa NumberToAsciiHex(char *,uint8_t), NumberToAsciiHex(char *,uint32_t),
-		NumberToAsciiHex(char *,uint64_t), NumberToAsciiHex(char *,float),
-		NumberToAsciiHex(char *,double),
-		NumberToAsciiHex(char *,uint32_t,uint_t), or
-		NumberToAsciiHex(char *,uint64_t,uint_t)
+	\sa to_hex_ascii(char *,uint8_t), to_hex_ascii(char *,uint32_t),
+		to_hex_ascii(char *,uint64_t), to_hex_ascii(char *,float),
+		to_hex_ascii(char *,double),
+		to_hex_ascii(char *,uint32_t,uint_t), or
+		to_hex_ascii(char *,uint64_t,uint_t)
 
 ***************************************/
 
-char* BURGER_API Burger::NumberToAsciiHex(
+char* BURGER_API Burger::to_hex_ascii(
 	char* pOutput, uint16_t uInput) BURGER_NOEXCEPT
 {
 	// Push the pointer to the highest value byte
@@ -99,15 +99,15 @@ char* BURGER_API Burger::NumberToAsciiHex(
 
 	\return Pointer to terminating zero at the end of the string
 
-	\sa NumberToAsciiHex(char *,uint8_t), NumberToAsciiHex(char *,uint16_t),
-		NumberToAsciiHex(char *,uint64_t), NumberToAsciiHex(char *,float),
-		NumberToAsciiHex(char *,double),
-		NumberToAsciiHex(char *,uint32_t,uint_t), or
-		NumberToAsciiHex(char *,uint64_t,uint_t)
+	\sa to_hex_ascii(char *,uint8_t), to_hex_ascii(char *,uint16_t),
+		to_hex_ascii(char *,uint64_t), to_hex_ascii(char *,float),
+		to_hex_ascii(char *,double),
+		to_hex_ascii(char *,uint32_t,uint_t), or
+		to_hex_ascii(char *,uint64_t,uint_t)
 
 ***************************************/
 
-char* BURGER_API Burger::NumberToAsciiHex(
+char* BURGER_API Burger::to_hex_ascii(
 	char* pOutput, uint32_t uInput) BURGER_NOEXCEPT
 {
 	// Push the pointer to the highest value byte
@@ -136,15 +136,15 @@ char* BURGER_API Burger::NumberToAsciiHex(
 
 	\return Pointer to terminating zero at the end of the string
 
-	\sa NumberToAsciiHex(char *,uint8_t), NumberToAsciiHex(char *,uint16_t),
-		NumberToAsciiHex(char *,uint32_t), NumberToAsciiHex(char *,float),
-		NumberToAsciiHex(char *,double),
-		NumberToAsciiHex(char *,uint32_t,uint_t), or
-		NumberToAsciiHex(char *,uint64_t,uint_t)
+	\sa to_hex_ascii(char *,uint8_t), to_hex_ascii(char *,uint16_t),
+		to_hex_ascii(char *,uint32_t), to_hex_ascii(char *,float),
+		to_hex_ascii(char *,double),
+		to_hex_ascii(char *,uint32_t,uint_t), or
+		to_hex_ascii(char *,uint64_t,uint_t)
 
 ***************************************/
 
-char* BURGER_API Burger::NumberToAsciiHex(
+char* BURGER_API Burger::to_hex_ascii(
 	char* pOutput, uint64_t uInput) BURGER_NOEXCEPT
 {
 	// Push the pointer to the highest value byte
@@ -193,20 +193,20 @@ char* BURGER_API Burger::NumberToAsciiHex(
 
 	\return Pointer to terminating zero at the end of the string
 
-	\sa NumberToAsciiHex(char *,uint8_t), NumberToAsciiHex(char *,uint16_t),
-		NumberToAsciiHex(char *,uint32_t), NumberToAsciiHex(char *,uint64_t),
-		NumberToAsciiHex(char *,double),
-		NumberToAsciiHex(char *,uint32_t,uint_t), or
-		NumberToAsciiHex(char *,uint64_t,uint_t)
+	\sa to_hex_ascii(char *,uint8_t), to_hex_ascii(char *,uint16_t),
+		to_hex_ascii(char *,uint32_t), to_hex_ascii(char *,uint64_t),
+		to_hex_ascii(char *,double),
+		to_hex_ascii(char *,uint32_t,uint_t), or
+		to_hex_ascii(char *,uint64_t,uint_t)
 
 ***************************************/
 
-char* BURGER_API Burger::NumberToAsciiHex(
+char* BURGER_API Burger::to_hex_ascii(
 	char* pOutput, float fInput) BURGER_NOEXCEPT
 {
 	uint32_float_t Convert;
 	Convert.f = fInput;
-	return NumberToAsciiHex(pOutput, Convert.w);
+	return to_hex_ascii(pOutput, Convert.w);
 }
 
 /*! ************************************
@@ -223,29 +223,29 @@ char* BURGER_API Burger::NumberToAsciiHex(
 
 	\return Pointer to terminating zero at the end of the string
 
-	\sa NumberToAsciiHex(char *,uint8_t), NumberToAsciiHex(char *,uint16_t),
-		NumberToAsciiHex(char *,uint32_t), NumberToAsciiHex(char *,uint64_t),
-		NumberToAsciiHex(char *,float),
-		NumberToAsciiHex(char *,uint32_t,uint_t), or
-		NumberToAsciiHex(char *,uint64_t,uint_t)
+	\sa to_hex_ascii(char *,uint8_t), to_hex_ascii(char *,uint16_t),
+		to_hex_ascii(char *,uint32_t), to_hex_ascii(char *,uint64_t),
+		to_hex_ascii(char *,float),
+		to_hex_ascii(char *,uint32_t,uint_t), or
+		to_hex_ascii(char *,uint64_t,uint_t)
 
 ***************************************/
 
-char* BURGER_API Burger::NumberToAsciiHex(
+char* BURGER_API Burger::to_hex_ascii(
 	char* pOutput, double dInput) BURGER_NOEXCEPT
 {
 	uint64_double_t Convert;
 	Convert.d = dInput;
-	return NumberToAsciiHex(pOutput, Convert.w);
+	return to_hex_ascii(pOutput, Convert.w);
 }
 
 /*! ************************************
 
-	\fn Burger::NumberToAsciiHex(char* pOutput, T input)
+	\fn Burger::to_hex_ascii(char* pOutput, T input)
 	\brief Convert a integral value into a hex string.
 
 	A template to map an integral data type and calls the appropriate
-	NumberToAsciiHex function.
+	to_hex_ascii function.
 
 	\note This will intentionally fail on any non-integral data type.
 
@@ -262,36 +262,36 @@ char* BURGER_API Burger::NumberToAsciiHex(
 	Convert an unsigned 32 bit integer into a hexadecimal ASCII string. The
 	third parameter modifies how the data is formatted.
 
-	Burger::LEADINGZEROS will force leading zeros to be printed.
-	Burger::NOENDINGNULL will disable the writing of a terminating zero
+	Burger::kEnableLeadingZeros will force leading zeros to be printed.
+	Burger::kDisableEndingNull will disable the writing of a terminating zero
 	character at the end of the string so an existing string can be modified
 	without accidentally truncating it.
 
 	Examples:<br>
 	uInput = 0x1234BCD, uDigits = 4 \-> "4BCD"<br>
 	uInput = 0x1234BCD, uDigits = 0 \-> "1234BCD"<br>
-	uInput = 0x1234BCD, uDigits = Burger::LEADINGZEROS \-> "01234BCD"<br>
-	uInput = 0x2A, uDigits = Burger::LEADINGZEROS+4 \-> "002A"
+	uInput = 0x1234BCD, uDigits = Burger::kEnableLeadingZeros \-> "01234BCD"<br>
+	uInput = 0x2A, uDigits = Burger::kEnableLeadingZeros+4 \-> "002A"
 
 	\note uDigits is capped at 8 digits. It will not output more than 8 digits.
 
 	\param pOutput Pointer to a buffer to hold the converted integer. It has
 		to be with uDigits+1 or 9 bytes in size, whichever is appropriate.
 	\param uInput Unsigned 32 bit integer to convert to hexadecimal ASCII.
-	\param uDigits Number of digits to convert. Flags Burger::LEADINGZEROS and
-		Burger::NOENDINGNULL can be added or or'd to this value to affect
+	\param uDigits Number of digits to convert. Flags Burger::kEnableLeadingZeros and
+		Burger::kDisableEndingNull can be added or or'd to this value to affect
 		output.
 
 	\return Pointer to the char immediately after the last char output. Most
 		cases, this is a pointer to the terminating zero.
 
-	\sa NumberToAsciiHex(char *pOutput,uint64_t uInput,uint_t uDigits),
+	\sa to_hex_ascii(char *pOutput,uint64_t uInput,uint_t uDigits),
 		NumberToAscii(char *,uint32_t,uint_t) or
 		NumberToAscii(char *,int32_t,uint_t)
 
 ***************************************/
 
-char* BURGER_API Burger::NumberToAsciiHex(
+char* BURGER_API Burger::to_hex_ascii(
 	char* pOutput, uint32_t uInput, uint_t uDigits) BURGER_NOEXCEPT
 {
 	// Adjust the input for truncated digits
@@ -303,7 +303,7 @@ char* BURGER_API Burger::NumberToAsciiHex(
 	}
 
 	// Print the optional characters.
-	if ((uCount != 1) && !(uDigits & LEADINGZEROS)) {
+	if ((uCount != 1) && !(uDigits & kEnableLeadingZeros)) {
 		do {
 			// Get the highest 4 bits
 			if (uInput & (0xFU << 28U)) {
@@ -324,7 +324,7 @@ char* BURGER_API Burger::NumberToAsciiHex(
 	} while (--uCount); // Any more left?
 
 	// Add terminating null?
-	if (!(uDigits & NOENDINGNULL)) {
+	if (!(uDigits & kDisableEndingNull)) {
 		// Terminate the string
 		pOutput[0] = static_cast<char>(uCount);
 	}
@@ -338,16 +338,16 @@ char* BURGER_API Burger::NumberToAsciiHex(
 	Convert an unsigned 64 bit integer into a hexadecimal ASCII string. The
 	third parameter modifies how the data is formatted.
 
-	Burger::LEADINGZEROS will force leading zeros to be printed.
-	Burger::NOENDINGNULL will disable the writing of a terminating zero
+	Burger::kEnableLeadingZeros will force leading zeros to be printed.
+	Burger::kDisableEndingNull will disable the writing of a terminating zero
 	character at the end of the string so an existing string can be modified
 	without accidentally truncating it.
 
 	Examples:<br>
 	uInput = 0x1234BCD, uDigits = 4 \-> "4BCD"<br>
 	uInput = 0x1234BCD, uDigits = 0 \-> "1234BCD"<br>
-	uInput = 0x1234BCD, uDigits = Burger::LEADINGZEROS \-> "01234BCD"<br>
-	uInput = 0x2A, uDigits = Burger::LEADINGZEROS+4 \-> "002A"
+	uInput = 0x1234BCD, uDigits = Burger::kEnableLeadingZeros \-> "01234BCD"<br>
+	uInput = 0x2A, uDigits = Burger::kEnableLeadingZeros+4 \-> "002A"
 
 	\note uDigits is capped at 16 digits. It will not output more than 16
 	digits.
@@ -355,20 +355,20 @@ char* BURGER_API Burger::NumberToAsciiHex(
 	\param pOutput Pointer to a buffer to hold the converted integer. It has
 		to be with uDigits+1 or 17 bytes in size, whichever is appropriate.
 	\param uInput Unsigned 64 bit integer to convert to hexadecimal ASCII.
-	\param uDigits Number of digits to convert. Flags Burger::LEADINGZEROS and
-		Burger::NOENDINGNULL can be added or or'd to this value to affect
+	\param uDigits Number of digits to convert. Flags Burger::kEnableLeadingZeros and
+		Burger::kDisableEndingNull can be added or or'd to this value to affect
 		output.
 
 	\return Pointer to the char immediately after the last char output. Most
 		cases, this is a pointer to the terminating zero.
 
-	\sa NumberToAsciiHex(char *pOutput, uint32_t uInput, uint_t uDigits),
+	\sa to_hex_ascii(char *pOutput, uint32_t uInput, uint_t uDigits),
 		NumberToAscii(char *, uint32_t, uint_t) or
 		NumberToAscii(char *, int32_t, uint_t)
 
 ***************************************/
 
-char* BURGER_API Burger::NumberToAsciiHex(
+char* BURGER_API Burger::to_hex_ascii(
 	char* pOutput, uint64_t uInput, uint_t uDigits) BURGER_NOEXCEPT
 {
 	// Adjust the input for truncated digits
@@ -380,7 +380,7 @@ char* BURGER_API Burger::NumberToAsciiHex(
 	}
 
 	// Print the optional characters.
-	if ((uCount != 1) && !(uDigits & LEADINGZEROS)) {
+	if ((uCount != 1) && !(uDigits & kEnableLeadingZeros)) {
 		do {
 			// Get the highest 4 bits
 			if (uInput & (0xFULL << 60U)) {
@@ -401,7 +401,7 @@ char* BURGER_API Burger::NumberToAsciiHex(
 	} while (--uCount); // Any more left?
 
 	// Add terminating null?
-	if (!(uDigits & NOENDINGNULL)) {
+	if (!(uDigits & kDisableEndingNull)) {
 		// Terminate the string
 		pOutput[0] = static_cast<char>(uCount);
 	}
@@ -415,8 +415,8 @@ char* BURGER_API Burger::NumberToAsciiHex(
 	Convert a 32 bit float into a hexadecimal ASCII string. The
 	third parameter modifies how the data is formatted.
 
-	Burger::LEADINGZEROS will force leading zeros to be printed.
-	Burger::NOENDINGNULL will disable the writing of a terminating zero
+	Burger::kEnableLeadingZeros will force leading zeros to be printed.
+	Burger::kDisableEndingNull will disable the writing of a terminating zero
 	character at the end of the string so an existing string can be modified
 	without accidentally truncating it.
 
@@ -425,24 +425,24 @@ char* BURGER_API Burger::NumberToAsciiHex(
 	\param pOutput Pointer to a buffer to hold the converted integer. It has
 		to be with uDigits+1 or 9 bytes in size, whichever is appropriate.
 	\param fInput 32 bit float to convert to hexadecimal ASCII.
-	\param uDigits Number of digits to convert. Flags Burger::LEADINGZEROS and
-		Burger::NOENDINGNULL can be added or or'd to this value to affect
+	\param uDigits Number of digits to convert. Flags Burger::kEnableLeadingZeros and
+		Burger::kDisableEndingNull can be added or or'd to this value to affect
 		output.
 
 	\return Pointer to the char immediately after the last char output. Most
 		cases, this is a pointer to the terminating zero.
 
-	\sa NumberToAsciiHex(char *pOutput,uint32_t uInput,uint_t uDigits)
+	\sa to_hex_ascii(char *pOutput,uint32_t uInput,uint_t uDigits)
 
 ***************************************/
 
-char* BURGER_API Burger::NumberToAsciiHex(
+char* BURGER_API Burger::to_hex_ascii(
 	char* pOutput, float fInput, uint_t uDigits) BURGER_NOEXCEPT
 {
 	// Convert the float to bitwise 32 bit integer
 	uint32_float_t Convert;
 	Convert = fInput;
-	return NumberToAsciiHex(pOutput, Convert.w, uDigits);
+	return to_hex_ascii(pOutput, Convert.w, uDigits);
 }
 
 /*! ************************************
@@ -452,8 +452,8 @@ char* BURGER_API Burger::NumberToAsciiHex(
 	Convert a 64 bit float into a hexadecimal ASCII string. The
 	third parameter modifies how the data is formatted.
 
-	Burger::LEADINGZEROS will force leading zeros to be printed.
-	Burger::NOENDINGNULL will disable the writing of a terminating zero
+	Burger::kEnableLeadingZeros will force leading zeros to be printed.
+	Burger::kDisableEndingNull will disable the writing of a terminating zero
 	character at the end of the string so an existing string can be modified
 	without accidentally truncating it.
 
@@ -463,41 +463,41 @@ char* BURGER_API Burger::NumberToAsciiHex(
 	\param pOutput Pointer to a buffer to hold the converted integer. It has
 		to be with uDigits+1 or 17 bytes in size, whichever is appropriate.
 	\param dInput 64 bit float to convert to hexadecimal ASCII.
-	\param uDigits Number of digits to convert. Flags Burger::LEADINGZEROS and
-		Burger::NOENDINGNULL can be added or or'd to this value to affect
+	\param uDigits Number of digits to convert. Flags Burger::kEnableLeadingZeros and
+		Burger::kDisableEndingNull can be added or or'd to this value to affect
 		output.
 
 	\return Pointer to the char immediately after the last char output. Most
 		cases, this is a pointer to the terminating zero.
 
-	\sa NumberToAsciiHex(char *pOutput,uint64_t uInput,uint_t uDigits)
+	\sa to_hex_ascii(char *pOutput,uint64_t uInput,uint_t uDigits)
 
 ***************************************/
 
-char* BURGER_API Burger::NumberToAsciiHex(
+char* BURGER_API Burger::to_hex_ascii(
 	char* pOutput, double dInput, uint_t uDigits) BURGER_NOEXCEPT
 {
 	// Convert the double to bitwise 64 bit integer
 	uint64_double_t Convert;
 	Convert = dInput;
-	return NumberToAsciiHex(pOutput, Convert.w, uDigits);
+	return to_hex_ascii(pOutput, Convert.w, uDigits);
 }
 
 /*! ************************************
 
-	\fn Burger::NumberToAsciiHex(char* pOutput, T input, uint_t uDigits)
+	\fn Burger::to_hex_ascii(char* pOutput, T input, uint_t uDigits)
 	\brief Convert a integral value into a hex string.
 
 	A template to map an integral data type and calls the appropriate
-	NumberToAsciiHex(char *, T, uint_t uDigits) function.
+	to_hex_ascii(char *, T, uint_t uDigits) function.
 
 	\note This will intentionally fail on any non-integral data type.
 
 	\tparam T Input data type, tested with is_integral.
 	\param pOutput Pointer to a buffer at least 17 bytes in size.
 	\param input Integral value to print in HEX to a string.
-	\param uDigits Number of digits to convert. Flags Burger::LEADINGZEROS
-		and Burger::NOENDINGNULL can be added or or'd to this value to affect
+	\param uDigits Number of digits to convert. Flags Burger::kEnableLeadingZeros
+		and Burger::kDisableEndingNull can be added or or'd to this value to affect
 		output.
 
 ***************************************/
@@ -509,16 +509,16 @@ char* BURGER_API Burger::NumberToAsciiHex(
 	Convert an unsigned 32 bit integer into an ASCII string. The
 	third parameter modifies how the data is formatted.
 
-	Burger::LEADINGZEROS will force leading zeros to be printed.
-	Burger::NOENDINGNULL will disable the writing of a terminating zero
+	Burger::kEnableLeadingZeros will force leading zeros to be printed.
+	Burger::kDisableEndingNull will disable the writing of a terminating zero
 	character at the end of the string so an existing string can be modified
 	without accidentally truncating it.
 
 	Examples:<br>
 	uInput = 1234567, uDigits = 4 -> "4567"<br>
 	uInput = 1234567, uDigits = 0 -> "1234567"<br>
-	uInput = 1234567, uDigits = Burger::LEADINGZEROS -> "0001234567"<br>
-	uInput = 22, uDigits = Burger::LEADINGZEROS+4 -> "0022"
+	uInput = 1234567, uDigits = Burger::kEnableLeadingZeros -> "0001234567"<br>
+	uInput = 22, uDigits = Burger::kEnableLeadingZeros+4 -> "0022"
 
 	\note uDigits is capped at 10 digits. It will not output more than 10
 		digits.
@@ -526,14 +526,14 @@ char* BURGER_API Burger::NumberToAsciiHex(
 	\param pOutput Pointer to a buffer to hold the converted integer. It has
 		to be with uDigits+1 or 12 bytes in size Whichever is appropriate.
 	\param uInput Unsigned 32 bit integer to convert to ASCII.
-	\param uDigits Number of digits to convert. Flags Burger::LEADINGZEROS and
-		Burger::NOENDINGNULL can be added or or'd to this value to affect
+	\param uDigits Number of digits to convert. Flags Burger::kEnableLeadingZeros and
+		Burger::kDisableEndingNull can be added or or'd to this value to affect
 		output.
 
 	\return Pointer to the char immediately after the last char output. Most
 		cases, this is a pointer to the terminating zero.
 
-	\sa Burger::NumberToAsciiHex(char *,uint32_t,uint_t) or
+	\sa Burger::to_hex_ascii(char *,uint32_t,uint_t) or
 		Burger::NumberToAscii(char *,int32_t,uint_t)
 
 ***************************************/
@@ -560,7 +560,7 @@ char* BURGER_API Burger::NumberToAscii(
 			const uint32_t uBigNum = g_TensTable32[uIndex];
 			uint_t uLetter = '0';        // Init ASCII value
 			if (uInput >= uBigNum) {     // Bigger than the min?
-				uDigits |= LEADINGZEROS; // Force future printing
+				uDigits |= kEnableLeadingZeros; // Force future printing
 				do {
 					uInput -= uBigNum; // Remove value
 					++uLetter;         // Inc ASCII value (Max 9 iterations)
@@ -569,7 +569,7 @@ char* BURGER_API Burger::NumberToAscii(
 
 			// Should I print leading zeros?
 
-			if (uDigits & LEADINGZEROS) {                // Already printing?
+			if (uDigits & kEnableLeadingZeros) {                // Already printing?
 				pOutput[0] = static_cast<char>(uLetter); // Output the digit
 				++pOutput;
 			}
@@ -582,7 +582,7 @@ char* BURGER_API Burger::NumberToAscii(
 	++pOutput;
 
 	// Do I need to write a null?
-	if (!(uDigits & NOENDINGNULL)) {
+	if (!(uDigits & kDisableEndingNull)) {
 		// Terminate the string
 		pOutput[0] = 0;
 	}
@@ -597,8 +597,8 @@ char* BURGER_API Burger::NumberToAscii(
 	Convert a signed 32 bit integer into an ASCII string. The
 	third parameter modifies how the data is formatted.
 
-	Burger::LEADINGZEROS will force leading zeros to be printed.
-	Burger::NOENDINGNULL will disable the writing of a terminating zero
+	Burger::kEnableLeadingZeros will force leading zeros to be printed.
+	Burger::kDisableEndingNull will disable the writing of a terminating zero
 	character at the end of the string so an existing string can be modified
 	without accidentally truncating it.
 
@@ -607,9 +607,9 @@ char* BURGER_API Burger::NumberToAscii(
 	uInput = 1234567, uDigits = 0 -> "1234567"<br>
 	uInput = -1234567, uDigits = 4 -> "-4567"<br>
 	uInput = -1234567, uDigits = 0 -> "-1234567"<br>
-	uInput = 1234567, uDigits = Burger::LEADINGZEROS -> "0001234567"<br>
-	uInput = 22, uDigits = Burger::LEADINGZEROS+4 -> "0022"<br>
-	uInput = -22, uDigits = Burger::LEADINGZEROS+4 -> "-0022"
+	uInput = 1234567, uDigits = Burger::kEnableLeadingZeros -> "0001234567"<br>
+	uInput = 22, uDigits = Burger::kEnableLeadingZeros+4 -> "0022"<br>
+	uInput = -22, uDigits = Burger::kEnableLeadingZeros+4 -> "-0022"
 
 	\note uDigits is capped at 10 digits. It will not output more than 10
 		digits. The negative sign does NOT count as part of the numeric string
@@ -618,15 +618,15 @@ char* BURGER_API Burger::NumberToAscii(
 	\param pOutput Pointer to a buffer to hold the converted integer. It has
 		to be with uDigits+1 or 12 bytes in size Whichever is appropriate.
 	\param iInput Signed 32 bit integer to convert to ASCII.
-	\param uDigits Number of digits to convert. Flags Burger::LEADINGZEROS and
-		Burger::NOENDINGNULL can be added or or'd to this value to affect
+	\param uDigits Number of digits to convert. Flags Burger::kEnableLeadingZeros and
+		Burger::kDisableEndingNull can be added or or'd to this value to affect
 		output.
 
 	\return Pointer to the char immediately after the last char output. Most
 		cases, this is a pointer to the terminating zero.
 
 	\sa Burger::NumberToAscii(char *,uint32_t,uint_t) or
-		Burger::NumberToAsciiHex(char *,uint32_t,uint_t)
+		Burger::to_hex_ascii(char *,uint32_t,uint_t)
 
 ***************************************/
 
@@ -648,16 +648,16 @@ char* BURGER_API Burger::NumberToAscii(
 	Convert an unsigned 64 bit integer into an ASCII string. You can modify how
 	the data is formatted by passing a third parameter.
 
-	Burger::LEADINGZEROS will force leading zeros to be printed.
-	Burger::NOENDINGNULL will disable the writing of a terminating zero
+	Burger::kEnableLeadingZeros will force leading zeros to be printed.
+	Burger::kDisableEndingNull will disable the writing of a terminating zero
 	character at the end of the string so you can modify the an existing string
 	without accidentally truncating it.
 
 	Examples:<br>
 	uInput = 1234567, uDigits = 4 -> "4567"<br>
 	uInput = 1234567, uDigits = 0 -> "1234567"<br>
-	uInput = 1234567, uDigits = Burger::LEADINGZEROS -> "0001234567"<br>
-	uInput = 22, uDigits = Burger::LEADINGZEROS+4 -> "0022"
+	uInput = 1234567, uDigits = Burger::kEnableLeadingZeros -> "0001234567"<br>
+	uInput = 22, uDigits = Burger::kEnableLeadingZeros+4 -> "0022"
 
 	\note uDigits is capped at 20 digits. It will not output more than 20
 		digits.
@@ -665,14 +665,14 @@ char* BURGER_API Burger::NumberToAscii(
 	\param pOutput Pointer to a buffer to hold the converted integer. It has
 		to be with uDigits+1 or 24 bytes in size Whichever is appropriate.
 	\param uInput Unsigned 64 bit integer to convert to ASCII.
-	\param uDigits Number of digits to convert. Flags Burger::LEADINGZEROS and
-		Burger::NOENDINGNULL can be added or or'd to this value to affect
+	\param uDigits Number of digits to convert. Flags Burger::kEnableLeadingZeros and
+		Burger::kDisableEndingNull can be added or or'd to this value to affect
 		output.
 
 	\return Pointer to the char immediately after the last char output. Most
 		cases, this is a pointer to the terminating zero.
 
-	\sa Burger::NumberToAsciiHex(char *,uint64_t,uint_t) or
+	\sa Burger::to_hex_ascii(char *,uint64_t,uint_t) or
 		Burger::NumberToAscii(char *,int64_t,uint_t)
 
 ***************************************/
@@ -699,7 +699,7 @@ char* BURGER_API Burger::NumberToAscii(
 				g_TensTable64[uIndex];   // Get div value in local
 			uint_t uLetter = '0';        // Init ASCII value
 			if (uInput >= uBigNum) {     // Bigger than the min?
-				uDigits |= LEADINGZEROS; // Force future printing
+				uDigits |= kEnableLeadingZeros; // Force future printing
 				do {
 					uInput -= uBigNum; // Remove value
 					++uLetter;         // Inc ASCII value (Max 9 iterations)
@@ -708,7 +708,7 @@ char* BURGER_API Burger::NumberToAscii(
 
 			// Should I print leading zeros?
 
-			if (uDigits & LEADINGZEROS) {                // Already printing?
+			if (uDigits & kEnableLeadingZeros) {                // Already printing?
 				pOutput[0] = static_cast<char>(uLetter); // Output the digit
 				++pOutput;
 			}
@@ -721,7 +721,7 @@ char* BURGER_API Burger::NumberToAscii(
 	++pOutput;
 
 	// Do I need to write a null?
-	if (!(uDigits & NOENDINGNULL)) {
+	if (!(uDigits & kDisableEndingNull)) {
 		// Terminate the string
 		pOutput[0] = 0;
 	}
@@ -736,8 +736,8 @@ char* BURGER_API Burger::NumberToAscii(
 	Convert a signed 64 bit integer into an ASCII string. You can modify how the
 	data is formatted by passing a third parameter.
 
-	Burger::LEADINGZEROS will force leading zeros to be printed.
-	Burger::NOENDINGNULL will disable the writing of a terminating zero
+	Burger::kEnableLeadingZeros will force leading zeros to be printed.
+	Burger::kDisableEndingNull will disable the writing of a terminating zero
 	character at the end of the string so you can modify the an existing string
 	without accidentally truncating it.
 
@@ -746,9 +746,9 @@ char* BURGER_API Burger::NumberToAscii(
 	uInput = 1234567, uDigits = 0 -> "1234567"<br>
 	uInput = -1234567, uDigits = 4 -> "-4567"<br>
 	uInput = -1234567, uDigits = 0 -> "-1234567"<br>
-	uInput = 1234567, uDigits = Burger::LEADINGZEROS -> "0001234567"<br>
-	uInput = 22, uDigits = Burger::LEADINGZEROS+4 -> "0022"<br>
-	uInput = -22, uDigits = Burger::LEADINGZEROS+4 -> "-0022"
+	uInput = 1234567, uDigits = Burger::kEnableLeadingZeros -> "0001234567"<br>
+	uInput = 22, uDigits = Burger::kEnableLeadingZeros+4 -> "0022"<br>
+	uInput = -22, uDigits = Burger::kEnableLeadingZeros+4 -> "-0022"
 
 	\note uDigits is capped at 20 digits. It will not output more than 20
 		digits. The negative sign does NOT count as part of the numeric string
@@ -757,15 +757,15 @@ char* BURGER_API Burger::NumberToAscii(
 	\param pOutput Pointer to a buffer to hold the converted integer. It has
 		to be with uDigits+1 or 24 bytes in size Whichever is appropriate.
 	\param iInput Signed 64 bit integer to convert to ASCII.
-	\param uDigits Number of digits to convert. Flags Burger::LEADINGZEROS and
-		Burger::NOENDINGNULL can be added or or'd to this value to affect
+	\param uDigits Number of digits to convert. Flags Burger::kEnableLeadingZeros and
+		Burger::kDisableEndingNull can be added or or'd to this value to affect
 		output.
 
 	\return Pointer to the char immediately after the last char output. Most
 		cases, this is a pointer to the terminating zero.
 
 	\sa Burger::NumberToAscii(char *,uint64_t,uint_t) or
-		Burger::NumberToAsciiHex(char *,uint64_t,uint_t)
+		Burger::to_hex_ascii(char *,uint64_t,uint_t)
 
 ***************************************/
 
@@ -799,13 +799,13 @@ char* BURGER_API Burger::NumberToAscii(
 	\param pOutput Pointer to a buffer to hold the converted integer. It has
 		to be a minimum of 32 bytes in size.
 	\param fInput 32 bit float to convert to ASCII.
-	\param uDigits Number of digits to convert. Flags Burger::LEADINGZEROS and
-		Burger::NOENDINGNULL can be added or or'd to this value to affect
+	\param uDigits Number of digits to convert. Flags Burger::kEnableLeadingZeros and
+		Burger::kDisableEndingNull can be added or or'd to this value to affect
 		output.
 
 	\return Pointer to the char immediately after the last char output.
 	\sa Burger::NumberToAscii(char *,uint32_t,uint_t) or
-		Burger::NumberToAsciiHex(char *,uint32_t,uint_t)
+		Burger::to_hex_ascii(char *,uint32_t,uint_t)
 
 ***************************************/
 
@@ -843,14 +843,14 @@ char* BURGER_API Burger::NumberToAscii(
 	\param pOutput Pointer to a buffer to hold the converted integer. It has
 		to be a minimum of 32 bytes in size.
 	\param dInput 64 bit float to convert to ASCII.
-	\param uDigits Number of digits to convert. Flags Burger::LEADINGZEROS
-		and Burger::NOENDINGNULL can be added or or'd to this value to affect
+	\param uDigits Number of digits to convert. Flags Burger::kEnableLeadingZeros
+		and Burger::kDisableEndingNull can be added or or'd to this value to affect
 		output.
 
 	\return Pointer to the char immediately after the last char output.
 
 	\sa Burger::NumberToAscii(char *,uint32_t,uint_t) or
-	Burger::NumberToAsciiHex(char *,uint32_t,uint_t)
+	Burger::to_hex_ascii(char *,uint32_t,uint_t)
 
 ***************************************/
 

@@ -41,19 +41,19 @@ public:
 	template<class T>
 	BURGER_INLINE NumberStringHex(T input) BURGER_NOEXCEPT
 	{
-		NumberToAsciiHex(m_Data, input);
+		to_hex_ascii(m_Data, input);
 	}
 
 	template<class T>
 	BURGER_INLINE NumberStringHex(T uInput, uint_t uFormat) BURGER_NOEXCEPT
 	{
-		NumberToAsciiHex(m_Data, uInput, uFormat);
+		to_hex_ascii(m_Data, uInput, uFormat);
 	}
 
 	template<class T>
 	BURGER_INLINE NumberStringHex& operator=(T input) BURGER_NOEXCEPT
 	{
-		NumberToAsciiHex(m_Data, input);
+		to_hex_ascii(m_Data, input);
 		return *this;
 	}
 

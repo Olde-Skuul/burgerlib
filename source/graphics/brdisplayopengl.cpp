@@ -641,7 +641,7 @@ void BURGER_API Burger::DisplayOpenGL::SetupOpenGL(void)
 					}
 				} while (++pTextureText<&g_TextureIndexes[BURGER_ARRAYSIZE(g_TextureIndexes)]);
 				if (pFormatName==HexString) {
-					NumberToAsciiHex(HexString+2,uValue,4);
+					to_hex_ascii(HexString+2,uValue,4);
 				}
 				Debug::Message("OpenGL supported compressed format %s\n",pFormatName);
 				++pBuffer;

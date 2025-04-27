@@ -283,8 +283,9 @@ static uint_t TestCRC32(void) BURGER_NOEXCEPT
 		const uint_t uTest = (uTester != pWork->m_CRC32);
 		uFailure |= uTest;
 		if (uTest) {
-			ReportFailure("Burger::calc_crc32(\"%s\") = 0x%08X, expected 0x%08X",
-				uTest, pWork->m_pString, uTester, pWork->m_CRC32);
+			ReportFailure(
+				"Burger::calc_crc32(\"%s\") = 0x%08X, expected 0x%08X", uTest,
+				pWork->m_pString, uTester, pWork->m_CRC32);
 		}
 		++pWork;
 	} while (--uCount);
@@ -307,8 +308,8 @@ static uint_t TestCRC16IBM(void) BURGER_NOEXCEPT
 		uFailure |= uTest;
 		if (uTest) {
 			ReportFailure(
-				"Burger::calc_crc16IBM(\"%s\") = 0x%04X, expected 0x%04X", uTest,
-				pWork->m_pString, uTester, pWork->m_CRC16IBM);
+				"Burger::calc_crc16IBM(\"%s\") = 0x%04X, expected 0x%04X",
+				uTest, pWork->m_pString, uTester, pWork->m_CRC16IBM);
 		}
 		++pWork;
 	} while (--uCount);
@@ -463,6 +464,63 @@ static uint_t TestGOST(void) BURGER_NOEXCEPT
 	} while (--uCount);
 	return uFailure;
 }
+
+//
+// Test GUID functions
+//
+
+static const uint8_t g_FakeGUID1[16] = { // In proper endian
+	0x33, 0x22, 0x11, 0x00, 0x55, 0x44, 0x77, 0x66, 0x88, 0x99, 0xAA, 0xBB,
+	0xCC, 0xDD, 0xEE, 0xFF};
+
+static const uint8_t g_FakeGUID2[16] = { // In proper endian
+	0xAE, 0x4F, 0x1D, 0xF8, 0xEC, 0x7D, 0xD0, 0x11, 0xA7, 0x65, 0x00, 0xA0,
+	0xC9, 0x1E, 0x6B, 0xF6};
+
+struct GUID_Tests_t {
+	const GUID* pGUID;
+	const char* pGUIDStr;
+};
+
+static const GUID_Tests_t g_GUIDTests[] = {
+	{reinterpret_cast<const GUID*>(g_FakeGUID1),
+		"00112233-4455-6677-8899-AABBCCDDEEFF"},
+	{reinterpret_cast<const GUID*>(g_FakeGUID2),
+		"F81D4FAE-7DEC-11D0-A765-00A0C91E6BF6"}};
+
+static uint_t TestGUID(void) BURGER_NOEXCEPT
+{
+	GUID Test;
+	uint_t uFailure = FALSE;
+	char TestStr[32];
+
+	uintptr_t i = 0;
+	const GUID_Tests_t* pTests = g_GUIDTests;
+	do {
+		// Convert the fake GUID to a string
+		Burger::GUID_to_string(TestStr, pTests->pGUID);
+		uint_t uTest = static_cast<uint_t>(
+			Burger::StringCompare(TestStr, pTests->pGUIDStr));
+		uFailure |= uTest;
+		ReportFailure("Burger::GUID_to_string(%i) failure, found %s", uTest,
+			static_cast<uint_t>(i), TestStr);
+
+		// Convert the string to a GUID
+		Burger::GUID_from_string(&Test, pTests->pGUIDStr);
+		uTest =
+			static_cast<uint_t>(!Burger::GUID_is_equal(&Test, pTests->pGUID));
+		uFailure |= uTest;
+		if (uTest) {
+			Burger::GUID_to_string(TestStr, pTests->pGUID);
+			ReportFailure("Burger::GUID_from_string(%i) failure, found %s",
+				uTest, static_cast<uint_t>(i), TestStr);
+		}
+		++pTests;
+	} while (++i < BURGER_ARRAYSIZE(g_GUIDTests));
+
+	return uFailure;
+}
+
 //
 // Test hash code
 //
@@ -489,6 +547,7 @@ int BURGER_API TestBrhashes(uint_t uVerbose) BURGER_NOEXCEPT
 	uResult |= TestMD5();
 	uResult |= TestSHA1();
 	uResult |= TestGOST();
+	uResult |= TestGUID();
 
 	if (!uResult && (uVerbose & VERBOSE_MSG)) {
 		Message("Passed all Hashing tests!");

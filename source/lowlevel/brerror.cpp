@@ -190,7 +190,7 @@ void BURGER_API Burger::set_last_error(
 {
 	// Got a system error but not a Burgerlib error, remap
 	if (!uError && uSystemError) {
-		uError = platform_convert_to_error(uSystemError);
+		uError = platform_convert_to_error(static_cast<int>(uSystemError));
 	}
 
 	// If there wasn't a message, determine what generic message it will be

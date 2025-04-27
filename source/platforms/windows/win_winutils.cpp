@@ -282,8 +282,8 @@ void BURGER_API Burger::Win32::output_windows_message(
 
 	char HexAsASCII[32];
 	if (!pMessage) {
-		NumberToAsciiHex(
-			HexAsASCII, static_cast<uint32_t>(uMessage), LEADINGZEROS | 8);
+		to_hex_ascii(
+			HexAsASCII, static_cast<uint32_t>(uMessage), kEnableLeadingZeros | 8);
 		pMessage = HexAsASCII;
 	}
 	// Output the message and parameter values. It's not 64 bit clean for the

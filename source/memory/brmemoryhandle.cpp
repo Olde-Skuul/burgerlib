@@ -574,38 +574,38 @@ void BURGER_API Burger::MemoryManagerHandle::PrintHandles(
 	// 00000000"
 	if (bNoCheck || pFirst != pLast) {
 		do {
-			NumberToAsciiHex(&FooBar[0], static_cast<uint32_t>(uCount),
-				NOENDINGNULL | LEADINGZEROS | 4);
+			to_hex_ascii(&FooBar[0], static_cast<uint32_t>(uCount),
+			kDisableEndingNull | kEnableLeadingZeros | 4);
 			FooBar[4] = ' ';
-			NumberToAsciiHex(&FooBar[5],
+			to_hex_ascii(&FooBar[5],
 				static_cast<uint32_t>(reinterpret_cast<uintptr_t>(pFirst)),
-				NOENDINGNULL | LEADINGZEROS | 8);
+				kDisableEndingNull | kEnableLeadingZeros | 8);
 			FooBar[13] = ' ';
-			NumberToAsciiHex(&FooBar[14],
+			to_hex_ascii(&FooBar[14],
 				static_cast<uint32_t>(
 					reinterpret_cast<uintptr_t>(pFirst->m_pData)),
-				NOENDINGNULL | LEADINGZEROS | 8);
+					kDisableEndingNull | kEnableLeadingZeros | 8);
 			FooBar[22] = ' ';
-			NumberToAsciiHex(&FooBar[23],
+			to_hex_ascii(&FooBar[23],
 				static_cast<uint32_t>(pFirst->m_uFlags),
-				NOENDINGNULL | LEADINGZEROS | 4);
+				kDisableEndingNull | kEnableLeadingZeros | 4);
 			FooBar[27] = ' ';
-			NumberToAsciiHex(&FooBar[28], static_cast<uint32_t>(pFirst->m_uID),
-				NOENDINGNULL | LEADINGZEROS | 4);
+			to_hex_ascii(&FooBar[28], static_cast<uint32_t>(pFirst->m_uID),
+			kDisableEndingNull | kEnableLeadingZeros | 4);
 			FooBar[32] = ' ';
-			NumberToAsciiHex(&FooBar[33],
+			to_hex_ascii(&FooBar[33],
 				static_cast<uint32_t>(pFirst->m_uLength),
-				NOENDINGNULL | LEADINGZEROS | 8);
+				kDisableEndingNull | kEnableLeadingZeros | 8);
 			FooBar[41] = ' ';
-			NumberToAsciiHex(&FooBar[42],
+			to_hex_ascii(&FooBar[42],
 				static_cast<uint32_t>(
 					reinterpret_cast<uintptr_t>(pFirst->m_pPrevHandle)),
-				NOENDINGNULL | LEADINGZEROS | 8);
+					kDisableEndingNull | kEnableLeadingZeros | 8);
 			FooBar[50] = ' ';
-			NumberToAsciiHex(&FooBar[51],
+			to_hex_ascii(&FooBar[51],
 				static_cast<uint32_t>(
 					reinterpret_cast<uintptr_t>(pFirst->m_pNextHandle)),
-				NOENDINGNULL | LEADINGZEROS | 8);
+					kDisableEndingNull | kEnableLeadingZeros | 8);
 			FooBar[59] = '\n';
 			FooBar[60] = 0;
 			Debug::PrintString(FooBar);
@@ -622,34 +622,34 @@ void BURGER_API Burger::MemoryManagerHandle::PrintHandles(
 	// 0000000000000000 0000000000000000 0000000000000000"
 	if (bNoCheck || pFirst != pLast) {
 		do {
-			NumberToAsciiHex(&FooBar[0], static_cast<uint32_t>(uCount),
-				NOENDINGNULL | LEADINGZEROS | 4);
+			to_hex_ascii(&FooBar[0], static_cast<uint32_t>(uCount),
+			kDisableEndingNull | kEnableLeadingZeros | 4);
 			FooBar[4] = ' ';
-			NumberToAsciiHex(&FooBar[5], reinterpret_cast<uint64_t>(pFirst),
-				NOENDINGNULL | LEADINGZEROS | 16);
+			to_hex_ascii(&FooBar[5], reinterpret_cast<uint64_t>(pFirst),
+			kDisableEndingNull | kEnableLeadingZeros | 16);
 			FooBar[21] = ' ';
-			NumberToAsciiHex(&FooBar[22],
+			to_hex_ascii(&FooBar[22],
 				reinterpret_cast<uint64_t>(pFirst->m_pData),
-				NOENDINGNULL | LEADINGZEROS | 16);
+				kDisableEndingNull | kEnableLeadingZeros | 16);
 			FooBar[38] = ' ';
-			NumberToAsciiHex(&FooBar[39],
+			to_hex_ascii(&FooBar[39],
 				static_cast<uint32_t>(pFirst->m_uFlags),
-				NOENDINGNULL | LEADINGZEROS | 4);
+				kDisableEndingNull | kEnableLeadingZeros | 4);
 			FooBar[43] = ' ';
-			NumberToAsciiHex(&FooBar[44], static_cast<uint32_t>(pFirst->m_uID),
-				NOENDINGNULL | LEADINGZEROS | 4);
+			to_hex_ascii(&FooBar[44], static_cast<uint32_t>(pFirst->m_uID),
+			kDisableEndingNull | kEnableLeadingZeros | 4);
 			FooBar[48] = ' ';
-			NumberToAsciiHex(&FooBar[49],
+			to_hex_ascii(&FooBar[49],
 				static_cast<uint64_t>(pFirst->m_uLength),
-				NOENDINGNULL | LEADINGZEROS | 16);
+				kDisableEndingNull | kEnableLeadingZeros | 16);
 			FooBar[65] = ' ';
-			NumberToAsciiHex(&FooBar[66],
+			to_hex_ascii(&FooBar[66],
 				reinterpret_cast<uint64_t>(pFirst->m_pPrevHandle),
-				NOENDINGNULL | LEADINGZEROS | 16);
+				kDisableEndingNull | kEnableLeadingZeros | 16);
 			FooBar[82] = ' ';
-			NumberToAsciiHex(&FooBar[83],
+			to_hex_ascii(&FooBar[83],
 				reinterpret_cast<uint64_t>(pFirst->m_pNextHandle),
-				NOENDINGNULL | LEADINGZEROS | 16);
+				kDisableEndingNull | kEnableLeadingZeros | 16);
 			FooBar[99] = '\n';
 			FooBar[100] = 0;
 			Debug::PrintString(FooBar);
