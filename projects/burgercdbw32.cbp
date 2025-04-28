@@ -620,6 +620,8 @@
 		<Unit filename="../source/text/brstring.h" />
 		<Unit filename="../source/text/brstring16.cpp" />
 		<Unit filename="../source/text/brstring16.h" />
+		<Unit filename="../source/text/brstring32.cpp" />
+		<Unit filename="../source/text/brstring32.h" />
 		<Unit filename="../source/text/brstringfunctions.cpp" />
 		<Unit filename="../source/text/brstringfunctions.h" />
 		<Unit filename="../source/text/brutf16.cpp" />

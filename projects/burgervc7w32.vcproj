@@ -13,8 +13,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="bin\"
-			IntermediateDirectory="temp\burgervc7w32dbg\"
+			OutputDirectory="$(ProjectDir)bin\"
+			IntermediateDirectory="$(ProjectDir)temp\burgervc7w32dbg\"
 			ConfigurationType="4"
 			CharacterSet="1">
 			<Tool
@@ -68,8 +68,8 @@
 		</Configuration>
 		<Configuration
 			Name="Internal|Win32"
-			OutputDirectory="bin\"
-			IntermediateDirectory="temp\burgervc7w32int\"
+			OutputDirectory="$(ProjectDir)bin\"
+			IntermediateDirectory="$(ProjectDir)temp\burgervc7w32int\"
 			ConfigurationType="4"
 			CharacterSet="1">
 			<Tool
@@ -127,8 +127,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="bin\"
-			IntermediateDirectory="temp\burgervc7w32rel\"
+			OutputDirectory="$(ProjectDir)bin\"
+			IntermediateDirectory="$(ProjectDir)temp\burgervc7w32rel\"
 			ConfigurationType="4"
 			CharacterSet="1">
 			<Tool
@@ -186,8 +186,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release_LTCG|Win32"
-			OutputDirectory="bin\"
-			IntermediateDirectory="temp\burgervc7w32ltc\"
+			OutputDirectory="$(ProjectDir)bin\"
+			IntermediateDirectory="$(ProjectDir)temp\burgervc7w32ltc\"
 			ConfigurationType="4"
 			CharacterSet="1"
 			WholeProgramOptimization="TRUE">
@@ -200,7 +200,6 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="TRUE"
 				EnableFiberSafeOptimizations="TRUE"
-				WholeProgramOptimization="TRUE"
 				OptimizeForProcessor="3"
 				OptimizeForWindowsApplication="TRUE"
 				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm\vs2003;..\source\asm\masm\vs2003_2005;..\source\asm\masm\vs2003_2008;..\source\asm\masm\vs2003_2010;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\platforms\windows\vc7compat;..\source\random;..\source\text;..\sdks\windows\ddraw\Include;..\sdks\windows\dplay\Include;..\sdks\windows\opengl;..\sdks\steamworks\public\steam;$(DXSDK_DIR)\Include;C:\Program Files\Microsoft SDKs\Windows\v6.0A\Include"
@@ -307,7 +306,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling bitreverse32.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)bitreverse32.obj&quot; /Ta&quot;../source/asm/masm/bitreverse32.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)bitreverse32.obj&quot; /Ta&quot;../source/asm/masm/bitreverse32.x86&quot;
+"
 								Outputs="$(IntDir)bitreverse32.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -315,7 +315,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling bitreverse32.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)bitreverse32.obj&quot; /Ta&quot;../source/asm/masm/bitreverse32.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)bitreverse32.obj&quot; /Ta&quot;../source/asm/masm/bitreverse32.x86&quot;
+"
 								Outputs="$(IntDir)bitreverse32.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -323,7 +324,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling bitreverse32.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)bitreverse32.obj&quot; /Ta&quot;../source/asm/masm/bitreverse32.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)bitreverse32.obj&quot; /Ta&quot;../source/asm/masm/bitreverse32.x86&quot;
+"
 								Outputs="$(IntDir)bitreverse32.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -331,7 +333,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling bitreverse32.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)bitreverse32.obj&quot; /Ta&quot;../source/asm/masm/bitreverse32.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)bitreverse32.obj&quot; /Ta&quot;../source/asm/masm/bitreverse32.x86&quot;
+"
 								Outputs="$(IntDir)bitreverse32.obj"/>
 						</FileConfiguration>
 					</File>
@@ -342,7 +345,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling bitreverse64.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)bitreverse64.obj&quot; /Ta&quot;../source/asm/masm/bitreverse64.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)bitreverse64.obj&quot; /Ta&quot;../source/asm/masm/bitreverse64.x86&quot;
+"
 								Outputs="$(IntDir)bitreverse64.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -350,7 +354,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling bitreverse64.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)bitreverse64.obj&quot; /Ta&quot;../source/asm/masm/bitreverse64.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)bitreverse64.obj&quot; /Ta&quot;../source/asm/masm/bitreverse64.x86&quot;
+"
 								Outputs="$(IntDir)bitreverse64.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -358,7 +363,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling bitreverse64.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)bitreverse64.obj&quot; /Ta&quot;../source/asm/masm/bitreverse64.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)bitreverse64.obj&quot; /Ta&quot;../source/asm/masm/bitreverse64.x86&quot;
+"
 								Outputs="$(IntDir)bitreverse64.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -366,7 +372,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling bitreverse64.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)bitreverse64.obj&quot; /Ta&quot;../source/asm/masm/bitreverse64.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)bitreverse64.obj&quot; /Ta&quot;../source/asm/masm/bitreverse64.x86&quot;
+"
 								Outputs="$(IntDir)bitreverse64.obj"/>
 						</FileConfiguration>
 					</File>
@@ -377,7 +384,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedceil.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedceil.obj&quot; /Ta&quot;../source/asm/masm/floattofixedceil.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedceil.obj&quot; /Ta&quot;../source/asm/masm/floattofixedceil.x86&quot;
+"
 								Outputs="$(IntDir)floattofixedceil.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -385,7 +393,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedceil.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedceil.obj&quot; /Ta&quot;../source/asm/masm/floattofixedceil.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedceil.obj&quot; /Ta&quot;../source/asm/masm/floattofixedceil.x86&quot;
+"
 								Outputs="$(IntDir)floattofixedceil.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -393,7 +402,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedceil.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedceil.obj&quot; /Ta&quot;../source/asm/masm/floattofixedceil.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedceil.obj&quot; /Ta&quot;../source/asm/masm/floattofixedceil.x86&quot;
+"
 								Outputs="$(IntDir)floattofixedceil.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -401,7 +411,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedceil.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedceil.obj&quot; /Ta&quot;../source/asm/masm/floattofixedceil.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedceil.obj&quot; /Ta&quot;../source/asm/masm/floattofixedceil.x86&quot;
+"
 								Outputs="$(IntDir)floattofixedceil.obj"/>
 						</FileConfiguration>
 					</File>
@@ -412,7 +423,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedceilptr.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedceilptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedceilptr.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedceilptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedceilptr.x86&quot;
+"
 								Outputs="$(IntDir)floattofixedceilptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -420,7 +432,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedceilptr.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedceilptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedceilptr.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedceilptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedceilptr.x86&quot;
+"
 								Outputs="$(IntDir)floattofixedceilptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -428,7 +441,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedceilptr.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedceilptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedceilptr.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedceilptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedceilptr.x86&quot;
+"
 								Outputs="$(IntDir)floattofixedceilptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -436,7 +450,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedceilptr.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedceilptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedceilptr.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedceilptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedceilptr.x86&quot;
+"
 								Outputs="$(IntDir)floattofixedceilptr.obj"/>
 						</FileConfiguration>
 					</File>
@@ -447,7 +462,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedfloor.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedfloor.obj&quot; /Ta&quot;../source/asm/masm/floattofixedfloor.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedfloor.obj&quot; /Ta&quot;../source/asm/masm/floattofixedfloor.x86&quot;
+"
 								Outputs="$(IntDir)floattofixedfloor.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -455,7 +471,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedfloor.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedfloor.obj&quot; /Ta&quot;../source/asm/masm/floattofixedfloor.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedfloor.obj&quot; /Ta&quot;../source/asm/masm/floattofixedfloor.x86&quot;
+"
 								Outputs="$(IntDir)floattofixedfloor.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -463,7 +480,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedfloor.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedfloor.obj&quot; /Ta&quot;../source/asm/masm/floattofixedfloor.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedfloor.obj&quot; /Ta&quot;../source/asm/masm/floattofixedfloor.x86&quot;
+"
 								Outputs="$(IntDir)floattofixedfloor.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -471,7 +489,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedfloor.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedfloor.obj&quot; /Ta&quot;../source/asm/masm/floattofixedfloor.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedfloor.obj&quot; /Ta&quot;../source/asm/masm/floattofixedfloor.x86&quot;
+"
 								Outputs="$(IntDir)floattofixedfloor.obj"/>
 						</FileConfiguration>
 					</File>
@@ -482,7 +501,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedfloorptr.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedfloorptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedfloorptr.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedfloorptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedfloorptr.x86&quot;
+"
 								Outputs="$(IntDir)floattofixedfloorptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -490,7 +510,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedfloorptr.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedfloorptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedfloorptr.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedfloorptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedfloorptr.x86&quot;
+"
 								Outputs="$(IntDir)floattofixedfloorptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -498,7 +519,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedfloorptr.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedfloorptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedfloorptr.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedfloorptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedfloorptr.x86&quot;
+"
 								Outputs="$(IntDir)floattofixedfloorptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -506,7 +528,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedfloorptr.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedfloorptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedfloorptr.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedfloorptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedfloorptr.x86&quot;
+"
 								Outputs="$(IntDir)floattofixedfloorptr.obj"/>
 						</FileConfiguration>
 					</File>
@@ -517,7 +540,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedround.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedround.obj&quot; /Ta&quot;../source/asm/masm/floattofixedround.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedround.obj&quot; /Ta&quot;../source/asm/masm/floattofixedround.x86&quot;
+"
 								Outputs="$(IntDir)floattofixedround.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -525,7 +549,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedround.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedround.obj&quot; /Ta&quot;../source/asm/masm/floattofixedround.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedround.obj&quot; /Ta&quot;../source/asm/masm/floattofixedround.x86&quot;
+"
 								Outputs="$(IntDir)floattofixedround.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -533,7 +558,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedround.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedround.obj&quot; /Ta&quot;../source/asm/masm/floattofixedround.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedround.obj&quot; /Ta&quot;../source/asm/masm/floattofixedround.x86&quot;
+"
 								Outputs="$(IntDir)floattofixedround.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -541,7 +567,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedround.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedround.obj&quot; /Ta&quot;../source/asm/masm/floattofixedround.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedround.obj&quot; /Ta&quot;../source/asm/masm/floattofixedround.x86&quot;
+"
 								Outputs="$(IntDir)floattofixedround.obj"/>
 						</FileConfiguration>
 					</File>
@@ -552,7 +579,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedroundptr.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedroundptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedroundptr.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedroundptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedroundptr.x86&quot;
+"
 								Outputs="$(IntDir)floattofixedroundptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -560,7 +588,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedroundptr.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedroundptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedroundptr.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedroundptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedroundptr.x86&quot;
+"
 								Outputs="$(IntDir)floattofixedroundptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -568,7 +597,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedroundptr.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedroundptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedroundptr.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedroundptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedroundptr.x86&quot;
+"
 								Outputs="$(IntDir)floattofixedroundptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -576,7 +606,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedroundptr.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedroundptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedroundptr.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattofixedroundptr.obj&quot; /Ta&quot;../source/asm/masm/floattofixedroundptr.x86&quot;
+"
 								Outputs="$(IntDir)floattofixedroundptr.obj"/>
 						</FileConfiguration>
 					</File>
@@ -587,7 +618,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointceil.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointceil.obj&quot; /Ta&quot;../source/asm/masm/floattointceil.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointceil.obj&quot; /Ta&quot;../source/asm/masm/floattointceil.x86&quot;
+"
 								Outputs="$(IntDir)floattointceil.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -595,7 +627,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointceil.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointceil.obj&quot; /Ta&quot;../source/asm/masm/floattointceil.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointceil.obj&quot; /Ta&quot;../source/asm/masm/floattointceil.x86&quot;
+"
 								Outputs="$(IntDir)floattointceil.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -603,7 +636,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointceil.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointceil.obj&quot; /Ta&quot;../source/asm/masm/floattointceil.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointceil.obj&quot; /Ta&quot;../source/asm/masm/floattointceil.x86&quot;
+"
 								Outputs="$(IntDir)floattointceil.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -611,7 +645,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointceil.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointceil.obj&quot; /Ta&quot;../source/asm/masm/floattointceil.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointceil.obj&quot; /Ta&quot;../source/asm/masm/floattointceil.x86&quot;
+"
 								Outputs="$(IntDir)floattointceil.obj"/>
 						</FileConfiguration>
 					</File>
@@ -622,7 +657,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointceilptr.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointceilptr.obj&quot; /Ta&quot;../source/asm/masm/floattointceilptr.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointceilptr.obj&quot; /Ta&quot;../source/asm/masm/floattointceilptr.x86&quot;
+"
 								Outputs="$(IntDir)floattointceilptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -630,7 +666,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointceilptr.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointceilptr.obj&quot; /Ta&quot;../source/asm/masm/floattointceilptr.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointceilptr.obj&quot; /Ta&quot;../source/asm/masm/floattointceilptr.x86&quot;
+"
 								Outputs="$(IntDir)floattointceilptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -638,7 +675,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointceilptr.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointceilptr.obj&quot; /Ta&quot;../source/asm/masm/floattointceilptr.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointceilptr.obj&quot; /Ta&quot;../source/asm/masm/floattointceilptr.x86&quot;
+"
 								Outputs="$(IntDir)floattointceilptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -646,7 +684,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointceilptr.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointceilptr.obj&quot; /Ta&quot;../source/asm/masm/floattointceilptr.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointceilptr.obj&quot; /Ta&quot;../source/asm/masm/floattointceilptr.x86&quot;
+"
 								Outputs="$(IntDir)floattointceilptr.obj"/>
 						</FileConfiguration>
 					</File>
@@ -657,7 +696,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointfloor.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointfloor.obj&quot; /Ta&quot;../source/asm/masm/floattointfloor.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointfloor.obj&quot; /Ta&quot;../source/asm/masm/floattointfloor.x86&quot;
+"
 								Outputs="$(IntDir)floattointfloor.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -665,7 +705,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointfloor.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointfloor.obj&quot; /Ta&quot;../source/asm/masm/floattointfloor.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointfloor.obj&quot; /Ta&quot;../source/asm/masm/floattointfloor.x86&quot;
+"
 								Outputs="$(IntDir)floattointfloor.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -673,7 +714,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointfloor.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointfloor.obj&quot; /Ta&quot;../source/asm/masm/floattointfloor.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointfloor.obj&quot; /Ta&quot;../source/asm/masm/floattointfloor.x86&quot;
+"
 								Outputs="$(IntDir)floattointfloor.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -681,7 +723,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointfloor.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointfloor.obj&quot; /Ta&quot;../source/asm/masm/floattointfloor.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointfloor.obj&quot; /Ta&quot;../source/asm/masm/floattointfloor.x86&quot;
+"
 								Outputs="$(IntDir)floattointfloor.obj"/>
 						</FileConfiguration>
 					</File>
@@ -692,7 +735,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointfloorptr.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointfloorptr.obj&quot; /Ta&quot;../source/asm/masm/floattointfloorptr.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointfloorptr.obj&quot; /Ta&quot;../source/asm/masm/floattointfloorptr.x86&quot;
+"
 								Outputs="$(IntDir)floattointfloorptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -700,7 +744,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointfloorptr.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointfloorptr.obj&quot; /Ta&quot;../source/asm/masm/floattointfloorptr.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointfloorptr.obj&quot; /Ta&quot;../source/asm/masm/floattointfloorptr.x86&quot;
+"
 								Outputs="$(IntDir)floattointfloorptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -708,7 +753,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointfloorptr.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointfloorptr.obj&quot; /Ta&quot;../source/asm/masm/floattointfloorptr.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointfloorptr.obj&quot; /Ta&quot;../source/asm/masm/floattointfloorptr.x86&quot;
+"
 								Outputs="$(IntDir)floattointfloorptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -716,7 +762,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointfloorptr.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointfloorptr.obj&quot; /Ta&quot;../source/asm/masm/floattointfloorptr.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointfloorptr.obj&quot; /Ta&quot;../source/asm/masm/floattointfloorptr.x86&quot;
+"
 								Outputs="$(IntDir)floattointfloorptr.obj"/>
 						</FileConfiguration>
 					</File>
@@ -727,7 +774,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointround.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointround.obj&quot; /Ta&quot;../source/asm/masm/floattointround.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointround.obj&quot; /Ta&quot;../source/asm/masm/floattointround.x86&quot;
+"
 								Outputs="$(IntDir)floattointround.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -735,7 +783,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointround.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointround.obj&quot; /Ta&quot;../source/asm/masm/floattointround.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointround.obj&quot; /Ta&quot;../source/asm/masm/floattointround.x86&quot;
+"
 								Outputs="$(IntDir)floattointround.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -743,7 +792,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointround.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointround.obj&quot; /Ta&quot;../source/asm/masm/floattointround.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointround.obj&quot; /Ta&quot;../source/asm/masm/floattointround.x86&quot;
+"
 								Outputs="$(IntDir)floattointround.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -751,7 +801,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointround.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointround.obj&quot; /Ta&quot;../source/asm/masm/floattointround.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointround.obj&quot; /Ta&quot;../source/asm/masm/floattointround.x86&quot;
+"
 								Outputs="$(IntDir)floattointround.obj"/>
 						</FileConfiguration>
 					</File>
@@ -762,7 +813,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointroundptr.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointroundptr.obj&quot; /Ta&quot;../source/asm/masm/floattointroundptr.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointroundptr.obj&quot; /Ta&quot;../source/asm/masm/floattointroundptr.x86&quot;
+"
 								Outputs="$(IntDir)floattointroundptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -770,7 +822,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointroundptr.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointroundptr.obj&quot; /Ta&quot;../source/asm/masm/floattointroundptr.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointroundptr.obj&quot; /Ta&quot;../source/asm/masm/floattointroundptr.x86&quot;
+"
 								Outputs="$(IntDir)floattointroundptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -778,7 +831,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointroundptr.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointroundptr.obj&quot; /Ta&quot;../source/asm/masm/floattointroundptr.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointroundptr.obj&quot; /Ta&quot;../source/asm/masm/floattointroundptr.x86&quot;
+"
 								Outputs="$(IntDir)floattointroundptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -786,7 +840,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointroundptr.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointroundptr.obj&quot; /Ta&quot;../source/asm/masm/floattointroundptr.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)floattointroundptr.obj&quot; /Ta&quot;../source/asm/masm/floattointroundptr.x86&quot;
+"
 								Outputs="$(IntDir)floattointroundptr.obj"/>
 						</FileConfiguration>
 					</File>
@@ -797,7 +852,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get8087precision.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get8087precision.obj&quot; /Ta&quot;../source/asm/masm/get8087precision.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get8087precision.obj&quot; /Ta&quot;../source/asm/masm/get8087precision.x86&quot;
+"
 								Outputs="$(IntDir)get8087precision.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -805,7 +861,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get8087precision.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get8087precision.obj&quot; /Ta&quot;../source/asm/masm/get8087precision.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get8087precision.obj&quot; /Ta&quot;../source/asm/masm/get8087precision.x86&quot;
+"
 								Outputs="$(IntDir)get8087precision.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -813,7 +870,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get8087precision.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get8087precision.obj&quot; /Ta&quot;../source/asm/masm/get8087precision.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get8087precision.obj&quot; /Ta&quot;../source/asm/masm/get8087precision.x86&quot;
+"
 								Outputs="$(IntDir)get8087precision.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -821,7 +879,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get8087precision.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get8087precision.obj&quot; /Ta&quot;../source/asm/masm/get8087precision.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get8087precision.obj&quot; /Ta&quot;../source/asm/masm/get8087precision.x86&quot;
+"
 								Outputs="$(IntDir)get8087precision.obj"/>
 						</FileConfiguration>
 					</File>
@@ -832,7 +891,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get8087rounding.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get8087rounding.obj&quot; /Ta&quot;../source/asm/masm/get8087rounding.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get8087rounding.obj&quot; /Ta&quot;../source/asm/masm/get8087rounding.x86&quot;
+"
 								Outputs="$(IntDir)get8087rounding.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -840,7 +900,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get8087rounding.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get8087rounding.obj&quot; /Ta&quot;../source/asm/masm/get8087rounding.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get8087rounding.obj&quot; /Ta&quot;../source/asm/masm/get8087rounding.x86&quot;
+"
 								Outputs="$(IntDir)get8087rounding.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -848,7 +909,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get8087rounding.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get8087rounding.obj&quot; /Ta&quot;../source/asm/masm/get8087rounding.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get8087rounding.obj&quot; /Ta&quot;../source/asm/masm/get8087rounding.x86&quot;
+"
 								Outputs="$(IntDir)get8087rounding.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -856,7 +918,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get8087rounding.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get8087rounding.obj&quot; /Ta&quot;../source/asm/masm/get8087rounding.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get8087rounding.obj&quot; /Ta&quot;../source/asm/masm/get8087rounding.x86&quot;
+"
 								Outputs="$(IntDir)get8087rounding.obj"/>
 						</FileConfiguration>
 					</File>
@@ -867,7 +930,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_ceilingdouble.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_ceilingdouble.obj&quot; /Ta&quot;../source/asm/masm/get_ceilingdouble.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_ceilingdouble.obj&quot; /Ta&quot;../source/asm/masm/get_ceilingdouble.x86&quot;
+"
 								Outputs="$(IntDir)get_ceilingdouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -875,7 +939,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_ceilingdouble.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_ceilingdouble.obj&quot; /Ta&quot;../source/asm/masm/get_ceilingdouble.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_ceilingdouble.obj&quot; /Ta&quot;../source/asm/masm/get_ceilingdouble.x86&quot;
+"
 								Outputs="$(IntDir)get_ceilingdouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -883,7 +948,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_ceilingdouble.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_ceilingdouble.obj&quot; /Ta&quot;../source/asm/masm/get_ceilingdouble.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_ceilingdouble.obj&quot; /Ta&quot;../source/asm/masm/get_ceilingdouble.x86&quot;
+"
 								Outputs="$(IntDir)get_ceilingdouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -891,7 +957,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_ceilingdouble.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_ceilingdouble.obj&quot; /Ta&quot;../source/asm/masm/get_ceilingdouble.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_ceilingdouble.obj&quot; /Ta&quot;../source/asm/masm/get_ceilingdouble.x86&quot;
+"
 								Outputs="$(IntDir)get_ceilingdouble.obj"/>
 						</FileConfiguration>
 					</File>
@@ -902,7 +969,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_ceilingfloat.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_ceilingfloat.obj&quot; /Ta&quot;../source/asm/masm/get_ceilingfloat.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_ceilingfloat.obj&quot; /Ta&quot;../source/asm/masm/get_ceilingfloat.x86&quot;
+"
 								Outputs="$(IntDir)get_ceilingfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -910,7 +978,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_ceilingfloat.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_ceilingfloat.obj&quot; /Ta&quot;../source/asm/masm/get_ceilingfloat.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_ceilingfloat.obj&quot; /Ta&quot;../source/asm/masm/get_ceilingfloat.x86&quot;
+"
 								Outputs="$(IntDir)get_ceilingfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -918,7 +987,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_ceilingfloat.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_ceilingfloat.obj&quot; /Ta&quot;../source/asm/masm/get_ceilingfloat.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_ceilingfloat.obj&quot; /Ta&quot;../source/asm/masm/get_ceilingfloat.x86&quot;
+"
 								Outputs="$(IntDir)get_ceilingfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -926,7 +996,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_ceilingfloat.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_ceilingfloat.obj&quot; /Ta&quot;../source/asm/masm/get_ceilingfloat.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_ceilingfloat.obj&quot; /Ta&quot;../source/asm/masm/get_ceilingfloat.x86&quot;
+"
 								Outputs="$(IntDir)get_ceilingfloat.obj"/>
 						</FileConfiguration>
 					</File>
@@ -937,7 +1008,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_floordouble.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_floordouble.obj&quot; /Ta&quot;../source/asm/masm/get_floordouble.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_floordouble.obj&quot; /Ta&quot;../source/asm/masm/get_floordouble.x86&quot;
+"
 								Outputs="$(IntDir)get_floordouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -945,7 +1017,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_floordouble.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_floordouble.obj&quot; /Ta&quot;../source/asm/masm/get_floordouble.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_floordouble.obj&quot; /Ta&quot;../source/asm/masm/get_floordouble.x86&quot;
+"
 								Outputs="$(IntDir)get_floordouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -953,7 +1026,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_floordouble.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_floordouble.obj&quot; /Ta&quot;../source/asm/masm/get_floordouble.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_floordouble.obj&quot; /Ta&quot;../source/asm/masm/get_floordouble.x86&quot;
+"
 								Outputs="$(IntDir)get_floordouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -961,7 +1035,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_floordouble.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_floordouble.obj&quot; /Ta&quot;../source/asm/masm/get_floordouble.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_floordouble.obj&quot; /Ta&quot;../source/asm/masm/get_floordouble.x86&quot;
+"
 								Outputs="$(IntDir)get_floordouble.obj"/>
 						</FileConfiguration>
 					</File>
@@ -972,7 +1047,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_floorfloat.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_floorfloat.obj&quot; /Ta&quot;../source/asm/masm/get_floorfloat.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_floorfloat.obj&quot; /Ta&quot;../source/asm/masm/get_floorfloat.x86&quot;
+"
 								Outputs="$(IntDir)get_floorfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -980,7 +1056,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_floorfloat.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_floorfloat.obj&quot; /Ta&quot;../source/asm/masm/get_floorfloat.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_floorfloat.obj&quot; /Ta&quot;../source/asm/masm/get_floorfloat.x86&quot;
+"
 								Outputs="$(IntDir)get_floorfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -988,7 +1065,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_floorfloat.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_floorfloat.obj&quot; /Ta&quot;../source/asm/masm/get_floorfloat.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_floorfloat.obj&quot; /Ta&quot;../source/asm/masm/get_floorfloat.x86&quot;
+"
 								Outputs="$(IntDir)get_floorfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -996,7 +1074,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_floorfloat.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_floorfloat.obj&quot; /Ta&quot;../source/asm/masm/get_floorfloat.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_floorfloat.obj&quot; /Ta&quot;../source/asm/masm/get_floorfloat.x86&quot;
+"
 								Outputs="$(IntDir)get_floorfloat.obj"/>
 						</FileConfiguration>
 					</File>
@@ -1007,7 +1086,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_rounddouble.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_rounddouble.obj&quot; /Ta&quot;../source/asm/masm/get_rounddouble.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_rounddouble.obj&quot; /Ta&quot;../source/asm/masm/get_rounddouble.x86&quot;
+"
 								Outputs="$(IntDir)get_rounddouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1015,7 +1095,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_rounddouble.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_rounddouble.obj&quot; /Ta&quot;../source/asm/masm/get_rounddouble.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_rounddouble.obj&quot; /Ta&quot;../source/asm/masm/get_rounddouble.x86&quot;
+"
 								Outputs="$(IntDir)get_rounddouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1023,7 +1104,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_rounddouble.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_rounddouble.obj&quot; /Ta&quot;../source/asm/masm/get_rounddouble.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_rounddouble.obj&quot; /Ta&quot;../source/asm/masm/get_rounddouble.x86&quot;
+"
 								Outputs="$(IntDir)get_rounddouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1031,7 +1113,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_rounddouble.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_rounddouble.obj&quot; /Ta&quot;../source/asm/masm/get_rounddouble.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_rounddouble.obj&quot; /Ta&quot;../source/asm/masm/get_rounddouble.x86&quot;
+"
 								Outputs="$(IntDir)get_rounddouble.obj"/>
 						</FileConfiguration>
 					</File>
@@ -1042,7 +1125,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_roundfloat.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_roundfloat.obj&quot; /Ta&quot;../source/asm/masm/get_roundfloat.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_roundfloat.obj&quot; /Ta&quot;../source/asm/masm/get_roundfloat.x86&quot;
+"
 								Outputs="$(IntDir)get_roundfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1050,7 +1134,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_roundfloat.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_roundfloat.obj&quot; /Ta&quot;../source/asm/masm/get_roundfloat.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_roundfloat.obj&quot; /Ta&quot;../source/asm/masm/get_roundfloat.x86&quot;
+"
 								Outputs="$(IntDir)get_roundfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1058,7 +1143,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_roundfloat.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_roundfloat.obj&quot; /Ta&quot;../source/asm/masm/get_roundfloat.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_roundfloat.obj&quot; /Ta&quot;../source/asm/masm/get_roundfloat.x86&quot;
+"
 								Outputs="$(IntDir)get_roundfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1066,7 +1152,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_roundfloat.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_roundfloat.obj&quot; /Ta&quot;../source/asm/masm/get_roundfloat.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_roundfloat.obj&quot; /Ta&quot;../source/asm/masm/get_roundfloat.x86&quot;
+"
 								Outputs="$(IntDir)get_roundfloat.obj"/>
 						</FileConfiguration>
 					</File>
@@ -1077,7 +1164,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_signdouble.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_signdouble.obj&quot; /Ta&quot;../source/asm/masm/get_signdouble.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_signdouble.obj&quot; /Ta&quot;../source/asm/masm/get_signdouble.x86&quot;
+"
 								Outputs="$(IntDir)get_signdouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1085,7 +1173,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_signdouble.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_signdouble.obj&quot; /Ta&quot;../source/asm/masm/get_signdouble.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_signdouble.obj&quot; /Ta&quot;../source/asm/masm/get_signdouble.x86&quot;
+"
 								Outputs="$(IntDir)get_signdouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1093,7 +1182,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_signdouble.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_signdouble.obj&quot; /Ta&quot;../source/asm/masm/get_signdouble.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_signdouble.obj&quot; /Ta&quot;../source/asm/masm/get_signdouble.x86&quot;
+"
 								Outputs="$(IntDir)get_signdouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1101,7 +1191,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_signdouble.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_signdouble.obj&quot; /Ta&quot;../source/asm/masm/get_signdouble.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_signdouble.obj&quot; /Ta&quot;../source/asm/masm/get_signdouble.x86&quot;
+"
 								Outputs="$(IntDir)get_signdouble.obj"/>
 						</FileConfiguration>
 					</File>
@@ -1112,7 +1203,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_signfloat.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_signfloat.obj&quot; /Ta&quot;../source/asm/masm/get_signfloat.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_signfloat.obj&quot; /Ta&quot;../source/asm/masm/get_signfloat.x86&quot;
+"
 								Outputs="$(IntDir)get_signfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1120,7 +1212,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_signfloat.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_signfloat.obj&quot; /Ta&quot;../source/asm/masm/get_signfloat.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_signfloat.obj&quot; /Ta&quot;../source/asm/masm/get_signfloat.x86&quot;
+"
 								Outputs="$(IntDir)get_signfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1128,7 +1221,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_signfloat.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_signfloat.obj&quot; /Ta&quot;../source/asm/masm/get_signfloat.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_signfloat.obj&quot; /Ta&quot;../source/asm/masm/get_signfloat.x86&quot;
+"
 								Outputs="$(IntDir)get_signfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1136,7 +1230,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_signfloat.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_signfloat.obj&quot; /Ta&quot;../source/asm/masm/get_signfloat.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)get_signfloat.obj&quot; /Ta&quot;../source/asm/masm/get_signfloat.x86&quot;
+"
 								Outputs="$(IntDir)get_signfloat.obj"/>
 						</FileConfiguration>
 					</File>
@@ -1147,7 +1242,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling has_cpuid.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)has_cpuid.obj&quot; /Ta&quot;../source/asm/masm/has_cpuid.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)has_cpuid.obj&quot; /Ta&quot;../source/asm/masm/has_cpuid.x86&quot;
+"
 								Outputs="$(IntDir)has_cpuid.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1155,7 +1251,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling has_cpuid.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)has_cpuid.obj&quot; /Ta&quot;../source/asm/masm/has_cpuid.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)has_cpuid.obj&quot; /Ta&quot;../source/asm/masm/has_cpuid.x86&quot;
+"
 								Outputs="$(IntDir)has_cpuid.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1163,7 +1260,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling has_cpuid.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)has_cpuid.obj&quot; /Ta&quot;../source/asm/masm/has_cpuid.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)has_cpuid.obj&quot; /Ta&quot;../source/asm/masm/has_cpuid.x86&quot;
+"
 								Outputs="$(IntDir)has_cpuid.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1171,7 +1269,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling has_cpuid.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)has_cpuid.obj&quot; /Ta&quot;../source/asm/masm/has_cpuid.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)has_cpuid.obj&quot; /Ta&quot;../source/asm/masm/has_cpuid.x86&quot;
+"
 								Outputs="$(IntDir)has_cpuid.obj"/>
 						</FileConfiguration>
 					</File>
@@ -1182,7 +1281,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling modulo_radiansdouble.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)modulo_radiansdouble.obj&quot; /Ta&quot;../source/asm/masm/modulo_radiansdouble.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)modulo_radiansdouble.obj&quot; /Ta&quot;../source/asm/masm/modulo_radiansdouble.x86&quot;
+"
 								Outputs="$(IntDir)modulo_radiansdouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1190,7 +1290,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling modulo_radiansdouble.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)modulo_radiansdouble.obj&quot; /Ta&quot;../source/asm/masm/modulo_radiansdouble.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)modulo_radiansdouble.obj&quot; /Ta&quot;../source/asm/masm/modulo_radiansdouble.x86&quot;
+"
 								Outputs="$(IntDir)modulo_radiansdouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1198,7 +1299,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling modulo_radiansdouble.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)modulo_radiansdouble.obj&quot; /Ta&quot;../source/asm/masm/modulo_radiansdouble.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)modulo_radiansdouble.obj&quot; /Ta&quot;../source/asm/masm/modulo_radiansdouble.x86&quot;
+"
 								Outputs="$(IntDir)modulo_radiansdouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1206,7 +1308,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling modulo_radiansdouble.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)modulo_radiansdouble.obj&quot; /Ta&quot;../source/asm/masm/modulo_radiansdouble.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)modulo_radiansdouble.obj&quot; /Ta&quot;../source/asm/masm/modulo_radiansdouble.x86&quot;
+"
 								Outputs="$(IntDir)modulo_radiansdouble.obj"/>
 						</FileConfiguration>
 					</File>
@@ -1217,7 +1320,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling modulo_radiansfloat.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)modulo_radiansfloat.obj&quot; /Ta&quot;../source/asm/masm/modulo_radiansfloat.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)modulo_radiansfloat.obj&quot; /Ta&quot;../source/asm/masm/modulo_radiansfloat.x86&quot;
+"
 								Outputs="$(IntDir)modulo_radiansfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1225,7 +1329,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling modulo_radiansfloat.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)modulo_radiansfloat.obj&quot; /Ta&quot;../source/asm/masm/modulo_radiansfloat.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)modulo_radiansfloat.obj&quot; /Ta&quot;../source/asm/masm/modulo_radiansfloat.x86&quot;
+"
 								Outputs="$(IntDir)modulo_radiansfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1233,7 +1338,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling modulo_radiansfloat.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)modulo_radiansfloat.obj&quot; /Ta&quot;../source/asm/masm/modulo_radiansfloat.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)modulo_radiansfloat.obj&quot; /Ta&quot;../source/asm/masm/modulo_radiansfloat.x86&quot;
+"
 								Outputs="$(IntDir)modulo_radiansfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1241,7 +1347,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling modulo_radiansfloat.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)modulo_radiansfloat.obj&quot; /Ta&quot;../source/asm/masm/modulo_radiansfloat.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)modulo_radiansfloat.obj&quot; /Ta&quot;../source/asm/masm/modulo_radiansfloat.x86&quot;
+"
 								Outputs="$(IntDir)modulo_radiansfloat.obj"/>
 						</FileConfiguration>
 					</File>
@@ -1252,7 +1359,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling poweroftwo32.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)poweroftwo32.obj&quot; /Ta&quot;../source/asm/masm/poweroftwo32.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)poweroftwo32.obj&quot; /Ta&quot;../source/asm/masm/poweroftwo32.x86&quot;
+"
 								Outputs="$(IntDir)poweroftwo32.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1260,7 +1368,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling poweroftwo32.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)poweroftwo32.obj&quot; /Ta&quot;../source/asm/masm/poweroftwo32.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)poweroftwo32.obj&quot; /Ta&quot;../source/asm/masm/poweroftwo32.x86&quot;
+"
 								Outputs="$(IntDir)poweroftwo32.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1268,7 +1377,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling poweroftwo32.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)poweroftwo32.obj&quot; /Ta&quot;../source/asm/masm/poweroftwo32.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)poweroftwo32.obj&quot; /Ta&quot;../source/asm/masm/poweroftwo32.x86&quot;
+"
 								Outputs="$(IntDir)poweroftwo32.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1276,7 +1386,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling poweroftwo32.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)poweroftwo32.obj&quot; /Ta&quot;../source/asm/masm/poweroftwo32.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)poweroftwo32.obj&quot; /Ta&quot;../source/asm/masm/poweroftwo32.x86&quot;
+"
 								Outputs="$(IntDir)poweroftwo32.obj"/>
 						</FileConfiguration>
 					</File>
@@ -1287,7 +1398,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling poweroftwo64.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)poweroftwo64.obj&quot; /Ta&quot;../source/asm/masm/poweroftwo64.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)poweroftwo64.obj&quot; /Ta&quot;../source/asm/masm/poweroftwo64.x86&quot;
+"
 								Outputs="$(IntDir)poweroftwo64.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1295,7 +1407,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling poweroftwo64.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)poweroftwo64.obj&quot; /Ta&quot;../source/asm/masm/poweroftwo64.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)poweroftwo64.obj&quot; /Ta&quot;../source/asm/masm/poweroftwo64.x86&quot;
+"
 								Outputs="$(IntDir)poweroftwo64.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1303,7 +1416,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling poweroftwo64.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)poweroftwo64.obj&quot; /Ta&quot;../source/asm/masm/poweroftwo64.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)poweroftwo64.obj&quot; /Ta&quot;../source/asm/masm/poweroftwo64.x86&quot;
+"
 								Outputs="$(IntDir)poweroftwo64.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1311,7 +1425,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling poweroftwo64.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)poweroftwo64.obj&quot; /Ta&quot;../source/asm/masm/poweroftwo64.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)poweroftwo64.obj&quot; /Ta&quot;../source/asm/masm/poweroftwo64.x86&quot;
+"
 								Outputs="$(IntDir)poweroftwo64.obj"/>
 						</FileConfiguration>
 					</File>
@@ -1322,7 +1437,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling set8087precision.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)set8087precision.obj&quot; /Ta&quot;../source/asm/masm/set8087precision.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)set8087precision.obj&quot; /Ta&quot;../source/asm/masm/set8087precision.x86&quot;
+"
 								Outputs="$(IntDir)set8087precision.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1330,7 +1446,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling set8087precision.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)set8087precision.obj&quot; /Ta&quot;../source/asm/masm/set8087precision.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)set8087precision.obj&quot; /Ta&quot;../source/asm/masm/set8087precision.x86&quot;
+"
 								Outputs="$(IntDir)set8087precision.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1338,7 +1455,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling set8087precision.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)set8087precision.obj&quot; /Ta&quot;../source/asm/masm/set8087precision.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)set8087precision.obj&quot; /Ta&quot;../source/asm/masm/set8087precision.x86&quot;
+"
 								Outputs="$(IntDir)set8087precision.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1346,7 +1464,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling set8087precision.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)set8087precision.obj&quot; /Ta&quot;../source/asm/masm/set8087precision.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)set8087precision.obj&quot; /Ta&quot;../source/asm/masm/set8087precision.x86&quot;
+"
 								Outputs="$(IntDir)set8087precision.obj"/>
 						</FileConfiguration>
 					</File>
@@ -1357,7 +1476,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling set8087rounding.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)set8087rounding.obj&quot; /Ta&quot;../source/asm/masm/set8087rounding.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)set8087rounding.obj&quot; /Ta&quot;../source/asm/masm/set8087rounding.x86&quot;
+"
 								Outputs="$(IntDir)set8087rounding.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1365,7 +1485,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling set8087rounding.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)set8087rounding.obj&quot; /Ta&quot;../source/asm/masm/set8087rounding.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)set8087rounding.obj&quot; /Ta&quot;../source/asm/masm/set8087rounding.x86&quot;
+"
 								Outputs="$(IntDir)set8087rounding.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1373,7 +1494,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling set8087rounding.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)set8087rounding.obj&quot; /Ta&quot;../source/asm/masm/set8087rounding.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)set8087rounding.obj&quot; /Ta&quot;../source/asm/masm/set8087rounding.x86&quot;
+"
 								Outputs="$(IntDir)set8087rounding.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -1381,7 +1503,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling set8087rounding.x86..."
-								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)set8087rounding.obj&quot; /Ta&quot;../source/asm/masm/set8087rounding.x86&quot;"
+								CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)set8087rounding.obj&quot; /Ta&quot;../source/asm/masm/set8087rounding.x86&quot;
+"
 								Outputs="$(IntDir)set8087rounding.obj"/>
 						</FileConfiguration>
 					</File>
@@ -1394,7 +1517,8 @@
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling cpuid.x86..."
-									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)cpuid.obj&quot; /Ta&quot;../source/asm/masm/vs2003/cpuid.x86&quot;"
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)cpuid.obj&quot; /Ta&quot;../source/asm/masm/vs2003/cpuid.x86&quot;
+"
 									Outputs="$(IntDir)cpuid.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
@@ -1402,7 +1526,8 @@
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling cpuid.x86..."
-									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)cpuid.obj&quot; /Ta&quot;../source/asm/masm/vs2003/cpuid.x86&quot;"
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)cpuid.obj&quot; /Ta&quot;../source/asm/masm/vs2003/cpuid.x86&quot;
+"
 									Outputs="$(IntDir)cpuid.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
@@ -1410,7 +1535,8 @@
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling cpuid.x86..."
-									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)cpuid.obj&quot; /Ta&quot;../source/asm/masm/vs2003/cpuid.x86&quot;"
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)cpuid.obj&quot; /Ta&quot;../source/asm/masm/vs2003/cpuid.x86&quot;
+"
 									Outputs="$(IntDir)cpuid.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
@@ -1418,7 +1544,8 @@
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling cpuid.x86..."
-									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)cpuid.obj&quot; /Ta&quot;../source/asm/masm/vs2003/cpuid.x86&quot;"
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)cpuid.obj&quot; /Ta&quot;../source/asm/masm/vs2003/cpuid.x86&quot;
+"
 									Outputs="$(IntDir)cpuid.obj"/>
 							</FileConfiguration>
 						</File>
@@ -1429,7 +1556,8 @@
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendian64.x86..."
-									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendian64.obj&quot; /Ta&quot;../source/asm/masm/vs2003/swapendian64.x86&quot;"
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendian64.obj&quot; /Ta&quot;../source/asm/masm/vs2003/swapendian64.x86&quot;
+"
 									Outputs="$(IntDir)swapendian64.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
@@ -1437,7 +1565,8 @@
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendian64.x86..."
-									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendian64.obj&quot; /Ta&quot;../source/asm/masm/vs2003/swapendian64.x86&quot;"
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendian64.obj&quot; /Ta&quot;../source/asm/masm/vs2003/swapendian64.x86&quot;
+"
 									Outputs="$(IntDir)swapendian64.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
@@ -1445,7 +1574,8 @@
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendian64.x86..."
-									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendian64.obj&quot; /Ta&quot;../source/asm/masm/vs2003/swapendian64.x86&quot;"
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendian64.obj&quot; /Ta&quot;../source/asm/masm/vs2003/swapendian64.x86&quot;
+"
 									Outputs="$(IntDir)swapendian64.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
@@ -1453,7 +1583,8 @@
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendian64.x86..."
-									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendian64.obj&quot; /Ta&quot;../source/asm/masm/vs2003/swapendian64.x86&quot;"
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendian64.obj&quot; /Ta&quot;../source/asm/masm/vs2003/swapendian64.x86&quot;
+"
 									Outputs="$(IntDir)swapendian64.obj"/>
 							</FileConfiguration>
 						</File>
@@ -1467,7 +1598,8 @@
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling cpuidex.x86..."
-									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)cpuidex.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2005/cpuidex.x86&quot;"
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)cpuidex.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2005/cpuidex.x86&quot;
+"
 									Outputs="$(IntDir)cpuidex.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
@@ -1475,7 +1607,8 @@
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling cpuidex.x86..."
-									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)cpuidex.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2005/cpuidex.x86&quot;"
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)cpuidex.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2005/cpuidex.x86&quot;
+"
 									Outputs="$(IntDir)cpuidex.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
@@ -1483,7 +1616,8 @@
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling cpuidex.x86..."
-									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)cpuidex.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2005/cpuidex.x86&quot;"
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)cpuidex.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2005/cpuidex.x86&quot;
+"
 									Outputs="$(IntDir)cpuidex.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
@@ -1491,7 +1625,8 @@
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling cpuidex.x86..."
-									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)cpuidex.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2005/cpuidex.x86&quot;"
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)cpuidex.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2005/cpuidex.x86&quot;
+"
 									Outputs="$(IntDir)cpuidex.obj"/>
 							</FileConfiguration>
 						</File>
@@ -1505,7 +1640,8 @@
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling xgetbv.x86..."
-									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)xgetbv.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2008/xgetbv.x86&quot;"
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)xgetbv.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2008/xgetbv.x86&quot;
+"
 									Outputs="$(IntDir)xgetbv.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
@@ -1513,7 +1649,8 @@
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling xgetbv.x86..."
-									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)xgetbv.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2008/xgetbv.x86&quot;"
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)xgetbv.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2008/xgetbv.x86&quot;
+"
 									Outputs="$(IntDir)xgetbv.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
@@ -1521,7 +1658,8 @@
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling xgetbv.x86..."
-									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)xgetbv.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2008/xgetbv.x86&quot;"
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)xgetbv.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2008/xgetbv.x86&quot;
+"
 									Outputs="$(IntDir)xgetbv.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
@@ -1529,7 +1667,8 @@
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling xgetbv.x86..."
-									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)xgetbv.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2008/xgetbv.x86&quot;"
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)xgetbv.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2008/xgetbv.x86&quot;
+"
 									Outputs="$(IntDir)xgetbv.obj"/>
 							</FileConfiguration>
 						</File>
@@ -1543,7 +1682,8 @@
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendiandouble.x86..."
-									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandouble.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendiandouble.x86&quot;"
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandouble.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendiandouble.x86&quot;
+"
 									Outputs="$(IntDir)swapendiandouble.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
@@ -1551,7 +1691,8 @@
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendiandouble.x86..."
-									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandouble.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendiandouble.x86&quot;"
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandouble.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendiandouble.x86&quot;
+"
 									Outputs="$(IntDir)swapendiandouble.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
@@ -1559,7 +1700,8 @@
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendiandouble.x86..."
-									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandouble.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendiandouble.x86&quot;"
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandouble.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendiandouble.x86&quot;
+"
 									Outputs="$(IntDir)swapendiandouble.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
@@ -1567,7 +1709,8 @@
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendiandouble.x86..."
-									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandouble.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendiandouble.x86&quot;"
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandouble.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendiandouble.x86&quot;
+"
 									Outputs="$(IntDir)swapendiandouble.obj"/>
 							</FileConfiguration>
 						</File>
@@ -1578,7 +1721,8 @@
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendiandoubleptr.x86..."
-									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandoubleptr.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendiandoubleptr.x86&quot;"
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandoubleptr.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendiandoubleptr.x86&quot;
+"
 									Outputs="$(IntDir)swapendiandoubleptr.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
@@ -1586,7 +1730,8 @@
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendiandoubleptr.x86..."
-									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandoubleptr.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendiandoubleptr.x86&quot;"
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandoubleptr.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendiandoubleptr.x86&quot;
+"
 									Outputs="$(IntDir)swapendiandoubleptr.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
@@ -1594,7 +1739,8 @@
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendiandoubleptr.x86..."
-									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandoubleptr.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendiandoubleptr.x86&quot;"
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandoubleptr.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendiandoubleptr.x86&quot;
+"
 									Outputs="$(IntDir)swapendiandoubleptr.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
@@ -1602,7 +1748,8 @@
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendiandoubleptr.x86..."
-									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandoubleptr.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendiandoubleptr.x86&quot;"
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendiandoubleptr.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendiandoubleptr.x86&quot;
+"
 									Outputs="$(IntDir)swapendiandoubleptr.obj"/>
 							</FileConfiguration>
 						</File>
@@ -1613,7 +1760,8 @@
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendianfloat.x86..."
-									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloat.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendianfloat.x86&quot;"
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloat.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendianfloat.x86&quot;
+"
 									Outputs="$(IntDir)swapendianfloat.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
@@ -1621,7 +1769,8 @@
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendianfloat.x86..."
-									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloat.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendianfloat.x86&quot;"
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloat.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendianfloat.x86&quot;
+"
 									Outputs="$(IntDir)swapendianfloat.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
@@ -1629,7 +1778,8 @@
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendianfloat.x86..."
-									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloat.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendianfloat.x86&quot;"
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloat.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendianfloat.x86&quot;
+"
 									Outputs="$(IntDir)swapendianfloat.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
@@ -1637,7 +1787,8 @@
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendianfloat.x86..."
-									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloat.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendianfloat.x86&quot;"
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloat.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendianfloat.x86&quot;
+"
 									Outputs="$(IntDir)swapendianfloat.obj"/>
 							</FileConfiguration>
 						</File>
@@ -1648,7 +1799,8 @@
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendianfloatptr.x86..."
-									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloatptr.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendianfloatptr.x86&quot;"
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloatptr.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendianfloatptr.x86&quot;
+"
 									Outputs="$(IntDir)swapendianfloatptr.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
@@ -1656,7 +1808,8 @@
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendianfloatptr.x86..."
-									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloatptr.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendianfloatptr.x86&quot;"
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloatptr.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendianfloatptr.x86&quot;
+"
 									Outputs="$(IntDir)swapendianfloatptr.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
@@ -1664,7 +1817,8 @@
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendianfloatptr.x86..."
-									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloatptr.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendianfloatptr.x86&quot;"
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloatptr.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendianfloatptr.x86&quot;
+"
 									Outputs="$(IntDir)swapendianfloatptr.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
@@ -1672,7 +1826,8 @@
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendianfloatptr.x86..."
-									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloatptr.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendianfloatptr.x86&quot;"
+									CommandLine="ml.exe /c /nologo /Zi /W3 /Fo&quot;$(IntDir)swapendianfloatptr.obj&quot; /Ta&quot;../source/asm/masm/vs2003_2010/swapendianfloatptr.x86&quot;
+"
 									Outputs="$(IntDir)swapendianfloatptr.obj"/>
 							</FileConfiguration>
 						</File>
@@ -2293,7 +2448,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc pscclr4dx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pscclr4dx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pscclr4dx9.h&quot; /Vng_pscclr4dx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pscclr4dx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pscclr4dx9.h&quot; /Vng_pscclr4dx9
+"
 								Outputs="../source/graphics/shadersdx9/Generated/pscclr4dx9.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2301,7 +2457,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc pscclr4dx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pscclr4dx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pscclr4dx9.h&quot; /Vng_pscclr4dx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pscclr4dx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pscclr4dx9.h&quot; /Vng_pscclr4dx9
+"
 								Outputs="../source/graphics/shadersdx9/Generated/pscclr4dx9.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2309,7 +2466,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc pscclr4dx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pscclr4dx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pscclr4dx9.h&quot; /Vng_pscclr4dx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pscclr4dx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pscclr4dx9.h&quot; /Vng_pscclr4dx9
+"
 								Outputs="../source/graphics/shadersdx9/Generated/pscclr4dx9.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2317,7 +2475,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc pscclr4dx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pscclr4dx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pscclr4dx9.h&quot; /Vng_pscclr4dx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pscclr4dx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pscclr4dx9.h&quot; /Vng_pscclr4dx9
+"
 								Outputs="../source/graphics/shadersdx9/Generated/pscclr4dx9.h"/>
 						</FileConfiguration>
 					</File>
@@ -2328,7 +2487,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc pstex2clr4dx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstex2clr4dx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstex2clr4dx9.h&quot; /Vng_pstex2clr4dx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstex2clr4dx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstex2clr4dx9.h&quot; /Vng_pstex2clr4dx9
+"
 								Outputs="../source/graphics/shadersdx9/Generated/pstex2clr4dx9.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2336,7 +2496,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc pstex2clr4dx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstex2clr4dx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstex2clr4dx9.h&quot; /Vng_pstex2clr4dx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstex2clr4dx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstex2clr4dx9.h&quot; /Vng_pstex2clr4dx9
+"
 								Outputs="../source/graphics/shadersdx9/Generated/pstex2clr4dx9.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2344,7 +2505,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc pstex2clr4dx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstex2clr4dx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstex2clr4dx9.h&quot; /Vng_pstex2clr4dx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstex2clr4dx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstex2clr4dx9.h&quot; /Vng_pstex2clr4dx9
+"
 								Outputs="../source/graphics/shadersdx9/Generated/pstex2clr4dx9.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2352,7 +2514,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc pstex2clr4dx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstex2clr4dx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstex2clr4dx9.h&quot; /Vng_pstex2clr4dx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstex2clr4dx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstex2clr4dx9.h&quot; /Vng_pstex2clr4dx9
+"
 								Outputs="../source/graphics/shadersdx9/Generated/pstex2clr4dx9.h"/>
 						</FileConfiguration>
 					</File>
@@ -2363,7 +2526,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc pstexturecolordx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstexturecolordx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstexturecolordx9.h&quot; /Vng_pstexturecolordx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstexturecolordx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstexturecolordx9.h&quot; /Vng_pstexturecolordx9
+"
 								Outputs="../source/graphics/shadersdx9/Generated/pstexturecolordx9.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2371,7 +2535,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc pstexturecolordx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstexturecolordx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstexturecolordx9.h&quot; /Vng_pstexturecolordx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstexturecolordx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstexturecolordx9.h&quot; /Vng_pstexturecolordx9
+"
 								Outputs="../source/graphics/shadersdx9/Generated/pstexturecolordx9.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2379,7 +2544,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc pstexturecolordx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstexturecolordx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstexturecolordx9.h&quot; /Vng_pstexturecolordx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstexturecolordx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstexturecolordx9.h&quot; /Vng_pstexturecolordx9
+"
 								Outputs="../source/graphics/shadersdx9/Generated/pstexturecolordx9.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2387,7 +2553,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc pstexturecolordx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstexturecolordx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstexturecolordx9.h&quot; /Vng_pstexturecolordx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstexturecolordx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstexturecolordx9.h&quot; /Vng_pstexturecolordx9
+"
 								Outputs="../source/graphics/shadersdx9/Generated/pstexturecolordx9.h"/>
 						</FileConfiguration>
 					</File>
@@ -2398,7 +2565,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc pstexturedx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstexturedx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstexturedx9.h&quot; /Vng_pstexturedx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstexturedx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstexturedx9.h&quot; /Vng_pstexturedx9
+"
 								Outputs="../source/graphics/shadersdx9/Generated/pstexturedx9.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2406,7 +2574,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc pstexturedx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstexturedx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstexturedx9.h&quot; /Vng_pstexturedx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstexturedx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstexturedx9.h&quot; /Vng_pstexturedx9
+"
 								Outputs="../source/graphics/shadersdx9/Generated/pstexturedx9.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2414,7 +2583,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc pstexturedx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstexturedx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstexturedx9.h&quot; /Vng_pstexturedx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstexturedx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstexturedx9.h&quot; /Vng_pstexturedx9
+"
 								Outputs="../source/graphics/shadersdx9/Generated/pstexturedx9.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2422,7 +2592,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc pstexturedx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstexturedx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstexturedx9.h&quot; /Vng_pstexturedx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstexturedx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstexturedx9.h&quot; /Vng_pstexturedx9
+"
 								Outputs="../source/graphics/shadersdx9/Generated/pstexturedx9.h"/>
 						</FileConfiguration>
 					</File>
@@ -2433,7 +2604,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc vs20pos22ddx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20pos22ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20pos22ddx9.h&quot; /Vng_vs20pos22ddx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20pos22ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20pos22ddx9.h&quot; /Vng_vs20pos22ddx9
+"
 								Outputs="../source/graphics/shadersdx9/Generated/vs20pos22ddx9.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2441,7 +2613,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc vs20pos22ddx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20pos22ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20pos22ddx9.h&quot; /Vng_vs20pos22ddx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20pos22ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20pos22ddx9.h&quot; /Vng_vs20pos22ddx9
+"
 								Outputs="../source/graphics/shadersdx9/Generated/vs20pos22ddx9.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2449,7 +2622,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc vs20pos22ddx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20pos22ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20pos22ddx9.h&quot; /Vng_vs20pos22ddx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20pos22ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20pos22ddx9.h&quot; /Vng_vs20pos22ddx9
+"
 								Outputs="../source/graphics/shadersdx9/Generated/vs20pos22ddx9.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2457,7 +2631,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc vs20pos22ddx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20pos22ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20pos22ddx9.h&quot; /Vng_vs20pos22ddx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20pos22ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20pos22ddx9.h&quot; /Vng_vs20pos22ddx9
+"
 								Outputs="../source/graphics/shadersdx9/Generated/vs20pos22ddx9.h"/>
 						</FileConfiguration>
 					</File>
@@ -2468,7 +2643,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc vs20pos2tex2clr42ddx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20pos2tex2clr42ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20pos2tex2clr42ddx9.h&quot; /Vng_vs20pos2tex2clr42ddx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20pos2tex2clr42ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20pos2tex2clr42ddx9.h&quot; /Vng_vs20pos2tex2clr42ddx9
+"
 								Outputs="../source/graphics/shadersdx9/Generated/vs20pos2tex2clr42ddx9.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2476,7 +2652,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc vs20pos2tex2clr42ddx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20pos2tex2clr42ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20pos2tex2clr42ddx9.h&quot; /Vng_vs20pos2tex2clr42ddx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20pos2tex2clr42ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20pos2tex2clr42ddx9.h&quot; /Vng_vs20pos2tex2clr42ddx9
+"
 								Outputs="../source/graphics/shadersdx9/Generated/vs20pos2tex2clr42ddx9.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2484,7 +2661,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc vs20pos2tex2clr42ddx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20pos2tex2clr42ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20pos2tex2clr42ddx9.h&quot; /Vng_vs20pos2tex2clr42ddx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20pos2tex2clr42ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20pos2tex2clr42ddx9.h&quot; /Vng_vs20pos2tex2clr42ddx9
+"
 								Outputs="../source/graphics/shadersdx9/Generated/vs20pos2tex2clr42ddx9.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2492,7 +2670,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc vs20pos2tex2clr42ddx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20pos2tex2clr42ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20pos2tex2clr42ddx9.h&quot; /Vng_vs20pos2tex2clr42ddx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20pos2tex2clr42ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20pos2tex2clr42ddx9.h&quot; /Vng_vs20pos2tex2clr42ddx9
+"
 								Outputs="../source/graphics/shadersdx9/Generated/vs20pos2tex2clr42ddx9.h"/>
 						</FileConfiguration>
 					</File>
@@ -2503,7 +2682,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc vs20sprite2ddx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20sprite2ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20sprite2ddx9.h&quot; /Vng_vs20sprite2ddx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20sprite2ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20sprite2ddx9.h&quot; /Vng_vs20sprite2ddx9
+"
 								Outputs="../source/graphics/shadersdx9/Generated/vs20sprite2ddx9.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2511,7 +2691,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc vs20sprite2ddx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20sprite2ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20sprite2ddx9.h&quot; /Vng_vs20sprite2ddx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20sprite2ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20sprite2ddx9.h&quot; /Vng_vs20sprite2ddx9
+"
 								Outputs="../source/graphics/shadersdx9/Generated/vs20sprite2ddx9.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2519,7 +2700,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc vs20sprite2ddx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20sprite2ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20sprite2ddx9.h&quot; /Vng_vs20sprite2ddx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20sprite2ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20sprite2ddx9.h&quot; /Vng_vs20sprite2ddx9
+"
 								Outputs="../source/graphics/shadersdx9/Generated/vs20sprite2ddx9.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2527,7 +2709,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc vs20sprite2ddx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20sprite2ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20sprite2ddx9.h&quot; /Vng_vs20sprite2ddx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20sprite2ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20sprite2ddx9.h&quot; /Vng_vs20sprite2ddx9
+"
 								Outputs="../source/graphics/shadersdx9/Generated/vs20sprite2ddx9.h"/>
 						</FileConfiguration>
 					</File>
@@ -2538,7 +2721,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc vsstaticpositiondx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vsstaticpositiondx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vsstaticpositiondx9.h&quot; /Vng_vsstaticpositiondx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vsstaticpositiondx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vsstaticpositiondx9.h&quot; /Vng_vsstaticpositiondx9
+"
 								Outputs="../source/graphics/shadersdx9/Generated/vsstaticpositiondx9.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2546,7 +2730,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc vsstaticpositiondx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vsstaticpositiondx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vsstaticpositiondx9.h&quot; /Vng_vsstaticpositiondx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vsstaticpositiondx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vsstaticpositiondx9.h&quot; /Vng_vsstaticpositiondx9
+"
 								Outputs="../source/graphics/shadersdx9/Generated/vsstaticpositiondx9.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2554,7 +2739,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc vsstaticpositiondx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vsstaticpositiondx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vsstaticpositiondx9.h&quot; /Vng_vsstaticpositiondx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vsstaticpositiondx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vsstaticpositiondx9.h&quot; /Vng_vsstaticpositiondx9
+"
 								Outputs="../source/graphics/shadersdx9/Generated/vsstaticpositiondx9.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2562,7 +2748,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc vsstaticpositiondx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vsstaticpositiondx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vsstaticpositiondx9.h&quot; /Vng_vsstaticpositiondx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vsstaticpositiondx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vsstaticpositiondx9.h&quot; /Vng_vsstaticpositiondx9
+"
 								Outputs="../source/graphics/shadersdx9/Generated/vsstaticpositiondx9.h"/>
 						</FileConfiguration>
 					</File>
@@ -2603,7 +2790,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments pscclr4gl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pscclr4gl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pscclr4gl.h&quot; -l g_pscclr4gl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pscclr4gl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pscclr4gl.h&quot; -l g_pscclr4gl
+"
 								Outputs="../source/graphics/shadersopengl/Generated/pscclr4gl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2611,7 +2799,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments pscclr4gl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pscclr4gl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pscclr4gl.h&quot; -l g_pscclr4gl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pscclr4gl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pscclr4gl.h&quot; -l g_pscclr4gl
+"
 								Outputs="../source/graphics/shadersopengl/Generated/pscclr4gl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2619,7 +2808,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments pscclr4gl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pscclr4gl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pscclr4gl.h&quot; -l g_pscclr4gl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pscclr4gl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pscclr4gl.h&quot; -l g_pscclr4gl
+"
 								Outputs="../source/graphics/shadersopengl/Generated/pscclr4gl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2627,7 +2817,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments pscclr4gl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pscclr4gl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pscclr4gl.h&quot; -l g_pscclr4gl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pscclr4gl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pscclr4gl.h&quot; -l g_pscclr4gl
+"
 								Outputs="../source/graphics/shadersopengl/Generated/pscclr4gl.h"/>
 						</FileConfiguration>
 					</File>
@@ -2638,7 +2829,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments pstex2clr4gl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstex2clr4gl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstex2clr4gl.h&quot; -l g_pstex2clr4gl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstex2clr4gl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstex2clr4gl.h&quot; -l g_pstex2clr4gl
+"
 								Outputs="../source/graphics/shadersopengl/Generated/pstex2clr4gl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2646,7 +2838,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments pstex2clr4gl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstex2clr4gl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstex2clr4gl.h&quot; -l g_pstex2clr4gl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstex2clr4gl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstex2clr4gl.h&quot; -l g_pstex2clr4gl
+"
 								Outputs="../source/graphics/shadersopengl/Generated/pstex2clr4gl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2654,7 +2847,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments pstex2clr4gl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstex2clr4gl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstex2clr4gl.h&quot; -l g_pstex2clr4gl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstex2clr4gl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstex2clr4gl.h&quot; -l g_pstex2clr4gl
+"
 								Outputs="../source/graphics/shadersopengl/Generated/pstex2clr4gl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2662,7 +2856,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments pstex2clr4gl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstex2clr4gl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstex2clr4gl.h&quot; -l g_pstex2clr4gl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstex2clr4gl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstex2clr4gl.h&quot; -l g_pstex2clr4gl
+"
 								Outputs="../source/graphics/shadersopengl/Generated/pstex2clr4gl.h"/>
 						</FileConfiguration>
 					</File>
@@ -2673,7 +2868,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments pstexturecolorgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstexturecolorgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstexturecolorgl.h&quot; -l g_pstexturecolorgl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstexturecolorgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstexturecolorgl.h&quot; -l g_pstexturecolorgl
+"
 								Outputs="../source/graphics/shadersopengl/Generated/pstexturecolorgl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2681,7 +2877,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments pstexturecolorgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstexturecolorgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstexturecolorgl.h&quot; -l g_pstexturecolorgl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstexturecolorgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstexturecolorgl.h&quot; -l g_pstexturecolorgl
+"
 								Outputs="../source/graphics/shadersopengl/Generated/pstexturecolorgl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2689,7 +2886,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments pstexturecolorgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstexturecolorgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstexturecolorgl.h&quot; -l g_pstexturecolorgl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstexturecolorgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstexturecolorgl.h&quot; -l g_pstexturecolorgl
+"
 								Outputs="../source/graphics/shadersopengl/Generated/pstexturecolorgl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2697,7 +2895,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments pstexturecolorgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstexturecolorgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstexturecolorgl.h&quot; -l g_pstexturecolorgl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstexturecolorgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstexturecolorgl.h&quot; -l g_pstexturecolorgl
+"
 								Outputs="../source/graphics/shadersopengl/Generated/pstexturecolorgl.h"/>
 						</FileConfiguration>
 					</File>
@@ -2708,7 +2907,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments pstexturegl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstexturegl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstexturegl.h&quot; -l g_pstexturegl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstexturegl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstexturegl.h&quot; -l g_pstexturegl
+"
 								Outputs="../source/graphics/shadersopengl/Generated/pstexturegl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2716,7 +2916,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments pstexturegl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstexturegl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstexturegl.h&quot; -l g_pstexturegl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstexturegl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstexturegl.h&quot; -l g_pstexturegl
+"
 								Outputs="../source/graphics/shadersopengl/Generated/pstexturegl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2724,7 +2925,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments pstexturegl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstexturegl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstexturegl.h&quot; -l g_pstexturegl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstexturegl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstexturegl.h&quot; -l g_pstexturegl
+"
 								Outputs="../source/graphics/shadersopengl/Generated/pstexturegl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2732,7 +2934,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments pstexturegl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstexturegl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstexturegl.h&quot; -l g_pstexturegl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstexturegl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstexturegl.h&quot; -l g_pstexturegl
+"
 								Outputs="../source/graphics/shadersopengl/Generated/pstexturegl.h"/>
 						</FileConfiguration>
 					</File>
@@ -2743,7 +2946,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments vs20pos22dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20pos22dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20pos22dgl.h&quot; -l g_vs20pos22dgl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20pos22dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20pos22dgl.h&quot; -l g_vs20pos22dgl
+"
 								Outputs="../source/graphics/shadersopengl/Generated/vs20pos22dgl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2751,7 +2955,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments vs20pos22dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20pos22dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20pos22dgl.h&quot; -l g_vs20pos22dgl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20pos22dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20pos22dgl.h&quot; -l g_vs20pos22dgl
+"
 								Outputs="../source/graphics/shadersopengl/Generated/vs20pos22dgl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2759,7 +2964,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments vs20pos22dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20pos22dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20pos22dgl.h&quot; -l g_vs20pos22dgl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20pos22dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20pos22dgl.h&quot; -l g_vs20pos22dgl
+"
 								Outputs="../source/graphics/shadersopengl/Generated/vs20pos22dgl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2767,7 +2973,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments vs20pos22dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20pos22dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20pos22dgl.h&quot; -l g_vs20pos22dgl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20pos22dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20pos22dgl.h&quot; -l g_vs20pos22dgl
+"
 								Outputs="../source/graphics/shadersopengl/Generated/vs20pos22dgl.h"/>
 						</FileConfiguration>
 					</File>
@@ -2778,7 +2985,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments vs20pos2tex2clr42dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20pos2tex2clr42dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20pos2tex2clr42dgl.h&quot; -l g_vs20pos2tex2clr42dgl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20pos2tex2clr42dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20pos2tex2clr42dgl.h&quot; -l g_vs20pos2tex2clr42dgl
+"
 								Outputs="../source/graphics/shadersopengl/Generated/vs20pos2tex2clr42dgl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2786,7 +2994,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments vs20pos2tex2clr42dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20pos2tex2clr42dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20pos2tex2clr42dgl.h&quot; -l g_vs20pos2tex2clr42dgl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20pos2tex2clr42dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20pos2tex2clr42dgl.h&quot; -l g_vs20pos2tex2clr42dgl
+"
 								Outputs="../source/graphics/shadersopengl/Generated/vs20pos2tex2clr42dgl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2794,7 +3003,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments vs20pos2tex2clr42dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20pos2tex2clr42dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20pos2tex2clr42dgl.h&quot; -l g_vs20pos2tex2clr42dgl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20pos2tex2clr42dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20pos2tex2clr42dgl.h&quot; -l g_vs20pos2tex2clr42dgl
+"
 								Outputs="../source/graphics/shadersopengl/Generated/vs20pos2tex2clr42dgl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2802,7 +3012,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments vs20pos2tex2clr42dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20pos2tex2clr42dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20pos2tex2clr42dgl.h&quot; -l g_vs20pos2tex2clr42dgl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20pos2tex2clr42dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20pos2tex2clr42dgl.h&quot; -l g_vs20pos2tex2clr42dgl
+"
 								Outputs="../source/graphics/shadersopengl/Generated/vs20pos2tex2clr42dgl.h"/>
 						</FileConfiguration>
 					</File>
@@ -2813,7 +3024,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments vs20sprite2dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20sprite2dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20sprite2dgl.h&quot; -l g_vs20sprite2dgl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20sprite2dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20sprite2dgl.h&quot; -l g_vs20sprite2dgl
+"
 								Outputs="../source/graphics/shadersopengl/Generated/vs20sprite2dgl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2821,7 +3033,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments vs20sprite2dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20sprite2dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20sprite2dgl.h&quot; -l g_vs20sprite2dgl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20sprite2dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20sprite2dgl.h&quot; -l g_vs20sprite2dgl
+"
 								Outputs="../source/graphics/shadersopengl/Generated/vs20sprite2dgl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2829,7 +3042,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments vs20sprite2dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20sprite2dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20sprite2dgl.h&quot; -l g_vs20sprite2dgl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20sprite2dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20sprite2dgl.h&quot; -l g_vs20sprite2dgl
+"
 								Outputs="../source/graphics/shadersopengl/Generated/vs20sprite2dgl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2837,7 +3051,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments vs20sprite2dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20sprite2dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20sprite2dgl.h&quot; -l g_vs20sprite2dgl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20sprite2dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20sprite2dgl.h&quot; -l g_vs20sprite2dgl
+"
 								Outputs="../source/graphics/shadersopengl/Generated/vs20sprite2dgl.h"/>
 						</FileConfiguration>
 					</File>
@@ -2848,7 +3063,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments vsstaticpositiongl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vsstaticpositiongl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vsstaticpositiongl.h&quot; -l g_vsstaticpositiongl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vsstaticpositiongl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vsstaticpositiongl.h&quot; -l g_vsstaticpositiongl
+"
 								Outputs="../source/graphics/shadersopengl/Generated/vsstaticpositiongl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2856,7 +3072,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments vsstaticpositiongl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vsstaticpositiongl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vsstaticpositiongl.h&quot; -l g_vsstaticpositiongl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vsstaticpositiongl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vsstaticpositiongl.h&quot; -l g_vsstaticpositiongl
+"
 								Outputs="../source/graphics/shadersopengl/Generated/vsstaticpositiongl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2864,7 +3081,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments vsstaticpositiongl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vsstaticpositiongl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vsstaticpositiongl.h&quot; -l g_vsstaticpositiongl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vsstaticpositiongl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vsstaticpositiongl.h&quot; -l g_vsstaticpositiongl
+"
 								Outputs="../source/graphics/shadersopengl/Generated/vsstaticpositiongl.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -2872,7 +3090,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Stripcomments vsstaticpositiongl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vsstaticpositiongl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vsstaticpositiongl.h&quot; -l g_vsstaticpositiongl"
+								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vsstaticpositiongl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vsstaticpositiongl.h&quot; -l g_vsstaticpositiongl
+"
 								Outputs="../source/graphics/shadersopengl/Generated/vsstaticpositiongl.h"/>
 						</FileConfiguration>
 					</File>
@@ -3468,7 +3687,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc ps20display8bitdx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/platforms/windows/ps20display8bitdx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/platforms/windows/Generated\ps20display8bitdx9.h&quot; /Vng_ps20display8bitdx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/platforms/windows/ps20display8bitdx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/platforms/windows/Generated\ps20display8bitdx9.h&quot; /Vng_ps20display8bitdx9
+"
 								Outputs="../source/platforms/windows/Generated/ps20display8bitdx9.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -3476,7 +3696,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc ps20display8bitdx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/platforms/windows/ps20display8bitdx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/platforms/windows/Generated\ps20display8bitdx9.h&quot; /Vng_ps20display8bitdx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/platforms/windows/ps20display8bitdx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/platforms/windows/Generated\ps20display8bitdx9.h&quot; /Vng_ps20display8bitdx9
+"
 								Outputs="../source/platforms/windows/Generated/ps20display8bitdx9.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -3484,7 +3705,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc ps20display8bitdx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/platforms/windows/ps20display8bitdx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/platforms/windows/Generated\ps20display8bitdx9.h&quot; /Vng_ps20display8bitdx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/platforms/windows/ps20display8bitdx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/platforms/windows/Generated\ps20display8bitdx9.h&quot; /Vng_ps20display8bitdx9
+"
 								Outputs="../source/platforms/windows/Generated/ps20display8bitdx9.h"/>
 						</FileConfiguration>
 						<FileConfiguration
@@ -3492,7 +3714,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="fxc ps20display8bitdx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/platforms/windows/ps20display8bitdx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/platforms/windows/Generated\ps20display8bitdx9.h&quot; /Vng_ps20display8bitdx9"
+								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/platforms/windows/ps20display8bitdx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/platforms/windows/Generated\ps20display8bitdx9.h&quot; /Vng_ps20display8bitdx9
+"
 								Outputs="../source/platforms/windows/Generated/ps20display8bitdx9.h"/>
 						</FileConfiguration>
 					</File>
@@ -3781,6 +4004,12 @@
 				</File>
 				<File
 					RelativePath="..\source\text\brstring16.h">
+				</File>
+				<File
+					RelativePath="..\source\text\brstring32.cpp">
+				</File>
+				<File
+					RelativePath="..\source\text\brstring32.h">
 				</File>
 				<File
 					RelativePath="..\source\text\brstringfunctions.cpp">

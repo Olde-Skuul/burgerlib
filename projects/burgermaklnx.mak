@@ -431,6 +431,7 @@ OBJS:= $(TEMP_DIR)/bradler16.o \
 	$(TEMP_DIR)/brstdouthelpers.o \
 	$(TEMP_DIR)/brstring.o \
 	$(TEMP_DIR)/brstring16.o \
+	$(TEMP_DIR)/brstring32.o \
 	$(TEMP_DIR)/brstringfunctions.o \
 	$(TEMP_DIR)/brstructs.o \
 	$(TEMP_DIR)/brtemplates.o \
@@ -654,6 +655,7 @@ DEPS:= $(TEMP_DIR)/bradler16.d \
 	$(TEMP_DIR)/brstdouthelpers.d \
 	$(TEMP_DIR)/brstring.d \
 	$(TEMP_DIR)/brstring16.d \
+	$(TEMP_DIR)/brstring32.d \
 	$(TEMP_DIR)/brstringfunctions.d \
 	$(TEMP_DIR)/brstructs.d \
 	$(TEMP_DIR)/brtemplates.d \
@@ -916,6 +918,7 @@ DEPS:= $(TEMP_DIR)/bradler16.d \
 ../source/text/brsimplestring.cpp \
 ../source/text/brstring.cpp \
 ../source/text/brstring16.cpp \
+../source/text/brstring32.cpp \
 ../source/text/brstringfunctions.cpp \
 ../source/text/brutf16.cpp \
 ../source/text/brutf32.cpp \
@@ -1368,6 +1371,8 @@ $(TEMP_DIR)/brsimplestring.o: ../source/text/brsimplestring.cpp ; $(BUILD_CPP)
 $(TEMP_DIR)/brstring.o: ../source/text/brstring.cpp ; $(BUILD_CPP)
 
 $(TEMP_DIR)/brstring16.o: ../source/text/brstring16.cpp ; $(BUILD_CPP)
+
+$(TEMP_DIR)/brstring32.o: ../source/text/brstring32.cpp ; $(BUILD_CPP)
 
 $(TEMP_DIR)/brstringfunctions.o: ../source/text/brstringfunctions.cpp ; $(BUILD_CPP)
 

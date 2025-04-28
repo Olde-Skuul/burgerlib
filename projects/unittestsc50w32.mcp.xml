@@ -533,7 +533,7 @@
 				<SETTING><NAME>MWLinker_X86_symfullpath</NAME><VALUE>false</VALUE></SETTING>
 				<SETTING><NAME>MWLinker_X86_linkdebug</NAME><VALUE>true</VALUE></SETTING>
 				<SETTING><NAME>MWLinker_X86_debuginline</NAME><VALUE>true</VALUE></SETTING>
-				<SETTING><NAME>MWLinker_X86_subsystem</NAME><VALUE>Unknown</VALUE></SETTING>
+				<SETTING><NAME>MWLinker_X86_subsystem</NAME><VALUE>WinCUI</VALUE></SETTING>
 				<SETTING><NAME>MWLinker_X86_entrypointusage</NAME><VALUE>Default</VALUE></SETTING>
 				<SETTING><NAME>MWLinker_X86_entrypoint</NAME><VALUE></VALUE></SETTING>
 				<SETTING><NAME>MWLinker_X86_codefolding</NAME><VALUE>Any</VALUE></SETTING>
@@ -3163,6 +3163,20 @@
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brstring16.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS></FILEFLAGS>
+				</FILE>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brstring32.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS>Debug</FILEFLAGS>
+				</FILE>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brstring32.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 					<FILEKIND>Text</FILEKIND>
 					<FILEFLAGS></FILEFLAGS>
@@ -6612,6 +6626,16 @@
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brstring16.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brstring32.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brstring32.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
 				<FILEREF>
@@ -8199,7 +8223,7 @@
 				<SETTING><NAME>MWLinker_X86_symfullpath</NAME><VALUE>false</VALUE></SETTING>
 				<SETTING><NAME>MWLinker_X86_linkdebug</NAME><VALUE>true</VALUE></SETTING>
 				<SETTING><NAME>MWLinker_X86_debuginline</NAME><VALUE>true</VALUE></SETTING>
-				<SETTING><NAME>MWLinker_X86_subsystem</NAME><VALUE>Unknown</VALUE></SETTING>
+				<SETTING><NAME>MWLinker_X86_subsystem</NAME><VALUE>WinCUI</VALUE></SETTING>
 				<SETTING><NAME>MWLinker_X86_entrypointusage</NAME><VALUE>Default</VALUE></SETTING>
 				<SETTING><NAME>MWLinker_X86_entrypoint</NAME><VALUE></VALUE></SETTING>
 				<SETTING><NAME>MWLinker_X86_codefolding</NAME><VALUE>Any</VALUE></SETTING>
@@ -10829,6 +10853,20 @@
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brstring16.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS></FILEFLAGS>
+				</FILE>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brstring32.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS>Debug</FILEFLAGS>
+				</FILE>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brstring32.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 					<FILEKIND>Text</FILEKIND>
 					<FILEFLAGS></FILEFLAGS>
@@ -14282,6 +14320,16 @@
 				</FILEREF>
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brstring32.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brstring32.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brstringfunctions.cpp</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
@@ -15865,7 +15913,7 @@
 				<SETTING><NAME>MWLinker_X86_symfullpath</NAME><VALUE>false</VALUE></SETTING>
 				<SETTING><NAME>MWLinker_X86_linkdebug</NAME><VALUE>true</VALUE></SETTING>
 				<SETTING><NAME>MWLinker_X86_debuginline</NAME><VALUE>true</VALUE></SETTING>
-				<SETTING><NAME>MWLinker_X86_subsystem</NAME><VALUE>Unknown</VALUE></SETTING>
+				<SETTING><NAME>MWLinker_X86_subsystem</NAME><VALUE>WinCUI</VALUE></SETTING>
 				<SETTING><NAME>MWLinker_X86_entrypointusage</NAME><VALUE>Default</VALUE></SETTING>
 				<SETTING><NAME>MWLinker_X86_entrypoint</NAME><VALUE></VALUE></SETTING>
 				<SETTING><NAME>MWLinker_X86_codefolding</NAME><VALUE>Any</VALUE></SETTING>
@@ -18495,6 +18543,20 @@
 				<FILE>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brstring16.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS></FILEFLAGS>
+				</FILE>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brstring32.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+					<FILEKIND>Text</FILEKIND>
+					<FILEFLAGS></FILEFLAGS>
+				</FILE>
+				<FILE>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brstring32.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 					<FILEKIND>Text</FILEKIND>
 					<FILEFLAGS></FILEFLAGS>
@@ -21944,6 +22006,16 @@
 				<FILEREF>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brstring16.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brstring32.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brstring32.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
 				<FILEREF>
@@ -26357,6 +26429,18 @@
 					<TARGETNAME>Debug</TARGETNAME>
 					<PATHTYPE>Name</PATHTYPE>
 					<PATH>brstring16.h</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<TARGETNAME>Debug</TARGETNAME>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brstring32.cpp</PATH>
+					<PATHFORMAT>Windows</PATHFORMAT>
+				</FILEREF>
+				<FILEREF>
+					<TARGETNAME>Debug</TARGETNAME>
+					<PATHTYPE>Name</PATHTYPE>
+					<PATH>brstring32.h</PATH>
 					<PATHFORMAT>Windows</PATHFORMAT>
 				</FILEREF>
 				<FILEREF>

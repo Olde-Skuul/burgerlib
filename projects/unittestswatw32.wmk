@@ -535,6 +535,7 @@ OBJS= $(A)/bitreverse32.obj &
 	$(A)/brstdouthelperswindows.obj &
 	$(A)/brstring.obj &
 	$(A)/brstring16.obj &
+	$(A)/brstring32.obj &
 	$(A)/brstringfunctions.obj &
 	$(A)/brstructs.obj &
 	$(A)/brtemplates.obj &

@@ -33,11 +33,23 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="bin\"
-			IntermediateDirectory="temp\burgervc9w32dbg\"
+			OutputDirectory="$(ProjectDir)bin\"
+			IntermediateDirectory="$(ProjectDir)temp\burgervc9w32dbg\"
 			ConfigurationType="4"
 			CharacterSet="1"
 			>
+			<Tool
+				Name="GLSL"
+			/>
+			<Tool
+				Name="HLSL"
+			/>
+			<Tool
+				Name="MASM64"
+			/>
+			<Tool
+				Name="MASM"
+			/>
 			<Tool
 				Name="VCPreBuildEventTool"
 			/>
@@ -113,11 +125,23 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="bin\"
-			IntermediateDirectory="temp\burgervc9w64dbg\"
+			OutputDirectory="$(ProjectDir)bin\"
+			IntermediateDirectory="$(ProjectDir)temp\burgervc9w64dbg\"
 			ConfigurationType="4"
 			CharacterSet="1"
 			>
+			<Tool
+				Name="GLSL"
+			/>
+			<Tool
+				Name="HLSL"
+			/>
+			<Tool
+				Name="MASM64"
+			/>
+			<Tool
+				Name="MASM"
+			/>
 			<Tool
 				Name="VCPreBuildEventTool"
 			/>
@@ -192,11 +216,23 @@
 		</Configuration>
 		<Configuration
 			Name="Internal|Win32"
-			OutputDirectory="bin\"
-			IntermediateDirectory="temp\burgervc9w32int\"
+			OutputDirectory="$(ProjectDir)bin\"
+			IntermediateDirectory="$(ProjectDir)temp\burgervc9w32int\"
 			ConfigurationType="4"
 			CharacterSet="1"
 			>
+			<Tool
+				Name="GLSL"
+			/>
+			<Tool
+				Name="HLSL"
+			/>
+			<Tool
+				Name="MASM64"
+			/>
+			<Tool
+				Name="MASM"
+			/>
 			<Tool
 				Name="VCPreBuildEventTool"
 			/>
@@ -275,11 +311,23 @@
 		</Configuration>
 		<Configuration
 			Name="Internal|x64"
-			OutputDirectory="bin\"
-			IntermediateDirectory="temp\burgervc9w64int\"
+			OutputDirectory="$(ProjectDir)bin\"
+			IntermediateDirectory="$(ProjectDir)temp\burgervc9w64int\"
 			ConfigurationType="4"
 			CharacterSet="1"
 			>
+			<Tool
+				Name="GLSL"
+			/>
+			<Tool
+				Name="HLSL"
+			/>
+			<Tool
+				Name="MASM64"
+			/>
+			<Tool
+				Name="MASM"
+			/>
 			<Tool
 				Name="VCPreBuildEventTool"
 			/>
@@ -357,11 +405,23 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="bin\"
-			IntermediateDirectory="temp\burgervc9w32rel\"
+			OutputDirectory="$(ProjectDir)bin\"
+			IntermediateDirectory="$(ProjectDir)temp\burgervc9w32rel\"
 			ConfigurationType="4"
 			CharacterSet="1"
 			>
+			<Tool
+				Name="GLSL"
+			/>
+			<Tool
+				Name="HLSL"
+			/>
+			<Tool
+				Name="MASM64"
+			/>
+			<Tool
+				Name="MASM"
+			/>
 			<Tool
 				Name="VCPreBuildEventTool"
 			/>
@@ -440,11 +500,23 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="bin\"
-			IntermediateDirectory="temp\burgervc9w64rel\"
+			OutputDirectory="$(ProjectDir)bin\"
+			IntermediateDirectory="$(ProjectDir)temp\burgervc9w64rel\"
 			ConfigurationType="4"
 			CharacterSet="1"
 			>
+			<Tool
+				Name="GLSL"
+			/>
+			<Tool
+				Name="HLSL"
+			/>
+			<Tool
+				Name="MASM64"
+			/>
+			<Tool
+				Name="MASM"
+			/>
 			<Tool
 				Name="VCPreBuildEventTool"
 			/>
@@ -522,12 +594,24 @@
 		</Configuration>
 		<Configuration
 			Name="Release_LTCG|Win32"
-			OutputDirectory="bin\"
-			IntermediateDirectory="temp\burgervc9w32ltc\"
+			OutputDirectory="$(ProjectDir)bin\"
+			IntermediateDirectory="$(ProjectDir)temp\burgervc9w32ltc\"
 			ConfigurationType="4"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
+			<Tool
+				Name="GLSL"
+			/>
+			<Tool
+				Name="HLSL"
+			/>
+			<Tool
+				Name="MASM64"
+			/>
+			<Tool
+				Name="MASM"
+			/>
 			<Tool
 				Name="VCPreBuildEventTool"
 			/>
@@ -607,12 +691,24 @@
 		</Configuration>
 		<Configuration
 			Name="Release_LTCG|x64"
-			OutputDirectory="bin\"
-			IntermediateDirectory="temp\burgervc9w64ltc\"
+			OutputDirectory="$(ProjectDir)bin\"
+			IntermediateDirectory="$(ProjectDir)temp\burgervc9w64ltc\"
 			ConfigurationType="4"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
+			<Tool
+				Name="GLSL"
+			/>
+			<Tool
+				Name="HLSL"
+			/>
+			<Tool
+				Name="MASM64"
+			/>
+			<Tool
+				Name="MASM"
+			/>
 			<Tool
 				Name="VCPreBuildEventTool"
 			/>
@@ -3079,24 +3175,112 @@
 					Name="masm64"
 					>
 					<File
+						RelativePath="..\source\asm\masm64\bitreverse32.x64"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm64\bitreverse64.x64"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
 						RelativePath="..\source\asm\masm64\get_signdouble.x64"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
 							ExcludedFromBuild="true"
-						/>
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
 						<FileConfiguration
 							Name="Internal|Win32"
 							ExcludedFromBuild="true"
-						/>
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
 						<FileConfiguration
 							Name="Release|Win32"
 							ExcludedFromBuild="true"
-						/>
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
 						<FileConfiguration
 							Name="Release_LTCG|Win32"
 							ExcludedFromBuild="true"
-						/>
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\source\asm\masm64\get_signfloat.x64"
@@ -3104,19 +3288,71 @@
 						<FileConfiguration
 							Name="Debug|Win32"
 							ExcludedFromBuild="true"
-						/>
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
 						<FileConfiguration
 							Name="Internal|Win32"
 							ExcludedFromBuild="true"
-						/>
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
 						<FileConfiguration
 							Name="Release|Win32"
 							ExcludedFromBuild="true"
-						/>
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
 						<FileConfiguration
 							Name="Release_LTCG|Win32"
 							ExcludedFromBuild="true"
-						/>
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm64\poweroftwo64.x64"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
 					</File>
 					<Filter
 						Name="vs2005_2008"
@@ -3127,19 +3363,35 @@
 							<FileConfiguration
 								Name="Debug|Win32"
 								ExcludedFromBuild="true"
-							/>
+								>
+								<Tool
+									Name="MASM64"
+								/>
+							</FileConfiguration>
 							<FileConfiguration
 								Name="Internal|Win32"
 								ExcludedFromBuild="true"
-							/>
+								>
+								<Tool
+									Name="MASM64"
+								/>
+							</FileConfiguration>
 							<FileConfiguration
 								Name="Release|Win32"
 								ExcludedFromBuild="true"
-							/>
+								>
+								<Tool
+									Name="MASM64"
+								/>
+							</FileConfiguration>
 							<FileConfiguration
 								Name="Release_LTCG|Win32"
 								ExcludedFromBuild="true"
-							/>
+								>
+								<Tool
+									Name="MASM64"
+								/>
+							</FileConfiguration>
 						</File>
 					</Filter>
 				</Filter>
@@ -6445,6 +6697,14 @@
 				</File>
 				<File
 					RelativePath="..\source\text\brstring16.h"
+					>
+				</File>
+				<File
+					RelativePath="..\source\text\brstring32.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\source\text\brstring32.h"
 					>
 				</File>
 				<File

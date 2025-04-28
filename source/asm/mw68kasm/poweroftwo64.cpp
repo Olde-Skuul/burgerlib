@@ -32,7 +32,6 @@ asm uint64_t BURGER_API Burger::power_of_two(uint64_t uInput)
 	subx.l	d2, d1
 
 // Do a bit count for both halves
-	bfffo	d0{0:32},d0
 	bfffo	d1{0:32},d1
 
 // If the high byte is zero, do the lower 32 bits
@@ -79,6 +78,7 @@ zero:
 // Answer is 0x1 to 0x100000000
 low32:
 // Is it supposed to return 0x100000000?
+	bfffo	d0{0:32},d0
 	tst.l	d0
 	beq.s	lowmax
 

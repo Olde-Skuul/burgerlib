@@ -278,6 +278,7 @@
 		FC890A56C3FC42046D922D56 /* brsimplestring.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8074B0AEFB2BB09F61CDD40C /* brsimplestring.cpp */; };
 		FD0663B11C360AD26C34A9B5 /* broutputmemorystream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DD9EBEAFAD7E412A4AB140D0 /* broutputmemorystream.cpp */; };
 		FD3AAE58273699C3589AD797 /* brunixtypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18A3A467388C603D4A872584 /* brunixtypes.cpp */; };
+		FD8C8447EB7C7D0F3D00219A /* brstring32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EEA354A6D8C79DDF668DEC09 /* brstring32.cpp */; };
 		FEDB8A61F0CC5BACED02EADE /* brosstringfunctionsmacosx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65F81976F660084BA7F467C1 /* brosstringfunctionsmacosx.cpp */; };
 		FFAB9EE415B9E09E5A6EAD54 /* brdebug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 90B9DD7A4014806B74D324CA /* brdebug.cpp */; };
 		FFE9139E65E85F5479A1F6F7 /* brnumberstringhex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7922DF37E72943BAEDD51072 /* brnumberstringhex.cpp */; };
@@ -330,6 +331,7 @@
 		0BCFDF50A6CDC9B0109EFCF2 /* brrenderersoftware16.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = brrenderersoftware16.h; path = ../source/graphics/brrenderersoftware16.h; sourceTree = SOURCE_ROOT; };
 		0C4029F243C9F5F098519BE4 /* breffect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = breffect.h; path = ../source/graphics/effects/breffect.h; sourceTree = SOURCE_ROOT; };
 		0CFED4CA578BF4AF5431D7FA /* brfilebmp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brfilebmp.cpp; path = ../source/file/brfilebmp.cpp; sourceTree = SOURCE_ROOT; };
+		0E184BCDE1513DC100E14C73 /* brstring32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = brstring32.h; path = ../source/text/brstring32.h; sourceTree = SOURCE_ROOT; };
 		0E71315314396CBB60AD66D5 /* brmutex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brmutex.cpp; path = ../source/lowlevel/brmutex.cpp; sourceTree = SOURCE_ROOT; };
 		0F057AF0D2DB8309BB2F172B /* brmemoryhandle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brmemoryhandle.cpp; path = ../source/memory/brmemoryhandle.cpp; sourceTree = SOURCE_ROOT; };
 		0F6E15DB64AF301235C4632E /* brflashmanager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = brflashmanager.h; path = ../source/flashplayer/brflashmanager.h; sourceTree = SOURCE_ROOT; };
@@ -751,6 +753,7 @@
 		ED0D8FF2ED1290D959EAD19B /* brearcliptriangulate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brearcliptriangulate.cpp; path = ../source/math/brearcliptriangulate.cpp; sourceTree = SOURCE_ROOT; };
 		ED90F1D2C97F2409EFDA283E /* brnumberto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = brnumberto.h; path = ../source/text/brnumberto.h; sourceTree = SOURCE_ROOT; };
 		EDAFEABA60C51ED84C6376E0 /* brglobals.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brglobals.cpp; path = ../source/lowlevel/brglobals.cpp; sourceTree = SOURCE_ROOT; };
+		EEA354A6D8C79DDF668DEC09 /* brstring32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brstring32.cpp; path = ../source/text/brstring32.cpp; sourceTree = SOURCE_ROOT; };
 		EFE07262E7C8313C38C53EDE /* brconsolemanager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brconsolemanager.cpp; path = ../source/commandline/brconsolemanager.cpp; sourceTree = SOURCE_ROOT; };
 		EFE3F50E22D8DD5F88719FAF /* brflashmanager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brflashmanager.cpp; path = ../source/flashplayer/brflashmanager.cpp; sourceTree = SOURCE_ROOT; };
 		F036AE896BA3D5FAB5E8F796 /* brflashrgba.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = brflashrgba.h; path = ../source/flashplayer/brflashrgba.h; sourceTree = SOURCE_ROOT; };
@@ -1145,6 +1148,8 @@
 				96CAEDCC634879146A375C6B /* brstring.h */,
 				23BB0E29CEF3A7501D989A07 /* brstring16.cpp */,
 				56353FF374352617014FB6A5 /* brstring16.h */,
+				EEA354A6D8C79DDF668DEC09 /* brstring32.cpp */,
+				0E184BCDE1513DC100E14C73 /* brstring32.h */,
 				90543F94D52A2A491A823CFA /* brstringfunctions.cpp */,
 				C92E4FE81288D1A1E1B90D29 /* brstringfunctions.h */,
 				556BF5FF728002A68DE379AA /* brutf16.cpp */,
@@ -1793,6 +1798,7 @@
 				EAF308E03F0DD186BC655791 /* brstdouthelpersmacosx.cpp in Sources */,
 				484292781D1796B0209C8466 /* brstring.cpp in Sources */,
 				F0CDCE6CF1C32493153ECED1 /* brstring16.cpp in Sources */,
+				FD8C8447EB7C7D0F3D00219A /* brstring32.cpp in Sources */,
 				B93AAC95DCAFF8A3D99E8447 /* brstringfunctions.cpp in Sources */,
 				62423DF9296F35C62C2B5DE0 /* brstructs.cpp in Sources */,
 				AE56F65D477BDE357944BC58 /* brtemplates.cpp in Sources */,
@@ -1879,6 +1885,7 @@
 				CONFIGURATION_TEMP_DIR = "$(SYMROOT)/$(PRODUCT_NAME)$(SUFFIX)";
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_CW_ASM_SYNTAX = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1969,6 +1976,7 @@
 				CONFIGURATION_TEMP_DIR = "$(SYMROOT)/$(PRODUCT_NAME)$(SUFFIX)";
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_CW_ASM_SYNTAX = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -2041,6 +2049,7 @@
 				CONFIGURATION_TEMP_DIR = "$(SYMROOT)/$(PRODUCT_NAME)$(SUFFIX)";
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_CW_ASM_SYNTAX = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;

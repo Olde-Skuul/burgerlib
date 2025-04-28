@@ -1,0 +1,27 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "unittests", "unittestsvc7xbx.vcproj", "{EB3DDBB0-8B3D-342D-A98C-7F7CF428923B}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Internal = Internal
+		Release = Release
+		Release_LTCG = Release_LTCG
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{EB3DDBB0-8B3D-342D-A98C-7F7CF428923B}.Debug.ActiveCfg = Debug|Xbox
+		{EB3DDBB0-8B3D-342D-A98C-7F7CF428923B}.Debug.Build.0 = Debug|Xbox
+		{EB3DDBB0-8B3D-342D-A98C-7F7CF428923B}.Internal.ActiveCfg = Internal|Xbox
+		{EB3DDBB0-8B3D-342D-A98C-7F7CF428923B}.Internal.Build.0 = Internal|Xbox
+		{EB3DDBB0-8B3D-342D-A98C-7F7CF428923B}.Release.ActiveCfg = Release|Xbox
+		{EB3DDBB0-8B3D-342D-A98C-7F7CF428923B}.Release.Build.0 = Release|Xbox
+		{EB3DDBB0-8B3D-342D-A98C-7F7CF428923B}.Release_LTCG.ActiveCfg = Release_LTCG|Xbox
+		{EB3DDBB0-8B3D-342D-A98C-7F7CF428923B}.Release_LTCG.Build.0 = Release_LTCG|Xbox
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

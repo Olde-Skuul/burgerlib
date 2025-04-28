@@ -679,6 +679,7 @@
     <ClInclude Include="..\source\text\brsimplestring.h" />
     <ClInclude Include="..\source\text\brstring.h" />
     <ClInclude Include="..\source\text\brstring16.h" />
+    <ClInclude Include="..\source\text\brstring32.h" />
     <ClInclude Include="..\source\text\brstringfunctions.h" />
     <ClInclude Include="..\source\text\brutf16.h" />
     <ClInclude Include="..\source\text\brutf32.h" />
@@ -954,6 +955,7 @@
     <ClCompile Include="..\source\text\brsimplestring.cpp" />
     <ClCompile Include="..\source\text\brstring.cpp" />
     <ClCompile Include="..\source\text\brstring16.cpp" />
+    <ClCompile Include="..\source\text\brstring32.cpp" />
     <ClCompile Include="..\source\text\brstringfunctions.cpp" />
     <ClCompile Include="..\source\text\brutf16.cpp" />
     <ClCompile Include="..\source\text\brutf32.cpp" />
@@ -982,11 +984,23 @@
     <ClCompile Include="..\unittest\testbrtypes.cpp" />
     <ClCompile Include="..\unittest\testcharset.cpp" />
     <ClCompile Include="..\unittest\testmacros.cpp" />
+    <MASM Include="..\source\asm\masm64\bitreverse32.x64">
+      <UseSafeExceptionHandlers Condition="'$(Platform)'=='Win32'">true</UseSafeExceptionHandlers>
+      <ExcludedFromBuild Condition="'$(Platform)'=='Win32'">true</ExcludedFromBuild>
+    </MASM>
+    <MASM Include="..\source\asm\masm64\bitreverse64.x64">
+      <UseSafeExceptionHandlers Condition="'$(Platform)'=='Win32'">true</UseSafeExceptionHandlers>
+      <ExcludedFromBuild Condition="'$(Platform)'=='Win32'">true</ExcludedFromBuild>
+    </MASM>
     <MASM Include="..\source\asm\masm64\get_signdouble.x64">
       <UseSafeExceptionHandlers Condition="'$(Platform)'=='Win32'">true</UseSafeExceptionHandlers>
       <ExcludedFromBuild Condition="'$(Platform)'=='Win32'">true</ExcludedFromBuild>
     </MASM>
     <MASM Include="..\source\asm\masm64\get_signfloat.x64">
+      <UseSafeExceptionHandlers Condition="'$(Platform)'=='Win32'">true</UseSafeExceptionHandlers>
+      <ExcludedFromBuild Condition="'$(Platform)'=='Win32'">true</ExcludedFromBuild>
+    </MASM>
+    <MASM Include="..\source\asm\masm64\poweroftwo64.x64">
       <UseSafeExceptionHandlers Condition="'$(Platform)'=='Win32'">true</UseSafeExceptionHandlers>
       <ExcludedFromBuild Condition="'$(Platform)'=='Win32'">true</ExcludedFromBuild>
     </MASM>

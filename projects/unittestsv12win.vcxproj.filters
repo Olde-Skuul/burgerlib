@@ -739,6 +739,9 @@
     <ClInclude Include="..\source\text\brstring16.h">
       <Filter>source\text</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\text\brstring32.h">
+      <Filter>source\text</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\text\brstringfunctions.h">
       <Filter>source\text</Filter>
     </ClInclude>
@@ -1564,6 +1567,9 @@
     <ClCompile Include="..\source\text\brstring16.cpp">
       <Filter>source\text</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\text\brstring32.cpp">
+      <Filter>source\text</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\text\brstringfunctions.cpp">
       <Filter>source\text</Filter>
     </ClCompile>
@@ -1648,10 +1654,19 @@
     <ClCompile Include="..\unittest\testmacros.cpp">
       <Filter>unittest</Filter>
     </ClCompile>
+    <MASM Include="..\source\asm\masm64\bitreverse32.x64">
+      <Filter>source\asm\masm64</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm64\bitreverse64.x64">
+      <Filter>source\asm\masm64</Filter>
+    </MASM>
     <MASM Include="..\source\asm\masm64\get_signdouble.x64">
       <Filter>source\asm\masm64</Filter>
     </MASM>
     <MASM Include="..\source\asm\masm64\get_signfloat.x64">
+      <Filter>source\asm\masm64</Filter>
+    </MASM>
+    <MASM Include="..\source\asm\masm64\poweroftwo64.x64">
       <Filter>source\asm\masm64</Filter>
     </MASM>
     <MASM Include="..\source\asm\masm\bitreverse32.x86">

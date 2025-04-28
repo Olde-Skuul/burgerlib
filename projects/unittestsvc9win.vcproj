@@ -33,11 +33,23 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="bin\"
-			IntermediateDirectory="temp\unittestsvc9w32dbg\"
+			OutputDirectory="$(ProjectDir)bin\"
+			IntermediateDirectory="$(ProjectDir)temp\unittestsvc9w32dbg\"
 			ConfigurationType="1"
 			CharacterSet="1"
 			>
+			<Tool
+				Name="GLSL"
+			/>
+			<Tool
+				Name="HLSL"
+			/>
+			<Tool
+				Name="MASM64"
+			/>
+			<Tool
+				Name="MASM"
+			/>
 			<Tool
 				Name="VCPreBuildEventTool"
 			/>
@@ -89,7 +101,6 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib WinMM.lib"
 				OutputFile="&quot;$(OutDir)unittestsvc9w32dbg.exe&quot;"
-				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				SubSystem="1"
@@ -119,11 +130,23 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="bin\"
-			IntermediateDirectory="temp\unittestsvc9w64dbg\"
+			OutputDirectory="$(ProjectDir)bin\"
+			IntermediateDirectory="$(ProjectDir)temp\unittestsvc9w64dbg\"
 			ConfigurationType="1"
 			CharacterSet="1"
 			>
+			<Tool
+				Name="GLSL"
+			/>
+			<Tool
+				Name="HLSL"
+			/>
+			<Tool
+				Name="MASM64"
+			/>
+			<Tool
+				Name="MASM"
+			/>
 			<Tool
 				Name="VCPreBuildEventTool"
 			/>
@@ -174,7 +197,6 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib WinMM.lib"
 				OutputFile="&quot;$(OutDir)unittestsvc9w64dbg.exe&quot;"
-				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				SubSystem="1"
@@ -204,11 +226,23 @@
 		</Configuration>
 		<Configuration
 			Name="Internal|Win32"
-			OutputDirectory="bin\"
-			IntermediateDirectory="temp\unittestsvc9w32int\"
+			OutputDirectory="$(ProjectDir)bin\"
+			IntermediateDirectory="$(ProjectDir)temp\unittestsvc9w32int\"
 			ConfigurationType="1"
 			CharacterSet="1"
 			>
+			<Tool
+				Name="GLSL"
+			/>
+			<Tool
+				Name="HLSL"
+			/>
+			<Tool
+				Name="MASM64"
+			/>
+			<Tool
+				Name="MASM"
+			/>
 			<Tool
 				Name="VCPreBuildEventTool"
 			/>
@@ -263,7 +297,6 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib WinMM.lib"
 				OutputFile="&quot;$(OutDir)unittestsvc9w32int.exe&quot;"
-				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				SubSystem="1"
@@ -294,11 +327,23 @@
 		</Configuration>
 		<Configuration
 			Name="Internal|x64"
-			OutputDirectory="bin\"
-			IntermediateDirectory="temp\unittestsvc9w64int\"
+			OutputDirectory="$(ProjectDir)bin\"
+			IntermediateDirectory="$(ProjectDir)temp\unittestsvc9w64int\"
 			ConfigurationType="1"
 			CharacterSet="1"
 			>
+			<Tool
+				Name="GLSL"
+			/>
+			<Tool
+				Name="HLSL"
+			/>
+			<Tool
+				Name="MASM64"
+			/>
+			<Tool
+				Name="MASM"
+			/>
 			<Tool
 				Name="VCPreBuildEventTool"
 			/>
@@ -352,7 +397,6 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib WinMM.lib"
 				OutputFile="&quot;$(OutDir)unittestsvc9w64int.exe&quot;"
-				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				SubSystem="1"
@@ -383,11 +427,23 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="bin\"
-			IntermediateDirectory="temp\unittestsvc9w32rel\"
+			OutputDirectory="$(ProjectDir)bin\"
+			IntermediateDirectory="$(ProjectDir)temp\unittestsvc9w32rel\"
 			ConfigurationType="1"
 			CharacterSet="1"
 			>
+			<Tool
+				Name="GLSL"
+			/>
+			<Tool
+				Name="HLSL"
+			/>
+			<Tool
+				Name="MASM64"
+			/>
+			<Tool
+				Name="MASM"
+			/>
 			<Tool
 				Name="VCPreBuildEventTool"
 			/>
@@ -441,7 +497,6 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib WinMM.lib"
 				OutputFile="&quot;$(OutDir)unittestsvc9w32rel.exe&quot;"
-				LinkIncremental="1"
 				GenerateDebugInformation="false"
 				ProgramDatabaseFile="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				SubSystem="1"
@@ -472,11 +527,23 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="bin\"
-			IntermediateDirectory="temp\unittestsvc9w64rel\"
+			OutputDirectory="$(ProjectDir)bin\"
+			IntermediateDirectory="$(ProjectDir)temp\unittestsvc9w64rel\"
 			ConfigurationType="1"
 			CharacterSet="1"
 			>
+			<Tool
+				Name="GLSL"
+			/>
+			<Tool
+				Name="HLSL"
+			/>
+			<Tool
+				Name="MASM64"
+			/>
+			<Tool
+				Name="MASM"
+			/>
 			<Tool
 				Name="VCPreBuildEventTool"
 			/>
@@ -529,7 +596,6 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib WinMM.lib"
 				OutputFile="&quot;$(OutDir)unittestsvc9w64rel.exe&quot;"
-				LinkIncremental="1"
 				GenerateDebugInformation="false"
 				ProgramDatabaseFile="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				SubSystem="1"
@@ -560,12 +626,24 @@
 		</Configuration>
 		<Configuration
 			Name="Release_LTCG|Win32"
-			OutputDirectory="bin\"
-			IntermediateDirectory="temp\unittestsvc9w32ltc\"
+			OutputDirectory="$(ProjectDir)bin\"
+			IntermediateDirectory="$(ProjectDir)temp\unittestsvc9w32ltc\"
 			ConfigurationType="1"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
+			<Tool
+				Name="GLSL"
+			/>
+			<Tool
+				Name="HLSL"
+			/>
+			<Tool
+				Name="MASM64"
+			/>
+			<Tool
+				Name="MASM"
+			/>
 			<Tool
 				Name="VCPreBuildEventTool"
 			/>
@@ -620,7 +698,6 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib WinMM.lib"
 				OutputFile="&quot;$(OutDir)unittestsvc9w32ltc.exe&quot;"
-				LinkIncremental="1"
 				GenerateDebugInformation="false"
 				ProgramDatabaseFile="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				SubSystem="1"
@@ -652,12 +729,24 @@
 		</Configuration>
 		<Configuration
 			Name="Release_LTCG|x64"
-			OutputDirectory="bin\"
-			IntermediateDirectory="temp\unittestsvc9w64ltc\"
+			OutputDirectory="$(ProjectDir)bin\"
+			IntermediateDirectory="$(ProjectDir)temp\unittestsvc9w64ltc\"
 			ConfigurationType="1"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
+			<Tool
+				Name="GLSL"
+			/>
+			<Tool
+				Name="HLSL"
+			/>
+			<Tool
+				Name="MASM64"
+			/>
+			<Tool
+				Name="MASM"
+			/>
 			<Tool
 				Name="VCPreBuildEventTool"
 			/>
@@ -711,7 +800,6 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib WinMM.lib"
 				OutputFile="&quot;$(OutDir)unittestsvc9w64ltc.exe&quot;"
-				LinkIncremental="1"
 				GenerateDebugInformation="false"
 				ProgramDatabaseFile="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				SubSystem="1"
@@ -3131,24 +3219,112 @@
 					Name="masm64"
 					>
 					<File
+						RelativePath="..\source\asm\masm64\bitreverse32.x64"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm64\bitreverse64.x64"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
 						RelativePath="..\source\asm\masm64\get_signdouble.x64"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
 							ExcludedFromBuild="true"
-						/>
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
 						<FileConfiguration
 							Name="Internal|Win32"
 							ExcludedFromBuild="true"
-						/>
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
 						<FileConfiguration
 							Name="Release|Win32"
 							ExcludedFromBuild="true"
-						/>
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
 						<FileConfiguration
 							Name="Release_LTCG|Win32"
 							ExcludedFromBuild="true"
-						/>
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\source\asm\masm64\get_signfloat.x64"
@@ -3156,19 +3332,71 @@
 						<FileConfiguration
 							Name="Debug|Win32"
 							ExcludedFromBuild="true"
-						/>
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
 						<FileConfiguration
 							Name="Internal|Win32"
 							ExcludedFromBuild="true"
-						/>
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
 						<FileConfiguration
 							Name="Release|Win32"
 							ExcludedFromBuild="true"
-						/>
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
 						<FileConfiguration
 							Name="Release_LTCG|Win32"
 							ExcludedFromBuild="true"
-						/>
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\source\asm\masm64\poweroftwo64.x64"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM64"
+							/>
+						</FileConfiguration>
 					</File>
 					<Filter
 						Name="vs2005_2008"
@@ -3179,19 +3407,35 @@
 							<FileConfiguration
 								Name="Debug|Win32"
 								ExcludedFromBuild="true"
-							/>
+								>
+								<Tool
+									Name="MASM64"
+								/>
+							</FileConfiguration>
 							<FileConfiguration
 								Name="Internal|Win32"
 								ExcludedFromBuild="true"
-							/>
+								>
+								<Tool
+									Name="MASM64"
+								/>
+							</FileConfiguration>
 							<FileConfiguration
 								Name="Release|Win32"
 								ExcludedFromBuild="true"
-							/>
+								>
+								<Tool
+									Name="MASM64"
+								/>
+							</FileConfiguration>
 							<FileConfiguration
 								Name="Release_LTCG|Win32"
 								ExcludedFromBuild="true"
-							/>
+								>
+								<Tool
+									Name="MASM64"
+								/>
+							</FileConfiguration>
 						</File>
 					</Filter>
 				</Filter>
@@ -6497,6 +6741,14 @@
 				</File>
 				<File
 					RelativePath="..\source\text\brstring16.h"
+					>
+				</File>
+				<File
+					RelativePath="..\source\text\brstring32.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\source\text\brstring32.h"
 					>
 				</File>
 				<File

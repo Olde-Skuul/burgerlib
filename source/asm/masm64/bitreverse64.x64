@@ -1,0 +1,39 @@
+;
+; X64 assembly for Visual Studio
+;
+; Copyright 1995-2025 by Rebecca Ann Heineman becky@burgerbecky.com
+;
+; Build with ml.exe
+;
+; uint64_t BURGER_API Burger::bit_reverse(uint64_t, uint_t) BURGER_NOEXCEPT
+; rax, rcx, rdx, r8-11 are volatile
+; uInput = rcx
+; Result in rax
+;
+
+_TEXT segment para 'CODE'
+
+	align 16
+public ?bit_reverse@Burger@@YA_K_KI@Z
+?bit_reverse@Burger@@YA_K_KI@Z proc
+
+; Initialize the result
+	xor		rax, rax
+
+; Shift out a bit
+BitReverse32:
+	shr		rcx, 1
+
+; Shift into the result
+	adc		rax, rax
+
+; Count down the iterator
+	dec		rdx
+	jne		BitReverse32
+	ret
+
+?bit_reverse@Burger@@YA_K_KI@Z endp
+
+_TEXT ends
+
+	end

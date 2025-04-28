@@ -3,28 +3,27 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="unittests"
-	ProjectGUID="{05792708-ACF4-314F-ABDC-FABD540C0E1A}"
+	ProjectGUID="{EB3DDBB0-8B3D-342D-A98C-7F7CF428923B}"
 	RootNamespace="unittests"
 	Keyword="Win32Proj">
 	<Platforms>
 		<Platform
-			Name="Win32"/>
+			Name="Xbox"/>
 	</Platforms>
 	<Configurations>
 		<Configuration
-			Name="Debug|Win32"
+			Name="Debug|Xbox"
 			OutputDirectory="$(ProjectDir)bin\"
-			IntermediateDirectory="$(ProjectDir)temp\unittestsvc7w32dbg\"
-			ConfigurationType="1"
-			CharacterSet="1">
+			IntermediateDirectory="$(ProjectDir)temp\unittestsvc7xbxdbg\"
+			ConfigurationType="1">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				FavorSizeOrSpeed="1"
 				OptimizeForProcessor="3"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm\vs2003;..\source\asm\masm\vs2003_2005;..\source\asm\masm\vs2003_2008;..\source\asm\masm\vs2003_2010;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\platforms\windows\vc7compat;..\source\random;..\source\text;..\unittest;..\sdks\windows\ddraw\Include;..\sdks\windows\dplay\Include;..\sdks\windows\opengl;..\sdks\steamworks\public\steam;$(DXSDK_DIR)\Include;C:\Program Files\Microsoft SDKs\Windows\v6.0A\Include"
-				PreprocessorDefinitions="_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;IDIRECTPLAY2_OR_GREATER;DIRECTDRAW_VERSION=0x700;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm\vs2003;..\source\asm\masm\vs2003_2005;..\source\asm\masm\vs2003_2008;..\source\asm\masm\vs2003_2010;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\random;..\source\text;..\unittest"
+				PreprocessorDefinitions="_DEBUG;_XBOX;_USE_XGMATH"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
 				BasicRuntimeChecks="3"
@@ -37,20 +36,17 @@
 				ProgramDataBaseFileName="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				WarningLevel="4"
 				DebugInformationFormat="1"
-				CallingConvention="1"
 				DisableSpecificWarnings="4201"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib WinMM.lib"
-				OutputFile="&quot;$(OutDir)unittestsvc7w32dbg.exe&quot;"
+				AdditionalDependencies="xboxkrnl.lib xperf.lib xbdm.lib xapilibd.lib d3d8d.lib d3dx8d.lib xgraphicsd.lib dsoundd.lib"
+				OutputFile="&quot;$(OutDir)unittestsvc7xbxdbg.exe&quot;"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				SubSystem="1"
 				OptimizeReferences="2"/>
-			<Tool
-				Name="VCMIDLTool"/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
@@ -58,25 +54,15 @@
 			<Tool
 				Name="VCPreLinkEventTool"/>
 			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"/>
+				Name="XboxDeploymentTool"/>
 			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
-				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+				Name="XboxImageTool"/>
 		</Configuration>
 		<Configuration
-			Name="Internal|Win32"
+			Name="Internal|Xbox"
 			OutputDirectory="$(ProjectDir)bin\"
-			IntermediateDirectory="$(ProjectDir)temp\unittestsvc7w32int\"
-			ConfigurationType="1"
-			CharacterSet="1">
+			IntermediateDirectory="$(ProjectDir)temp\unittestsvc7xbxint\"
+			ConfigurationType="1">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
@@ -88,8 +74,8 @@
 				EnableFiberSafeOptimizations="TRUE"
 				OptimizeForProcessor="3"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm\vs2003;..\source\asm\masm\vs2003_2005;..\source\asm\masm\vs2003_2008;..\source\asm\masm\vs2003_2010;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\platforms\windows\vc7compat;..\source\random;..\source\text;..\unittest;..\sdks\windows\ddraw\Include;..\sdks\windows\dplay\Include;..\sdks\windows\opengl;..\sdks\steamworks\public\steam;$(DXSDK_DIR)\Include;C:\Program Files\Microsoft SDKs\Windows\v6.0A\Include"
-				PreprocessorDefinitions="_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;IDIRECTPLAY2_OR_GREATER;DIRECTDRAW_VERSION=0x700;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm\vs2003;..\source\asm\masm\vs2003_2005;..\source\asm\masm\vs2003_2008;..\source\asm\masm\vs2003_2010;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\random;..\source\text;..\unittest"
+				PreprocessorDefinitions="_DEBUG;_XBOX;_USE_XGMATH"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
 				RuntimeLibrary="1"
@@ -101,21 +87,18 @@
 				ProgramDataBaseFileName="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				WarningLevel="4"
 				DebugInformationFormat="1"
-				CallingConvention="1"
 				DisableSpecificWarnings="4201"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib WinMM.lib"
-				OutputFile="&quot;$(OutDir)unittestsvc7w32int.exe&quot;"
+				AdditionalDependencies="xboxkrnl.lib xperf.lib xbdm.lib xapilibd.lib d3d8d.lib d3dx8d.lib xgraphicsd.lib dsoundd.lib"
+				OutputFile="&quot;$(OutDir)unittestsvc7xbxint.exe&quot;"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"/>
-			<Tool
-				Name="VCMIDLTool"/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
@@ -123,25 +106,15 @@
 			<Tool
 				Name="VCPreLinkEventTool"/>
 			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"/>
+				Name="XboxDeploymentTool"/>
 			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
-				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+				Name="XboxImageTool"/>
 		</Configuration>
 		<Configuration
-			Name="Release|Win32"
+			Name="Release|Xbox"
 			OutputDirectory="$(ProjectDir)bin\"
-			IntermediateDirectory="$(ProjectDir)temp\unittestsvc7w32rel\"
-			ConfigurationType="1"
-			CharacterSet="1">
+			IntermediateDirectory="$(ProjectDir)temp\unittestsvc7xbxrel\"
+			ConfigurationType="1">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
@@ -153,8 +126,8 @@
 				EnableFiberSafeOptimizations="TRUE"
 				OptimizeForProcessor="3"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm\vs2003;..\source\asm\masm\vs2003_2005;..\source\asm\masm\vs2003_2008;..\source\asm\masm\vs2003_2010;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\platforms\windows\vc7compat;..\source\random;..\source\text;..\unittest;..\sdks\windows\ddraw\Include;..\sdks\windows\dplay\Include;..\sdks\windows\opengl;..\sdks\steamworks\public\steam;$(DXSDK_DIR)\Include;C:\Program Files\Microsoft SDKs\Windows\v6.0A\Include"
-				PreprocessorDefinitions="NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;IDIRECTPLAY2_OR_GREATER;DIRECTDRAW_VERSION=0x700;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm\vs2003;..\source\asm\masm\vs2003_2005;..\source\asm\masm\vs2003_2008;..\source\asm\masm\vs2003_2010;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\random;..\source\text;..\unittest"
+				PreprocessorDefinitions="NDEBUG;_XBOX;_USE_XGMATH"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
 				RuntimeLibrary="0"
@@ -165,21 +138,18 @@
 				RuntimeTypeInfo="FALSE"
 				ProgramDataBaseFileName="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				WarningLevel="4"
-				CallingConvention="1"
 				DisableSpecificWarnings="4201"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib WinMM.lib"
-				OutputFile="&quot;$(OutDir)unittestsvc7w32rel.exe&quot;"
+				AdditionalDependencies="xboxkrnl.lib xapilib.lib d3d8.lib d3dx8.lib xgraphics.lib dsound.lib"
+				OutputFile="&quot;$(OutDir)unittestsvc7xbxrel.exe&quot;"
 				GenerateDebugInformation="FALSE"
 				ProgramDatabaseFile="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"/>
-			<Tool
-				Name="VCMIDLTool"/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
@@ -187,25 +157,15 @@
 			<Tool
 				Name="VCPreLinkEventTool"/>
 			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"/>
+				Name="XboxDeploymentTool"/>
 			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
-				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+				Name="XboxImageTool"/>
 		</Configuration>
 		<Configuration
-			Name="Release_LTCG|Win32"
+			Name="Release_LTCG|Xbox"
 			OutputDirectory="$(ProjectDir)bin\"
-			IntermediateDirectory="$(ProjectDir)temp\unittestsvc7w32ltc\"
+			IntermediateDirectory="$(ProjectDir)temp\unittestsvc7xbxltc\"
 			ConfigurationType="1"
-			CharacterSet="1"
 			WholeProgramOptimization="TRUE">
 			<Tool
 				Name="VCCLCompilerTool"
@@ -218,8 +178,8 @@
 				EnableFiberSafeOptimizations="TRUE"
 				OptimizeForProcessor="3"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm\vs2003;..\source\asm\masm\vs2003_2005;..\source\asm\masm\vs2003_2008;..\source\asm\masm\vs2003_2010;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\platforms\windows\vc7compat;..\source\random;..\source\text;..\unittest;..\sdks\windows\ddraw\Include;..\sdks\windows\dplay\Include;..\sdks\windows\opengl;..\sdks\steamworks\public\steam;$(DXSDK_DIR)\Include;C:\Program Files\Microsoft SDKs\Windows\v6.0A\Include"
-				PreprocessorDefinitions="NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;IDIRECTPLAY2_OR_GREATER;DIRECTDRAW_VERSION=0x700;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm\vs2003;..\source\asm\masm\vs2003_2005;..\source\asm\masm\vs2003_2008;..\source\asm\masm\vs2003_2010;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\random;..\source\text;..\unittest"
+				PreprocessorDefinitions="NDEBUG;_XBOX;_USE_XGMATH"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
 				RuntimeLibrary="0"
@@ -230,21 +190,18 @@
 				RuntimeTypeInfo="FALSE"
 				ProgramDataBaseFileName="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				WarningLevel="4"
-				CallingConvention="1"
 				DisableSpecificWarnings="4201"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib WinMM.lib"
-				OutputFile="&quot;$(OutDir)unittestsvc7w32ltc.exe&quot;"
+				AdditionalDependencies="xboxkrnl.lib xapilib.lib d3d8ltcg.lib d3dx8.lib xgraphicsltcg.lib dsound.lib"
+				OutputFile="&quot;$(OutDir)unittestsvc7xbxltc.exe&quot;"
 				GenerateDebugInformation="FALSE"
 				ProgramDatabaseFile="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"/>
-			<Tool
-				Name="VCMIDLTool"/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
@@ -252,18 +209,9 @@
 			<Tool
 				Name="VCPreLinkEventTool"/>
 			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"/>
+				Name="XboxDeploymentTool"/>
 			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
-				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+				Name="XboxImageTool"/>
 		</Configuration>
 	</Configurations>
 	<References>
@@ -323,7 +271,7 @@
 					<File
 						RelativePath="..\source\asm\masm\bitreverse32.x86">
 						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling bitreverse32.x86..."
@@ -332,7 +280,7 @@
 								Outputs="$(IntDir)bitreverse32.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Internal|Win32">
+							Name="Internal|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling bitreverse32.x86..."
@@ -341,7 +289,7 @@
 								Outputs="$(IntDir)bitreverse32.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Win32">
+							Name="Release|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling bitreverse32.x86..."
@@ -350,7 +298,7 @@
 								Outputs="$(IntDir)bitreverse32.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Win32">
+							Name="Release_LTCG|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling bitreverse32.x86..."
@@ -362,7 +310,7 @@
 					<File
 						RelativePath="..\source\asm\masm\bitreverse64.x86">
 						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling bitreverse64.x86..."
@@ -371,7 +319,7 @@
 								Outputs="$(IntDir)bitreverse64.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Internal|Win32">
+							Name="Internal|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling bitreverse64.x86..."
@@ -380,7 +328,7 @@
 								Outputs="$(IntDir)bitreverse64.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Win32">
+							Name="Release|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling bitreverse64.x86..."
@@ -389,7 +337,7 @@
 								Outputs="$(IntDir)bitreverse64.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Win32">
+							Name="Release_LTCG|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling bitreverse64.x86..."
@@ -401,7 +349,7 @@
 					<File
 						RelativePath="..\source\asm\masm\floattofixedceil.x86">
 						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedceil.x86..."
@@ -410,7 +358,7 @@
 								Outputs="$(IntDir)floattofixedceil.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Internal|Win32">
+							Name="Internal|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedceil.x86..."
@@ -419,7 +367,7 @@
 								Outputs="$(IntDir)floattofixedceil.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Win32">
+							Name="Release|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedceil.x86..."
@@ -428,7 +376,7 @@
 								Outputs="$(IntDir)floattofixedceil.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Win32">
+							Name="Release_LTCG|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedceil.x86..."
@@ -440,7 +388,7 @@
 					<File
 						RelativePath="..\source\asm\masm\floattofixedceilptr.x86">
 						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedceilptr.x86..."
@@ -449,7 +397,7 @@
 								Outputs="$(IntDir)floattofixedceilptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Internal|Win32">
+							Name="Internal|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedceilptr.x86..."
@@ -458,7 +406,7 @@
 								Outputs="$(IntDir)floattofixedceilptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Win32">
+							Name="Release|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedceilptr.x86..."
@@ -467,7 +415,7 @@
 								Outputs="$(IntDir)floattofixedceilptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Win32">
+							Name="Release_LTCG|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedceilptr.x86..."
@@ -479,7 +427,7 @@
 					<File
 						RelativePath="..\source\asm\masm\floattofixedfloor.x86">
 						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedfloor.x86..."
@@ -488,7 +436,7 @@
 								Outputs="$(IntDir)floattofixedfloor.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Internal|Win32">
+							Name="Internal|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedfloor.x86..."
@@ -497,7 +445,7 @@
 								Outputs="$(IntDir)floattofixedfloor.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Win32">
+							Name="Release|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedfloor.x86..."
@@ -506,7 +454,7 @@
 								Outputs="$(IntDir)floattofixedfloor.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Win32">
+							Name="Release_LTCG|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedfloor.x86..."
@@ -518,7 +466,7 @@
 					<File
 						RelativePath="..\source\asm\masm\floattofixedfloorptr.x86">
 						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedfloorptr.x86..."
@@ -527,7 +475,7 @@
 								Outputs="$(IntDir)floattofixedfloorptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Internal|Win32">
+							Name="Internal|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedfloorptr.x86..."
@@ -536,7 +484,7 @@
 								Outputs="$(IntDir)floattofixedfloorptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Win32">
+							Name="Release|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedfloorptr.x86..."
@@ -545,7 +493,7 @@
 								Outputs="$(IntDir)floattofixedfloorptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Win32">
+							Name="Release_LTCG|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedfloorptr.x86..."
@@ -557,7 +505,7 @@
 					<File
 						RelativePath="..\source\asm\masm\floattofixedround.x86">
 						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedround.x86..."
@@ -566,7 +514,7 @@
 								Outputs="$(IntDir)floattofixedround.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Internal|Win32">
+							Name="Internal|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedround.x86..."
@@ -575,7 +523,7 @@
 								Outputs="$(IntDir)floattofixedround.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Win32">
+							Name="Release|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedround.x86..."
@@ -584,7 +532,7 @@
 								Outputs="$(IntDir)floattofixedround.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Win32">
+							Name="Release_LTCG|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedround.x86..."
@@ -596,7 +544,7 @@
 					<File
 						RelativePath="..\source\asm\masm\floattofixedroundptr.x86">
 						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedroundptr.x86..."
@@ -605,7 +553,7 @@
 								Outputs="$(IntDir)floattofixedroundptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Internal|Win32">
+							Name="Internal|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedroundptr.x86..."
@@ -614,7 +562,7 @@
 								Outputs="$(IntDir)floattofixedroundptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Win32">
+							Name="Release|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedroundptr.x86..."
@@ -623,7 +571,7 @@
 								Outputs="$(IntDir)floattofixedroundptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Win32">
+							Name="Release_LTCG|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattofixedroundptr.x86..."
@@ -635,7 +583,7 @@
 					<File
 						RelativePath="..\source\asm\masm\floattointceil.x86">
 						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointceil.x86..."
@@ -644,7 +592,7 @@
 								Outputs="$(IntDir)floattointceil.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Internal|Win32">
+							Name="Internal|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointceil.x86..."
@@ -653,7 +601,7 @@
 								Outputs="$(IntDir)floattointceil.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Win32">
+							Name="Release|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointceil.x86..."
@@ -662,7 +610,7 @@
 								Outputs="$(IntDir)floattointceil.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Win32">
+							Name="Release_LTCG|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointceil.x86..."
@@ -674,7 +622,7 @@
 					<File
 						RelativePath="..\source\asm\masm\floattointceilptr.x86">
 						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointceilptr.x86..."
@@ -683,7 +631,7 @@
 								Outputs="$(IntDir)floattointceilptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Internal|Win32">
+							Name="Internal|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointceilptr.x86..."
@@ -692,7 +640,7 @@
 								Outputs="$(IntDir)floattointceilptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Win32">
+							Name="Release|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointceilptr.x86..."
@@ -701,7 +649,7 @@
 								Outputs="$(IntDir)floattointceilptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Win32">
+							Name="Release_LTCG|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointceilptr.x86..."
@@ -713,7 +661,7 @@
 					<File
 						RelativePath="..\source\asm\masm\floattointfloor.x86">
 						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointfloor.x86..."
@@ -722,7 +670,7 @@
 								Outputs="$(IntDir)floattointfloor.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Internal|Win32">
+							Name="Internal|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointfloor.x86..."
@@ -731,7 +679,7 @@
 								Outputs="$(IntDir)floattointfloor.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Win32">
+							Name="Release|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointfloor.x86..."
@@ -740,7 +688,7 @@
 								Outputs="$(IntDir)floattointfloor.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Win32">
+							Name="Release_LTCG|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointfloor.x86..."
@@ -752,7 +700,7 @@
 					<File
 						RelativePath="..\source\asm\masm\floattointfloorptr.x86">
 						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointfloorptr.x86..."
@@ -761,7 +709,7 @@
 								Outputs="$(IntDir)floattointfloorptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Internal|Win32">
+							Name="Internal|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointfloorptr.x86..."
@@ -770,7 +718,7 @@
 								Outputs="$(IntDir)floattointfloorptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Win32">
+							Name="Release|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointfloorptr.x86..."
@@ -779,7 +727,7 @@
 								Outputs="$(IntDir)floattointfloorptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Win32">
+							Name="Release_LTCG|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointfloorptr.x86..."
@@ -791,7 +739,7 @@
 					<File
 						RelativePath="..\source\asm\masm\floattointround.x86">
 						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointround.x86..."
@@ -800,7 +748,7 @@
 								Outputs="$(IntDir)floattointround.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Internal|Win32">
+							Name="Internal|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointround.x86..."
@@ -809,7 +757,7 @@
 								Outputs="$(IntDir)floattointround.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Win32">
+							Name="Release|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointround.x86..."
@@ -818,7 +766,7 @@
 								Outputs="$(IntDir)floattointround.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Win32">
+							Name="Release_LTCG|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointround.x86..."
@@ -830,7 +778,7 @@
 					<File
 						RelativePath="..\source\asm\masm\floattointroundptr.x86">
 						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointroundptr.x86..."
@@ -839,7 +787,7 @@
 								Outputs="$(IntDir)floattointroundptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Internal|Win32">
+							Name="Internal|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointroundptr.x86..."
@@ -848,7 +796,7 @@
 								Outputs="$(IntDir)floattointroundptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Win32">
+							Name="Release|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointroundptr.x86..."
@@ -857,7 +805,7 @@
 								Outputs="$(IntDir)floattointroundptr.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Win32">
+							Name="Release_LTCG|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling floattointroundptr.x86..."
@@ -869,7 +817,7 @@
 					<File
 						RelativePath="..\source\asm\masm\get8087precision.x86">
 						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get8087precision.x86..."
@@ -878,7 +826,7 @@
 								Outputs="$(IntDir)get8087precision.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Internal|Win32">
+							Name="Internal|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get8087precision.x86..."
@@ -887,7 +835,7 @@
 								Outputs="$(IntDir)get8087precision.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Win32">
+							Name="Release|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get8087precision.x86..."
@@ -896,7 +844,7 @@
 								Outputs="$(IntDir)get8087precision.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Win32">
+							Name="Release_LTCG|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get8087precision.x86..."
@@ -908,7 +856,7 @@
 					<File
 						RelativePath="..\source\asm\masm\get8087rounding.x86">
 						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get8087rounding.x86..."
@@ -917,7 +865,7 @@
 								Outputs="$(IntDir)get8087rounding.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Internal|Win32">
+							Name="Internal|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get8087rounding.x86..."
@@ -926,7 +874,7 @@
 								Outputs="$(IntDir)get8087rounding.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Win32">
+							Name="Release|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get8087rounding.x86..."
@@ -935,7 +883,7 @@
 								Outputs="$(IntDir)get8087rounding.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Win32">
+							Name="Release_LTCG|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get8087rounding.x86..."
@@ -947,7 +895,7 @@
 					<File
 						RelativePath="..\source\asm\masm\get_ceilingdouble.x86">
 						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_ceilingdouble.x86..."
@@ -956,7 +904,7 @@
 								Outputs="$(IntDir)get_ceilingdouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Internal|Win32">
+							Name="Internal|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_ceilingdouble.x86..."
@@ -965,7 +913,7 @@
 								Outputs="$(IntDir)get_ceilingdouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Win32">
+							Name="Release|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_ceilingdouble.x86..."
@@ -974,7 +922,7 @@
 								Outputs="$(IntDir)get_ceilingdouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Win32">
+							Name="Release_LTCG|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_ceilingdouble.x86..."
@@ -986,7 +934,7 @@
 					<File
 						RelativePath="..\source\asm\masm\get_ceilingfloat.x86">
 						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_ceilingfloat.x86..."
@@ -995,7 +943,7 @@
 								Outputs="$(IntDir)get_ceilingfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Internal|Win32">
+							Name="Internal|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_ceilingfloat.x86..."
@@ -1004,7 +952,7 @@
 								Outputs="$(IntDir)get_ceilingfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Win32">
+							Name="Release|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_ceilingfloat.x86..."
@@ -1013,7 +961,7 @@
 								Outputs="$(IntDir)get_ceilingfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Win32">
+							Name="Release_LTCG|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_ceilingfloat.x86..."
@@ -1025,7 +973,7 @@
 					<File
 						RelativePath="..\source\asm\masm\get_floordouble.x86">
 						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_floordouble.x86..."
@@ -1034,7 +982,7 @@
 								Outputs="$(IntDir)get_floordouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Internal|Win32">
+							Name="Internal|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_floordouble.x86..."
@@ -1043,7 +991,7 @@
 								Outputs="$(IntDir)get_floordouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Win32">
+							Name="Release|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_floordouble.x86..."
@@ -1052,7 +1000,7 @@
 								Outputs="$(IntDir)get_floordouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Win32">
+							Name="Release_LTCG|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_floordouble.x86..."
@@ -1064,7 +1012,7 @@
 					<File
 						RelativePath="..\source\asm\masm\get_floorfloat.x86">
 						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_floorfloat.x86..."
@@ -1073,7 +1021,7 @@
 								Outputs="$(IntDir)get_floorfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Internal|Win32">
+							Name="Internal|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_floorfloat.x86..."
@@ -1082,7 +1030,7 @@
 								Outputs="$(IntDir)get_floorfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Win32">
+							Name="Release|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_floorfloat.x86..."
@@ -1091,7 +1039,7 @@
 								Outputs="$(IntDir)get_floorfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Win32">
+							Name="Release_LTCG|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_floorfloat.x86..."
@@ -1103,7 +1051,7 @@
 					<File
 						RelativePath="..\source\asm\masm\get_rounddouble.x86">
 						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_rounddouble.x86..."
@@ -1112,7 +1060,7 @@
 								Outputs="$(IntDir)get_rounddouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Internal|Win32">
+							Name="Internal|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_rounddouble.x86..."
@@ -1121,7 +1069,7 @@
 								Outputs="$(IntDir)get_rounddouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Win32">
+							Name="Release|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_rounddouble.x86..."
@@ -1130,7 +1078,7 @@
 								Outputs="$(IntDir)get_rounddouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Win32">
+							Name="Release_LTCG|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_rounddouble.x86..."
@@ -1142,7 +1090,7 @@
 					<File
 						RelativePath="..\source\asm\masm\get_roundfloat.x86">
 						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_roundfloat.x86..."
@@ -1151,7 +1099,7 @@
 								Outputs="$(IntDir)get_roundfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Internal|Win32">
+							Name="Internal|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_roundfloat.x86..."
@@ -1160,7 +1108,7 @@
 								Outputs="$(IntDir)get_roundfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Win32">
+							Name="Release|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_roundfloat.x86..."
@@ -1169,7 +1117,7 @@
 								Outputs="$(IntDir)get_roundfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Win32">
+							Name="Release_LTCG|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_roundfloat.x86..."
@@ -1181,7 +1129,7 @@
 					<File
 						RelativePath="..\source\asm\masm\get_signdouble.x86">
 						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_signdouble.x86..."
@@ -1190,7 +1138,7 @@
 								Outputs="$(IntDir)get_signdouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Internal|Win32">
+							Name="Internal|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_signdouble.x86..."
@@ -1199,7 +1147,7 @@
 								Outputs="$(IntDir)get_signdouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Win32">
+							Name="Release|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_signdouble.x86..."
@@ -1208,7 +1156,7 @@
 								Outputs="$(IntDir)get_signdouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Win32">
+							Name="Release_LTCG|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_signdouble.x86..."
@@ -1220,7 +1168,7 @@
 					<File
 						RelativePath="..\source\asm\masm\get_signfloat.x86">
 						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_signfloat.x86..."
@@ -1229,7 +1177,7 @@
 								Outputs="$(IntDir)get_signfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Internal|Win32">
+							Name="Internal|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_signfloat.x86..."
@@ -1238,7 +1186,7 @@
 								Outputs="$(IntDir)get_signfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Win32">
+							Name="Release|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_signfloat.x86..."
@@ -1247,7 +1195,7 @@
 								Outputs="$(IntDir)get_signfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Win32">
+							Name="Release_LTCG|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling get_signfloat.x86..."
@@ -1259,7 +1207,7 @@
 					<File
 						RelativePath="..\source\asm\masm\has_cpuid.x86">
 						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling has_cpuid.x86..."
@@ -1268,7 +1216,7 @@
 								Outputs="$(IntDir)has_cpuid.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Internal|Win32">
+							Name="Internal|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling has_cpuid.x86..."
@@ -1277,7 +1225,7 @@
 								Outputs="$(IntDir)has_cpuid.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Win32">
+							Name="Release|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling has_cpuid.x86..."
@@ -1286,7 +1234,7 @@
 								Outputs="$(IntDir)has_cpuid.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Win32">
+							Name="Release_LTCG|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling has_cpuid.x86..."
@@ -1298,7 +1246,7 @@
 					<File
 						RelativePath="..\source\asm\masm\modulo_radiansdouble.x86">
 						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling modulo_radiansdouble.x86..."
@@ -1307,7 +1255,7 @@
 								Outputs="$(IntDir)modulo_radiansdouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Internal|Win32">
+							Name="Internal|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling modulo_radiansdouble.x86..."
@@ -1316,7 +1264,7 @@
 								Outputs="$(IntDir)modulo_radiansdouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Win32">
+							Name="Release|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling modulo_radiansdouble.x86..."
@@ -1325,7 +1273,7 @@
 								Outputs="$(IntDir)modulo_radiansdouble.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Win32">
+							Name="Release_LTCG|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling modulo_radiansdouble.x86..."
@@ -1337,7 +1285,7 @@
 					<File
 						RelativePath="..\source\asm\masm\modulo_radiansfloat.x86">
 						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling modulo_radiansfloat.x86..."
@@ -1346,7 +1294,7 @@
 								Outputs="$(IntDir)modulo_radiansfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Internal|Win32">
+							Name="Internal|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling modulo_radiansfloat.x86..."
@@ -1355,7 +1303,7 @@
 								Outputs="$(IntDir)modulo_radiansfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Win32">
+							Name="Release|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling modulo_radiansfloat.x86..."
@@ -1364,7 +1312,7 @@
 								Outputs="$(IntDir)modulo_radiansfloat.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Win32">
+							Name="Release_LTCG|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling modulo_radiansfloat.x86..."
@@ -1376,7 +1324,7 @@
 					<File
 						RelativePath="..\source\asm\masm\poweroftwo32.x86">
 						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling poweroftwo32.x86..."
@@ -1385,7 +1333,7 @@
 								Outputs="$(IntDir)poweroftwo32.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Internal|Win32">
+							Name="Internal|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling poweroftwo32.x86..."
@@ -1394,7 +1342,7 @@
 								Outputs="$(IntDir)poweroftwo32.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Win32">
+							Name="Release|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling poweroftwo32.x86..."
@@ -1403,7 +1351,7 @@
 								Outputs="$(IntDir)poweroftwo32.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Win32">
+							Name="Release_LTCG|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling poweroftwo32.x86..."
@@ -1415,7 +1363,7 @@
 					<File
 						RelativePath="..\source\asm\masm\poweroftwo64.x86">
 						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling poweroftwo64.x86..."
@@ -1424,7 +1372,7 @@
 								Outputs="$(IntDir)poweroftwo64.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Internal|Win32">
+							Name="Internal|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling poweroftwo64.x86..."
@@ -1433,7 +1381,7 @@
 								Outputs="$(IntDir)poweroftwo64.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Win32">
+							Name="Release|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling poweroftwo64.x86..."
@@ -1442,7 +1390,7 @@
 								Outputs="$(IntDir)poweroftwo64.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Win32">
+							Name="Release_LTCG|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling poweroftwo64.x86..."
@@ -1454,7 +1402,7 @@
 					<File
 						RelativePath="..\source\asm\masm\set8087precision.x86">
 						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling set8087precision.x86..."
@@ -1463,7 +1411,7 @@
 								Outputs="$(IntDir)set8087precision.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Internal|Win32">
+							Name="Internal|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling set8087precision.x86..."
@@ -1472,7 +1420,7 @@
 								Outputs="$(IntDir)set8087precision.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Win32">
+							Name="Release|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling set8087precision.x86..."
@@ -1481,7 +1429,7 @@
 								Outputs="$(IntDir)set8087precision.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Win32">
+							Name="Release_LTCG|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling set8087precision.x86..."
@@ -1493,7 +1441,7 @@
 					<File
 						RelativePath="..\source\asm\masm\set8087rounding.x86">
 						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling set8087rounding.x86..."
@@ -1502,7 +1450,7 @@
 								Outputs="$(IntDir)set8087rounding.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Internal|Win32">
+							Name="Internal|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling set8087rounding.x86..."
@@ -1511,7 +1459,7 @@
 								Outputs="$(IntDir)set8087rounding.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Win32">
+							Name="Release|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling set8087rounding.x86..."
@@ -1520,7 +1468,7 @@
 								Outputs="$(IntDir)set8087rounding.obj"/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release_LTCG|Win32">
+							Name="Release_LTCG|Xbox">
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Assembling set8087rounding.x86..."
@@ -1534,7 +1482,7 @@
 						<File
 							RelativePath="..\source\asm\masm\vs2003\cpuid.x86">
 							<FileConfiguration
-								Name="Debug|Win32">
+								Name="Debug|Xbox">
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling cpuid.x86..."
@@ -1543,7 +1491,7 @@
 									Outputs="$(IntDir)cpuid.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
-								Name="Internal|Win32">
+								Name="Internal|Xbox">
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling cpuid.x86..."
@@ -1552,7 +1500,7 @@
 									Outputs="$(IntDir)cpuid.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
-								Name="Release|Win32">
+								Name="Release|Xbox">
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling cpuid.x86..."
@@ -1561,7 +1509,7 @@
 									Outputs="$(IntDir)cpuid.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
-								Name="Release_LTCG|Win32">
+								Name="Release_LTCG|Xbox">
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling cpuid.x86..."
@@ -1573,7 +1521,7 @@
 						<File
 							RelativePath="..\source\asm\masm\vs2003\swapendian64.x86">
 							<FileConfiguration
-								Name="Debug|Win32">
+								Name="Debug|Xbox">
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendian64.x86..."
@@ -1582,7 +1530,7 @@
 									Outputs="$(IntDir)swapendian64.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
-								Name="Internal|Win32">
+								Name="Internal|Xbox">
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendian64.x86..."
@@ -1591,7 +1539,7 @@
 									Outputs="$(IntDir)swapendian64.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
-								Name="Release|Win32">
+								Name="Release|Xbox">
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendian64.x86..."
@@ -1600,7 +1548,7 @@
 									Outputs="$(IntDir)swapendian64.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
-								Name="Release_LTCG|Win32">
+								Name="Release_LTCG|Xbox">
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendian64.x86..."
@@ -1615,7 +1563,7 @@
 						<File
 							RelativePath="..\source\asm\masm\vs2003_2005\cpuidex.x86">
 							<FileConfiguration
-								Name="Debug|Win32">
+								Name="Debug|Xbox">
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling cpuidex.x86..."
@@ -1624,7 +1572,7 @@
 									Outputs="$(IntDir)cpuidex.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
-								Name="Internal|Win32">
+								Name="Internal|Xbox">
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling cpuidex.x86..."
@@ -1633,7 +1581,7 @@
 									Outputs="$(IntDir)cpuidex.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
-								Name="Release|Win32">
+								Name="Release|Xbox">
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling cpuidex.x86..."
@@ -1642,7 +1590,7 @@
 									Outputs="$(IntDir)cpuidex.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
-								Name="Release_LTCG|Win32">
+								Name="Release_LTCG|Xbox">
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling cpuidex.x86..."
@@ -1657,7 +1605,7 @@
 						<File
 							RelativePath="..\source\asm\masm\vs2003_2008\xgetbv.x86">
 							<FileConfiguration
-								Name="Debug|Win32">
+								Name="Debug|Xbox">
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling xgetbv.x86..."
@@ -1666,7 +1614,7 @@
 									Outputs="$(IntDir)xgetbv.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
-								Name="Internal|Win32">
+								Name="Internal|Xbox">
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling xgetbv.x86..."
@@ -1675,7 +1623,7 @@
 									Outputs="$(IntDir)xgetbv.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
-								Name="Release|Win32">
+								Name="Release|Xbox">
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling xgetbv.x86..."
@@ -1684,7 +1632,7 @@
 									Outputs="$(IntDir)xgetbv.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
-								Name="Release_LTCG|Win32">
+								Name="Release_LTCG|Xbox">
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling xgetbv.x86..."
@@ -1699,7 +1647,7 @@
 						<File
 							RelativePath="..\source\asm\masm\vs2003_2010\swapendiandouble.x86">
 							<FileConfiguration
-								Name="Debug|Win32">
+								Name="Debug|Xbox">
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendiandouble.x86..."
@@ -1708,7 +1656,7 @@
 									Outputs="$(IntDir)swapendiandouble.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
-								Name="Internal|Win32">
+								Name="Internal|Xbox">
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendiandouble.x86..."
@@ -1717,7 +1665,7 @@
 									Outputs="$(IntDir)swapendiandouble.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
-								Name="Release|Win32">
+								Name="Release|Xbox">
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendiandouble.x86..."
@@ -1726,7 +1674,7 @@
 									Outputs="$(IntDir)swapendiandouble.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
-								Name="Release_LTCG|Win32">
+								Name="Release_LTCG|Xbox">
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendiandouble.x86..."
@@ -1738,7 +1686,7 @@
 						<File
 							RelativePath="..\source\asm\masm\vs2003_2010\swapendiandoubleptr.x86">
 							<FileConfiguration
-								Name="Debug|Win32">
+								Name="Debug|Xbox">
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendiandoubleptr.x86..."
@@ -1747,7 +1695,7 @@
 									Outputs="$(IntDir)swapendiandoubleptr.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
-								Name="Internal|Win32">
+								Name="Internal|Xbox">
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendiandoubleptr.x86..."
@@ -1756,7 +1704,7 @@
 									Outputs="$(IntDir)swapendiandoubleptr.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
-								Name="Release|Win32">
+								Name="Release|Xbox">
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendiandoubleptr.x86..."
@@ -1765,7 +1713,7 @@
 									Outputs="$(IntDir)swapendiandoubleptr.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
-								Name="Release_LTCG|Win32">
+								Name="Release_LTCG|Xbox">
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendiandoubleptr.x86..."
@@ -1777,7 +1725,7 @@
 						<File
 							RelativePath="..\source\asm\masm\vs2003_2010\swapendianfloat.x86">
 							<FileConfiguration
-								Name="Debug|Win32">
+								Name="Debug|Xbox">
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendianfloat.x86..."
@@ -1786,7 +1734,7 @@
 									Outputs="$(IntDir)swapendianfloat.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
-								Name="Internal|Win32">
+								Name="Internal|Xbox">
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendianfloat.x86..."
@@ -1795,7 +1743,7 @@
 									Outputs="$(IntDir)swapendianfloat.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
-								Name="Release|Win32">
+								Name="Release|Xbox">
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendianfloat.x86..."
@@ -1804,7 +1752,7 @@
 									Outputs="$(IntDir)swapendianfloat.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
-								Name="Release_LTCG|Win32">
+								Name="Release_LTCG|Xbox">
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendianfloat.x86..."
@@ -1816,7 +1764,7 @@
 						<File
 							RelativePath="..\source\asm\masm\vs2003_2010\swapendianfloatptr.x86">
 							<FileConfiguration
-								Name="Debug|Win32">
+								Name="Debug|Xbox">
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendianfloatptr.x86..."
@@ -1825,7 +1773,7 @@
 									Outputs="$(IntDir)swapendianfloatptr.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
-								Name="Internal|Win32">
+								Name="Internal|Xbox">
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendianfloatptr.x86..."
@@ -1834,7 +1782,7 @@
 									Outputs="$(IntDir)swapendianfloatptr.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
-								Name="Release|Win32">
+								Name="Release|Xbox">
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendianfloatptr.x86..."
@@ -1843,7 +1791,7 @@
 									Outputs="$(IntDir)swapendianfloatptr.obj"/>
 							</FileConfiguration>
 							<FileConfiguration
-								Name="Release_LTCG|Win32">
+								Name="Release_LTCG|Xbox">
 								<Tool
 									Name="VCCustomBuildTool"
 									Description="Assembling swapendianfloatptr.x86..."
@@ -2460,699 +2408,6 @@
 						RelativePath="..\source\graphics\shaders\brshader2dcolorvertex.h">
 					</File>
 				</Filter>
-				<Filter
-					Name="shadersdx9">
-					<File
-						RelativePath="..\source\graphics\shadersdx9\pscclr4dx9.hlsl">
-						<FileConfiguration
-							Name="Debug|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc pscclr4dx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pscclr4dx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pscclr4dx9.h&quot; /Vng_pscclr4dx9
-"
-								Outputs="../source/graphics/shadersdx9/Generated/pscclr4dx9.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Internal|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc pscclr4dx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pscclr4dx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pscclr4dx9.h&quot; /Vng_pscclr4dx9
-"
-								Outputs="../source/graphics/shadersdx9/Generated/pscclr4dx9.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc pscclr4dx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pscclr4dx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pscclr4dx9.h&quot; /Vng_pscclr4dx9
-"
-								Outputs="../source/graphics/shadersdx9/Generated/pscclr4dx9.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release_LTCG|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc pscclr4dx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pscclr4dx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pscclr4dx9.h&quot; /Vng_pscclr4dx9
-"
-								Outputs="../source/graphics/shadersdx9/Generated/pscclr4dx9.h"/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\source\graphics\shadersdx9\pstex2clr4dx9.hlsl">
-						<FileConfiguration
-							Name="Debug|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc pstex2clr4dx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstex2clr4dx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstex2clr4dx9.h&quot; /Vng_pstex2clr4dx9
-"
-								Outputs="../source/graphics/shadersdx9/Generated/pstex2clr4dx9.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Internal|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc pstex2clr4dx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstex2clr4dx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstex2clr4dx9.h&quot; /Vng_pstex2clr4dx9
-"
-								Outputs="../source/graphics/shadersdx9/Generated/pstex2clr4dx9.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc pstex2clr4dx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstex2clr4dx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstex2clr4dx9.h&quot; /Vng_pstex2clr4dx9
-"
-								Outputs="../source/graphics/shadersdx9/Generated/pstex2clr4dx9.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release_LTCG|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc pstex2clr4dx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstex2clr4dx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstex2clr4dx9.h&quot; /Vng_pstex2clr4dx9
-"
-								Outputs="../source/graphics/shadersdx9/Generated/pstex2clr4dx9.h"/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\source\graphics\shadersdx9\pstexturecolordx9.hlsl">
-						<FileConfiguration
-							Name="Debug|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc pstexturecolordx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstexturecolordx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstexturecolordx9.h&quot; /Vng_pstexturecolordx9
-"
-								Outputs="../source/graphics/shadersdx9/Generated/pstexturecolordx9.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Internal|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc pstexturecolordx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstexturecolordx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstexturecolordx9.h&quot; /Vng_pstexturecolordx9
-"
-								Outputs="../source/graphics/shadersdx9/Generated/pstexturecolordx9.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc pstexturecolordx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstexturecolordx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstexturecolordx9.h&quot; /Vng_pstexturecolordx9
-"
-								Outputs="../source/graphics/shadersdx9/Generated/pstexturecolordx9.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release_LTCG|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc pstexturecolordx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstexturecolordx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstexturecolordx9.h&quot; /Vng_pstexturecolordx9
-"
-								Outputs="../source/graphics/shadersdx9/Generated/pstexturecolordx9.h"/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\source\graphics\shadersdx9\pstexturedx9.hlsl">
-						<FileConfiguration
-							Name="Debug|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc pstexturedx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstexturedx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstexturedx9.h&quot; /Vng_pstexturedx9
-"
-								Outputs="../source/graphics/shadersdx9/Generated/pstexturedx9.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Internal|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc pstexturedx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstexturedx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstexturedx9.h&quot; /Vng_pstexturedx9
-"
-								Outputs="../source/graphics/shadersdx9/Generated/pstexturedx9.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc pstexturedx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstexturedx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstexturedx9.h&quot; /Vng_pstexturedx9
-"
-								Outputs="../source/graphics/shadersdx9/Generated/pstexturedx9.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release_LTCG|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc pstexturedx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/pstexturedx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\pstexturedx9.h&quot; /Vng_pstexturedx9
-"
-								Outputs="../source/graphics/shadersdx9/Generated/pstexturedx9.h"/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\source\graphics\shadersdx9\vs20pos22ddx9.hlsl">
-						<FileConfiguration
-							Name="Debug|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc vs20pos22ddx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20pos22ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20pos22ddx9.h&quot; /Vng_vs20pos22ddx9
-"
-								Outputs="../source/graphics/shadersdx9/Generated/vs20pos22ddx9.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Internal|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc vs20pos22ddx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20pos22ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20pos22ddx9.h&quot; /Vng_vs20pos22ddx9
-"
-								Outputs="../source/graphics/shadersdx9/Generated/vs20pos22ddx9.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc vs20pos22ddx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20pos22ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20pos22ddx9.h&quot; /Vng_vs20pos22ddx9
-"
-								Outputs="../source/graphics/shadersdx9/Generated/vs20pos22ddx9.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release_LTCG|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc vs20pos22ddx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20pos22ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20pos22ddx9.h&quot; /Vng_vs20pos22ddx9
-"
-								Outputs="../source/graphics/shadersdx9/Generated/vs20pos22ddx9.h"/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\source\graphics\shadersdx9\vs20pos2tex2clr42ddx9.hlsl">
-						<FileConfiguration
-							Name="Debug|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc vs20pos2tex2clr42ddx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20pos2tex2clr42ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20pos2tex2clr42ddx9.h&quot; /Vng_vs20pos2tex2clr42ddx9
-"
-								Outputs="../source/graphics/shadersdx9/Generated/vs20pos2tex2clr42ddx9.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Internal|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc vs20pos2tex2clr42ddx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20pos2tex2clr42ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20pos2tex2clr42ddx9.h&quot; /Vng_vs20pos2tex2clr42ddx9
-"
-								Outputs="../source/graphics/shadersdx9/Generated/vs20pos2tex2clr42ddx9.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc vs20pos2tex2clr42ddx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20pos2tex2clr42ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20pos2tex2clr42ddx9.h&quot; /Vng_vs20pos2tex2clr42ddx9
-"
-								Outputs="../source/graphics/shadersdx9/Generated/vs20pos2tex2clr42ddx9.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release_LTCG|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc vs20pos2tex2clr42ddx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20pos2tex2clr42ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20pos2tex2clr42ddx9.h&quot; /Vng_vs20pos2tex2clr42ddx9
-"
-								Outputs="../source/graphics/shadersdx9/Generated/vs20pos2tex2clr42ddx9.h"/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\source\graphics\shadersdx9\vs20sprite2ddx9.hlsl">
-						<FileConfiguration
-							Name="Debug|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc vs20sprite2ddx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20sprite2ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20sprite2ddx9.h&quot; /Vng_vs20sprite2ddx9
-"
-								Outputs="../source/graphics/shadersdx9/Generated/vs20sprite2ddx9.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Internal|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc vs20sprite2ddx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20sprite2ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20sprite2ddx9.h&quot; /Vng_vs20sprite2ddx9
-"
-								Outputs="../source/graphics/shadersdx9/Generated/vs20sprite2ddx9.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc vs20sprite2ddx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20sprite2ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20sprite2ddx9.h&quot; /Vng_vs20sprite2ddx9
-"
-								Outputs="../source/graphics/shadersdx9/Generated/vs20sprite2ddx9.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release_LTCG|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc vs20sprite2ddx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vs20sprite2ddx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vs20sprite2ddx9.h&quot; /Vng_vs20sprite2ddx9
-"
-								Outputs="../source/graphics/shadersdx9/Generated/vs20sprite2ddx9.h"/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\source\graphics\shadersdx9\vsstaticpositiondx9.hlsl">
-						<FileConfiguration
-							Name="Debug|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc vsstaticpositiondx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vsstaticpositiondx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vsstaticpositiondx9.h&quot; /Vng_vsstaticpositiondx9
-"
-								Outputs="../source/graphics/shadersdx9/Generated/vsstaticpositiondx9.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Internal|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc vsstaticpositiondx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vsstaticpositiondx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vsstaticpositiondx9.h&quot; /Vng_vsstaticpositiondx9
-"
-								Outputs="../source/graphics/shadersdx9/Generated/vsstaticpositiondx9.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc vsstaticpositiondx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vsstaticpositiondx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vsstaticpositiondx9.h&quot; /Vng_vsstaticpositiondx9
-"
-								Outputs="../source/graphics/shadersdx9/Generated/vsstaticpositiondx9.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release_LTCG|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc vsstaticpositiondx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/graphics/shadersdx9/vsstaticpositiondx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh&quot;../source/graphics/shadersdx9/Generated\vsstaticpositiondx9.h&quot; /Vng_vsstaticpositiondx9
-"
-								Outputs="../source/graphics/shadersdx9/Generated/vsstaticpositiondx9.h"/>
-						</FileConfiguration>
-					</File>
-					<Filter
-						Name="generated">
-						<File
-							RelativePath="..\source\graphics\shadersdx9\generated\pscclr4dx9.h">
-						</File>
-						<File
-							RelativePath="..\source\graphics\shadersdx9\generated\pstex2clr4dx9.h">
-						</File>
-						<File
-							RelativePath="..\source\graphics\shadersdx9\generated\pstexturecolordx9.h">
-						</File>
-						<File
-							RelativePath="..\source\graphics\shadersdx9\generated\pstexturedx9.h">
-						</File>
-						<File
-							RelativePath="..\source\graphics\shadersdx9\generated\vs20pos22ddx9.h">
-						</File>
-						<File
-							RelativePath="..\source\graphics\shadersdx9\generated\vs20pos2tex2clr42ddx9.h">
-						</File>
-						<File
-							RelativePath="..\source\graphics\shadersdx9\generated\vs20sprite2ddx9.h">
-						</File>
-						<File
-							RelativePath="..\source\graphics\shadersdx9\generated\vsstaticpositiondx9.h">
-						</File>
-					</Filter>
-				</Filter>
-				<Filter
-					Name="shadersopengl">
-					<File
-						RelativePath="..\source\graphics\shadersopengl\pscclr4gl.glsl">
-						<FileConfiguration
-							Name="Debug|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="Stripcomments pscclr4gl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pscclr4gl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pscclr4gl.h&quot; -l g_pscclr4gl
-"
-								Outputs="../source/graphics/shadersopengl/Generated/pscclr4gl.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Internal|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="Stripcomments pscclr4gl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pscclr4gl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pscclr4gl.h&quot; -l g_pscclr4gl
-"
-								Outputs="../source/graphics/shadersopengl/Generated/pscclr4gl.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="Stripcomments pscclr4gl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pscclr4gl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pscclr4gl.h&quot; -l g_pscclr4gl
-"
-								Outputs="../source/graphics/shadersopengl/Generated/pscclr4gl.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release_LTCG|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="Stripcomments pscclr4gl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pscclr4gl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pscclr4gl.h&quot; -l g_pscclr4gl
-"
-								Outputs="../source/graphics/shadersopengl/Generated/pscclr4gl.h"/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\source\graphics\shadersopengl\pstex2clr4gl.glsl">
-						<FileConfiguration
-							Name="Debug|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="Stripcomments pstex2clr4gl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstex2clr4gl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstex2clr4gl.h&quot; -l g_pstex2clr4gl
-"
-								Outputs="../source/graphics/shadersopengl/Generated/pstex2clr4gl.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Internal|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="Stripcomments pstex2clr4gl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstex2clr4gl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstex2clr4gl.h&quot; -l g_pstex2clr4gl
-"
-								Outputs="../source/graphics/shadersopengl/Generated/pstex2clr4gl.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="Stripcomments pstex2clr4gl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstex2clr4gl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstex2clr4gl.h&quot; -l g_pstex2clr4gl
-"
-								Outputs="../source/graphics/shadersopengl/Generated/pstex2clr4gl.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release_LTCG|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="Stripcomments pstex2clr4gl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstex2clr4gl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstex2clr4gl.h&quot; -l g_pstex2clr4gl
-"
-								Outputs="../source/graphics/shadersopengl/Generated/pstex2clr4gl.h"/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\source\graphics\shadersopengl\pstexturecolorgl.glsl">
-						<FileConfiguration
-							Name="Debug|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="Stripcomments pstexturecolorgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstexturecolorgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstexturecolorgl.h&quot; -l g_pstexturecolorgl
-"
-								Outputs="../source/graphics/shadersopengl/Generated/pstexturecolorgl.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Internal|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="Stripcomments pstexturecolorgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstexturecolorgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstexturecolorgl.h&quot; -l g_pstexturecolorgl
-"
-								Outputs="../source/graphics/shadersopengl/Generated/pstexturecolorgl.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="Stripcomments pstexturecolorgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstexturecolorgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstexturecolorgl.h&quot; -l g_pstexturecolorgl
-"
-								Outputs="../source/graphics/shadersopengl/Generated/pstexturecolorgl.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release_LTCG|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="Stripcomments pstexturecolorgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstexturecolorgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstexturecolorgl.h&quot; -l g_pstexturecolorgl
-"
-								Outputs="../source/graphics/shadersopengl/Generated/pstexturecolorgl.h"/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\source\graphics\shadersopengl\pstexturegl.glsl">
-						<FileConfiguration
-							Name="Debug|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="Stripcomments pstexturegl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstexturegl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstexturegl.h&quot; -l g_pstexturegl
-"
-								Outputs="../source/graphics/shadersopengl/Generated/pstexturegl.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Internal|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="Stripcomments pstexturegl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstexturegl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstexturegl.h&quot; -l g_pstexturegl
-"
-								Outputs="../source/graphics/shadersopengl/Generated/pstexturegl.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="Stripcomments pstexturegl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstexturegl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstexturegl.h&quot; -l g_pstexturegl
-"
-								Outputs="../source/graphics/shadersopengl/Generated/pstexturegl.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release_LTCG|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="Stripcomments pstexturegl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/pstexturegl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\pstexturegl.h&quot; -l g_pstexturegl
-"
-								Outputs="../source/graphics/shadersopengl/Generated/pstexturegl.h"/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\source\graphics\shadersopengl\vs20pos22dgl.glsl">
-						<FileConfiguration
-							Name="Debug|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="Stripcomments vs20pos22dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20pos22dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20pos22dgl.h&quot; -l g_vs20pos22dgl
-"
-								Outputs="../source/graphics/shadersopengl/Generated/vs20pos22dgl.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Internal|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="Stripcomments vs20pos22dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20pos22dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20pos22dgl.h&quot; -l g_vs20pos22dgl
-"
-								Outputs="../source/graphics/shadersopengl/Generated/vs20pos22dgl.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="Stripcomments vs20pos22dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20pos22dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20pos22dgl.h&quot; -l g_vs20pos22dgl
-"
-								Outputs="../source/graphics/shadersopengl/Generated/vs20pos22dgl.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release_LTCG|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="Stripcomments vs20pos22dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20pos22dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20pos22dgl.h&quot; -l g_vs20pos22dgl
-"
-								Outputs="../source/graphics/shadersopengl/Generated/vs20pos22dgl.h"/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\source\graphics\shadersopengl\vs20pos2tex2clr42dgl.glsl">
-						<FileConfiguration
-							Name="Debug|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="Stripcomments vs20pos2tex2clr42dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20pos2tex2clr42dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20pos2tex2clr42dgl.h&quot; -l g_vs20pos2tex2clr42dgl
-"
-								Outputs="../source/graphics/shadersopengl/Generated/vs20pos2tex2clr42dgl.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Internal|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="Stripcomments vs20pos2tex2clr42dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20pos2tex2clr42dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20pos2tex2clr42dgl.h&quot; -l g_vs20pos2tex2clr42dgl
-"
-								Outputs="../source/graphics/shadersopengl/Generated/vs20pos2tex2clr42dgl.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="Stripcomments vs20pos2tex2clr42dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20pos2tex2clr42dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20pos2tex2clr42dgl.h&quot; -l g_vs20pos2tex2clr42dgl
-"
-								Outputs="../source/graphics/shadersopengl/Generated/vs20pos2tex2clr42dgl.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release_LTCG|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="Stripcomments vs20pos2tex2clr42dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20pos2tex2clr42dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20pos2tex2clr42dgl.h&quot; -l g_vs20pos2tex2clr42dgl
-"
-								Outputs="../source/graphics/shadersopengl/Generated/vs20pos2tex2clr42dgl.h"/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\source\graphics\shadersopengl\vs20sprite2dgl.glsl">
-						<FileConfiguration
-							Name="Debug|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="Stripcomments vs20sprite2dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20sprite2dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20sprite2dgl.h&quot; -l g_vs20sprite2dgl
-"
-								Outputs="../source/graphics/shadersopengl/Generated/vs20sprite2dgl.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Internal|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="Stripcomments vs20sprite2dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20sprite2dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20sprite2dgl.h&quot; -l g_vs20sprite2dgl
-"
-								Outputs="../source/graphics/shadersopengl/Generated/vs20sprite2dgl.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="Stripcomments vs20sprite2dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20sprite2dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20sprite2dgl.h&quot; -l g_vs20sprite2dgl
-"
-								Outputs="../source/graphics/shadersopengl/Generated/vs20sprite2dgl.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release_LTCG|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="Stripcomments vs20sprite2dgl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vs20sprite2dgl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vs20sprite2dgl.h&quot; -l g_vs20sprite2dgl
-"
-								Outputs="../source/graphics/shadersopengl/Generated/vs20sprite2dgl.h"/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\source\graphics\shadersopengl\vsstaticpositiongl.glsl">
-						<FileConfiguration
-							Name="Debug|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="Stripcomments vsstaticpositiongl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vsstaticpositiongl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vsstaticpositiongl.h&quot; -l g_vsstaticpositiongl
-"
-								Outputs="../source/graphics/shadersopengl/Generated/vsstaticpositiongl.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Internal|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="Stripcomments vsstaticpositiongl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vsstaticpositiongl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vsstaticpositiongl.h&quot; -l g_vsstaticpositiongl
-"
-								Outputs="../source/graphics/shadersopengl/Generated/vsstaticpositiongl.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="Stripcomments vsstaticpositiongl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vsstaticpositiongl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vsstaticpositiongl.h&quot; -l g_vsstaticpositiongl
-"
-								Outputs="../source/graphics/shadersopengl/Generated/vsstaticpositiongl.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release_LTCG|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="Stripcomments vsstaticpositiongl.glsl..."
-								CommandLine="..\tools\windows\x64\stripcomments &quot;../source/graphics/shadersopengl/vsstaticpositiongl.glsl&quot; -c &quot;../source/graphics/shadersopengl/Generated\vsstaticpositiongl.h&quot; -l g_vsstaticpositiongl
-"
-								Outputs="../source/graphics/shadersopengl/Generated/vsstaticpositiongl.h"/>
-						</FileConfiguration>
-					</File>
-					<Filter
-						Name="generated">
-						<File
-							RelativePath="..\source\graphics\shadersopengl\generated\pscclr4gl.h">
-						</File>
-						<File
-							RelativePath="..\source\graphics\shadersopengl\generated\pstex2clr4gl.h">
-						</File>
-						<File
-							RelativePath="..\source\graphics\shadersopengl\generated\pstexturecolorgl.h">
-						</File>
-						<File
-							RelativePath="..\source\graphics\shadersopengl\generated\pstexturegl.h">
-						</File>
-						<File
-							RelativePath="..\source\graphics\shadersopengl\generated\vs20pos22dgl.h">
-						</File>
-						<File
-							RelativePath="..\source\graphics\shadersopengl\generated\vs20pos2tex2clr42dgl.h">
-						</File>
-						<File
-							RelativePath="..\source\graphics\shadersopengl\generated\vs20sprite2dgl.h">
-						</File>
-						<File
-							RelativePath="..\source\graphics\shadersopengl\generated\vsstaticpositiongl.h">
-						</File>
-					</Filter>
-				</Filter>
-				<Filter
-					Name="vulkan">
-					<File
-						RelativePath="..\source\graphics\vulkan\brvulkanerrors.cpp">
-					</File>
-					<File
-						RelativePath="..\source\graphics\vulkan\brvulkanerrors.h">
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="input">
@@ -3552,372 +2807,6 @@
 				<File
 					RelativePath="..\source\memory\brmemorymanager.h">
 				</File>
-			</Filter>
-			<Filter
-				Name="platforms">
-				<Filter
-					Name="windows">
-					<File
-						RelativePath="..\source\platforms\windows\brcodelibrarywindows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brconditionvariablewindows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brconsolemanagerwindows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brdebugwindows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brdetectmultilaunchwindows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brdirectorysearchwindows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brdisplaybasewindows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brdisplaydib.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brdisplaydibsoftware8.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brdisplaydibsoftware8windows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brdisplaydibwindows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brdisplaydirectx11.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brdisplaydirectx11windows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brdisplaydirectx9.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brdisplaydirectx9software8.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brdisplaydirectx9software8windows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brdisplaydirectx9windows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brdisplayopenglwindows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brfilemanagerwindows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brfilenamewindows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brfilewindows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brglobalsshimswindows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brglobalswindows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brguidwindows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brjoypadwindows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brkeyboardwindows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brmemorymanagerwindows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brmousewindows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brmutexwindows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\broscursorwindows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brosstringfunctionswindows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brperforcewindows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brpoint2dwindows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brrectwindows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brsemaphorewindows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brsequencerwindows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brsoundwindows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brstartup.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brstdouthelperswindows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brtexturedirectx9.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brtexturedirectx9.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brthreadwindows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brtickwindows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brtimedatewindows.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brvertexbufferdirectx9.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brvertexbufferdirextx9.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brwindowsapp.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brwindowstypes.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\ps20display8bitdx9.hlsl">
-						<FileConfiguration
-							Name="Debug|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc ps20display8bitdx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/platforms/windows/ps20display8bitdx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/platforms/windows/Generated\ps20display8bitdx9.h&quot; /Vng_ps20display8bitdx9
-"
-								Outputs="../source/platforms/windows/Generated/ps20display8bitdx9.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Internal|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc ps20display8bitdx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/platforms/windows/ps20display8bitdx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/platforms/windows/Generated\ps20display8bitdx9.h&quot; /Vng_ps20display8bitdx9
-"
-								Outputs="../source/platforms/windows/Generated/ps20display8bitdx9.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc ps20display8bitdx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/platforms/windows/ps20display8bitdx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/platforms/windows/Generated\ps20display8bitdx9.h&quot; /Vng_ps20display8bitdx9
-"
-								Outputs="../source/platforms/windows/Generated/ps20display8bitdx9.h"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release_LTCG|Win32">
-							<Tool
-								Name="VCCustomBuildTool"
-								Description="fxc ps20display8bitdx9.hlsl..."
-								CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; &quot;../source/platforms/windows/ps20display8bitdx9.hlsl&quot; /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh&quot;../source/platforms/windows/Generated\ps20display8bitdx9.h&quot; /Vng_ps20display8bitdx9
-"
-								Outputs="../source/platforms/windows/Generated/ps20display8bitdx9.h"/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\templatewindows.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_d3d11.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_d3d11.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_d3d9.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_d3d9.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_ddraw.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_ddraw.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_dinput.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_dinput.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_directxdata.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_directxdata.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_dplay.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_dplay.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_dsound.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_dsound.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_error.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_error.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_globals.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_globals.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_hid.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_hid.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_kernel32.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_kernel32.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_launcher.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_launcher.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_loadlibrary.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_loadlibrary.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_memorymanager.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_memorymanager.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_platformshims.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_platformshims.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_registry.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_registry.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_rpcrt4.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_rpcrt4.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_setupapi.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_setupapi.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_shell32.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_shell32.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_shlwapi.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_shlwapi.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_synchapi.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_synchapi.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_types.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_user32.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_user32.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_version.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_version.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_windows.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_winmm.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_winmm.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_winutils.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_winutils.h">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_xinput.cpp">
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\win_xinput.h">
-					</File>
-					<Filter
-						Name="generated">
-						<File
-							RelativePath="..\source\platforms\windows\generated\ps20display8bitdx9.h">
-						</File>
-					</Filter>
-					<Filter
-						Name="vc7compat">
-						<File
-							RelativePath="..\source\platforms\windows\vc7compat\sal.h">
-						</File>
-					</Filter>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="random">

@@ -349,6 +349,7 @@
     <ClInclude Include="..\source\text\brsimplestring.h" />
     <ClInclude Include="..\source\text\brstring.h" />
     <ClInclude Include="..\source\text\brstring16.h" />
+    <ClInclude Include="..\source\text\brstring32.h" />
     <ClInclude Include="..\source\text\brstringfunctions.h" />
     <ClInclude Include="..\source\text\brutf16.h" />
     <ClInclude Include="..\source\text\brutf32.h" />
@@ -540,6 +541,7 @@
     <ClCompile Include="..\source\text\brsimplestring.cpp" />
     <ClCompile Include="..\source\text\brstring.cpp" />
     <ClCompile Include="..\source\text\brstring16.cpp" />
+    <ClCompile Include="..\source\text\brstring32.cpp" />
     <ClCompile Include="..\source\text\brstringfunctions.cpp" />
     <ClCompile Include="..\source\text\brutf16.cpp" />
     <ClCompile Include="..\source\text\brutf32.cpp" />

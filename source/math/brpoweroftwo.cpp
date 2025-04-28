@@ -15,6 +15,10 @@
 #include "brpoweroftwo.h"
 #include "brstructs.h"
 
+#if defined(BURGER_XBOXONE)
+#include <intrin.h>
+#endif
+
 // Microsoft C++ doesn't have the clang built ins
 #if defined(BURGER_MSVC) && defined(BURGER_ARM)
 #include <intrin.h>
@@ -27,8 +31,8 @@
 	\brief Round up an integer to the nearest power of 2
 
 	Take an arbitrary value and round it up to the nearest power of 2 If the
-	input is 0x40000001 to 0x7FFFFFFF, the function returns 0x80000000
-	0x80000000-0xFFFFFFFF is an overflow and returns zero. Zero will return zero
+	input is 0x40000001 to 0x80000000, the function returns 0x80000000
+	0x80000001-0xFFFFFFFF is an overflow and returns zero. Zero will return zero
 
 	\param uInput Integer value to round up
 
@@ -39,7 +43,8 @@
 ***************************************/
 
 #if (defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
-	(defined(BURGER_METROWERKS) && (defined(BURGER_X86) || defined(BURGER_68K))) || \
+	(defined(BURGER_METROWERKS) && \
+		(defined(BURGER_X86) || defined(BURGER_68K))) || \
 	(defined(BURGER_MSVC) && defined(BURGER_X86))
 
 // Assembly functions
@@ -148,8 +153,8 @@ uint32_t BURGER_API Burger::power_of_two(uint32_t uInput) BURGER_NOEXCEPT
 	\brief Round up an integer to the nearest power of 2
 
 	Take an arbitrary value and round it up to the nearest power of 2
-	If the input is 0x4000000000000001 to 0x7FFFFFFFFFFFFFFF, the function
-	returns 0x8000000000000000 0x8000000000000000-0xFFFFFFFFFFFFFFFF is an
+	If the input is 0x4000000000000001 to 0x8000000000000000, the function
+	returns 0x8000000000000000 0x8000000000000001-0xFFFFFFFFFFFFFFFF is an
 	overflow and returns zero. Zero will return zero
 
 	\param uInput Integer value to round up
@@ -162,8 +167,9 @@ uint32_t BURGER_API Burger::power_of_two(uint32_t uInput) BURGER_NOEXCEPT
 
 #if (defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
 	(defined(BURGER_METROWERKS) && \
-		(defined(BURGER_X86) || defined(BURGER_68K))) || \
-	(defined(BURGER_MSVC) && defined(BURGER_X86))
+		(defined(BURGER_X86) || defined(BURGER_68K) || \
+			defined(BURGER_PPC))) || \
+	(defined(BURGER_MSVC) && defined(BURGER_INTEL))
 
 // Assembly functions
 
@@ -241,10 +247,11 @@ uint64_t BURGER_API Burger::power_of_two(uint64_t uInput) BURGER_NOEXCEPT
 
 	\brief Round up a 32 bit float to the nearest power of 2
 
-	Take an arbitrary value and round it up to the nearest power of 2.
+	Take an arbitrary positive value and round it up to the nearest power of 2.
 
 	If the input is 5 to 7, the function returns 8. NaN, infinity, or numbers
-	that are already powers of two are returned unchanged. Zero will return NaN.
+	that are already powers of two are returned unchanged. Zero and negative
+	numbers will return NaN.
 
 	\param fInput Float value to round up
 
@@ -463,7 +470,7 @@ uint32_t BURGER_API Burger::convert_to_BCD(uint32_t uInput) BURGER_NOEXCEPT
 
 	Given a bit width (From 1 through 32), reverse the order of the bits within.
 
-	Since this version is variable width, if uBitLength is equal to 4, the truth
+	Since this version is variable width, if uBitLength is equal to 2, the truth
 	table would look like this...
 
 	| Input | Output |
@@ -495,7 +502,7 @@ uint32_t BURGER_API Burger::convert_to_BCD(uint32_t uInput) BURGER_NOEXCEPT
 ***************************************/
 
 #if (defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
-	(defined(BURGER_MSVC) && defined(BURGER_X86)) || \
+	(defined(BURGER_MSVC) && defined(BURGER_INTEL)) || \
 	(defined(BURGER_METROWERKS) && \
 		(defined(BURGER_X86) || defined(BURGER_68K)))
 // In assembly
@@ -522,7 +529,7 @@ uint32_t BURGER_API Burger::bit_reverse(
 
 	Given a bit width (From 1 through 64), reverse the order of the bits within.
 
-	Since this version is variable width, if uBitLength is equal to 4, the truth
+	Since this version is variable width, if uBitLength is equal to 2, the truth
 	table would look like this...
 
 	| Input | Output |
@@ -554,7 +561,7 @@ uint32_t BURGER_API Burger::bit_reverse(
 ***************************************/
 
 #if (defined(BURGER_WATCOM) && defined(BURGER_X86)) || \
-	(defined(BURGER_MSVC) && defined(BURGER_X86)) || \
+	(defined(BURGER_MSVC) && defined(BURGER_INTEL)) || \
 	(defined(BURGER_METROWERKS) && \
 		(defined(BURGER_X86) || defined(BURGER_68K)))
 // In assembly
@@ -589,6 +596,13 @@ uint64_t BURGER_API Burger::bit_reverse(
 
 uint_t BURGER_API Burger::count_set_bits(uint32_t uInput) BURGER_NOEXCEPT
 {
+#if defined(BURGER_GNUC) || defined(BURGER_CLANG)
+	return static_cast<uint_t>(__builtin_popcount(uInput));
+
+#elif defined(BURGER_XBOXONE)
+	return static_cast<uint_t>(__popcnt(uInput));
+
+#else
 	// Use vector adding to count the bits
 	// Stage 1, add 16 pairs of 1 bit numbers
 	uInput = uInput - ((uInput >> 1) & 0x55555555U);
@@ -600,6 +614,7 @@ uint_t BURGER_API Burger::count_set_bits(uint32_t uInput) BURGER_NOEXCEPT
 	// them with a vector multiply in which the upper 8 bits is the count
 	// Neat, eh?
 	return (((uInput + (uInput >> 4U)) & 0x0F0F0F0FU) * 0x01010101U) >> 24U;
+#endif
 }
 
 /*! ************************************
@@ -617,8 +632,14 @@ uint_t BURGER_API Burger::count_set_bits(uint32_t uInput) BURGER_NOEXCEPT
 
 uint_t BURGER_API Burger::count_set_bits(uint64_t uInput) BURGER_NOEXCEPT
 {
+#if defined(BURGER_GNUC) || defined(BURGER_CLANG)
+	return static_cast<uint_t>(__builtin_popcountll(uInput));
+
+#elif defined(BURGER_XBOXONE)
+	return static_cast<uint_t>(__popcnt64(uInput));
+
 	// If the CPU is a 64 bit one, do it the fast way
-#if defined(BURGER_64BITCPU) && !defined(BURGER_METROWERKS)
+#elif defined(BURGER_64BITCPU) && !defined(BURGER_METROWERKS)
 	// Use vector adding to count the bits
 	// Stage 1, add 16 pairs of 1 bit numbers
 	uInput = uInput - ((uInput >> 1) & 0x5555555555555555ULL);

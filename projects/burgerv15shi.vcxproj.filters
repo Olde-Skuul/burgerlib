@@ -625,6 +625,9 @@
     <ClInclude Include="..\source\text\brstring16.h">
       <Filter>source\text</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\text\brstring32.h">
+      <Filter>source\text</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\text\brstringfunctions.h">
       <Filter>source\text</Filter>
     </ClInclude>
@@ -1244,6 +1247,9 @@
       <Filter>source\text</Filter>
     </ClCompile>
     <ClCompile Include="..\source\text\brstring16.cpp">
+      <Filter>source\text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\text\brstring32.cpp">
       <Filter>source\text</Filter>
     </ClCompile>
     <ClCompile Include="..\source\text\brstringfunctions.cpp">
