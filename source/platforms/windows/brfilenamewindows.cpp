@@ -289,7 +289,7 @@ Burger::eError BURGER_API Burger::Filename::set_application_directory(
 			pWBuffer = nullptr;
 			do {
 				// Release the previous buffer, if any
-				Free(pWBuffer);
+				free_memory(pWBuffer);
 
 				// Double the size for this pass
 				uTestLength <<= 1U;
@@ -302,7 +302,7 @@ Burger::eError BURGER_API Burger::Filename::set_application_directory(
 
 				// Allocate a new buffer
 				pWBuffer = static_cast<uint16_t*>(
-					Alloc(uTestLength * sizeof(uint16_t)));
+					allocate_memory(uTestLength * sizeof(uint16_t)));
 				if (!pWBuffer) {
 					uResult = kErrorOutOfMemory;
 					break;
@@ -328,7 +328,7 @@ Burger::eError BURGER_API Burger::Filename::set_application_directory(
 
 			// Release the buffer (If allocated)
 			if (pWBuffer != Buffer) {
-				Free(pWBuffer);
+				free_memory(pWBuffer);
 			}
 			uResult = kErrorNone;
 		}
@@ -473,7 +473,7 @@ Burger::eError BURGER_API Burger::Filename::set_native(
 			BURGER_ARRAYSIZE(InputPath), pInput);
 	if (uInputLength >= BURGER_ARRAYSIZE(InputPath)) {
 		pInputPath =
-			static_cast<WCHAR*>(Alloc((uInputLength + 2) * sizeof(WCHAR)));
+			static_cast<WCHAR*>(allocate_memory((uInputLength + 2) * sizeof(WCHAR)));
 		if (!pInputPath) {
 			return kErrorOutOfMemory;
 		}
@@ -493,7 +493,7 @@ Burger::eError BURGER_API Burger::Filename::set_native(
 
 	if (uExpandedLength >= BURGER_ARRAYSIZE(ExpandedPath)) {
 		pExpanded =
-			static_cast<WCHAR*>(Alloc((uExpandedLength + 2) * sizeof(WCHAR)));
+			static_cast<WCHAR*>(allocate_memory((uExpandedLength + 2) * sizeof(WCHAR)));
 		if (pExpanded) {
 			uExpandedLength = GetFullPathNameW(pInputPath,
 				static_cast<DWORD>(uExpandedLength + 2), pExpanded, nullptr);
@@ -504,7 +504,7 @@ Burger::eError BURGER_API Burger::Filename::set_native(
 
 	// I don't need the original anymore
 	if (pInputPath != InputPath) {
-		Free(pInputPath);
+		free_memory(pInputPath);
 	}
 
 	// Was there a memory error above?
@@ -556,7 +556,7 @@ Burger::eError BURGER_API Burger::Filename::set_native(
 	m_Filename.append(reinterpret_cast<uint16_t*>(pSrc));
 
 	if (pExpanded != ExpandedPath) {
-		Free(pExpanded);
+		free_memory(pExpanded);
 	}
 
 	uint8_t* pSlasher = reinterpret_cast<uint8_t*>(m_Filename.c_str());

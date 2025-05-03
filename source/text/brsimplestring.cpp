@@ -72,7 +72,7 @@ Burger::SimpleString::SimpleString(char cInput)
 {
 	const char* pOutput = g_EmptyString; // Empty
 	if (cInput) {                        // Valid?
-		char* pTemp = static_cast<char*>(Alloc(2));
+		char* pTemp = static_cast<char*>(allocate_memory(2));
 		if (pTemp) {
 			pTemp[0] = cInput;
 			pTemp[1] = 0;
@@ -139,12 +139,12 @@ Burger::SimpleString::SimpleString(const char* pInput1, const char* pInput2)
 	const char* pOutput = g_EmptyString; // Empty
 	uintptr_t uLength = uLength1 + uLength2;
 	if (uLength) {
-		char* pTemp = static_cast<char*>(Alloc(uLength + 1U));
+		char* pTemp = static_cast<char*>(allocate_memory(uLength + 1U));
 		if (pTemp) {
 			pOutput = pTemp;
-			MemoryCopy(pTemp, pInput1, uLength1);
+			memory_copy(pTemp, pInput1, uLength1);
 			pTemp += uLength1;
-			MemoryCopy(pTemp, pInput2, uLength2);
+			memory_copy(pTemp, pInput2, uLength2);
 			pTemp[uLength2] = 0;
 		}
 	}
@@ -189,14 +189,14 @@ Burger::SimpleString::SimpleString(
 	const char* pOutput = g_EmptyString; // Empty
 	uintptr_t uLength = uLength1 + uLength2 + uLength3;
 	if (uLength) {
-		char* pTemp = static_cast<char*>(Alloc(uLength + 1U));
+		char* pTemp = static_cast<char*>(allocate_memory(uLength + 1U));
 		if (pTemp) {
 			pOutput = pTemp;
-			MemoryCopy(pTemp, pInput1, uLength1);
+			memory_copy(pTemp, pInput1, uLength1);
 			pTemp += uLength1;
-			MemoryCopy(pTemp, pInput2, uLength2);
+			memory_copy(pTemp, pInput2, uLength2);
 			pTemp += uLength2;
-			MemoryCopy(pTemp, pInput3, uLength3);
+			memory_copy(pTemp, pInput3, uLength3);
 			pTemp[uLength3] = 0;
 		}
 	}
@@ -246,16 +246,16 @@ Burger::SimpleString::SimpleString(const char* pInput1, const char* pInput2,
 	const char* pOutput = g_EmptyString; // Empty
 	uintptr_t uLength = uLength1 + uLength2 + uLength3 + uLength4;
 	if (uLength) {
-		char* pTemp = static_cast<char*>(Alloc(uLength + 1U));
+		char* pTemp = static_cast<char*>(allocate_memory(uLength + 1U));
 		if (pTemp) {
 			pOutput = pTemp;
-			MemoryCopy(pTemp, pInput1, uLength1);
+			memory_copy(pTemp, pInput1, uLength1);
 			pTemp += uLength1;
-			MemoryCopy(pTemp, pInput2, uLength2);
+			memory_copy(pTemp, pInput2, uLength2);
 			pTemp += uLength2;
-			MemoryCopy(pTemp, pInput3, uLength3);
+			memory_copy(pTemp, pInput3, uLength3);
 			pTemp += uLength3;
-			MemoryCopy(pTemp, pInput4, uLength4);
+			memory_copy(pTemp, pInput4, uLength4);
 			pTemp[uLength4] = 0;
 		}
 	}
@@ -314,18 +314,18 @@ Burger::SimpleString::SimpleString(const char* pInput1, const char* pInput2,
 	const char* pOutput = g_EmptyString; // Empty
 	uintptr_t uLength = uLength1 + uLength2 + uLength3 + uLength4 + uLength5;
 	if (uLength) {
-		char* pTemp = static_cast<char*>(Alloc(uLength + 1U));
+		char* pTemp = static_cast<char*>(allocate_memory(uLength + 1U));
 		if (pTemp) {
 			pOutput = pTemp;
-			MemoryCopy(pTemp, pInput1, uLength1);
+			memory_copy(pTemp, pInput1, uLength1);
 			pTemp += uLength1;
-			MemoryCopy(pTemp, pInput2, uLength2);
+			memory_copy(pTemp, pInput2, uLength2);
 			pTemp += uLength2;
-			MemoryCopy(pTemp, pInput3, uLength3);
+			memory_copy(pTemp, pInput3, uLength3);
 			pTemp += uLength3;
-			MemoryCopy(pTemp, pInput4, uLength4);
+			memory_copy(pTemp, pInput4, uLength4);
 			pTemp += uLength4;
-			MemoryCopy(pTemp, pInput5, uLength5);
+			memory_copy(pTemp, pInput5, uLength5);
 			pTemp[uLength5] = 0;
 		}
 	}
@@ -373,7 +373,7 @@ Burger::SimpleString::~SimpleString()
 {
 	const char* pData = m_pData;
 	if (pData != g_EmptyString) { // If not the global string
-		Free(pData);              // Kill it.
+		free_memory(pData);              // Kill it.
 	}
 }
 
@@ -397,13 +397,13 @@ Burger::SimpleString& Burger::SimpleString::operator=(char cInput)
 	// Delete the previous string
 	const char* pData = m_pData;
 	if (pData != g_EmptyString) {
-		Free(pData);
+		free_memory(pData);
 	}
 	// Create the new string
 	if (!cInput) {               // Empty?
 		m_pData = g_EmptyString; // Set it empty
 	} else {
-		char* pData2 = static_cast<char*>(Alloc(2));
+		char* pData2 = static_cast<char*>(allocate_memory(2));
 		if (!pData2) {
 			m_pData = g_EmptyString;
 		} else {
@@ -434,7 +434,7 @@ Burger::SimpleString& Burger::SimpleString::operator=(const char* pInput)
 	// Delete the previous string
 	const char* pData = m_pData;
 	if (pData != g_EmptyString) {
-		Free(pData);
+		free_memory(pData);
 	}
 	// Create the new string
 	if (!pInput || !pInput[0]) { // Empty?
@@ -470,7 +470,7 @@ Burger::SimpleString& Burger::SimpleString::operator=(
 		// Delete the previous string
 		const char* pData = m_pData;
 		if (pData != g_EmptyString) {
-			Free(pData);
+			free_memory(pData);
 		}
 		// Create the new string
 		pData = rInput.m_pData;
@@ -580,7 +580,7 @@ void Burger::SimpleString::Clear(void)
 	const char* pData = m_pData;
 	if (pData != g_EmptyString) {
 		m_pData = g_EmptyString; // Set to empty
-		Free(pData);             // Dispose of the memory
+		free_memory(pData);             // Dispose of the memory
 	}
 }
 

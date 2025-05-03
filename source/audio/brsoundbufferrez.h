@@ -44,8 +44,8 @@ protected:
 public:
     uint_t Upload(SoundManager *pSoundManager) BURGER_OVERRIDE;
 	void BURGER_API Set(RezFile *pRezFile,uint_t uRezNum);
-	static SoundBufferRez * BURGER_API New(void);
-	static SoundBufferRez * BURGER_API New(RezFile *pRezFile,uint_t uRezNum);
+	static SoundBufferRez * BURGER_API new_object(void);
+	static SoundBufferRez * BURGER_API new_object(RezFile *pRezFile,uint_t uRezNum);
 };
 }
 /* END */

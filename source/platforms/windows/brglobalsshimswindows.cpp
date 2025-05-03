@@ -153,7 +153,7 @@ uint_t BURGER_API Burger::Globals::GetQuickTimeVersion(void) BURGER_NOEXCEPT
 			}
 			if (uFileInfoSize) {
 
-				// Use HeapAlloc() instead of Alloc to allow code to use this
+				// Use HeapAlloc() instead of allocate_memory to allow code to use this
 				// function without starting Burgerlib Memory
 
 				// Get the data buffer

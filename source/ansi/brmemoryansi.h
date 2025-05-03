@@ -31,9 +31,9 @@ class AllocatorANSI: public AllocatorBase {
 
 public:
 	AllocatorANSI() BURGER_DEFAULT_CONSTRUCTOR;
-	void* alloc(uintptr_t uSize) const BURGER_NOEXCEPT BURGER_FINAL;
-	void free(const void* pInput) const BURGER_NOEXCEPT BURGER_FINAL;
-	void* realloc(
+	void* allocate_memory(uintptr_t uSize) const BURGER_NOEXCEPT BURGER_FINAL;
+	void free_memory(const void* pInput) const BURGER_NOEXCEPT BURGER_FINAL;
+	void* reallocate_memory(
 		const void* pInput, uintptr_t uSize) const BURGER_NOEXCEPT BURGER_FINAL;
 };
 
@@ -43,28 +43,28 @@ class MemoryManagerANSI: public MemoryManager {
 public:
 	MemoryManagerANSI() BURGER_NOEXCEPT;
 
-	BURGER_INLINE void* alloc(uintptr_t uSize) BURGER_NOEXCEPT
+	BURGER_INLINE void* allocate_memory(uintptr_t uSize) BURGER_NOEXCEPT
 	{
-		return alloc(this, uSize);
+		return allocate_memory(this, uSize);
 	}
 
-	BURGER_INLINE void free(const void* pInput) BURGER_NOEXCEPT
+	BURGER_INLINE void free_memory(const void* pInput) BURGER_NOEXCEPT
 	{
-		return free(this, pInput);
+		return free_memory(this, pInput);
 	}
 
-	BURGER_INLINE void* realloc(
+	BURGER_INLINE void* reallocate_memory(
 		const void* pInput, uintptr_t uSize) BURGER_NOEXCEPT
 	{
-		return realloc(this, pInput, uSize);
+		return reallocate_memory(this, pInput, uSize);
 	}
 
 protected:
-	static void* BURGER_API alloc(
+	static void* BURGER_API allocate_memory(
 		MemoryManager* pThis, uintptr_t uSize) BURGER_NOEXCEPT;
-	static void BURGER_API free(
+	static void BURGER_API free_memory(
 		MemoryManager* pThis, const void* pInput) BURGER_NOEXCEPT;
-	static void* BURGER_API realloc(MemoryManager* pThis, const void* pInput,
+	static void* BURGER_API reallocate_memory(MemoryManager* pThis, const void* pInput,
 		uintptr_t uSize) BURGER_NOEXCEPT;
 };
 

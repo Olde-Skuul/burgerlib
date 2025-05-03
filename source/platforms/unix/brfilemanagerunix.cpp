@@ -537,7 +537,7 @@ Burger::eError BURGER_API Burger::FileManager::get_volume_name(
 							uIndex =
 								minimum(uIndex, static_cast<uintptr_t>(PATH_MAX));
 
-							MemoryCopy(TempBuffer + 1, pName, uIndex);
+								memory_copy(TempBuffer + 1, pName, uIndex);
 							TempBuffer[uIndex + 1] = ':';
 							TempBuffer[uIndex + 2] = 0;
 
@@ -1002,7 +1002,7 @@ Burger::eError BURGER_API Burger::FileManager::copy_file(
 	// sendfile() will copy the file for Android or Linux
 	off_t iTransferred = 0;
 	struct stat MyStat;
-	MemoryClear(&MyStat, sizeof(MyStat));
+	memory_clear(&MyStat, sizeof(MyStat));
 	fstat(input_fp, &MyStat);
 	ssize_t iResult =
 		sendfile(output_fp, input_fp, &iTransferred, MyStat.st_size);

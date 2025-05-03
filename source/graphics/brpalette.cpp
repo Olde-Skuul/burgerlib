@@ -1867,7 +1867,7 @@ void BURGER_API Burger::CopyPalette256(RGBAWord8_t *pOutput,const RGBAWord8_t *p
 void BURGER_API Burger::ClearPalette(RGBWord8_t *pOutput,uintptr_t uPaletteSize)
 {
 	// Just set everything to zero
-	MemoryClear(pOutput,sizeof(pOutput[0])*uPaletteSize);
+	memory_clear(pOutput,sizeof(pOutput[0])*uPaletteSize);
 }
 
 /*! ************************************

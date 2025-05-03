@@ -51,7 +51,7 @@
 		// Wrap up the processing
 		Context.finalize();
 		// Return the resulting hash
-		MemoryCopy(pOutput,&Context.m_Hash,16);
+		memory_copy(pOutput,&Context.m_Hash,16);
 	\endcode
 
 	\sa \ref MD5_t or hash(MD5_t *,const void *,uintptr_t)
@@ -281,7 +281,7 @@ void BURGER_API Burger::MD5Hasher_t::process(
 	// Should I copy or pack?
 	if (uLength >= i) {
 
-		MemoryCopy(&m_CacheBuffer[uIndex], pInput, i);
+		memory_copy(&m_CacheBuffer[uIndex], pInput, i);
 		process(m_CacheBuffer);
 
 		// Perform the checksum directly on the memory buffers
@@ -298,7 +298,7 @@ void BURGER_API Burger::MD5Hasher_t::process(
 	}
 
 	// Buffer remaining input
-	MemoryCopy(&m_CacheBuffer[uIndex], static_cast<const uint8_t*>(pInput) + i,
+	memory_copy(&m_CacheBuffer[uIndex], static_cast<const uint8_t*>(pInput) + i,
 		uLength - i);
 }
 
@@ -318,7 +318,7 @@ void BURGER_API Burger::MD5Hasher_t::finalize(void) BURGER_NOEXCEPT
 	// Pad array, first byte is 0x80, rest 0
 	uint8_t Padding[64];
 	Padding[0] = 0x80;
-	MemoryClear(&Padding[1], 63);
+	memory_clear(&Padding[1], 63);
 
 	// Save number of bits
 
@@ -363,5 +363,5 @@ void BURGER_API Burger::hash(
 	Context.finalize();
 
 	// Return the resulting hash
-	MemoryCopy(pOutput, &Context.m_Hash, 16);
+	memory_copy(pOutput, &Context.m_Hash, 16);
 }

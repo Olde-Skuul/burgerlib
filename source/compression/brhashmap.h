@@ -96,7 +96,7 @@ protected:
 		Entry* pEntry, const void* pT, const void* pU);
 	/** Function prototype for destroying entries */
 	typedef void(BURGER_API* EntryInvalidateProc)(Entry* pEntry);
-	/** Pointer to the hash table Burger::Alloc(m_uEntrySize*(m_uSizeMask+1)) */
+	/** Pointer to the hash table Burger::allocate_memory(m_uEntrySize*(m_uSizeMask+1)) */
 	void* m_pEntries;
 
 	/** Size in bytes of each entry in the table */

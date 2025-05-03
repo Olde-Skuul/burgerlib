@@ -207,7 +207,7 @@ public:
 			uResult = resize(uSize + 1); // resize adjusts m_uSize to uSize+1
 			if (uResult == kErrorNone) {
 				if (uIndex < uSize) {
-					MemoryMove(static_cast<T*>(m_pData) + uIndex + 1,
+					memory_move(static_cast<T*>(m_pData) + uIndex + 1,
 						static_cast<const T*>(m_pData) + uIndex,
 						sizeof(T) * (uSize - uIndex));
 				}

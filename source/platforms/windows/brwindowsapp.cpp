@@ -163,7 +163,7 @@ Burger::GameApp::GameApp(uintptr_t uDefaultMemorySize,
 		// Allocate the buffer for a pointer array and the strings
 		iArgc = m_iArgc;
 		const char** ppArgv = static_cast<const char**>(
-			Alloc((sizeof(char*) * iArgc) + uDataSize));
+			allocate_memory((sizeof(char*) * iArgc) + uDataSize));
 
 		// Store the pointer for later use and disposal
 		m_ppArgv = ppArgv;
@@ -225,7 +225,7 @@ Burger::GameApp::~GameApp()
 	OSCursor::Shutdown();
 
 	// Release the command line
-	Free(m_ppArgv);
+	free_memory(m_ppArgv);
 	m_ppArgv = nullptr;
 
 	// Restore the previous command line so crt0.s can clean it up

@@ -283,12 +283,14 @@ Burger::eError Burger::DecompressALaw::Process(void* pOutput,
 	\brief Allocate and initialize a DecompressALaw
 
 	\return A pointer to a default DecompressALaw class or \ref NULL if out of
-memory \sa Delete(const T *)
+		memory
+
+	\sa delete_object(const T *)
 
 ***************************************/
 
-Burger::DecompressALaw* BURGER_API Burger::DecompressALaw::New(void)
+Burger::DecompressALaw* BURGER_API Burger::DecompressALaw::new_object(void)
 {
 	// Allocate the memory
-	return new (Alloc(sizeof(DecompressALaw))) DecompressALaw();
+	return new (allocate_memory(sizeof(DecompressALaw))) DecompressALaw();
 }

@@ -65,7 +65,7 @@ public:
 	DecompressMace3();
 	eError Reset(void) BURGER_OVERRIDE;
 	eError Process(void *pOutput, uintptr_t uOutputChunkSize,const void *pInput, uintptr_t uInputChunkLength) BURGER_OVERRIDE;
-	static DecompressMace3 * BURGER_API New(void);
+	static DecompressMace3 * BURGER_API new_object(void);
 };
 
 class DecompressMace6 : public DecompressAudio {
@@ -87,7 +87,7 @@ public:
 	DecompressMace6();
 	eError Reset(void) BURGER_OVERRIDE;
 	eError Process(void *pOutput, uintptr_t uOutputChunkSize,const void *pInput, uintptr_t uInputChunkLength) BURGER_OVERRIDE;
-	static DecompressMace6 * BURGER_API New(void);
+	static DecompressMace6 * BURGER_API new_object(void);
 };
 
 }

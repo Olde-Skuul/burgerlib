@@ -41,7 +41,7 @@ uint_t Burger::Display::GetVideoModes(ClassArray<VideoCardDescription>* pOutput)
 
 	// Get the current mode
 	XVIDEO_MODE VideoMode;
-	MemoryClear(&VideoMode, sizeof(VideoMode));
+	memory_clear(&VideoMode, sizeof(VideoMode));
 	XGetVideoMode(&VideoMode);
 
 	VideoCardDescription* pEntry = pOutput->GetPtr();

@@ -84,6 +84,10 @@ unsigned char _BitScanReverse(unsigned long* Index, unsigned long Mask);
 long __cdecl _InterlockedExchange(long volatile*, long);
 long __cdecl _InterlockedExchangeAdd(long volatile*, long);
 long __cdecl _InterlockedCompareExchange(long volatile*, long, long);
+#elif defined(BURGER_XBOX)
+long __stdcall _InterlockedExchange(long*, long);
+long __stdcall _InterlockedExchangeAdd(long*, long);
+long __stdcall _InterlockedCompareExchange(long*, long, long);
 #else
 long _InterlockedExchange(long volatile*, long);
 long _InterlockedExchangeAdd(long volatile*, long);
@@ -92,8 +96,13 @@ long _InterlockedCompareExchange(long volatile*, long, long);
 #pragma intrinsic(_InterlockedExchange, _InterlockedExchangeAdd, \
 	_InterlockedCompareExchange)
 
+#if defined(BURGER_XBOX)
+long __stdcall _InterlockedIncrement(long*);
+long __stdcall _InterlockedDecrement(long*);
+#else
 long __cdecl _InterlockedIncrement(long volatile*);
 long __cdecl _InterlockedDecrement(long volatile*);
+#endif
 #pragma intrinsic(_InterlockedIncrement, _InterlockedDecrement)
 
 #if defined(BURGER_64BITCPU)

@@ -75,11 +75,11 @@ Burger::RandomMersenneTwist::RandomMersenneTwist(
 
 ***************************************/
 
-Burger::RandomMersenneTwist* BURGER_API Burger::RandomMersenneTwist::New(
+Burger::RandomMersenneTwist* BURGER_API Burger::RandomMersenneTwist::new_object(
 	uint32_t uNewSeed) BURGER_NOEXCEPT
 {
 	RandomMersenneTwist* pResult =
-		static_cast<RandomMersenneTwist*>(Alloc(sizeof(RandomMersenneTwist)));
+		static_cast<RandomMersenneTwist*>(allocate_memory(sizeof(RandomMersenneTwist)));
 	if (pResult) {
 		new (pResult) RandomMersenneTwist(uNewSeed);
 	}

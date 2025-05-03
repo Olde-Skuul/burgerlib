@@ -33,7 +33,7 @@ public:
 	virtual ~Base() BURGER_NOEXCEPT BURGER_DEFAULT_DESTRUCTOR;
 };
 
-extern void BURGER_API Delete(const Base* pInput) BURGER_NOEXCEPT;
+extern void BURGER_API delete_object(const Base* pInput) BURGER_NOEXCEPT;
 
 }
 /* END */

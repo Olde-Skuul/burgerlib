@@ -1072,7 +1072,7 @@ static uint_t BURGER_API TestBurgerSwapEndianStoreAnyWord16Ptr(
 
 		// Copy the value to read (Keep endian native)
 		uint16_t uResult;
-		Burger::MemoryCopy(&uResult, pWork, 2);
+		Burger::memory_copy(&uResult, pWork, 2);
 		uint_t uFailure = (uResult != REu16);
 		uFailureTotal |= uFailure;
 		ReportFailure(
@@ -1097,7 +1097,7 @@ static uint_t BURGER_API TestBurgerSwapEndianStoreAnyInt16Ptr(
 			reinterpret_cast<int16_t*>(pWork), NEi16);
 		// Copy the value to read (Keep endian native)
 		int16_t iResult;
-		Burger::MemoryCopy(&iResult, pWork, 2);
+		Burger::memory_copy(&iResult, pWork, 2);
 		uint_t uFailure = (iResult != REi16);
 		uFailureTotal |= uFailure;
 		ReportFailure(
@@ -1122,7 +1122,7 @@ static uint_t BURGER_API TestBurgerSwapEndianStoreAnyWord32Ptr(
 		Burger::SwapEndian::store_unaligned(
 			reinterpret_cast<uint32_t*>(pWork), NEu32);
 		uint32_t uResult;
-		Burger::MemoryCopy(&uResult, pWork, 4);
+		Burger::memory_copy(&uResult, pWork, 4);
 		// Load the value
 		uint_t uFailure = (uResult != REu32);
 		uFailureTotal |= uFailure;
@@ -1148,7 +1148,7 @@ static uint_t BURGER_API TestBurgerSwapEndianStoreAnyInt32Ptr(
 		Burger::SwapEndian::store_unaligned(
 			reinterpret_cast<int32_t*>(pWork), NEi32);
 		int32_t iResult;
-		Burger::MemoryCopy(&iResult, pWork, 4);
+		Burger::memory_copy(&iResult, pWork, 4);
 		// Load the value
 		uint_t uFailure = (iResult != REi32);
 		uFailureTotal |= uFailure;
@@ -1174,7 +1174,7 @@ static uint_t BURGER_API TestBurgerSwapEndianStoreAnyWord64Ptr(
 		Burger::SwapEndian::store_unaligned(
 			reinterpret_cast<uint64_t*>(pWork), NEu64);
 		uint64_t uResult;
-		Burger::MemoryCopy(&uResult, pWork, 8);
+		Burger::memory_copy(&uResult, pWork, 8);
 		uint_t uFailure = (uResult != REu64);
 		uFailureTotal |= uFailure;
 		Union64_t uMem1;
@@ -1207,7 +1207,7 @@ static uint_t BURGER_API TestBurgerSwapEndianStoreAnyInt64Ptr(
 		Burger::SwapEndian::store_unaligned(
 			reinterpret_cast<int64_t*>(pWork), NEi64);
 		int64_t iResult;
-		Burger::MemoryCopy(&iResult, pWork, 8);
+		Burger::memory_copy(&iResult, pWork, 8);
 		uint_t uFailure = (iResult != REi64);
 		uFailureTotal |= uFailure;
 		Union64_t uMem1;
@@ -1239,7 +1239,7 @@ static uint_t BURGER_API TestBurgerSwapEndianStoreAnyFloatPtr(
 		Burger::SwapEndian::store_unaligned(
 			reinterpret_cast<float*>(pWork), NEf32);
 		float fResult;
-		Burger::MemoryCopy(&fResult, pWork, 4);
+		Burger::memory_copy(&fResult, pWork, 4);
 		uint_t uFailure = (fResult != REf32);
 		uFailureTotal |= uFailure;
 		ReportFailure(
@@ -1264,7 +1264,7 @@ static uint_t BURGER_API TestBurgerSwapEndianStoreAnyDoublePtr(
 		Burger::SwapEndian::store_unaligned(
 			reinterpret_cast<double*>(pWork), NEf64);
 		double dResult;
-		Burger::MemoryCopy(&dResult, pWork, 8);
+		Burger::memory_copy(&dResult, pWork, 8);
 		uint_t uFailure = (dResult != REf64);
 		uFailureTotal |= uFailure;
 		ReportFailure(
@@ -2511,7 +2511,7 @@ static uint_t BURGER_API TestBurgerNativeEndianStoreAnyWord16Ptr(
 		Burger::NativeEndian::store_unaligned(
 			reinterpret_cast<uint16_t*>(pWork), NEu16);
 		uint16_t uResult;
-		Burger::MemoryCopy(&uResult, pWork, 2);
+		Burger::memory_copy(&uResult, pWork, 2);
 		uint_t uFailure = (uResult != NEu16);
 		uFailureTotal |= uFailure;
 		ReportFailure(
@@ -2536,7 +2536,7 @@ static uint_t BURGER_API TestBurgerNativeEndianStoreAnyInt16Ptr(
 		Burger::NativeEndian::store_unaligned(
 			reinterpret_cast<int16_t*>(pWork), NEi16);
 		int16_t iResult;
-		Burger::MemoryCopy(&iResult, pWork, 2);
+		Burger::memory_copy(&iResult, pWork, 2);
 		uint_t uFailure = (iResult != NEi16);
 		uFailureTotal |= uFailure;
 		ReportFailure(
@@ -2561,7 +2561,7 @@ static uint_t BURGER_API TestBurgerNativeEndianStoreAnyWord32Ptr(
 		Burger::NativeEndian::store_unaligned(
 			reinterpret_cast<uint32_t*>(pWork), NEu32);
 		uint32_t uResult;
-		Burger::MemoryCopy(&uResult, pWork, 4);
+		Burger::memory_copy(&uResult, pWork, 4);
 		uint_t uFailure = (uResult != NEu32);
 		uFailureTotal |= uFailure;
 		ReportFailure(
@@ -2586,7 +2586,7 @@ static uint_t BURGER_API TestBurgerNativeEndianStoreAnyInt32Ptr(
 		Burger::NativeEndian::store_unaligned(
 			reinterpret_cast<int32_t*>(pWork), NEi32);
 		int32_t iResult;
-		Burger::MemoryCopy(&iResult, pWork, 4);
+		Burger::memory_copy(&iResult, pWork, 4);
 		uint_t uFailure = (iResult != NEi32);
 		uFailureTotal |= uFailure;
 		ReportFailure(
@@ -2611,7 +2611,7 @@ static uint_t BURGER_API TestBurgerNativeEndianStoreAnyWord64Ptr(
 		Burger::NativeEndian::store_unaligned(
 			reinterpret_cast<uint64_t*>(pWork), NEu64);
 		uint64_t uResult;
-		Burger::MemoryCopy(&uResult, pWork, 8);
+		Burger::memory_copy(&uResult, pWork, 8);
 		uint_t uFailure = (uResult != NEu64);
 		uFailureTotal |= uFailure;
 		Union64_t uMem1;
@@ -2643,7 +2643,7 @@ static uint_t BURGER_API TestBurgerNativeEndianStoreAnyInt64Ptr(
 		Burger::NativeEndian::store_unaligned(
 			reinterpret_cast<int64_t*>(pWork), NEi64);
 		int64_t iResult;
-		Burger::MemoryCopy(&iResult, pWork, 8);
+		Burger::memory_copy(&iResult, pWork, 8);
 		uint_t uFailure = (iResult != NEi64);
 		uFailureTotal |= uFailure;
 		Union64_t uMem1;
@@ -2675,7 +2675,7 @@ static uint_t BURGER_API TestBurgerNativeEndianStoreAnyFloatPtr(
 		Burger::NativeEndian::store_unaligned(
 			reinterpret_cast<float*>(pWork), NEf32);
 		float fResult;
-		Burger::MemoryCopy(&fResult, pWork, 4);
+		Burger::memory_copy(&fResult, pWork, 4);
 		uint_t uFailure = (fResult != NEf32);
 		uFailureTotal |= uFailure;
 		ReportFailure(
@@ -2701,7 +2701,7 @@ static uint_t BURGER_API TestBurgerNativeEndianStoreAnyDoublePtr(
 		Burger::NativeEndian::store_unaligned(
 			reinterpret_cast<double*>(pWork), NEf64);
 		double dResult;
-		Burger::MemoryCopy(&dResult, pWork, 8);
+		Burger::memory_copy(&dResult, pWork, 8);
 		uint_t uFailure = (dResult != NEf64);
 		uFailureTotal |= uFailure;
 		ReportFailure(

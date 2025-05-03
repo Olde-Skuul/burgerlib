@@ -114,7 +114,7 @@ void BURGER_API Burger::FPLargeInt::init(uint32_t uBitsNeeded) BURGER_NOEXCEPT
 	m_uEntryCount = uCount;
 
 	// Zero out all elements we'll use
-	MemoryClear(m_uDataTable, uCount * sizeof(m_uDataTable[0]));
+	memory_clear(m_uDataTable, uCount * sizeof(m_uDataTable[0]));
 
 	// Init the default found range
 	m_iHighestNonZeroElement = -1;

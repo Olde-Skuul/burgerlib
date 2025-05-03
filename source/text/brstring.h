@@ -142,7 +142,7 @@ public:
 	~String(void)
 	{
 		if (m_pData != m_Raw) {
-			Free(m_pData);
+			free_memory(m_pData);
 		}
 	}
 

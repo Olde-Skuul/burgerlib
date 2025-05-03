@@ -400,7 +400,7 @@ uintptr_t BURGER_API Burger::HashMapShared::FindIndex(
 void BURGER_API Burger::HashMapShared::CreateBuffer(
 	uintptr_t uCount, uintptr_t uEntrySize) BURGER_NOEXCEPT
 {
-	Entry* pEntry = static_cast<Entry*>(Alloc(uEntrySize * uCount));
+	Entry* pEntry = static_cast<Entry*>(allocate_memory(uEntrySize * uCount));
 	BURGER_ASSERT(pEntry);
 	// Update the pointer
 	m_pEntries = pEntry;
@@ -490,7 +490,7 @@ void BURGER_API Burger::HashMapShared::CreateHashBuffer(
 				} while (--uCount);
 
 				// Delete our old data buffer.
-				Free(pOldEntries);
+				free_memory(pOldEntries);
 			}
 		}
 	}
@@ -1036,7 +1036,7 @@ void BURGER_API Burger::HashMapShared::Clear(void) BURGER_NOEXCEPT
 			} while (--uCount);
 		}
 	}
-	Free(m_pEntries);
+	free_memory(m_pEntries);
 	m_pEntries = NULL;
 	m_uSizeMask = 0;
 	m_uEntryCount = 0;

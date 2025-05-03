@@ -384,7 +384,7 @@ uint_t BURGER_API Burger::FileBMP::Load(
 		if (pInput->BytesRemaining() < 1024) {
 			pBadNews = "Insufficient data for BMP palette.";
 		} else {
-			MemoryClear(m_Palette, sizeof(m_Palette));
+			memory_clear(m_Palette, sizeof(m_Palette));
 			// In cases where the palette is partially populated
 			uint_t i = 256;
 			if (m_uColorsUsed && (m_uColorsUsed < 256U)) {
@@ -584,7 +584,7 @@ uint_t Burger::FileBMP::Save(
 
 	// Output the supported types! 8 Bit, 24 and 32 bit
 
-	MemoryClear(Filler, sizeof(Filler));
+	memory_clear(Filler, sizeof(Filler));
 	const uint8_t* pData = pImage->GetImage() + ((uHeight - 1) * uStride);
 	uintptr_t uSizeMark;
 	if (eType == Image::PIXELTYPE8BIT) {

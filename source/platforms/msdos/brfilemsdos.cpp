@@ -243,7 +243,7 @@ uintptr_t BURGER_API Burger::File::read(void* pOutput, uintptr_t uSize)
 				if (Regs.flags & 1) {
 					break;
 				}
-				MemoryCopy(pOutput, MSDos::get_temp_protected_buffer(), uChunk);
+				memory_copy(pOutput, MSDos::get_temp_protected_buffer(), uChunk);
 				uResult += Regs.ax;
 				uSize -= Regs.ax;
 				pOutput = static_cast<char*>(pOutput) + Regs.ax;
@@ -287,7 +287,7 @@ uintptr_t BURGER_API Burger::File::write(
 				Regs.dx =
 					static_cast<uint16_t>(uTemp); // Pass the filename buffer
 				Regs.ds = static_cast<uint16_t>(uTemp >> 16); // Get the segment
-				MemoryCopy(MSDos::get_temp_protected_buffer(), pInput, uChunk);
+				memory_copy(MSDos::get_temp_protected_buffer(), pInput, uChunk);
 				MSDos::real_mode_interrupt(0x21, &Regs, &Regs);
 				if (Regs.flags & 1) {
 					break;

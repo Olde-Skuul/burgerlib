@@ -288,7 +288,7 @@ signed long Burger::SoundManager::Voice::PlayCallback(void* pData,
 								//
 								// Copy from the buffer into the mixer
 								//
-								MemoryCopy(pDestBuffer,
+								memory_copy(pDestBuffer,
 									static_cast<const uint8_t*>(pSourceData) +
 										uMark,
 									uChunk);
@@ -436,7 +436,7 @@ uint_t BURGER_API Burger::SoundManager::Voice::Init(
 	//
 
 	AudioStreamBasicDescription StreamDescription;
-	MemoryClear(&StreamDescription, sizeof(StreamDescription));
+	memory_clear(&StreamDescription, sizeof(StreamDescription));
 
 	StreamDescription.mSampleRate = m_uSampleRate;
 	StreamDescription.mFormatID = kAudioFormatLinearPCM;
@@ -840,8 +840,8 @@ Burger::SoundManager::SoundManager(GameApp* pGameApp) :
 	m_bStereoAvailable(TRUE), m_bMasterVolumeAvailable(TRUE),
 	m_uBufferDepth(16), m_uOutputSamplesPerSecond(44100)
 {
-	MemoryClear(m_pSoundUnits, sizeof(m_pSoundUnits));
-	MemoryClear(m_iSoundNodes, sizeof(m_iSoundNodes));
+	memory_clear(m_pSoundUnits, sizeof(m_pSoundUnits));
+	memory_clear(m_iSoundNodes, sizeof(m_iSoundNodes));
 }
 
 /***************************************
@@ -1096,8 +1096,8 @@ void BURGER_API Burger::SoundManager::Shutdown(void)
 		//
 		// Clear the memory internally
 		//
-		MemoryClear(m_pSoundUnits, sizeof(m_pSoundUnits));
-		MemoryClear(m_iSoundNodes, sizeof(m_iSoundNodes));
+		memory_clear(m_pSoundUnits, sizeof(m_pSoundUnits));
+		memory_clear(m_iSoundNodes, sizeof(m_iSoundNodes));
 
 		//
 		// Was there a mixer?
@@ -1191,7 +1191,7 @@ uint_t BURGER_API Burger::SoundManager::GetAudioModes(
 		AudioDeviceID MyDeviceList[16];
 		AudioDeviceID* pDeviceList = MyDeviceList;
 		if (uSize > sizeof(MyDeviceList)) {
-			pDeviceList = static_cast<AudioDeviceID*>(alloc_clear(uSize));
+			pDeviceList = static_cast<AudioDeviceID*>(allocate_memory_clear(uSize));
 			// What?
 			if (!pDeviceList) {
 				pDeviceList = MyDeviceList;
@@ -1223,7 +1223,7 @@ uint_t BURGER_API Burger::SoundManager::GetAudioModes(
 
 				// Get space for the audio buffer list
 				AudioBufferList* pBufferList =
-					static_cast<AudioBufferList*>(Alloc(uSize));
+					static_cast<AudioBufferList*>(allocate_memory(uSize));
 				uint_t bOutputDevice = FALSE;
 				if (pBufferList) {
 					// Grab the list
@@ -1247,7 +1247,7 @@ uint_t BURGER_API Burger::SoundManager::GetAudioModes(
 							} while (--uBufferCount);
 						}
 					}
-					Free(pBufferList);
+					free_memory(pBufferList);
 				}
 
 				// Was it an output device?
@@ -1294,7 +1294,7 @@ uint_t BURGER_API Burger::SoundManager::GetAudioModes(
 				if (!uResult && uSize) {
 					// Get space for the audio buffer list
 					AudioValueRange* pRangeList =
-						static_cast<AudioValueRange*>(Alloc(uSize));
+						static_cast<AudioValueRange*>(allocate_memory(uSize));
 					if (pRangeList) {
 						uResult = AudioObjectGetPropertyData(uDeviceID,
 							&g_GetAudioSampleRates, 0, nullptr, &uSize,
@@ -1318,7 +1318,7 @@ uint_t BURGER_API Burger::SoundManager::GetAudioModes(
 							Entry.m_uMaximumSampleRate =
 								static_cast<uint_t>(static_cast<int_t>(fMax));
 						}
-						Free(pRangeList);
+						free_memory(pRangeList);
 					}
 				}
 
@@ -1329,7 +1329,7 @@ uint_t BURGER_API Burger::SoundManager::GetAudioModes(
 
 		// Release the device list buffer
 		if (pDeviceList != MyDeviceList) {
-			Free(pDeviceList);
+			free_memory(pDeviceList);
 		}
 	}
 	return static_cast<uint_t>(uResult);

@@ -309,7 +309,7 @@ int Burger::DecompressDeflate::Flush(int iErrorCode)
 	m_uAlder32Checksum = calc_adler32(pWindowRead,uCount,m_uAlder32Checksum);
 
 	// Copy as far as end of window
-	MemoryCopy(pOutput,pWindowRead,uCount);
+	memory_copy(pOutput,pWindowRead,uCount);
 	pOutput += uCount;
 	pWindowRead += uCount;
 
@@ -336,7 +336,7 @@ int Burger::DecompressDeflate::Flush(int iErrorCode)
 		m_uAlder32Checksum = calc_adler32(pWindowRead,uCount,m_uAlder32Checksum);
 
 		// Copy into the output
-		MemoryCopy(pOutput,pWindowRead,uCount);
+		memory_copy(pOutput,pWindowRead,uCount);
 		pOutput += uCount;
 		pWindowRead += uCount;
 	}
@@ -1055,7 +1055,7 @@ int Burger::DecompressDeflate::BuildHuffmanTrees(const uint_t *pSampleCounts,uin
 int Burger::DecompressDeflate::TreesBits(const uint_t *pSampleCounts,uint_t *pNewTreeSize,DeflateHuft_t **ppNewTree,DeflateHuft_t *pExistingTree)
 {
 	uint_t WorkArea[19];
-	MemoryClear(&WorkArea,sizeof(WorkArea));
+	memory_clear(&WorkArea,sizeof(WorkArea));
 
 	uint_t uHuffmanCount = 0;			// Huffmans used in the WorkArea
 	int iErrorCode = BuildHuffmanTrees(pSampleCounts,19,19,NULL,NULL,ppNewTree,pNewTreeSize,pExistingTree,&uHuffmanCount,WorkArea);
@@ -1088,7 +1088,7 @@ int Burger::DecompressDeflate::TreesDynamic(uint_t uNumberSamples,uint_t uNumber
 	DeflateHuft_t **ppNewTree,DeflateHuft_t **ppNewDistance,DeflateHuft_t *pExistingTree)
 {
 	uint_t WorkArea[288];
-	MemoryClear(&WorkArea,sizeof(WorkArea));
+	memory_clear(&WorkArea,sizeof(WorkArea));
 
 	uint_t uHuffmanCount = 0;			// Huffmans used in the WorkArea
 	// build literal/length tree
@@ -1172,7 +1172,7 @@ int Burger::DecompressDeflate::TreesDynamic(uint_t uNumberSamples,uint_t uNumber
 
 void Burger::DecompressDeflate::BlocksReset(void)
 {
-	Free(m_pTreesLengths);
+	free_memory(m_pTreesLengths);
 	m_pTreesLengths = NULL;
 	m_eBlockMode = BLOCKMODE_TYPE;
 	m_uBitCount = 0;
@@ -1293,7 +1293,7 @@ int Burger::DecompressDeflate::ProcessBlocks(int iErrorCode)
 				if (uCopySize > uRemainingWindow) {
 					uCopySize = uRemainingWindow;
 				}
-				MemoryCopy(pWindowWrite,pInput,uCopySize);
+				memory_copy(pWindowWrite,pInput,uCopySize);
 				pInput += uCopySize;
 				uInputChunkLength -= uCopySize;
 				pWindowWrite += uCopySize;
@@ -1324,7 +1324,7 @@ int Burger::DecompressDeflate::ProcessBlocks(int iErrorCode)
 				goto Abort;
 			}
 			t = 258 + (t & 0x1f) + ((t >> 5) & 0x1f);
-			if ((m_pTreesLengths = static_cast<uint_t*>(alloc_clear(t*sizeof(uint_t)))) == NULL) {
+			if ((m_pTreesLengths = static_cast<uint_t*>(allocate_memory_clear(t*sizeof(uint_t)))) == NULL) {
  				iErrorCode = Z_MEM_ERROR;
 				goto Abort;
 			}
@@ -1354,7 +1354,7 @@ int Burger::DecompressDeflate::ProcessBlocks(int iErrorCode)
 			m_uTreesDepth = 7;
 			t = static_cast<uint_t>(TreesBits(m_pTreesLengths, &m_uTreesDepth,&m_pTreesHuffman, m_HuffmanTable));
 			if (t != Z_OK) {
-				Free(m_pTreesLengths);
+				free_memory(m_pTreesLengths);
 				m_pTreesLengths = 0;
 				iErrorCode = static_cast<int>(t);
 				if (iErrorCode == Z_DATA_ERROR) {
@@ -1413,7 +1413,7 @@ int Burger::DecompressDeflate::ProcessBlocks(int iErrorCode)
 					t = m_uTreesTable;
 					if (i + j > 258 + (t & 0x1f) + ((t >> 5) & 0x1f) ||
 						(c == 16 && i < 1)) {
-						Free(m_pTreesLengths);
+						free_memory(m_pTreesLengths);
 						m_pTreesLengths = 0;
 						m_eBlockMode = BLOCKMODE_ABORT;
 						iErrorCode = Z_DATA_ERROR;
@@ -1435,7 +1435,7 @@ int Burger::DecompressDeflate::ProcessBlocks(int iErrorCode)
 				uint_t bCodeDistanceBits = 6;			/* must be <= 9 for lookahead assumptions */
 				t = m_uTreesTable;
 				t = static_cast<uint_t>(TreesDynamic(257 + (t & 0x1f), 1 + ((t >> 5) & 0x1f),m_pTreesLengths,&bCodeLengthBits,&bCodeDistanceBits,&pCodeTreeLength,&pCodeTreeDistance,m_HuffmanTable));
-				Free(m_pTreesLengths);
+				free_memory(m_pTreesLengths);
 				m_pTreesLengths = NULL;
 				if (t != Z_OK) {
 					if (t == (uint_t)Z_DATA_ERROR) {
@@ -1793,10 +1793,10 @@ Burger::eError Burger::DecompressDeflate::Process(void *pOutput,uintptr_t uOutpu
 
 Burger::eError BURGER_API Burger::SimpleDecompressDeflate(void *pOutput,uintptr_t uOutputChunkLength,const void *pInput,uintptr_t uInputChunkLength)
 {
-	DecompressDeflate *pDecompress = New<DecompressDeflate>();
+	DecompressDeflate *pDecompress = new_object<DecompressDeflate>();
 	pDecompress->DecompressDeflate::Reset();
 	eError uError = pDecompress->DecompressDeflate::Process(pOutput,uOutputChunkLength,pInput,uInputChunkLength);
-	Delete(pDecompress);
+	delete_object(pDecompress);
 	return uError;
 }
 

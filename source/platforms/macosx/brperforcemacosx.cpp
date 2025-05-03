@@ -65,7 +65,7 @@ uint_t BURGER_API Burger::Perforce::Init(void)
 		uint_t bFilenameInitialized = FALSE;
 		if (pAppdirectory) {
 			m_PerforceFilename.set_native(pAppdirectory);
-			Free(pAppdirectory);
+			free_memory(pAppdirectory);
 			m_PerforceFilename.join("p4");
 			// Is there an exec here?
 			if (FileManager::does_file_exist(&m_PerforceFilename)) {
@@ -80,7 +80,7 @@ uint_t BURGER_API Burger::Perforce::Init(void)
 			pAppdirectory = GetEnvironmentString("BURGER_SDKS");
 			if (pAppdirectory) {
 				m_PerforceFilename.set_native(pAppdirectory);
-				Free(pAppdirectory);
+				free_memory(pAppdirectory);
 				m_PerforceFilename.join("macosx:bin:p4");
 				if (FileManager::does_file_exist(&m_PerforceFilename)) {
 					bFilenameInitialized = TRUE;
@@ -123,7 +123,7 @@ uint_t BURGER_API Burger::Perforce::Init(void)
 					pWork = pColon + 1;
 				}
 				// Release the PATH
-				Free(pAppdirectory);
+				free_memory(pAppdirectory);
 			}
 		}
 

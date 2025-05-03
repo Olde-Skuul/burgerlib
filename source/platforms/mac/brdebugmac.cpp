@@ -106,7 +106,7 @@ void BURGER_API Burger::OkAlertMessage(
 	// Ok?
 	if (hItemList) {
 		// Copy the template
-		MemoryCopy(*hItemList, g_OkTemplate, sizeof(g_OkTemplate));
+		memory_copy(*hItemList, g_OkTemplate, sizeof(g_OkTemplate));
 
 		// Copy the message
 		CStringToPString(
@@ -210,7 +210,7 @@ uint_t BURGER_API Burger::OkCancelAlertMessage(
 		static_cast<Size>(sizeof(g_OkCancelTemplate) + 1 + uMessageLen));
 	// Ok?
 	if (hItemList) {
-		MemoryCopy(*hItemList, g_OkCancelTemplate,
+		memory_copy(*hItemList, g_OkCancelTemplate,
 			sizeof(g_OkCancelTemplate)); // Copy the template
 		CStringToPString(
 			reinterpret_cast<uint8_t*>(*hItemList) + sizeof(g_OkCancelTemplate),

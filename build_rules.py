@@ -75,6 +75,8 @@ SUPER_HEADERS = (
      "burgermacosx.h", "burgermacosx_stripped.h"),
     ("platforms" + os.sep + "darwin" + os.sep + "templatedarwin.h",
      "burgerdarwin.h", "burgerdarwin_stripped.h"),
+    ("platforms" + os.sep + "psvita" + os.sep + "templatepsvita.h",
+     "burgerpsvita.h", "burgerpsvita_stripped.h"),
     ("platforms" + os.sep + "ps4" + os.sep + "templateps4.h",
      "burgerps4.h", "burgerps4_stripped.h"),
     ("platforms" + os.sep + "windows" + os.sep + "templatewindows.h",
@@ -113,6 +115,10 @@ UNIQUE_HEADERS = (
     # MacOSX
     ("bin" + os.sep + "burgermacosx_stripped.h",
         "macosx" + os.sep + "burgerlib" + os.sep + "burgermacosx.h"),
+
+    # PS Vita
+    ("bin" + os.sep + "burgerpsvita_stripped.h",
+        "psvita" + os.sep + "burgerlib" + os.sep + "burgerpsvita.h"),
 
     # PS4
     ("bin" + os.sep + "burgerps4_stripped.h",

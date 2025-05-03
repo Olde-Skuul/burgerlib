@@ -386,7 +386,7 @@ Burger::Keyboard* BURGER_API Burger::GameApp::StartupKeyboard(
 	// If not valid and one wasn't allocated...
 	if (!pResult && !m_bKeyboardStarted) {
 		// Allocate it.
-		pResult = new (Alloc(sizeof(Keyboard))) Keyboard(this);
+		pResult = new (allocate_memory(sizeof(Keyboard))) Keyboard(this);
 		if (pResult) {
 
 			// Success!
@@ -423,7 +423,7 @@ Burger::Mouse* BURGER_API Burger::GameApp::StartupMouse(void) BURGER_NOEXCEPT
 	// If not valid and one wasn't allocated...
 	if (!pResult && !m_bMouseStarted) {
 		// Allocate it.
-		pResult = new (Alloc(sizeof(Mouse))) Mouse(this);
+		pResult = new (allocate_memory(sizeof(Mouse))) Mouse(this);
 		if (pResult) {
 
 			// Success!
@@ -460,7 +460,7 @@ Burger::Joypad* BURGER_API Burger::GameApp::StartupJoypad(void) BURGER_NOEXCEPT
 	// If not valid and one wasn't allocated...
 	if (!pResult && !m_bJoypadStarted) {
 		// Allocate it.
-		pResult = new (Alloc(sizeof(Joypad))) Joypad(this);
+		pResult = new (allocate_memory(sizeof(Joypad))) Joypad(this);
 		if (pResult) {
 
 			// Success!
@@ -504,9 +504,9 @@ Burger::Display* BURGER_API Burger::GameApp::StartupDisplay(
 	if (!pResult && !m_bDisplayStarted) {
 		// Allocate it.
 #if defined(BURGER_WINDOWS)
-		pResult = new (Alloc(sizeof(DisplayDirectX9))) DisplayDirectX9(this);
+		pResult = new (allocate_memory(sizeof(DisplayDirectX9))) DisplayDirectX9(this);
 #else
-		pResult = new (Alloc(sizeof(Display))) Display(this);
+		pResult = new (allocate_memory(sizeof(Display))) Display(this);
 #endif
 		if (pResult) {
 
@@ -545,7 +545,7 @@ Burger::SoundManager* BURGER_API Burger::GameApp::StartupSoundManager(
 	// If not valid and one wasn't allocated...
 	if (!pResult && !m_bSoundManagerStarted) {
 		// Allocate it.
-		pResult = new (Alloc(sizeof(SoundManager))) SoundManager(this);
+		pResult = new (allocate_memory(sizeof(SoundManager))) SoundManager(this);
 		if (pResult) {
 
 			// Success!
@@ -742,7 +742,7 @@ void BURGER_API Burger::GameApp::SetKeyboard(
 		// Is this pointer the same as before?
 		if (pKeyboard != m_pKeyboard) {
 			// It's not, so dispose of the allocated one
-			Delete(static_cast<Base*>(m_pKeyboard));
+			delete_object(static_cast<Base*>(m_pKeyboard));
 			m_bKeyboardStarted = FALSE;
 		}
 	}
@@ -783,7 +783,7 @@ void BURGER_API Burger::GameApp::SetMouse(Mouse* pMouse) BURGER_NOEXCEPT
 		// Is this pointer the same as before?
 		if (pMouse != m_pMouse) {
 			// It's not, so dispose of the allocated one
-			Delete(static_cast<Base*>(m_pMouse));
+			delete_object(static_cast<Base*>(m_pMouse));
 			m_bMouseStarted = FALSE;
 		}
 	}
@@ -824,7 +824,7 @@ void BURGER_API Burger::GameApp::SetJoypad(Joypad* pJoypad) BURGER_NOEXCEPT
 		// Is this pointer the same as before?
 		if (pJoypad != m_pJoypad) {
 			// It's not, so dispose of the allocated one
-			Delete(static_cast<Base*>(m_pJoypad));
+			delete_object(static_cast<Base*>(m_pJoypad));
 			m_bJoypadStarted = FALSE;
 		}
 	}
@@ -867,7 +867,7 @@ void BURGER_API Burger::GameApp::SetSoundManager(
 		// Is this pointer the same as before?
 		if (pSetSoundManager != m_pSoundManager) {
 			// It's not, so dispose of the allocated one
-			Delete(static_cast<Base*>(m_pSoundManager));
+			delete_object(static_cast<Base*>(m_pSoundManager));
 			m_bSoundManagerStarted = FALSE;
 		}
 	}
@@ -909,7 +909,7 @@ void BURGER_API Burger::GameApp::SetDisplay(Display* pDisplay) BURGER_NOEXCEPT
 		// Is this pointer the same as before?
 		if (pDisplay != m_pDisplay) {
 			// It's not, so dispose of the allocated one
-			Delete(static_cast<Base*>(m_pDisplay));
+			delete_object(static_cast<Base*>(m_pDisplay));
 			m_bDisplayStarted = FALSE;
 		}
 	}

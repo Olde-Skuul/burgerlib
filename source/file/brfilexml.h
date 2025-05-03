@@ -130,8 +130,8 @@ public:
 		BURGER_INLINE const char *GetText(void) const { return m_Comment.c_str(); }
 		BURGER_INLINE void SetText(const char *pInput) { m_Comment.assign(pInput); }
 		BURGER_INLINE void SetText(const String *pInput) { m_Comment = pInput[0]; }
-		static Comment * BURGER_API New(InputMemoryStream *pInput);
-		static Comment * BURGER_API New(const char *pComment);
+		static Comment * BURGER_API new_object(InputMemoryStream *pInput);
+		static Comment * BURGER_API new_object(const char *pComment);
 	};
 
 	class CData : public Generic {
@@ -145,8 +145,8 @@ public:
 		BURGER_INLINE const char *GetText(void) const { return m_CData.c_str(); }
 		BURGER_INLINE void SetText(const char *pInput) { m_CData.assign(pInput); }
 		BURGER_INLINE void SetText(const String *pInput) { m_CData = pInput[0]; }
-		static CData * BURGER_API New(InputMemoryStream *pInput);
-		static CData * BURGER_API New(const char *pCData);
+		static CData * BURGER_API new_object(InputMemoryStream *pInput);
+		static CData * BURGER_API new_object(const char *pCData);
 	};
 
 	class Attribute : public Generic {
@@ -176,8 +176,8 @@ public:
 		BURGER_INLINE double GetDouble(double dDefault) const { return m_Value.GetDouble(dDefault); }
 		BURGER_INLINE double GetDouble(double dDefault,double dMin,double dMax) const { return m_Value.GetDouble(dDefault,dMin,dMax); }
 		BURGER_INLINE void SetDouble(double dValue) { m_Value.SetDouble(dValue); }
-		static Attribute * BURGER_API New(InputMemoryStream *pInput);
-		static Attribute * BURGER_API New(const char *pInput,const char *pValue=NULL);
+		static Attribute * BURGER_API new_object(InputMemoryStream *pInput);
+		static Attribute * BURGER_API new_object(const char *pInput,const char *pValue=NULL);
 		Attribute * BURGER_API Update(Root *pRoot,const char *pKey,const char *pValue);
 	};
 
@@ -198,8 +198,8 @@ public:
 		BURGER_INLINE void SetEncoding(const String *pInput) { m_Encoding = pInput[0]; }
 		uint_t BURGER_INLINE GetStandalone(void) const { return m_bStandalone==1;}
 		void BURGER_INLINE SetStandalone(uint_t bInput) { m_bStandalone = bInput; }
-		static Declaration * BURGER_API New(InputMemoryStream *pInput);
-		static Declaration * BURGER_API New(float fVersion,const char *pEncoding=NULL,uint_t bStandalone=2);
+		static Declaration * BURGER_API new_object(InputMemoryStream *pInput);
+		static Declaration * BURGER_API new_object(float fVersion,const char *pEncoding=NULL,uint_t bStandalone=2);
 	};
 
 	class RawText : public Generic {
@@ -226,8 +226,8 @@ public:
 		BURGER_INLINE double GetDouble(double dDefault) const { return m_Text.GetDouble(dDefault); }
 		BURGER_INLINE double GetDouble(double dDefault,double dMin,double dMax) const { return m_Text.GetDouble(dDefault,dMin,dMax); }
 		BURGER_INLINE void SetDouble(double dValue) { m_Text.SetDouble(dValue); }
-		static RawText * BURGER_API New(InputMemoryStream *pInput);
-		static RawText * BURGER_API New(const char *pText);
+		static RawText * BURGER_API new_object(InputMemoryStream *pInput);
+		static RawText * BURGER_API new_object(const char *pText);
 	};
 
 	class Element : public Generic {
@@ -298,8 +298,8 @@ public:
 		void BURGER_API ElementSetDouble(const char *pElementName,double dValue);
 		const char *BURGER_API ElementGetString(const char *pElementName,const char *pDefault) const;
 		void BURGER_API ElementSetString(const char *pElementName,const char *pValue);
-		static Element * BURGER_API New(InputMemoryStream *pInput);
-		static Element * BURGER_API New(const char *pName);
+		static Element * BURGER_API new_object(InputMemoryStream *pInput);
+		static Element * BURGER_API new_object(const char *pName);
 	};
 
 	BURGER_DISABLE_COPY(FileXML);
@@ -309,10 +309,10 @@ private:
 public:
 	FileXML();
 	~FileXML();
-	static FileXML * BURGER_API New(void);
-	static FileXML * BURGER_API New(const char *pFilename,uint_t bAlwaysCreate=FALSE);
-	static FileXML * BURGER_API New(Filename *pFilename,uint_t bAlwaysCreate=FALSE);
-	static FileXML * BURGER_API New(InputMemoryStream *pInput,uint_t bAlwaysCreate=FALSE);
+	static FileXML * BURGER_API new_object(void);
+	static FileXML * BURGER_API new_object(const char *pFilename,uint_t bAlwaysCreate=FALSE);
+	static FileXML * BURGER_API new_object(Filename *pFilename,uint_t bAlwaysCreate=FALSE);
+	static FileXML * BURGER_API new_object(InputMemoryStream *pInput,uint_t bAlwaysCreate=FALSE);
 	uint_t BURGER_API Init(const char *pFilename);
 	uint_t BURGER_API Init(Filename *pFilename);
 	uint_t BURGER_API Init(InputMemoryStream *pInput);

@@ -191,7 +191,7 @@ void BURGER_API Burger::DoubleLinkedList_t::insert_before(
 	point to itself
 
 	\sa DoubleLinkedList_t::detach(void), insert_before(DoubleLinkedList *),
-		insert_after(DoubleLinkedList *), Delete(const T*), or
+		insert_after(DoubleLinkedList *), delete_object(const T*), or
 		~DoubleLinkedList()
 
 ***************************************/
@@ -261,17 +261,17 @@ void BURGER_API Burger::DoubleLinkedList_t::insert_before(
 
 	\brief Create a new DoubleLinkedList instance
 
-	Allocate memory using Burger::Alloc() and initialize a DoubleLinkedList with
+	Allocate memory using Burger::allocate_memory() and initialize a DoubleLinkedList with
 	it.
 
 	\return \ref nullptr if out of memory
-	\sa Delete(const T*)
+	\sa delete_object(const T*)
 
 ***************************************/
 
-Burger::DoubleLinkedList* BURGER_API Burger::DoubleLinkedList::New(
+Burger::DoubleLinkedList* BURGER_API Burger::DoubleLinkedList::new_object(
 	void) BURGER_NOEXCEPT
 {
 	// Manually allocate the memory
-	return new (Alloc(sizeof(DoubleLinkedList))) DoubleLinkedList;
+	return new (allocate_memory(sizeof(DoubleLinkedList))) DoubleLinkedList;
 }

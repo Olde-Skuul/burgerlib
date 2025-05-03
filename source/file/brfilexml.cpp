@@ -349,23 +349,23 @@ uint_t BURGER_API Burger::FileXML::Root::ParseList(InputMemoryStream *pInput,uin
 			Generic *pGeneric;
 			if (pInput->IsStringMatch("!--")) {
 				// Create a comment
-				pGeneric = Comment::New(pInput);
+				pGeneric = Comment::new_object(pInput);
 			} else if (pInput->IsStringMatchCase("?xml")) {
 				// Create Declarator
-				pGeneric = Declaration::New(pInput);
+				pGeneric = Declaration::new_object(pInput);
 			} else if (pInput->IsStringMatch("![CDATA[")) {
 				// Create a CDATA record
-				pGeneric = CData::New(pInput);
+				pGeneric = CData::new_object(pInput);
 			} else if (pInput->IsStringMatch("/")) {
 				uResult = FALSE;
 				pInput->SkipBack(2);		// Allow the higher level parser detect this in the stream
 				break;
 			} else if (pInput->IsStringMatch("!")) {
 				// Create a DTD record
-				pGeneric = Element::New(pInput);
+				pGeneric = Element::new_object(pInput);
 			} else {
 				// Create an element
-				pGeneric = Element::New(pInput);
+				pGeneric = Element::new_object(pInput);
 			}
 			// Append this new record at the end of the file
 			if (!pGeneric) {
@@ -387,7 +387,7 @@ uint_t BURGER_API Burger::FileXML::Root::ParseList(InputMemoryStream *pInput,uin
 					break;			// Error!
 				}
 				// Create a text object
-				Generic *pGeneric = RawText::New(pInput);
+				Generic *pGeneric = RawText::new_object(pInput);
 				if (!pGeneric) {
 					break;
 				}
@@ -441,7 +441,7 @@ void BURGER_API Burger::FileXML::Root::DeleteList(void)
 	if (pGeneric!=this) {
 		do {
 			Generic *pNext = pGeneric->GetNext();
-			Delete(pGeneric);
+			delete_object(pGeneric);
 			// Deleting the object removes it from the list, 
 			// so reload from the list the "next" object
 			// to continue the iterations
@@ -500,7 +500,7 @@ void BURGER_API Burger::FileXML::Root::DeleteType(eType uType)
 			do {
 				Generic *pNext = pGeneric->GetNext();
 				if (pGeneric->GetType()==uType) {
-					Delete(pGeneric);
+					delete_object(pGeneric);
 				}
 				pGeneric = pNext;
 			} while (pGeneric!=this);
@@ -592,7 +592,7 @@ Burger::FileXML::Element * BURGER_API Burger::FileXML::Root::FindElement(const c
 
 Burger::FileXML::Element * BURGER_API Burger::FileXML::Root::AddElement(const char *pElementName)
 {
-	Element *pElement = Element::New(pElementName);
+	Element *pElement = Element::new_object(pElementName);
 	if (pElement) {
 		InsertBefore(pElement);
 	}
@@ -613,7 +613,7 @@ Burger::FileXML::Element * BURGER_API Burger::FileXML::Root::AddElement(const ch
 
 void BURGER_API Burger::FileXML::Root::DeleteElement(const char *pElementName)
 {
-	Delete(FindElement(pElementName));
+	delete_object(FindElement(pElementName));
 }
 
 /*! ************************************
@@ -636,7 +636,7 @@ void BURGER_API Burger::FileXML::Root::DeleteElements(const char *pElementName)
 			Generic *pNext = pGeneric->GetNext();
 			if (pGeneric->GetType()==XML_ELEMENT) {
 				if (!StringCompare(pElementName,static_cast<const Element *>(pGeneric)->GetName())) {
-					Delete(pGeneric);
+					delete_object(pGeneric);
 				}
 			}
 			pGeneric = pNext;
@@ -734,7 +734,7 @@ Burger::FileXML::Attribute * BURGER_API Burger::FileXML::Root::AddAttribute(cons
 	Attribute *pAttribute = FindAttribute(pAttributeName);
 	if (!pAttribute) {
 		// Create it
-		pAttribute = Attribute::New(pAttributeName,pValue);
+		pAttribute = Attribute::new_object(pAttributeName,pValue);
 		if (pAttribute) {
 			InsertBefore(pAttribute);
 		}
@@ -755,7 +755,7 @@ Burger::FileXML::Attribute * BURGER_API Burger::FileXML::Root::AddAttribute(cons
 
 void BURGER_API Burger::FileXML::Root::DeleteAttribute(const char *pAttributeName)
 {
-	Delete(FindAttribute(pAttributeName));
+	delete_object(FindAttribute(pAttributeName));
 }
 
 /*! ************************************
@@ -837,7 +837,7 @@ Burger::FileXML::RawText * BURGER_API Burger::FileXML::Root::FindRawText(uint_t 
 Burger::FileXML::RawText * BURGER_API Burger::FileXML::Root::AddRawText(const char *pValue)
 {
 	// Create it
-	RawText *pRawText = RawText::New(pValue);
+	RawText *pRawText = RawText::new_object(pValue);
 	if (pRawText) {
 		InsertBefore(pRawText);
 	}
@@ -853,7 +853,7 @@ Burger::FileXML::RawText * BURGER_API Burger::FileXML::Root::AddRawText(const ch
 void BURGER_API Burger::FileXML::Root::DeleteRawText(void)
 {
 	// Any text?
-	Delete(FindRawText());
+	delete_object(FindRawText());
 }
 
 
@@ -1046,12 +1046,12 @@ uint_t Burger::FileXML::Comment::Save(OutputMemoryStream *pOutput,uint_t uDepth)
 
 ***************************************/
 
-Burger::FileXML::Comment * BURGER_API Burger::FileXML::Comment::New(InputMemoryStream *pInput)
+Burger::FileXML::Comment * BURGER_API Burger::FileXML::Comment::new_object(InputMemoryStream *pInput)
 {
-	Comment *pComment = new (Alloc(sizeof(Comment))) Comment;
+	Comment *pComment = new (allocate_memory(sizeof(Comment))) Comment;
 	if (pComment) {
 		if (pComment->Parse(pInput)) {
-			Delete(pComment);
+			delete_object(pComment);
 			pComment = NULL;
 		}
 	}
@@ -1069,9 +1069,9 @@ Burger::FileXML::Comment * BURGER_API Burger::FileXML::Comment::New(InputMemoryS
 
 ***************************************/
 
-Burger::FileXML::Comment * BURGER_API Burger::FileXML::Comment::New(const char *pComment)
+Burger::FileXML::Comment * BURGER_API Burger::FileXML::Comment::new_object(const char *pComment)
 {
-	return new (Alloc(sizeof(Comment))) Comment(pComment);
+	return new (allocate_memory(sizeof(Comment))) Comment(pComment);
 }
 
 
@@ -1259,12 +1259,12 @@ uint_t Burger::FileXML::CData::Save(OutputMemoryStream *pOutput,uint_t uDepth) c
 
 ***************************************/
 
-Burger::FileXML::CData * BURGER_API Burger::FileXML::CData::New(InputMemoryStream *pInput)
+Burger::FileXML::CData * BURGER_API Burger::FileXML::CData::new_object(InputMemoryStream *pInput)
 {
-	CData *pCData = new (Alloc(sizeof(CData))) CData;
+	CData *pCData = new (allocate_memory(sizeof(CData))) CData;
 	if (pCData) {
 		if (pCData->Parse(pInput)) {
-			Delete(pCData);
+			delete_object(pCData);
 			pCData = NULL;
 		}
 	}
@@ -1282,9 +1282,9 @@ Burger::FileXML::CData * BURGER_API Burger::FileXML::CData::New(InputMemoryStrea
 
 ***************************************/
 
-Burger::FileXML::CData * BURGER_API Burger::FileXML::CData::New(const char *pCData)
+Burger::FileXML::CData * BURGER_API Burger::FileXML::CData::new_object(const char *pCData)
 {
-	return new (Alloc(sizeof(CData))) CData(pCData);
+	return new (allocate_memory(sizeof(CData))) CData(pCData);
 }
 
 
@@ -1637,12 +1637,12 @@ uint_t Burger::FileXML::Attribute::Save(OutputMemoryStream *pOutput,uint_t /* uD
 
 ***************************************/
 
-Burger::FileXML::Attribute * BURGER_API Burger::FileXML::Attribute::New(InputMemoryStream *pInput)
+Burger::FileXML::Attribute * BURGER_API Burger::FileXML::Attribute::new_object(InputMemoryStream *pInput)
 {
-	Attribute *pAttribute = new (Alloc(sizeof(Attribute))) Attribute;
+	Attribute *pAttribute = new (allocate_memory(sizeof(Attribute))) Attribute;
 	if (pAttribute) {
 		if (pAttribute->Parse(pInput)) {
-			Delete(pAttribute);
+			delete_object(pAttribute);
 			pAttribute = NULL;
 		}
 	}
@@ -1663,9 +1663,9 @@ Burger::FileXML::Attribute * BURGER_API Burger::FileXML::Attribute::New(InputMem
 
 ***************************************/
 
-Burger::FileXML::Attribute * BURGER_API Burger::FileXML::Attribute::New(const char *pInput,const char *pValue)
+Burger::FileXML::Attribute * BURGER_API Burger::FileXML::Attribute::new_object(const char *pInput,const char *pValue)
 {
-	Attribute *pAttribute = new (Alloc(sizeof(Attribute))) Attribute;
+	Attribute *pAttribute = new (allocate_memory(sizeof(Attribute))) Attribute;
 	if (pAttribute) {
 		pAttribute->SetKey(pInput);
 		pAttribute->SetValue(pValue);
@@ -1715,7 +1715,7 @@ Burger::FileXML::Attribute *BURGER_API Burger::FileXML::Attribute::Update(Root *
 {
 	// Delete the record?
 	if (!pKey || !pKey[0] || !pValue) {
-		Delete(this);
+		delete_object(this);
 		return nullptr;
 	}
 #if defined(BURGER_CLANG)
@@ -1728,7 +1728,7 @@ Burger::FileXML::Attribute *BURGER_API Burger::FileXML::Attribute::Update(Root *
 #pragma clang diagnostic pop
 #endif
 		// Create the new attribute
-		Attribute *pAttribute = Attribute::New(pKey,pValue);
+		Attribute *pAttribute = Attribute::new_object(pKey,pValue);
 		if (pAttribute && pRoot) {
 			pRoot->InsertBefore(pAttribute);
 		}
@@ -1994,12 +1994,12 @@ void BURGER_API Burger::FileXML::Declaration::SetVersion(float fInput)
 
 ***************************************/
 
-Burger::FileXML::Declaration * BURGER_API Burger::FileXML::Declaration::New(InputMemoryStream *pInput)
+Burger::FileXML::Declaration * BURGER_API Burger::FileXML::Declaration::new_object(InputMemoryStream *pInput)
 {
-	Declaration *pDeclaration = new (Alloc(sizeof(Declaration))) Declaration;
+	Declaration *pDeclaration = new (allocate_memory(sizeof(Declaration))) Declaration;
 	if (pDeclaration) {
 		if (pDeclaration->Parse(pInput)) {
-			Delete(pDeclaration);
+			delete_object(pDeclaration);
 			pDeclaration = NULL;
 		}
 	}
@@ -2021,9 +2021,9 @@ Burger::FileXML::Declaration * BURGER_API Burger::FileXML::Declaration::New(Inpu
 
 ***************************************/
 
-Burger::FileXML::Declaration * BURGER_API Burger::FileXML::Declaration::New(float fVersion,const char *pEncoding,uint_t bStandalone)
+Burger::FileXML::Declaration * BURGER_API Burger::FileXML::Declaration::new_object(float fVersion,const char *pEncoding,uint_t bStandalone)
 {
-	return new (Alloc(sizeof(Declaration))) Declaration(fVersion,pEncoding,bStandalone);
+	return new (allocate_memory(sizeof(Declaration))) Declaration(fVersion,pEncoding,bStandalone);
 }
 
 
@@ -2389,12 +2389,12 @@ uint_t Burger::FileXML::RawText::Save(OutputMemoryStream *pOutput,uint_t uDepth)
 
 ***************************************/
 
-Burger::FileXML::RawText * BURGER_API Burger::FileXML::RawText::New(InputMemoryStream *pInput)
+Burger::FileXML::RawText * BURGER_API Burger::FileXML::RawText::new_object(InputMemoryStream *pInput)
 {
-	RawText *pRawText = new (Alloc(sizeof(RawText))) RawText;
+	RawText *pRawText = new (allocate_memory(sizeof(RawText))) RawText;
 	if (pRawText) {
 		if (pRawText->Parse(pInput)) {
-			Delete(pRawText);
+			delete_object(pRawText);
 			pRawText = NULL;
 		}
 	}
@@ -2414,9 +2414,9 @@ Burger::FileXML::RawText * BURGER_API Burger::FileXML::RawText::New(InputMemoryS
 
 ***************************************/
 
-Burger::FileXML::RawText * BURGER_API Burger::FileXML::RawText::New(const char *pText)
+Burger::FileXML::RawText * BURGER_API Burger::FileXML::RawText::new_object(const char *pText)
 {
-	return new (Alloc(sizeof(RawText))) RawText(pText);
+	return new (allocate_memory(sizeof(RawText))) RawText(pText);
 }
 
 
@@ -2532,7 +2532,7 @@ uint_t Burger::FileXML::Element::Parse(InputMemoryStream *pInput)
 				break;
 			}
 			// Parse an attribute
-			Attribute *pAttribute = Attribute::New(pInput);
+			Attribute *pAttribute = Attribute::new_object(pInput);
 			if (!pAttribute) {
 				// Uh oh...
 				break;
@@ -3935,12 +3935,12 @@ void BURGER_API Burger::FileXML::Element::ElementSetString(const char *pElementN
 
 ***************************************/
 
-Burger::FileXML::Element * BURGER_API Burger::FileXML::Element::New(InputMemoryStream *pInput)
+Burger::FileXML::Element * BURGER_API Burger::FileXML::Element::new_object(InputMemoryStream *pInput)
 {
-	Element *pElement = new (Alloc(sizeof(Element))) Element;
+	Element *pElement = new (allocate_memory(sizeof(Element))) Element;
 	if (pElement) {
 		if (pElement->Parse(pInput)) {
-			Delete(pElement);
+			delete_object(pElement);
 			pElement = NULL;
 		}
 	}
@@ -3958,9 +3958,9 @@ Burger::FileXML::Element * BURGER_API Burger::FileXML::Element::New(InputMemoryS
 
 ***************************************/
 
-Burger::FileXML::Element * BURGER_API Burger::FileXML::Element::New(const char *pName)
+Burger::FileXML::Element * BURGER_API Burger::FileXML::Element::new_object(const char *pName)
 {
-	return new (Alloc(sizeof(Element))) Element(pName);
+	return new (allocate_memory(sizeof(Element))) Element(pName);
 }
 
 
@@ -4048,14 +4048,14 @@ Burger::FileXML::~FileXML()
 	\brief Allocate and initialize a FileXML
 
 	\return A pointer to an empty FileXML structure or \ref NULL if out of memory
-	\sa New(InputMemoryStream *,uint_t), New(const char *,uint_t) or New(Filename *,uint_t)
+	\sa new_object(InputMemoryStream *,uint_t), new_object(const char *,uint_t) or new_object(Filename *,uint_t)
 
 ***************************************/
 
-Burger::FileXML * BURGER_API Burger::FileXML::New(void)
+Burger::FileXML * BURGER_API Burger::FileXML::new_object(void)
 {
 	// Allocate the memory
-	return new (Alloc(sizeof(FileXML))) FileXML();
+	return new (allocate_memory(sizeof(FileXML))) FileXML();
 }
 
 /*! ************************************
@@ -4069,15 +4069,15 @@ Burger::FileXML * BURGER_API Burger::FileXML::New(void)
 	\param pFilename Pointer to a "C" string of a valid Burgerlib filename
 	\param bAlwaysCreate \ref TRUE if the file can't be opened, return an empty record instead
 	\return A pointer to an empty FileXML structure or \ref NULL if out of memory
-	\sa New(InputMemoryStream *,uint_t), New(void) or New(Filename *,uint_t)
+	\sa new_object(InputMemoryStream *,uint_t), new_object(void) or new_object(Filename *,uint_t)
 
 ***************************************/
 
-Burger::FileXML * BURGER_API Burger::FileXML::New(const char *pFilename,uint_t bAlwaysCreate)
+Burger::FileXML * BURGER_API Burger::FileXML::new_object(const char *pFilename,uint_t bAlwaysCreate)
 {
 	// Convert to a filename object
 	Filename NewName(pFilename);
-	return New(&NewName,bAlwaysCreate);
+	return new_object(&NewName,bAlwaysCreate);
 }
 
 /*! ************************************
@@ -4091,23 +4091,23 @@ Burger::FileXML * BURGER_API Burger::FileXML::New(const char *pFilename,uint_t b
 	\param pFilename Pointer to a Filename record
 	\param bAlwaysCreate \ref TRUE if the file can't be opened, return an empty record instead
 	\return A pointer to an empty FileXML structure or \ref NULL if out of memory
-	\sa New(InputMemoryStream *,uint_t), New(void) or New(const char *,uint_t)
+	\sa new_object(InputMemoryStream *,uint_t), new_object(void) or new_object(const char *,uint_t)
 
 ***************************************/
 
-Burger::FileXML * BURGER_API Burger::FileXML::New(Filename *pFilename,uint_t bAlwaysCreate)
+Burger::FileXML * BURGER_API Burger::FileXML::new_object(Filename *pFilename,uint_t bAlwaysCreate)
 {
 	InputMemoryStream Stream;
 	FileXML *pResult;
 	// Load into a stream
 	if (!Stream.Open(pFilename)) {
 		// Create the record
-		pResult = New(&Stream,bAlwaysCreate);
+		pResult = new_object(&Stream,bAlwaysCreate);
 	} else if (!bAlwaysCreate) {
 		pResult = NULL;
 	} else {
 		// Create an empty record on missing file or file read error
-		pResult = New();
+		pResult = new_object();
 	}
 	return pResult;
 }
@@ -4126,20 +4126,20 @@ Burger::FileXML * BURGER_API Burger::FileXML::New(Filename *pFilename,uint_t bAl
 	\param pInput Pointer to a InputMemoryStream record that has the text file image
 	\param bAlwaysCreate \ref TRUE if the file can't be parsed, return an empty record instead
 	\return A pointer to an empty FileXML structure or \ref NULL if out of memory
-	\sa New(Filename *,uint_t), New(void) or New(const char *,uint_t)
+	\sa new_object(Filename *,uint_t), new_object(void) or new_object(const char *,uint_t)
 
 ***************************************/
 
-Burger::FileXML * BURGER_API Burger::FileXML::New(InputMemoryStream *pInput,uint_t bAlwaysCreate)
+Burger::FileXML * BURGER_API Burger::FileXML::new_object(InputMemoryStream *pInput,uint_t bAlwaysCreate)
 {
-	FileXML *pResult = New();	// Init the structure
+	FileXML *pResult = new_object();	// Init the structure
 	if (pResult) {
 		// Fill in the data
 		if (pResult->Init(pInput)) {
 			// Failure? Destroy or return a class instance anyways?
 			if (!bAlwaysCreate) {
 				// On error, delete it
-				Delete(pInput);
+				delete_object(pInput);
 				pInput = NULL;
 			}
 		}
@@ -4612,7 +4612,7 @@ Burger::FileXML::Declaration *BURGER_API Burger::FileXML::FindDeclaration(uint_t
 		pResult = static_cast<Declaration *>(pGeneric);
 	}
 	if (!pResult && bAlwaysCreate) {
-		pResult = Declaration::New(1.0f);
+		pResult = Declaration::new_object(1.0f);
 		if (pResult) {
 			// Make it FIRST!
 			m_Root.InsertAfter(pResult);

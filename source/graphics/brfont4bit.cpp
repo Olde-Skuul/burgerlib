@@ -72,7 +72,7 @@ Burger::Font4Bit::Font4Bit(Renderer *pRenderer) :
 	if (pRenderer) {
 		m_pDisplay = pRenderer->GetDisplay();
 	}
-	MemoryClear(m_ColorTable.Words,sizeof(m_ColorTable.Words));
+	memory_clear(m_ColorTable.Words,sizeof(m_ColorTable.Words));
 }
 
 /*! ************************************
@@ -427,7 +427,7 @@ void BURGER_API Burger::Font4Bit::SaveState(State_t *pOutput)
 	pOutput->m_uRezNum = m_uRezNum;		// Save the font number
 	pOutput->m_pRezFile = m_pRezFile;	// Save the resource file
 	pOutput->m_uInvisibleColor = m_uInvisibleColor;
-	MemoryCopy(pOutput->m_ColorTable,m_ColorTable.Words,sizeof(pOutput->m_ColorTable));
+	memory_copy(pOutput->m_ColorTable,m_ColorTable.Words,sizeof(pOutput->m_ColorTable));
 }
 
 /*! ************************************
@@ -446,7 +446,7 @@ void BURGER_API Burger::Font4Bit::RestoreState(const State_t *pInput)
 		InstallToPalette(pInput->m_pRezFile,pInput->m_uRezNum,NULL);	// Set the new font
 	}
 	m_uInvisibleColor=pInput->m_uInvisibleColor;
-	MemoryCopy(m_ColorTable.Words,pInput->m_ColorTable,sizeof(m_ColorTable.Words));
+	memory_copy(m_ColorTable.Words,pInput->m_ColorTable,sizeof(m_ColorTable.Words));
 }
 
 /*! ************************************

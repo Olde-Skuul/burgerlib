@@ -84,7 +84,7 @@ void BURGER_API Burger::DisplayDirectX11::ClearContext(
 
 		// Clear this buffer to pass the array clear out states
 		ID3D11Buffer* ZeroBuffers[16];
-		MemoryClear(ZeroBuffers, sizeof(ZeroBuffers));
+		memory_clear(ZeroBuffers, sizeof(ZeroBuffers));
 
 		// Clear out the index buffers
 		pDX11Context->IASetVertexBuffers(0, 16, ZeroBuffers,

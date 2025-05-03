@@ -364,10 +364,10 @@ static int CALLBACK FindDeviceCallback(GUID* pGUID, LPSTR /* pName */,
 		// Specific device?
 		if (pGUID) {
 			// Copy the GUID
-			Burger::MemoryCopy(pRef->m_pGUID, pGUID, sizeof(GUID));
+			Burger::memory_copy(pRef->m_pGUID, pGUID, sizeof(GUID));
 		} else {
 			// Clear the GUID
-			Burger::MemoryClear(pRef->m_pGUID, sizeof(GUID));
+			Burger::memory_clear(pRef->m_pGUID, sizeof(GUID));
 		}
 
 		// Stop now

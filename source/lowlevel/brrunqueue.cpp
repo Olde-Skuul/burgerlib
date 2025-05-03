@@ -56,7 +56,7 @@
 
 	They are created with a call to RunQueue::Add().
 
-	To dispose this class, call Delete()
+	To dispose this class, call delete_object()
 
 	\sa \ref RunQueueEntry
 
@@ -190,7 +190,7 @@ void BURGER_API Burger::RunQueue::Call(void) BURGER_NOEXCEPT
 				// Dispose of this entry
 				if (uCode == DISPOSE) {
 					// Remove this entry
-					Delete(pWork);
+					delete_object(pWork);
 				}
 				pWork = pNext;             // Next one
 			} while (pWork != &m_Entries); // Any more?
@@ -233,7 +233,7 @@ Burger::RunQueue::RunQueueEntry* BURGER_API Burger::RunQueue::Add(
 	// Assume failure
 	RunQueueEntry* pResult = nullptr;
 	if (pProc) {
-		pResult = new (Alloc(sizeof(RunQueueEntry)))
+		pResult = new (allocate_memory(sizeof(RunQueueEntry)))
 			RunQueueEntry(pProc, pShutdown, pData, uPriority);
 		if (pResult) {
 			RunQueueEntry* pNext =
@@ -362,7 +362,7 @@ uint_t BURGER_API Burger::RunQueue::RemoveAll(
 
 			// Match?
 			if (pWork->m_pCallBack == pProc) {
-				Delete(pWork);  // Dispose of the current record
+				delete_object(pWork);  // Dispose of the current record
 				uResult = TRUE; // I deleted it
 			}
 			pWork = pNext;             // Follow the list
@@ -405,7 +405,7 @@ uint_t BURGER_API Burger::RunQueue::Remove(
 		do {
 			// Match?
 			if ((pWork->m_pCallBack == pProc) && (pWork->m_pData == pData)) {
-				Delete(pWork);  // Dispose of the current record
+				delete_object(pWork);  // Dispose of the current record
 				uResult = TRUE; // I deleted it
 				break;
 			}
@@ -444,7 +444,7 @@ void BURGER_API Burger::RunQueue::Clear(void) BURGER_NOEXCEPT
 				static_cast<RunQueueEntry*>(pWork->get_next());
 
 			// Dispose of the current record
-			Delete(pWork);
+			delete_object(pWork);
 
 			// Follow the list
 			pWork = pNext;

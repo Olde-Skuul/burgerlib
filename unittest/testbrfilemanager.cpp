@@ -955,7 +955,7 @@ static uint_t BURGER_API TestLoadSave(void) BURGER_NOEXCEPT
 		uFailure |= uTest;
 		ReportFailure(
 			"FileManager::load_file(\"9:ooga.txt\") return bad data", uTest);
-		Free(pReturn);
+		free_memory(pReturn);
 	}
 
 	// Copy the file

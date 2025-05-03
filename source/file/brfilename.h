@@ -168,9 +168,9 @@ public:
 #endif
 #endif
 
-	static Filename* BURGER_API New(void) BURGER_NOEXCEPT;
-	static Filename* BURGER_API New(const char* pFilename) BURGER_NOEXCEPT;
-	static Filename* BURGER_API New(Filename const& rInput) BURGER_NOEXCEPT;
+	static Filename* BURGER_API new_object(void) BURGER_NOEXCEPT;
+	static Filename* BURGER_API new_object(const char* pFilename) BURGER_NOEXCEPT;
+	static Filename* BURGER_API new_object(Filename const& rInput) BURGER_NOEXCEPT;
 };
 }
 /* END */

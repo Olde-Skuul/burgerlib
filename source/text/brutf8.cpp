@@ -2982,7 +2982,7 @@ uintptr_t BURGER_API Burger::UTF8::from_UTF16(char* pOutput,
 	Take a "C" string that is using UTF16 encoding and convert it to a UTF8
 	encoded "C" string. The function will allocate a buffer large enough to
 	store the string. When the string isn't needed anymore, release the memory
-	with a call to Burger::Free(const void *)
+	with a call to Burger::free_memory(const void *)
 
 	UTF16 surrogate pairs will be properly parsed and encoded into their UTF8
 	equivalents.
@@ -2993,7 +2993,7 @@ uintptr_t BURGER_API Burger::UTF8::from_UTF16(char* pOutput,
 	\return A valid pointer to a UTF-8 version of the "C" string. ``nullptr`` if
 		memory allocation failure.
 
-	\sa Burger::Free(const void *)
+	\sa Burger::free_memory(const void *)
 
 ***************************************/
 
@@ -3001,7 +3001,7 @@ char* BURGER_API Burger::UTF8::from_UTF16(
 	const uint16_t* pInput) BURGER_NOEXCEPT
 {
 	const uintptr_t uInputLength = GetUTF16Size(pInput);
-	char* pWork = static_cast<char*>(Alloc(uInputLength + 1));
+	char* pWork = static_cast<char*>(allocate_memory(uInputLength + 1));
 	if (pWork) {
 		// Copy the string
 		from_UTF16(pWork, uInputLength + 1, pInput);
@@ -3521,7 +3521,7 @@ uintptr_t BURGER_API Burger::UTF8::from_UTF32(char* pOutput,
 	Take a "C" string that is using UTF32 encoding and convert it to a UTF8
 	encoded "C" string. The function will allocate a buffer large enough to
 	store the string. When the string isn't needed anymore, release the memory
-	with a call to Burger::Free(const void *)
+	with a call to Burger::free_memory(const void *)
 
 	\note If invalid UTF32 codes are found, they will be skipped.
 
@@ -3529,7 +3529,7 @@ uintptr_t BURGER_API Burger::UTF8::from_UTF32(char* pOutput,
 	\return A valid pointer to a UTF-8 version of the "C" string. ``nullptr`` if
 		memory allocation failure.
 
-	\sa Burger::Free(const void *)
+	\sa Burger::free_memory(const void *)
 
 ***************************************/
 
@@ -3537,7 +3537,7 @@ char* BURGER_API Burger::UTF8::from_UTF32(
 	const uint32_t* pInput) BURGER_NOEXCEPT
 {
 	const uintptr_t uInputLength = from_UTF32(nullptr, 0, pInput);
-	char* pWork = static_cast<char*>(Alloc(uInputLength + 1));
+	char* pWork = static_cast<char*>(allocate_memory(uInputLength + 1));
 	if (pWork) {
 		// Copy the string
 		from_UTF32(pWork, uInputLength + 1, pInput);

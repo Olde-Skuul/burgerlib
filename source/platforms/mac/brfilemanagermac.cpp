@@ -140,12 +140,12 @@ Burger::eError BURGER_API Burger::FileManager::get_volume_name(
 #if !(defined(BURGER_CFM) && defined(BURGER_68K))
 	// Volume information buffer
 	FSVolumeInfoParam pb;
-	MemoryClear(&pb, sizeof(pb));
+	memory_clear(&pb, sizeof(pb));
 
 	// Unicode name of the volume returned
 	HFSUniStr255 Name;
 	FSVolumeInfo Info;
-	MemoryClear(&Info, sizeof(Info));
+	memory_clear(&Info, sizeof(Info));
 
 	// Want the name
 	// pb.ioVRefNum = kFSInvalidVolumeRefNum;

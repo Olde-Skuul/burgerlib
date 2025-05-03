@@ -1464,7 +1464,7 @@ void BURGER_API LBRectWriteStream(const LBRect *Input,StreamHandle_t *fp)
 
 LBRectList * BURGER_API LBRectListNew(void)
 {
-	return (LBRectList *)Burger::alloc_clear(sizeof(LBRectList));
+	return (LBRectList *)Burger::allocate_memory_clear(sizeof(LBRectList));
 }
 
 /***************************************
@@ -1477,7 +1477,7 @@ void BURGER_API LBRectListDelete(LBRectList *Input)
 {
 	if (Input) {			/* Valid input? */
 		DeallocAHandle((void **)Input->RectList);	/* Release the CRectList */
-		Burger::Free(Input);		/* Dispose of the memory */
+		Burger::free_memory(Input);		/* Dispose of the memory */
 	}
 }
 

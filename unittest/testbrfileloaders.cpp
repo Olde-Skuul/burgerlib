@@ -173,7 +173,7 @@ static uint_t TestFileAPF(void) BURGER_NOEXCEPT
 				Output.SaveFile("9:..:..:bin:titlepageapf.bmp");
 			}
 		}
-		Delete(pImage);
+		delete_object(pImage);
 	}
 #endif
 	return uResult;

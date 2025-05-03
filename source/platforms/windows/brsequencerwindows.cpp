@@ -52,7 +52,7 @@ uint_t BURGER_API Burger::Sequencer::PlatformInit(void)
 		WAVEFORMATEX SampleRecord;
 
 		// Set up wave format structure.
-		MemoryClear(&SampleRecord,sizeof(PCMWAVEFORMAT));
+		memory_clear(&SampleRecord,sizeof(PCMWAVEFORMAT));
 		SampleRecord.wFormatTag = WAVE_FORMAT_PCM;
 		SampleRecord.nChannels = 2;
 		SampleRecord.nSamplesPerSec = m_uFinalSampleRate;
@@ -71,7 +71,7 @@ uint_t BURGER_API Burger::Sequencer::PlatformInit(void)
 
 		// Set up DSBUFFERDESC structure.
 		DSBUFFERDESC dsbdesc;
-		MemoryClear(&dsbdesc,sizeof(DSBUFFERDESC));	// Zero it out.
+		memory_clear(&dsbdesc,sizeof(DSBUFFERDESC));	// Zero it out.
 		dsbdesc.dwSize = sizeof(DSBUFFERDESC);
 
 		dsbdesc.dwFlags = DSBCAPS_CTRLPAN|DSBCAPS_CTRLVOLUME|DSBCAPS_CTRLFREQUENCY|DSBCAPS_CTRLPOSITIONNOTIFY|DSBCAPS_STICKYFOCUS;

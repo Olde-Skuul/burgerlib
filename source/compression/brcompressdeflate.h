@@ -235,7 +235,7 @@ protected:
  */
 	BURGER_INLINE void ClearHash(void)
 	{
-		MemoryClear(m_Head,sizeof(m_Head));
+		memory_clear(m_Head,sizeof(m_Head));
 	}
 
 /* ===========================================================================

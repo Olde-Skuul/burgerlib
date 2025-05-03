@@ -115,7 +115,7 @@ public:
 		uint32_t m_uChannelCount;		///< Number of pattern channels
 		char m_Name[32];			///< Name of the sequence pattern
 		Command_t m_Commands[1];	///< Array of sequence patterns (m_uPatternSize*m_uChannelCount is the size)
-		static PatternData_t * BURGER_API New(uint_t uRows,uint_t uChannels);
+		static PatternData_t * BURGER_API new_object(uint_t uRows,uint_t uChannels);
 		Command_t* BURGER_API GetCommand(int iRow,int iChannel);
 		BURGER_INLINE void SetName(const char *pName) { string_copy(m_Name,sizeof(m_Name),pName); }
 	};
@@ -135,7 +135,7 @@ public:
 		char m_Name[32];			///< Sample name
 	public:
 		~SampleDescription();
-		static SampleDescription * BURGER_API New(void);
+		static SampleDescription * BURGER_API new_object(void);
 		BURGER_INLINE void SetName(const char *pName) { string_copy(m_Name,sizeof(m_Name),pName); }
 	};
 
@@ -196,7 +196,7 @@ public:
 		uint_t m_ChannelPans[cTrackMaxCount];		///< Pan settings for each channel
 		uint_t m_ChannelVolumes[cTrackMaxCount];	///< Volume settings for each channel (0-64)
 		char m_Name[32];				///< Name of the song
-		BURGER_INLINE void Clear(void) { MemoryClear(this,sizeof(*this)); }
+		BURGER_INLINE void Clear(void) { memory_clear(this,sizeof(*this)); }
 		BURGER_INLINE void SetName(const char *pName) { string_copy(m_Name,sizeof(m_Name),pName); }
 	};
 
@@ -303,7 +303,7 @@ public:
 		~SongPackage();
 		void BURGER_API Shutdown(void);
 		void BURGER_API RemoveInstrument(uint_t uInstrumentIndex);
-		static SongPackage * BURGER_API New(void);
+		static SongPackage * BURGER_API new_object(void);
 	};
 
 	typedef uint_t (BURGER_API *ImportProc)(SongPackage *pOutput,const uint8_t *pInput,uintptr_t uInputLength);

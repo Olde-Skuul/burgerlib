@@ -135,7 +135,7 @@ Burger::Filename::Filename(Filename const& rInput) BURGER_NOEXCEPT
 {
 	// Copy the mac specific data
 #if defined(BURGER_MAC)
-	MemoryCopy(&m_FSRef, &rInput.m_FSRef, sizeof(m_FSRef));
+memory_copy(&m_FSRef, &rInput.m_FSRef, sizeof(m_FSRef));
 	m_lDirID = rInput.m_lDirID;
 	m_sVRefNum = rInput.m_sVRefNum;
 #endif
@@ -158,7 +158,7 @@ Burger::Filename& Burger::Filename::operator=(
 	m_bNativeValid = rInput.m_bNativeValid;
 
 #if defined(BURGER_MAC)
-	MemoryCopy(&m_FSRef, &rInput.m_FSRef, sizeof(m_FSRef));
+memory_copy(&m_FSRef, &rInput.m_FSRef, sizeof(m_FSRef));
 	m_lDirID = rInput.m_lDirID;
 	m_sVRefNum = rInput.m_sVRefNum;
 #endif
@@ -187,7 +187,7 @@ Burger::Filename::Filename(Filename&& rInput) BURGER_NOEXCEPT
 #endif
 {
 #if defined(BURGER_MAC)
-	MemoryCopy(m_FSRef, rInput.m_FSRef, sizeof(m_FSRef));
+memory_copy(m_FSRef, rInput.m_FSRef, sizeof(m_FSRef));
 #endif
 }
 
@@ -211,7 +211,7 @@ Burger::Filename& Burger::Filename::operator=(Filename&& rInput) BURGER_NOEXCEPT
 #if defined(BURGER_MAC)
 	m_lDirID = rInput.m_lDirID;
 	m_sVRefNum = rInput.m_sVRefNum;
-	MemoryCopy(m_FSRef, rInput.m_FSRef, sizeof(m_FSRef));
+	memory_copy(m_FSRef, rInput.m_FSRef, sizeof(m_FSRef));
 #endif
 	return *this;
 }
@@ -224,7 +224,7 @@ Burger::Filename& Burger::Filename::operator=(Filename&& rInput) BURGER_NOEXCEPT
 	If in the course of setting a pathname to an excessive length, release any
 	extra allocated memory. In most cases, this does nothing.
 
-	\note Can call \ref Burger::Free() in some cases
+	\note Can call \ref Burger::free_memory() in some cases
 
 ***************************************/
 
@@ -1472,15 +1472,15 @@ Burger::eError BURGER_API Burger::Filename::set_native(
 	Allocate memory using the Burgerlib memory manager and initialize it to a
 	default Filename class instance.
 
-	Delete with a call to Delete()
+	Delete with a call to delete_object()
 
-	\sa Delete(const T *)
+	\sa delete_object(const T *)
 
 ***************************************/
 
-Burger::Filename* BURGER_API Burger::Filename::New(void) BURGER_NOEXCEPT
+Burger::Filename* BURGER_API Burger::Filename::new_object(void) BURGER_NOEXCEPT
 {
-	return new (Alloc(sizeof(Filename))) Filename();
+	return new (allocate_memory(sizeof(Filename))) Filename();
 }
 
 /*! ************************************
@@ -1490,17 +1490,17 @@ Burger::Filename* BURGER_API Burger::Filename::New(void) BURGER_NOEXCEPT
 	Allocate memory using the Burgerlib memory manager and initialize it to a
 	default Filename class instance.
 
-	Delete with a call to Delete()
+	Delete with a call to delete_object()
 
 	\param pFilename Pointer to a "C" string formatted as a Burgerlib pathname
-	\sa Delete(const T *)
+	\sa delete_object(const T *)
 
 ***************************************/
 
-Burger::Filename* BURGER_API Burger::Filename::New(
+Burger::Filename* BURGER_API Burger::Filename::new_object(
 	const char* pFilename) BURGER_NOEXCEPT
 {
-	return new (Alloc(sizeof(Filename))) Filename(pFilename);
+	return new (allocate_memory(sizeof(Filename))) Filename(pFilename);
 }
 
 /*! ************************************
@@ -1510,15 +1510,15 @@ Burger::Filename* BURGER_API Burger::Filename::New(
 	Allocate memory using the Burgerlib memory manager and initialize it as a
 	copy of another Filename class instance.
 
-	Delete with a call to Delete()
+	Delete with a call to delete_object()
 
 	\param rInput Reference to a Filename to copy from
-	\sa Delete(const T *)
+	\sa delete_object(const T *)
 
 ***************************************/
 
-Burger::Filename* BURGER_API Burger::Filename::New(
+Burger::Filename* BURGER_API Burger::Filename::new_object(
 	Filename const& rInput) BURGER_NOEXCEPT
 {
-	return new (Alloc(sizeof(Filename))) Filename(rInput);
+	return new (allocate_memory(sizeof(Filename))) Filename(rInput);
 }

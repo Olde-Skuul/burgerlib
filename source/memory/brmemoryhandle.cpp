@@ -282,7 +282,7 @@ Burger::MemoryManagerHandle::AllocNewHandle(void) BURGER_NOEXCEPT
 		uintptr_t uChunkSize =
 			((kDefaultHandleCount * sizeof(Handle_t)) + sizeof(SystemBlock_t));
 		SystemBlock_t* pBlock =
-			static_cast<SystemBlock_t*>(alloc_platform_memory(uChunkSize));
+			static_cast<SystemBlock_t*>(allocate_platform_memory(uChunkSize));
 		if (pBlock) {
 			// Log the memory allocation
 			m_uTotalSystemMemory += uChunkSize;
@@ -691,9 +691,9 @@ Burger::MemoryManagerHandle::MemoryManagerHandle(uintptr_t uDefaultMemorySize,
 	  m_Lock()
 {
 	// Init my global pointers
-	m_pAlloc = alloc_proc;
+	m_pAllocate = alloc_proc;
 	m_pFree = free_proc;
-	m_pRealloc = realloc_proc;
+	m_pReallocate = realloc_proc;
 	m_pShutdown = shutdown_proc;
 
 	// At this point, if there was an initialization failure,
@@ -702,7 +702,7 @@ Burger::MemoryManagerHandle::MemoryManagerHandle(uintptr_t uDefaultMemorySize,
 	// Obtain the base memory from the operating system
 
 	// Enough for the OS?
-	void* pReserved = alloc_platform_memory(uMinReserveSize);
+	void* pReserved = allocate_platform_memory(uMinReserveSize);
 	if (!pReserved) {
 		// You're boned
 		Debug::Fatal("Can't allocate minimum OS memory chunk\n");
@@ -713,7 +713,7 @@ Burger::MemoryManagerHandle::MemoryManagerHandle(uintptr_t uDefaultMemorySize,
 	uintptr_t uSwing = uDefaultMemorySize;
 	// Try for the entire block
 	SystemBlock_t* pBlock =
-		static_cast<SystemBlock_t*>(alloc_platform_memory(uSwing));
+		static_cast<SystemBlock_t*>(allocate_platform_memory(uSwing));
 	if (!pBlock) {
 		// Low on memory, do a binary search to see how much is present
 		// First bisection
@@ -722,7 +722,7 @@ Burger::MemoryManagerHandle::MemoryManagerHandle(uintptr_t uDefaultMemorySize,
 		for (;;) {
 			uintptr_t uSize = uMinsize + uSwing; // Attempt this size
 			pBlock = static_cast<SystemBlock_t*>(
-				alloc_platform_memory(uSize));   // Try to allocate it
+				allocate_platform_memory(uSize));   // Try to allocate it
 			if (pBlock) {
 				free_platform_memory(pBlock);
 				uMinsize = uSize;           // This is acceptable!
@@ -733,7 +733,7 @@ Burger::MemoryManagerHandle::MemoryManagerHandle(uintptr_t uDefaultMemorySize,
 				1U;              // Get half the difference
 			if (uSwing < 1024) { // Close enough?
 				pBlock = static_cast<SystemBlock_t*>(
-					alloc_platform_memory(uMinsize));
+					allocate_platform_memory(uMinsize));
 				uSwing = uMinsize;
 				break;
 			}
@@ -895,7 +895,7 @@ Burger::MemoryManagerHandle::~MemoryManagerHandle()
 
 /*! ************************************
 
-	\fn Burger::MemoryManagerHandle::alloc(uintptr_t)
+	\fn Burger::MemoryManagerHandle::allocate_memory(uintptr_t)
 	\brief Allocate fixed memory.
 
 	Allocates a pointer to a block of memory in high (Fixed) memory.
@@ -910,11 +910,11 @@ Burger::MemoryManagerHandle::~MemoryManagerHandle()
 
 /*! ************************************
 
-	\fn Burger::MemoryManagerHandle::free(const void *)
+	\fn Burger::MemoryManagerHandle::free_memory(const void *)
 	\brief Release fixed memory.
 
 	When a pointer is allocated using
-	Burger::MemoryManagerHandle::alloc(uintptr_t), it has a pointer to the
+	Burger::MemoryManagerHandle::allocate_memory(uintptr_t), it has a pointer to the
 	handle that references this memory prefixed to it. If the input is not
 	\ref NULL it will use this prefixed pointer to release the handle and
 	therefore this memory.
@@ -926,7 +926,7 @@ Burger::MemoryManagerHandle::~MemoryManagerHandle()
 
 /*! ************************************
 
-	\fn Burger::MemoryManagerHandle::realloc(const void *,uintptr_t)
+	\fn Burger::MemoryManagerHandle::reallocate_memory(const void *,uintptr_t)
 	\brief Resize a preexisting allocated block of memory.
 
 	Using a pointer to memory, reallocate the size and copy the contents.
@@ -1131,7 +1131,7 @@ void** BURGER_API Burger::MemoryManagerHandle::alloc_handle(
 			// This is a last resort!
 
 			ppResult = static_cast<Handle_t*>(
-				alloc_platform_memory(uSize + sizeof(Handle_t) + kAlignment));
+				allocate_platform_memory(uSize + sizeof(Handle_t) + kAlignment));
 			if (ppResult) {
 				// Update the global allocated memory count.
 				m_uTotalAllocatedMemory += uSize;
@@ -1296,7 +1296,7 @@ void** BURGER_API Burger::MemoryManagerHandle::ReallocHandle(
 				uOldSize = uSize; // New size
 			}
 			// Copy the contents
-			MemoryCopy(pNew->m_pData, pHandle->m_pData, uOldSize);
+			memory_copy(pNew->m_pData, pHandle->m_pData, uOldSize);
 		}
 		// Release the previous memory
 		free_handle(ppInput);
@@ -1828,7 +1828,7 @@ void BURGER_API Burger::MemoryManagerHandle::CompactHandles(
 					GrabMemoryRange(
 						pStartMem, pHandle->m_uLength, pHandle, nullptr);
 					// Move the unpadded length
-					MemoryMove(pStartMem, pTemp, pHandle->m_uLength);
+					memory_move(pStartMem, pTemp, pHandle->m_uLength);
 				}
 			}
 			// Next handle in chain

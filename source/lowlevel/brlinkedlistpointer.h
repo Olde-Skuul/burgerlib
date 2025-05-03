@@ -61,7 +61,7 @@ public:
 		m_pData = pInput;
 	}
 
-	static LinkedListPointer* BURGER_API New(
+	static LinkedListPointer* BURGER_API new_object(
 		void* pInput = nullptr) BURGER_NOEXCEPT;
 };
 

@@ -983,7 +983,7 @@ Burger::eError BURGER_API Burger::SaveFile(
 	and closed after this call is issued.
 
 	Dispose of the memory returned with a call to
-	\ref Burger::Free(const void *)
+	\ref Burger::free_memory(const void *)
 
 	\param fp FILE * to the file to read from
 	\param pLength to a uintptr_t to receive the size of the file in bytes.
@@ -1005,12 +1005,12 @@ void* BURGER_API Burger::LoadFile(FILE* fp, uintptr_t* pLength)
 	if (fp) {                      // Valid file reference?
 		uFileLength = GetSize(fp); // Get the file length
 		if (uFileLength) {
-			pResult = Alloc(uFileLength); // Get memory
+			pResult = allocate_memory(uFileLength); // Get memory
 			if (pResult) {
 				if (fread(pResult, 1, uFileLength, fp) !=
 					uFileLength) { // Read the file contents
 					// Oh. Crap.
-					Free(pResult);  // Release the memory
+					free_memory(pResult);  // Release the memory
 					pResult = NULL; // Zap the pointer
 					uFileLength = 0;
 				}

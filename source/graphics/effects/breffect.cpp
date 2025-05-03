@@ -104,7 +104,7 @@ Burger::Effect::Effect()
 
 	// OpenGL and Windows
 #if defined(BURGER_WINDOWS) || defined(BURGER_OPENGL)
-	MemoryClear(&m_ShaderData,sizeof(m_ShaderData));
+memory_clear(&m_ShaderData,sizeof(m_ShaderData));
 #endif
 
 }

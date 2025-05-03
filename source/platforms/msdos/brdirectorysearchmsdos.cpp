@@ -137,7 +137,7 @@ static Burger::eError BURGER_API OldWay(
 				Entry.m_CreationDate.LoadMSDOS(
 					reinterpret_cast<const uint32_t*>(
 						&pDOSData->m_WriteTimeLow)[0]);
-				Burger::MemoryCopy(&Entry.m_ModificatonDate,
+				Burger::memory_copy(&Entry.m_ModificatonDate,
 					&Entry.m_CreationDate, sizeof(Entry.m_CreationDate));
 
 				// Convert filename to UTF8
@@ -254,7 +254,7 @@ static Burger::eError BURGER_API NewWay(
 				Entry.m_CreationDate.LoadMSDOS(
 					reinterpret_cast<const uint32_t*>(
 						&pDOSData->m_WriteTimeLow)[0]);
-				Burger::MemoryCopy(&Entry.m_ModificatonDate,
+				Burger::memory_copy(&Entry.m_ModificatonDate,
 					&Entry.m_CreationDate, sizeof(Entry.m_CreationDate));
 
 				// Convert filename to UTF8

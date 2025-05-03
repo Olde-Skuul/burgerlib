@@ -421,7 +421,7 @@ uint_t BURGER_API Burger::ImportS3M(Sequencer::SongPackage *pOutput,const uint8_
 										pInstrData->m_uNumberSamples = 1;
 										pInstrData->m_uVolumeFadeSpeed = Sequencer::cDefaultVolumeFade;
 
-										Sequencer::SampleDescription *pSampleDescription = Sequencer::SampleDescription::New();
+										Sequencer::SampleDescription *pSampleDescription = Sequencer::SampleDescription::new_object();
 										pOutput->m_pSampleDescriptions[i*Sequencer::cSampleMaxCount] = pSampleDescription;
 										if (!pSampleDescription) {
 											// Uh oh...
@@ -452,7 +452,7 @@ uint_t BURGER_API Burger::ImportS3M(Sequencer::SongPackage *pOutput,const uint8_
 										}
 
 										// Import the digital sample
-										pSampleDescription->m_pSample = alloc_copy(pSample,pSampleDescription->m_uSampleSize);
+										pSampleDescription->m_pSample = allocate_memory_copy(pSample,pSampleDescription->m_uSampleSize);
 										if (!pSampleDescription->m_pSample) {
 											// Uh oh...
 											uResult = Sequencer::IMPORT_OUTOFMEMORY;
@@ -494,7 +494,7 @@ uint_t BURGER_API Burger::ImportS3M(Sequencer::SongPackage *pOutput,const uint8_
 						if (uPatternCount) {
 							i = 0;
 							do {
-								Sequencer::PatternData_t *pPatternData = Sequencer::PatternData_t::New(64,uChannelCount);
+								Sequencer::PatternData_t *pPatternData = Sequencer::PatternData_t::new_object(64,uChannelCount);
 								if (!pPatternData) {
 									// Uh oh...
 									uResult = Sequencer::IMPORT_OUTOFMEMORY;

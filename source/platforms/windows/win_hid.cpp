@@ -64,7 +64,7 @@ void BURGER_API Burger::Win32::HidD_GetHidGuid(GUID* pHidGuid) BURGER_NOEXCEPT
 	if (!pHidD_GetHidGuid) {
 
 		// In case of failure, zap the GUID
-		MemoryClear(pHidGuid, sizeof(GUID));
+		memory_clear(pHidGuid, sizeof(GUID));
 
 	} else {
 		static_cast<HidD_GetHidGuidPtr>(pHidD_GetHidGuid)(pHidGuid);

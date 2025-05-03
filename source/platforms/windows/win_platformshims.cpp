@@ -243,8 +243,8 @@ static void BURGER_ANSIAPI release_libraries(void)
 	} while (++i < BURGER_ARRAYSIZE(s_hInstances));
 
 	// Dispose of all resolved calls to Windows
-	Burger::MemoryClear(s_pWindowsCalls, sizeof(s_pWindowsCalls));
-	Burger::MemoryClear(s_bFunctionsTested, sizeof(s_bFunctionsTested));
+	Burger::memory_clear(s_pWindowsCalls, sizeof(s_pWindowsCalls));
+	Burger::memory_clear(s_bFunctionsTested, sizeof(s_bFunctionsTested));
 }
 
 #endif

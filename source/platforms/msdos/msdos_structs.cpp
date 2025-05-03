@@ -273,7 +273,7 @@ int BURGER_API Burger::MSDos::x32_call_real_proc(uint32_t pAddress,
 
 		uint8_t* pFlatMemory =
 			static_cast<uint8_t*>(real_to_protected(pRealMemory));
-		MemoryCopy(pFlatMemory, RealCode, sizeof(RealCode));
+			memory_copy(pFlatMemory, RealCode, sizeof(RealCode));
 
 		// Pass the input registers
 		reinterpret_cast<uint16_t*>(pFlatMemory + 1)[0] = pInput->ds;
@@ -329,7 +329,7 @@ int BURGER_API Burger::MSDos::x32_call_real_proc(uint32_t pAddress,
 		// Return the ax register
 		return pOutput->ax;
 	}
-	MemoryClear(pOutput, sizeof(pOutput[0]));
+	memory_clear(pOutput, sizeof(pOutput[0]));
 	// Set the carry flag (Fake an error)
 	pOutput->flags = 1;
 	return 0;

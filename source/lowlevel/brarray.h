@@ -79,7 +79,7 @@ public:
 		// Anything?
 		if (uDefault) {
 			// Get the default buffer and die if failed in debug
-			T* pData = static_cast<T*>(Alloc(sizeof(T) * uDefault));
+			T* pData = static_cast<T*>(allocate_memory(sizeof(T) * uDefault));
 			BURGER_ASSERT(pData);
 			m_pData = pData;
 			Init(pData, uDefault);
@@ -91,7 +91,7 @@ public:
 		uintptr_t uCount = m_uSize;
 		// Empty?
 		if (uCount) {
-			T* pData = static_cast<T*>(Alloc(sizeof(T) * uCount));
+			T* pData = static_cast<T*>(allocate_memory(sizeof(T) * uCount));
 			m_pData = pData;
 			Init(pData, uCount, rData.m_pData);
 		}
@@ -185,7 +185,7 @@ public:
 			Destroy(m_pData, uCount);
 		}
 		// Dispose of the array
-		Free(m_pData);
+		free_memory(m_pData);
 		m_pData = NULL;
 		m_uBufferSize = 0;
 		m_uSize = 0;
@@ -198,7 +198,7 @@ public:
 			if (uCount) {
 				m_uSize = uCount;
 				m_uBufferSize = uCount;
-				T* pData = static_cast<T*>(Alloc(sizeof(T) * uCount));
+				T* pData = static_cast<T*>(allocate_memory(sizeof(T) * uCount));
 				m_pData = pData;
 				Init(pData, uCount, rData.m_pData);
 			}
@@ -301,14 +301,14 @@ public:
 			}
 			if (m_uBufferSize != uNewBufferSize) {
 				T* pNewData =
-					static_cast<T*>(Alloc(sizeof(T) * uNewBufferSize));
+					static_cast<T*>(allocate_memory(sizeof(T) * uNewBufferSize));
 				BURGER_ASSERT(pNewData); // need to throw (or something) on
 										 // malloc failure!
 				if (uSize) {
 					Init(pNewData, uSize, m_pData);
 					Destroy(m_pData, uSize);
 				}
-				Free(m_pData);
+				free_memory(m_pData);
 				m_uBufferSize = uNewBufferSize;
 				m_pData = pNewData;
 			}

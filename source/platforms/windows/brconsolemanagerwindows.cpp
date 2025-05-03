@@ -91,7 +91,7 @@ Burger::ConsoleApp::ConsoleApp(int iArgc, const char** ppArgv,
 		// Allocate the buffer for a pointer array and the strings
 		iArgc = m_iArgc;
 		ppArgv = static_cast<const char**>(
-			Alloc((sizeof(char*) * iArgc) + uDataSize));
+			allocate_memory((sizeof(char*) * iArgc) + uDataSize));
 
 		// Store the pointer for later use and disposal
 		m_ppArgv = ppArgv;
@@ -144,7 +144,7 @@ Burger::ConsoleApp::~ConsoleApp()
 	FileManager::shut_down();
 	Tick::shutdown();
 
-	Free(m_ppArgv);
+	free_memory(m_ppArgv);
 	if (m_ppOldArgv) {
 		__argv = const_cast<char**>(m_ppOldArgv);
 		m_ppOldArgv = nullptr;

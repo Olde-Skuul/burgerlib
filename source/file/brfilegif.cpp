@@ -144,14 +144,14 @@ Burger::GIFEncoder::GIFEncoder() :
 	\brief Allocate and initialize a GIFEncoder
 
 	\return A pointer to a default GIFEncoder class or \ref NULL if out of memory
-	\sa Delete(const T *)
+	\sa delete_object(const T *)
 
 ***************************************/
 
-Burger::GIFEncoder * BURGER_API Burger::GIFEncoder::New(void)
+Burger::GIFEncoder * BURGER_API Burger::GIFEncoder::new_object(void)
 {
 	// Allocate the memory
-	GIFEncoder *pThis = new (Alloc(sizeof(GIFEncoder))) GIFEncoder();
+	GIFEncoder *pThis = new (allocate_memory(sizeof(GIFEncoder))) GIFEncoder();
 	return pThis;
 }
 
@@ -633,14 +633,14 @@ Burger::GIFDecoder::GIFDecoder() :
 	\brief Allocate and initialize a GIFDecoder
 
 	\return A pointer to a default GIFDecoder class or \ref NULL if out of memory
-	\sa Delete(const T *)
+	\sa delete_object(const T *)
 
 ***************************************/
 
-Burger::GIFDecoder * BURGER_API Burger::GIFDecoder::New(void)
+Burger::GIFDecoder * BURGER_API Burger::GIFDecoder::new_object(void)
 {
 	// Allocate the memory
-	GIFDecoder *pThis = new (Alloc(sizeof(GIFDecoder))) GIFDecoder();
+	GIFDecoder *pThis = new (allocate_memory(sizeof(GIFDecoder))) GIFDecoder();
 	return pThis;
 }
 
@@ -820,7 +820,7 @@ const char *Burger::FileGIF::ParseHeader(InputMemoryStream *pInput)
 					pWork->m_uAlpha = 255;
 					++pWork;
 				} while (--uColorCount);
-				MemoryCopy(m_GlobalPalette,m_Palette,sizeof(m_GlobalPalette));
+				memory_copy(m_GlobalPalette,m_Palette,sizeof(m_GlobalPalette));
 			}
 		}
 	}
@@ -933,7 +933,7 @@ const char * Burger::FileGIF::ParseImage(Image *pOutput,InputMemoryStream *pInpu
 				} while (--uColorCount);
 			} else {
 				// Use the global palette
-				MemoryCopy(m_Palette,m_GlobalPalette,sizeof(m_GlobalPalette));
+				memory_copy(m_Palette,m_GlobalPalette,sizeof(m_GlobalPalette));
 			}
 		}
 	}
@@ -946,10 +946,10 @@ const char * Burger::FileGIF::ParseImage(Image *pOutput,InputMemoryStream *pInpu
 			pBadNews = "Out of memory.";
 		} else {
 			pOutput->ClearBitmap();
-			GIFDecoder *pDecoder = GIFDecoder::New();
+			GIFDecoder *pDecoder = GIFDecoder::new_object();
 			if (pDecoder) {
 				pBadNews = pDecoder->Unpack(pOutput->GetImage(),m_uLogicalWidth*m_uLogicalHeight,pInput);	// Decompress it
-				Delete(pDecoder);
+				delete_object(pDecoder);
 			} else {
 				pBadNews = "Out of memory.";
 			}
@@ -1043,7 +1043,7 @@ uint_t Burger::FileGIF::WriteImage(OutputMemoryStream *pOutput,const Image *pInp
 		}
 		if (!uResult) {
 			// Write out the pixel data
-			GIFEncoder *pCompressor = GIFEncoder::New();
+			GIFEncoder *pCompressor = GIFEncoder::new_object();
 			pCompressor->Init(pOutput,8);
 			const uint8_t *pData = pInput->GetImage();
 			uint_t uTemp = m_uLogicalHeight;
@@ -1055,7 +1055,7 @@ uint_t Burger::FileGIF::WriteImage(OutputMemoryStream *pOutput,const Image *pInp
 				} while (--uTemp);
 			}
 			pCompressor->Flush();
-			Delete(pCompressor);
+			delete_object(pCompressor);
 		}
 	}
 	return uResult;
@@ -1174,14 +1174,14 @@ Burger::FileGIF::FileGIF() :
 	\brief Allocate and initialize a FileGIF
 
 	\return A pointer to a default FileGIF class or \ref NULL if out of memory
-	\sa Delete(const T *)
+	\sa delete_object(const T *)
 
 ***************************************/
 
-Burger::FileGIF * BURGER_API Burger::FileGIF::New(void)
+Burger::FileGIF * BURGER_API Burger::FileGIF::new_object(void)
 {
 	// Allocate the memory
-	FileGIF *pThis = new (Alloc(sizeof(FileGIF))) FileGIF();
+	FileGIF *pThis = new (allocate_memory(sizeof(FileGIF))) FileGIF();
 	return pThis;
 }
 
@@ -1329,7 +1329,7 @@ uint_t Burger::FileGIF::Save(OutputMemoryStream *pOutput,const Image *pImage)
 				// Write out the initial image
 				// Force WriteImage() to NOT save a local palette
 
-				MemoryCopy(m_GlobalPalette,m_Palette,sizeof(m_Palette));
+				memory_copy(m_GlobalPalette,m_Palette,sizeof(m_Palette));
 
 				// Special case
 				// If the image is transparent, write out the control block to 

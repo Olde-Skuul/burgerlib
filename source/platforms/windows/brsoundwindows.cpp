@@ -167,7 +167,7 @@ uint_t Burger::SoundManager::Buffer::Upload(SoundManager* pSoundManager)
 			SampleRecord.nSamplesPerSec * SampleRecord.nBlockAlign;
 
 		DSBUFFERDESC BufferStats;
-		MemoryClear(&BufferStats, sizeof(BufferStats));
+		memory_clear(&BufferStats, sizeof(BufferStats));
 		BufferStats.dwSize = sizeof(BufferStats);
 		BufferStats.dwFlags = DSBCAPS_CTRLPAN | DSBCAPS_CTRLFREQUENCY |
 			DSBCAPS_CTRLVOLUME | DSBCAPS_STATIC | DSBCAPS_GETCURRENTPOSITION2 |
@@ -176,7 +176,7 @@ uint_t Burger::SoundManager::Buffer::Upload(SoundManager* pSoundManager)
 			static_cast<DWORD>(m_Decoder.m_uSoundLength);
 		//	BufferStats.dwReserved = 0;
 		BufferStats.lpwfxFormat = &SampleRecord;
-		//	MemoryCopy(BufferStats.guid3DAlgorithm,Algorithm,sizeof(GUID));
+		//	memory_copy(BufferStats.guid3DAlgorithm,Algorithm,sizeof(GUID));
 
 		IDirectSoundBuffer* pIDirectSoundBuffer = NULL;
 		uResult = static_cast<uint_t>(
@@ -548,7 +548,7 @@ Burger::SoundManager::SoundManager(GameApp* pGameApp):
 	m_uBufferDepth(16),
 	m_uOutputSamplesPerSecond(22050)
 {
-	MemoryClear(m_hEvents, sizeof(m_hEvents));
+	memory_clear(m_hEvents, sizeof(m_hEvents));
 }
 
 /***************************************
@@ -611,7 +611,7 @@ uint_t BURGER_API Burger::SoundManager::Init(void)
 					// settings from it
 
 					DSCAPS Caps;
-					MemoryClear(&Caps, sizeof(Caps));
+					memory_clear(&Caps, sizeof(Caps));
 					Caps.dwSize = sizeof(Caps);
 					uResult = m_pDirectSound8Device->GetCaps(&Caps);
 					pError = "Could not get the device CAPS data";
@@ -664,7 +664,7 @@ uint_t BURGER_API Burger::SoundManager::Init(void)
 						m_bMasterVolumeAvailable =
 							TRUE; // Assume volume can be controlled
 						DSBUFFERDESC BufferStats;
-						MemoryClear(&BufferStats, sizeof(BufferStats));
+						memory_clear(&BufferStats, sizeof(BufferStats));
 						BufferStats.dwSize = sizeof(BufferStats);
 						BufferStats.dwFlags = DSBCAPS_PRIMARYBUFFER |
 							DSBCAPS_CTRLVOLUME | DSBCAPS_CTRL3D |
@@ -673,7 +673,7 @@ uint_t BURGER_API Burger::SoundManager::Init(void)
 						//// Must be zero for a primary buffer
 						//						BufferStats.dwReserved = 0;
 						//						BufferStats.lpwfxFormat = NULL;
-						//						MemoryCopy(BufferStats.guid3DAlgorithm,Algorithm,sizeof(GUID));
+						//						memory_copy(BufferStats.guid3DAlgorithm,Algorithm,sizeof(GUID));
 
 						// Allocate the composite buffer
 						m_pDirectSoundBuffer = NULL;
@@ -685,14 +685,14 @@ uint_t BURGER_API Burger::SoundManager::Init(void)
 
 							m_bMasterVolumeAvailable =
 								FALSE; // There is no master volume support
-							MemoryClear(&BufferStats, sizeof(BufferStats));
+								memory_clear(&BufferStats, sizeof(BufferStats));
 							BufferStats.dwSize = sizeof(BufferStats);
 							BufferStats.dwFlags = DSBCAPS_PRIMARYBUFFER;
 							//							BufferStats.dwBufferBytes
 							//= 0; BufferStats.dwReserved = 0;
 							//							BufferStats.lpwfxFormat
 							//= NULL;
-							//							MemoryCopy(BufferStats.guid3DAlgorithm,Algorithm,sizeof(GUID));
+							//							memory_copy(BufferStats.guid3DAlgorithm,Algorithm,sizeof(GUID));
 							uResult = m_pDirectSound8Device->CreateSoundBuffer(
 								&BufferStats, &m_pDirectSoundBuffer, NULL);
 						}
@@ -705,7 +705,7 @@ uint_t BURGER_API Burger::SoundManager::Init(void)
 							// Get current format settings
 							WAVEFORMATEX BufferFormat;
 							DWORD bytesWritten;
-							MemoryClear(&BufferFormat, sizeof(BufferFormat));
+							memory_clear(&BufferFormat, sizeof(BufferFormat));
 							pDirectSoundBuffer->GetFormat(&BufferFormat,
 								sizeof(BufferFormat), &bytesWritten);
 							pError =
@@ -924,7 +924,7 @@ static BOOL CALLBACK EnumerateAudioDevices(GUID* pGUID,
 			Burger::SoundManager::SoundCardDescription Entry;
 
 			// Get the audio card GUID
-			Burger::MemoryCopy(&Entry.m_GUID, pGUID, sizeof(GUID));
+			Burger::memory_copy(&Entry.m_GUID, pGUID, sizeof(GUID));
 
 			// Get the audio card name
 			Entry.m_uDevNumber = static_cast<uint_t>(pOutput->size());
@@ -932,7 +932,7 @@ static BOOL CALLBACK EnumerateAudioDevices(GUID* pGUID,
 
 			// Is it hardware accelerated?
 			DSCAPS HardwareCaps;
-			Burger::MemoryClear(&HardwareCaps, sizeof(HardwareCaps));
+			Burger::memory_clear(&HardwareCaps, sizeof(HardwareCaps));
 			HardwareCaps.dwSize = sizeof(HardwareCaps);
 			if (pDirectSound8->GetCaps(&HardwareCaps) == DS_OK) {
 				// Get the sample rate values
@@ -1055,11 +1055,11 @@ uint_t BURGER_API Burger::Upload(IDirectSoundBuffer* pBuffer, uintptr_t uOffset,
 		if (uResult == DS_OK) {
 
 			// Write the first chunk
-			MemoryCopy(pBuffer1, pInput, uBufferSize1);
+			memory_copy(pBuffer1, pInput, uBufferSize1);
 			// Was wrap around involved?
 			if (pBuffer2) {
 				// Upload the second chunk
-				MemoryCopy(pBuffer2, pInput + uBufferSize1, uBufferSize2);
+				memory_copy(pBuffer2, pInput + uBufferSize1, uBufferSize2);
 			}
 			// Perform the unlock
 			uResult =

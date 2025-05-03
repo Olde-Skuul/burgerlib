@@ -403,7 +403,7 @@ void Burger::Flash::Manager::ReleaseCodeLibraries(void)
 	if (it!=end) {
 		// Any valid entries in the hash will be disposed of
 		do {
-			Delete(it->second);
+			delete_object(it->second);
 			++it;
 		} while (it!=end);
 	}
@@ -431,10 +431,10 @@ Burger::CodeLibrary *Burger::Flash::Manager::LoadCodeLibrary(const String *pName
 	// Using the key, see if it's in the hash
 	if (!m_CodeLibraryHash.GetData(pName[0],&pResult)) {
 		// Not found, create a library object
-		pResult = New<CodeLibrary>();
+		pResult = new_object<CodeLibrary>();
 		if (pResult) {
 			if (pResult->init(pName->c_str())) {
-				Delete(pResult);
+				delete_object(pResult);
 				pResult = NULL;
 			} else {
 				m_CodeLibraryHash.add(pName[0],pResult);

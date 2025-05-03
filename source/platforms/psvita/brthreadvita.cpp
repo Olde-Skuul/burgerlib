@@ -77,7 +77,7 @@ Burger::eThreadPriority BURGER_API Burger::get_thread_priority(
 {
 	// Get the information about the thread of interest
 	SceKernelThreadInfo Info;
-	MemoryClear(&Info, sizeof(Info));
+	memory_clear(&Info, sizeof(Info));
 	Info.size = sizeof(Info);
 	SceInt32 iResult = sceKernelGetThreadInfo(uThreadID, &Info);
 

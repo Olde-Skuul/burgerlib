@@ -479,7 +479,7 @@ int BURGER_API Burger::Globals::ExecuteTool(const char* /* pFilename */,
 
 	On systems that support it, query the system for an environment variable and
 	return a COPY of the string. Once the string is no longer needed, call
-	Burger::Free(const void *) on it to release it.
+	Burger::free_memory(const void *) on it to release it.
 
 	Once obtained, the string will not change due to it being a copy of the one
 	that exists in the operating system.
@@ -490,7 +490,7 @@ int BURGER_API Burger::Globals::ExecuteTool(const char* /* pFilename */,
 
 	\return nullptr on failure or if the string didn't exist. A valid "C"
 		string pointer otherwise. Release with a call to
-		Burger::Free(const void *)
+		Burger::free_memory(const void *)
 
 	\sa SetEnvironmentString(const char *,const char *)
 

@@ -188,10 +188,10 @@ public:
 	static void BURGER_API MakeColorMasks(uint8_t *pOutput,uint_t uMaskIndex);
 	static void BURGER_API MakeFadeLookup(uint8_t *pOutput,const uint8_t *pInput,uint_t uRedAdjust,uint_t uGreenAdjust,uint_t uBlueAdjust);
 };
-BURGER_INLINE void CopyPalette(RGBWord8_t *pOutput,const RGBWord8_t *pInput,uintptr_t uEntries=256) { MemoryCopy(pOutput,pInput,uEntries*sizeof(RGBWord8_t)); }
+BURGER_INLINE void CopyPalette(RGBWord8_t *pOutput,const RGBWord8_t *pInput,uintptr_t uEntries=256) { memory_copy(pOutput,pInput,uEntries*sizeof(RGBWord8_t)); }
 extern void BURGER_API CopyPalette(RGBWord8_t *pOutput,const RGBAWord8_t *pInput,uintptr_t uEntries=256);
 extern void BURGER_API CopyPalette(RGBAWord8_t *pOutput,const RGBWord8_t *pInput,uintptr_t uEntries=256);
-BURGER_INLINE void CopyPalette(RGBAWord8_t *pOutput,const RGBAWord8_t *pInput,uintptr_t uEntries=256) { MemoryCopy(pOutput,pInput,uEntries*sizeof(RGBAWord8_t)); }
+BURGER_INLINE void CopyPalette(RGBAWord8_t *pOutput,const RGBAWord8_t *pInput,uintptr_t uEntries=256) { memory_copy(pOutput,pInput,uEntries*sizeof(RGBAWord8_t)); }
 extern void BURGER_API CopyPalette444(RGBWord8_t *pOutput,const uint16_t *pInput,uintptr_t uEntries=256);
 extern void BURGER_API CopyPalette444(RGBAWord8_t *pOutput,const uint16_t *pInput,uintptr_t uEntries=256);
 extern void BURGER_API CopyPalette4444(RGBWord8_t *pOutput,const uint16_t *pInput,uintptr_t uEntries=256);

@@ -187,7 +187,7 @@ Burger::Keyboard::Keyboard(GameApp* pAppInstance) BURGER_NOEXCEPT
 	  m_uRepeatDelay(33)
 {
 	// Clear my variables
-	MemoryClear(const_cast<uint8_t*>(m_KeyArray), sizeof(m_KeyArray));
+	memory_clear(const_cast<uint8_t*>(m_KeyArray), sizeof(m_KeyArray));
 }
 
 /***************************************

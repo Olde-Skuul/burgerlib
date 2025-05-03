@@ -379,7 +379,7 @@ Burger::DisplayDirectX9::DeviceInfo::DeviceInfo(
 	m_BufferFormatList()
 {
 	BURGER_STATIC_ASSERT(sizeof(m_D3DCaps) == sizeof(D3DCAPS9));
-	MemoryClear(&m_D3DCaps, sizeof(m_D3DCaps));
+	memory_clear(&m_D3DCaps, sizeof(m_D3DCaps));
 }
 
 /*! ************************************
@@ -401,7 +401,7 @@ Burger::DisplayDirectX9::DeviceInfo::~DeviceInfo()
 		BufferFormatGroup* const* ppBufferFormatGroup =
 			m_BufferFormatList.GetPtr();
 		do {
-			Delete(ppBufferFormatGroup[0]);
+			delete_object(ppBufferFormatGroup[0]);
 			++ppBufferFormatGroup;
 		} while (--uCount);
 	}
@@ -560,7 +560,7 @@ Burger::DisplayDirectX9::AdapterInfo::AdapterInfo(uint_t uAdapterOrdinal):
 	BURGER_STATIC_ASSERT(
 		sizeof(m_AdapterIdentifier) >= sizeof(D3DADAPTER_IDENTIFIER9));
 
-	MemoryClear(&m_AdapterIdentifier, sizeof(m_AdapterIdentifier));
+		memory_clear(&m_AdapterIdentifier, sizeof(m_AdapterIdentifier));
 }
 
 /*! ************************************
@@ -578,7 +578,7 @@ Burger::DisplayDirectX9::AdapterInfo::~AdapterInfo()
 	if (uCount) {
 		DeviceInfo* const* ppDeviceInfo = m_DeviceInfoList.GetPtr();
 		do {
-			Delete(ppDeviceInfo[0]);
+			delete_object(ppDeviceInfo[0]);
 			++ppDeviceInfo;
 		} while (--uCount);
 	}
@@ -2018,7 +2018,7 @@ uint_t BURGER_API Burger::DisplayDirectX9::Enumerator::Enumerate(
 		do {
 			// Create an adapter record
 			AdapterInfo* pAdapterInfo =
-				new (Alloc(sizeof(AdapterInfo))) AdapterInfo(uOrdinal);
+				new (allocate_memory(sizeof(AdapterInfo))) AdapterInfo(uOrdinal);
 			if (pAdapterInfo) {
 
 				// Get the identifier data, the error is ignored for the return
@@ -2027,7 +2027,7 @@ uint_t BURGER_API Burger::DisplayDirectX9::Enumerator::Enumerate(
 					const_cast<D3DADAPTER_IDENTIFIER9*>(
 						pAdapterInfo->GetAdapterIdentifier()));
 				if (iError < 0) {
-					Delete(pAdapterInfo);
+					delete_object(pAdapterInfo);
 				} else {
 
 					// Clear the list, so enumeration can start
@@ -2102,7 +2102,7 @@ uint_t BURGER_API Burger::DisplayDirectX9::Enumerator::Enumerate(
 						m_AdapterInfoList.push_back(pAdapterInfo);
 					} else {
 						// Toss it away
-						Delete(pAdapterInfo);
+						delete_object(pAdapterInfo);
 					}
 				}
 			}
@@ -2124,7 +2124,7 @@ void BURGER_API Burger::DisplayDirectX9::Enumerator::ClearAdapterInfoList(void)
 	if (uCount) {
 		AdapterInfo* const* ppList = m_AdapterInfoList.GetPtr();
 		do {
-			Delete(ppList[0]);
+			delete_object(ppList[0]);
 			++ppList;
 		} while (--uCount);
 	}
@@ -2158,12 +2158,12 @@ uint_t BURGER_API Burger::DisplayDirectX9::Enumerator::EnumerateDevices(
 
 			// Enumerate each Direct3D device type
 			DeviceInfo* pDeviceInfo =
-				new (Alloc(sizeof(DeviceInfo))) DeviceInfo(
+				new (allocate_memory(sizeof(DeviceInfo))) DeviceInfo(
 					pAdapterInfo->GetAdapterOrdinal(), g_DeviceTypes[uIndex]);
 			if (pDeviceInfo) {
 
 				// Save the device index and type of device
-				MemoryCopy(const_cast<D3DCAPS9*>(pDeviceInfo->GetCaps()),
+				memory_copy(const_cast<D3DCAPS9*>(pDeviceInfo->GetCaps()),
 					&TheCaps, sizeof(TheCaps));
 
 				// Create a temp device to verify that it is really possible to
@@ -2176,7 +2176,7 @@ uint_t BURGER_API Burger::DisplayDirectX9::Enumerator::EnumerateDevices(
 					m_pD3D->GetAdapterDisplayMode(0, &TheMode);
 
 					D3DPRESENT_PARAMETERS ThePresent;
-					MemoryClear(&ThePresent, sizeof(ThePresent));
+					memory_clear(&ThePresent, sizeof(ThePresent));
 					ThePresent.BackBufferWidth = 1;
 					ThePresent.BackBufferHeight = 1;
 					ThePresent.BackBufferFormat = TheMode.Format;
@@ -2194,7 +2194,7 @@ uint_t BURGER_API Burger::DisplayDirectX9::Enumerator::EnumerateDevices(
 							D3DCREATE_FPU_PRESERVE,
 						&ThePresent, &pDevice);
 					if (hr < 0) {
-						Delete(pDeviceInfo);
+						delete_object(pDeviceInfo);
 						continue;
 					}
 					// Success! Release the temp device
@@ -2212,7 +2212,7 @@ uint_t BURGER_API Burger::DisplayDirectX9::Enumerator::EnumerateDevices(
 					pAdapterInfo->AddToList(pDeviceInfo);
 				} else {
 					// Surrender
-					Delete(pDeviceInfo);
+					delete_object(pDeviceInfo);
 				}
 			}
 		}
@@ -2299,7 +2299,7 @@ uint_t BURGER_API Burger::DisplayDirectX9::Enumerator::EnumerateBufferFormats(
 						// more suitable depth/stencil buffer format,
 						// multisample type, and present interval.
 						BufferFormatGroup* pBufferFormatGroup = new (
-							Alloc(sizeof(BufferFormatGroup)))
+							allocate_memory(sizeof(BufferFormatGroup)))
 							BufferFormatGroup(pAdapterInfo->GetAdapterOrdinal(),
 								pDeviceInfo->GetDeviceType(), uAdapterFormat,
 								uBackBufferFormat, bWindowed);
@@ -2314,7 +2314,7 @@ uint_t BURGER_API Burger::DisplayDirectX9::Enumerator::EnumerateBufferFormats(
 
 							if (!pBufferFormatGroup
 									 ->GetMultiSampleQualityListSize()) {
-								Delete(pBufferFormatGroup);
+								delete_object(pBufferFormatGroup);
 							} else {
 								pBufferFormatGroup->CreateConflictList(m_pD3D);
 								pBufferFormatGroup->CreatePresentIntervalList(
@@ -2406,7 +2406,7 @@ Burger::DisplayDirectX9::DisplayDirectX9(GameApp* pGameApp):
 	BURGER_STATIC_ASSERT(sizeof(m_WindowPlacement) == sizeof(WINDOWPLACEMENT));
 	BURGER_STATIC_ASSERT(sizeof(m_D3DSurfaceDesc) == sizeof(D3DSURFACE_DESC));
 	BURGER_STATIC_ASSERT(sizeof(m_D3DCaps) == sizeof(D3DCAPS9));
-	MemoryClear(&m_D3D9Settings, sizeof(m_D3D9Settings));
+	memory_clear(&m_D3D9Settings, sizeof(m_D3D9Settings));
 }
 
 //
@@ -2483,7 +2483,7 @@ uint_t Burger::DisplayDirectX9::Init(
 	//
 
 	D3DPRESENT_PARAMETERS DisplayPresentParms;
-	MemoryClear(&DisplayPresentParms,sizeof(DisplayPresentParms));
+	memory_clear(&DisplayPresentParms,sizeof(DisplayPresentParms));
 
 	// Shared values
 	DisplayPresentParms.BackBufferWidth = m_uWidth;
@@ -2580,7 +2580,7 @@ void Burger::DisplayDirectX9::BeginScene(void)
 		if (!pDirect3DDevice9) {
 			if (m_bDeviceLost) {
 				DeviceSettings_t TempSettings;
-				MemoryCopy(
+				memory_copy(
 					&TempSettings, &m_D3D9Settings, sizeof(TempSettings));
 				ChangeDevice(&TempSettings, FALSE, TRUE);
 			}
@@ -2606,7 +2606,7 @@ void Burger::DisplayDirectX9::BeginScene(void)
 				if (m_D3D9Settings.m_bWindowed) {
 					D3DDISPLAYMODE adapterDesktopDisplayMode;
 					DeviceSettings_t DeviceSettings;
-					MemoryCopy(&DeviceSettings, &m_D3D9Settings,
+					memory_copy(&DeviceSettings, &m_D3D9Settings,
 						sizeof(DeviceSettings));
 					m_pDirect3D9->GetAdapterDisplayMode(
 						DeviceSettings.m_uAdapterOrdinal,
@@ -2651,7 +2651,7 @@ void Burger::DisplayDirectX9::BeginScene(void)
 						// bad happened, so recreate the device to try to
 						// recover
 						DeviceSettings_t DeviceSettings;
-						MemoryCopy(&DeviceSettings, &m_D3D9Settings,
+						memory_copy(&DeviceSettings, &m_D3D9Settings,
 							sizeof(DeviceSettings_t));
 						if (ChangeDevice(&DeviceSettings, TRUE, FALSE)) {
 							return;
@@ -2708,12 +2708,12 @@ void Burger::DisplayDirectX9::EndScene(void)
 
 Burger::Texture* Burger::DisplayDirectX9::CreateTextureObject(void)
 {
-	return new (Alloc(sizeof(TextureDirectX9))) TextureDirectX9;
+	return new (allocate_memory(sizeof(TextureDirectX9))) TextureDirectX9;
 }
 
 Burger::VertexBuffer* Burger::DisplayDirectX9::CreateVertexBufferObject(void)
 {
-	return new (Alloc(sizeof(VertexBufferDirectX9))) VertexBufferDirectX9;
+	return new (allocate_memory(sizeof(VertexBufferDirectX9))) VertexBufferDirectX9;
 }
 
 void Burger::DisplayDirectX9::Resize(uint_t /* uWidth */, uint_t /* uHeight */)
@@ -3154,7 +3154,7 @@ uint_t BURGER_API Burger::DisplayDirectX9::GetDesktopResolution(
 
 	// Query the device
 	DEVMODEA TempMode;
-	MemoryClear(&TempMode, sizeof(TempMode));
+	memory_clear(&TempMode, sizeof(TempMode));
 	TempMode.dmSize = sizeof(TempMode);
 	uint_t uResult = 0;
 
@@ -3223,7 +3223,7 @@ void BURGER_API Burger::DisplayDirectX9::UpdateBackBufferDesc(void)
 		pBackBuffer->GetDesc(pBBufferSurfaceDesc);
 		pBackBuffer->Release();
 	} else {
-		MemoryClear(m_D3DSurfaceDesc, sizeof(m_D3DSurfaceDesc));
+		memory_clear(m_D3DSurfaceDesc, sizeof(m_D3DSurfaceDesc));
 	}
 }
 
@@ -3243,7 +3243,7 @@ uint_t BURGER_API Burger::DisplayDirectX9::ToggleFullScreen(void)
 {
 	// Copy the settings for modification
 	DeviceSettings_t NewSettings;
-	MemoryCopy(&NewSettings, &m_D3D9Settings, sizeof(NewSettings));
+	memory_copy(&NewSettings, &m_D3D9Settings, sizeof(NewSettings));
 
 	// Toggle full screen / windowed
 	uint_t uResult = 0;
@@ -3273,7 +3273,7 @@ uint_t BURGER_API Burger::DisplayDirectX9::ToggleFullScreen(void)
 
 		// Save the settings to restore video
 		DeviceSettings_t BackupSettings;
-		MemoryCopy(&BackupSettings, &m_D3D9Settings, sizeof(BackupSettings));
+		memory_copy(&BackupSettings, &m_D3D9Settings, sizeof(BackupSettings));
 
 		// Toggle modes
 		uResult = ChangeDevice(&NewSettings, FALSE, FALSE);
@@ -3306,7 +3306,7 @@ uint_t BURGER_API Burger::DisplayDirectX9::ToggleFullScreen(void)
 uint_t BURGER_API Burger::DisplayDirectX9::ToggleREF(void)
 {
 	DeviceSettings_t NewSettings;
-	MemoryCopy(&NewSettings, &m_D3D9Settings, sizeof(NewSettings));
+	memory_copy(&NewSettings, &m_D3D9Settings, sizeof(NewSettings));
 
 	// Toggle between REF & HAL
 	uint_t uResult = 0;
@@ -3327,7 +3327,7 @@ uint_t BURGER_API Burger::DisplayDirectX9::ToggleREF(void)
 
 			// Copy the settings for restore
 			DeviceSettings_t BackupSettings;
-			MemoryCopy(
+			memory_copy(
 				&BackupSettings, &m_D3D9Settings, sizeof(BackupSettings));
 
 			// Create a Direct3D device using the new device settings.
@@ -3379,7 +3379,7 @@ void Burger::DisplayDirectX9::CheckForWindowSizeChange(void)
 			// rect
 
 			DeviceSettings_t NewSettings;
-			MemoryCopy(&NewSettings, &m_D3D9Settings, sizeof(NewSettings));
+			memory_copy(&NewSettings, &m_D3D9Settings, sizeof(NewSettings));
 			NewSettings.m_uBackBufferWidth = 0;
 			NewSettings.m_uBackBufferHeight = 0;
 			ChangeDevice(&NewSettings, FALSE, FALSE);
@@ -3410,7 +3410,7 @@ void Burger::DisplayDirectX9::CheckForWindowChangingMonitors(void)
 					hWindowMonitor, &uNewAdapterOrdinal)) {
 				// Find the closest valid device settings with the new ordinal
 				DeviceSettings_t NewSettings;
-				MemoryCopy(&NewSettings, &m_D3D9Settings, sizeof(NewSettings));
+				memory_copy(&NewSettings, &m_D3D9Settings, sizeof(NewSettings));
 
 				NewSettings.m_uAdapterOrdinal = uNewAdapterOrdinal;
 				if (!SnapDeviceSettingsToEnumDevice(&NewSettings, FALSE)) {
@@ -3455,7 +3455,7 @@ uint_t BURGER_API Burger::DisplayDirectX9::ChangeDevice(
 
 	// Copy the settings
 	DeviceSettings_t NewSettings;
-	MemoryCopy(&NewSettings, pNewSettings, sizeof(NewSettings));
+	memory_copy(&NewSettings, pNewSettings, sizeof(NewSettings));
 
 	// Look for the closest match (Which may modify the settings)
 	uint_t uResult =
@@ -3485,11 +3485,11 @@ uint_t BURGER_API Burger::DisplayDirectX9::ChangeDevice(
 			// Make a copy of the current settings so they could be referred to
 			// for reference
 			DeviceSettings_t BackupSettings;
-			MemoryCopy(
+			memory_copy(
 				&BackupSettings, &m_D3D9Settings, sizeof(BackupSettings));
 
 			// Set the new settings
-			MemoryCopy(&m_D3D9Settings, &NewSettings, sizeof(m_D3D9Settings));
+			memory_copy(&m_D3D9Settings, &NewSettings, sizeof(m_D3D9Settings));
 
 			// When a WM_SIZE message is received, it calls
 			// CheckForWindowSizeChange(). A WM_SIZE message might be sent when
@@ -3539,7 +3539,7 @@ uint_t BURGER_API Burger::DisplayDirectX9::ChangeDevice(
 					// so save current window position/size/style now in case
 					// the user toggles to windowed mode later
 
-					MemoryClear(m_WindowPlacement, sizeof(m_WindowPlacement));
+					memory_clear(m_WindowPlacement, sizeof(m_WindowPlacement));
 					WINDOWPLACEMENT* pWindowPlacement = GetWindowedPlacement();
 					pWindowPlacement->length = sizeof(WINDOWPLACEMENT);
 					GetWindowPlacement(
@@ -3575,7 +3575,7 @@ uint_t BURGER_API Burger::DisplayDirectX9::ChangeDevice(
 				m_pGameApp->SetMenu(hMenu);
 				::SetMenu(m_pGameApp->GetWindow(), NULL);
 
-				MemoryClear(&TempWindowPlacement, sizeof(WINDOWPLACEMENT));
+				memory_clear(&TempWindowPlacement, sizeof(WINDOWPLACEMENT));
 				TempWindowPlacement.length = sizeof(WINDOWPLACEMENT);
 				GetWindowPlacement(
 					m_pGameApp->GetWindow(), &TempWindowPlacement);
@@ -3649,7 +3649,7 @@ uint_t BURGER_API Burger::DisplayDirectX9::ChangeDevice(
 					// Window is currently minimized. To tell if it needs to
 					// resize, get the client rect of window when its restored
 					// the hard way using GetWindowPlacement()
-					MemoryClear(&TempWindowPlacement, sizeof(WINDOWPLACEMENT));
+					memory_clear(&TempWindowPlacement, sizeof(WINDOWPLACEMENT));
 					TempWindowPlacement.length = sizeof(WINDOWPLACEMENT);
 					GetWindowPlacement(
 						m_pGameApp->GetWindow(), &TempWindowPlacement);
@@ -3675,7 +3675,7 @@ uint_t BURGER_API Burger::DisplayDirectX9::ChangeDevice(
 						// wp.rcNormalPosition includes the window frame so
 						// subtract it
 						RECT TheFrameRect;
-						MemoryClear(&TheFrameRect, sizeof(TheFrameRect));
+						memory_clear(&TheFrameRect, sizeof(TheFrameRect));
 						AdjustWindowRectEx(&TheFrameRect,
 							m_uWindowedStyleAtModeChange,
 							m_pGameApp->GetMenu() != NULL,
@@ -3890,7 +3890,7 @@ uint_t BURGER_API Burger::DisplayDirectX9::ChangeDevice(
 					// time create a backbuffer that matches the client rect of
 					// the current window w/o resizing the window.
 					DeviceSettings_t SettingsCopy;
-					MemoryCopy(
+					memory_copy(
 						&SettingsCopy, &m_D3D9Settings, sizeof(m_D3D9Settings));
 					SettingsCopy.m_uBackBufferWidth = 0;
 					SettingsCopy.m_uBackBufferHeight = 0;
@@ -3975,7 +3975,7 @@ uint_t BURGER_API Burger::DisplayDirectX9::Create3DEnvironment(void)
 		hr = m_pDirect3D9->GetAdapterIdentifier(
 			m_D3D9Settings.m_uAdapterOrdinal, 0, &AdapterIdentifier);
 		if (hr != D3D_OK) {
-			MemoryClear(&AdapterIdentifier, sizeof(AdapterIdentifier));
+			memory_clear(&AdapterIdentifier, sizeof(AdapterIdentifier));
 		}
 		// Capture the vendor ID of the card that's being requested
 		m_bIsnVidia = (AdapterIdentifier.VendorId == 0x10DE);
@@ -4106,11 +4106,11 @@ void BURGER_API Burger::DisplayDirectX9::Cleanup3DEnvironment(
 
 		// Don't reset if not required
 		if (bClearSettings) {
-			MemoryClear(&m_D3D9Settings, sizeof(m_D3D9Settings));
+			memory_clear(&m_D3D9Settings, sizeof(m_D3D9Settings));
 		}
 		// No device attached, so clear out the cache
-		MemoryClear(m_D3DSurfaceDesc, sizeof(m_D3DSurfaceDesc));
-		MemoryClear(m_D3DCaps, sizeof(m_D3DCaps));
+		memory_clear(m_D3DSurfaceDesc, sizeof(m_D3DSurfaceDesc));
+		memory_clear(m_D3DCaps, sizeof(m_D3DCaps));
 		m_bDeviceCreated = FALSE;
 	}
 }
@@ -4476,7 +4476,7 @@ long BURGER_API Burger::SetDeviceCursor(
 {
 	HRESULT iResult = E_FAIL;
 	ICONINFO TheIconInfo;
-	MemoryClear(&TheIconInfo, sizeof(TheIconInfo));
+	memory_clear(&TheIconInfo, sizeof(TheIconInfo));
 
 	// Is there an icon with the cursor?
 	if (GetIconInfo(hCursor, &TheIconInfo)) {
@@ -4505,7 +4505,7 @@ long BURGER_API Burger::SetDeviceCursor(
 			if (iResult >= 0) {
 
 				BITMAPINFO TheBitMapInfo;
-				MemoryClear(&TheBitMapInfo, sizeof(TheBitMapInfo));
+				memory_clear(&TheBitMapInfo, sizeof(TheBitMapInfo));
 				TheBitMapInfo.bmiHeader.biSize =
 					sizeof(TheBitMapInfo.bmiHeader);
 				TheBitMapInfo.bmiHeader.biWidth = static_cast<LONG>(uWidth);
@@ -4530,7 +4530,7 @@ long BURGER_API Burger::SetDeviceCursor(
 					HGDIOBJ hOldMask =
 						SelectObject(hMaskDC, TheIconInfo.hbmMask);
 					COLORREF* pArrayMask = static_cast<COLORREF*>(
-						Alloc(sizeof(COLORREF) * uWidth * uOriginalHeight));
+						allocate_memory(sizeof(COLORREF) * uWidth * uOriginalHeight));
 					GetDIBits(hMaskDC, TheIconInfo.hbmMask, 0, uOriginalHeight,
 						pArrayMask, &TheBitMapInfo, DIB_RGB_COLORS);
 					// Set it back
@@ -4543,7 +4543,7 @@ long BURGER_API Burger::SetDeviceCursor(
 						if (hColorDC) {
 							SelectObject(hColorDC, TheIconInfo.hbmColor);
 							pArrayColor = static_cast<COLORREF*>(
-								Alloc(sizeof(COLORREF) * uWidth * uHeight));
+								allocate_memory(sizeof(COLORREF) * uWidth * uHeight));
 							GetDIBits(hColorDC, TheIconInfo.hbmColor, 0,
 								uHeight, pArrayColor, &TheBitMapInfo,
 								DIB_RGB_COLORS);
@@ -4612,11 +4612,11 @@ long BURGER_API Burger::SetDeviceCursor(
 					}
 
 					// Release the buffers and contexts
-					Free(pArrayColor);
+					free_memory(pArrayColor);
 					if (hColorDC) {
 						DeleteDC(hColorDC);
 					}
-					Free(pArrayMask);
+					free_memory(pArrayMask);
 					if (hMaskDC) {
 						DeleteDC(hMaskDC);
 					}

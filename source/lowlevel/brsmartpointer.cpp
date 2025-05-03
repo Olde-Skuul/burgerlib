@@ -49,11 +49,11 @@
 
 ***************************************/
 
-Burger::ProxyReferenceCounter* BURGER_API Burger::ProxyReferenceCounter::New(
+Burger::ProxyReferenceCounter* BURGER_API Burger::ProxyReferenceCounter::new_object(
 	void) BURGER_NOEXCEPT
 {
 	// In place new
-	return new (Alloc(sizeof(ProxyReferenceCounter))) ProxyReferenceCounter;
+	return new (allocate_memory(sizeof(ProxyReferenceCounter))) ProxyReferenceCounter;
 }
 
 /*! ************************************
@@ -62,10 +62,10 @@ Burger::ProxyReferenceCounter* BURGER_API Burger::ProxyReferenceCounter::New(
 	\brief Private default constructor.
 
 	Sets the default values on construction. This can't be
-	called by applications. Use Burger::ProxyReferenceCounter::New()
+	called by applications. Use Burger::ProxyReferenceCounter::new_object()
 	instead.
 
-	\sa New()
+	\sa new_object()
 
 ***************************************/
 
@@ -271,7 +271,7 @@ Burger::WeakPointerAnchor::GetProxyReferenceCounter(void) const BURGER_NOEXCEPT
 {
 	ProxyReferenceCounter* pResult = m_pReferenceCounter;
 	if (pResult == nullptr) {
-		pResult = ProxyReferenceCounter::New();
+		pResult = ProxyReferenceCounter::new_object();
 		m_pReferenceCounter = pResult;
 		pResult->AddRef();
 	}

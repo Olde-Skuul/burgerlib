@@ -157,7 +157,7 @@ void BURGER_API Burger::Sequencer::Command_t::Clear(void)
 
 ***************************************/
 
-Burger::Sequencer::PatternData_t * BURGER_API Burger::Sequencer::PatternData_t::New(uint_t uRows,uint_t uChannels)
+Burger::Sequencer::PatternData_t * BURGER_API Burger::Sequencer::PatternData_t::new_object(uint_t uRows,uint_t uChannels)
 {
 	// Number of entries
 	uint_t uCount = uRows*uChannels;
@@ -171,12 +171,12 @@ Burger::Sequencer::PatternData_t * BURGER_API Burger::Sequencer::PatternData_t::
 	}
 
 	// Allocate the memory
-	PatternData_t *pResult = static_cast<PatternData_t *>(Alloc(sizeof(PatternData_t)+(uCount*sizeof(Command_t))));
+	PatternData_t *pResult = static_cast<PatternData_t *>(allocate_memory(sizeof(PatternData_t)+(uCount*sizeof(Command_t))));
 	if (pResult) {
 		// Initialize the rows and channels
 		pResult->m_uRowCount = uRows;
 		pResult->m_uChannelCount = uChannels;
-		MemoryClear(pResult->m_Name,sizeof(pResult->m_Name));	// Init the name
+		memory_clear(pResult->m_Name,sizeof(pResult->m_Name));	// Init the name
 		Command_t *pCommand = pResult->m_Commands;
 
 		//
@@ -261,7 +261,7 @@ Burger::Sequencer::Command_t* BURGER_API Burger::Sequencer::PatternData_t::GetCo
 
 Burger::Sequencer::SampleDescription::~SampleDescription()
 {
-	Free(m_pSample);
+	free_memory(m_pSample);
 	m_pSample = NULL;
 }
 
@@ -273,9 +273,9 @@ Burger::Sequencer::SampleDescription::~SampleDescription()
 
 ***************************************/
 
-Burger::Sequencer::SampleDescription * BURGER_API Burger::Sequencer::SampleDescription::New(void)
+Burger::Sequencer::SampleDescription * BURGER_API Burger::Sequencer::SampleDescription::new_object(void)
 {
-	return static_cast<SampleDescription *>(alloc_clear(sizeof(SampleDescription)));
+	return static_cast<SampleDescription *>(allocate_memory_clear(sizeof(SampleDescription)));
 }
 
 /*! ************************************
@@ -339,10 +339,10 @@ uint_t BURGER_API Burger::Sequencer::EnvelopeMarker_t::Interpolate(const Envelop
 
 void BURGER_API Burger::Sequencer::InstrData_t::Reset(void)
 {
-	MemoryClear(m_Name,sizeof(m_Name));
-	MemoryClear(m_WhichSampleForNote,sizeof(m_WhichSampleForNote));
-	MemoryClear(m_VolumeEnvelope,sizeof(m_VolumeEnvelope));
-	MemoryClear(m_PanEnvelope,sizeof(m_PanEnvelope));
+	memory_clear(m_Name,sizeof(m_Name));
+	memory_clear(m_WhichSampleForNote,sizeof(m_WhichSampleForNote));
+	memory_clear(m_VolumeEnvelope,sizeof(m_VolumeEnvelope));
+	memory_clear(m_PanEnvelope,sizeof(m_PanEnvelope));
 
 	m_uNumberSamples = 0;
 	m_uVolumeEnvelopeCount = 0;
@@ -403,7 +403,7 @@ void BURGER_API Burger::Sequencer::Channel_t::Init(uint_t uID)
 	m_uVolumeCommand = 0;
 	m_uArpeggioIndex = 0;
 
-	MemoryClear(m_Arpeggios,sizeof(m_Arpeggios));
+	memory_clear(m_Arpeggios,sizeof(m_Arpeggios));
 	m_iVibratoOffset = 0;
 	m_iVibratoDepth = 0;
 	m_iCurrentVibration = 0;
@@ -412,7 +412,7 @@ void BURGER_API Burger::Sequencer::Channel_t::Init(uint_t uID)
 	m_iPitchRate = 0;
 	m_iVolumeRate = 0;
 
-	MemoryClear(m_PreviousArguments,sizeof(m_PreviousArguments));
+	memory_clear(m_PreviousArguments,sizeof(m_PreviousArguments));
 	m_uCurrentVolumeEnvelopeIndex = 0;
 	m_uNextVolumeEnvelopeIndex = 1;
 	m_uCurrentVolumePosition = 0;
@@ -786,9 +786,9 @@ uint_t BURGER_API Burger::Sequencer::GetNotePeriod(eNote uNote,uint_t uC2Speed)
 Burger::Sequencer::SongPackage::SongPackage() :
 	m_bMusicUnderModification(FALSE)
 {
-	MemoryClear(m_pSampleDescriptions,sizeof(m_pSampleDescriptions));
-	MemoryClear(m_pPartitions,sizeof(m_pPartitions));
-	MemoryClear(m_InstrDatas,sizeof(m_InstrDatas));
+	memory_clear(m_pSampleDescriptions,sizeof(m_pSampleDescriptions));
+	memory_clear(m_pPartitions,sizeof(m_pPartitions));
+	memory_clear(m_InstrDatas,sizeof(m_InstrDatas));
 	m_SongDescription.Clear();
 }
 
@@ -819,17 +819,17 @@ void BURGER_API Burger::Sequencer::SongPackage::Shutdown(void)
 
 	uintptr_t i = 0;
 	do {
-		Free(m_pPartitions[i]);
+		free_memory(m_pPartitions[i]);
 		m_pPartitions[i] = NULL;
 	} while (++i<BURGER_ARRAYSIZE(m_pPartitions));
 
 	i = 0;
 	do {
-		Delete(m_pSampleDescriptions[i]);
+		delete_object(m_pSampleDescriptions[i]);
 		m_pSampleDescriptions[i] = NULL;
 	} while (++i<BURGER_ARRAYSIZE(m_pSampleDescriptions));
 
-	MemoryClear(m_InstrDatas,sizeof(m_InstrDatas));
+	memory_clear(m_InstrDatas,sizeof(m_InstrDatas));
 	m_SongDescription.Clear();
 
 	m_bMusicUnderModification = FALSE;
@@ -858,7 +858,7 @@ void BURGER_API Burger::Sequencer::SongPackage::RemoveInstrument(uint_t uInstrum
 			m_bMusicUnderModification = TRUE;
 			SampleDescription **ppSampleDescription = &m_pSampleDescriptions[uInstrumentIndex * cSampleMaxCount];
 			do {
-				Delete(ppSampleDescription[0]);
+				delete_object(ppSampleDescription[0]);
 				ppSampleDescription[0] = NULL;
 				++ppSampleDescription;
 			} while (--uSampleCount);
@@ -874,14 +874,14 @@ void BURGER_API Burger::Sequencer::SongPackage::RemoveInstrument(uint_t uInstrum
 	\brief Allocate and initialize a SongPackage
 
 	\return A pointer to a default SongPackage class or \ref NULL if out of memory
-	\sa Delete(const T *)
+	\sa delete_object(const T *)
 
 ***************************************/
 
-Burger::Sequencer::SongPackage * BURGER_API Burger::Sequencer::SongPackage::New(void)
+Burger::Sequencer::SongPackage * BURGER_API Burger::Sequencer::SongPackage::new_object(void)
 {
 	// Allocate the memory
-	return new (Alloc(sizeof(SongPackage))) SongPackage();
+	return new (allocate_memory(sizeof(SongPackage))) SongPackage();
 }
 
 
@@ -938,10 +938,10 @@ Burger::Sequencer::Sequencer(SoundManager *pSoundManager) :
 	m_bSequencingInProgress(FALSE),
 	m_bPaused(FALSE)
 {
-	MemoryClear(m_pImporters,sizeof(m_pImporters));
-	MemoryClear(m_Channels,sizeof(m_Channels));
+	memory_clear(m_pImporters,sizeof(m_pImporters));
+	memory_clear(m_Channels,sizeof(m_Channels));
 #if defined(BURGER_WINDOWS)
-	MemoryClear(m_hEvents,sizeof(m_hEvents));
+	memory_clear(m_hEvents,sizeof(m_hEvents));
 #endif
 }
 
@@ -1067,7 +1067,7 @@ uint_t BURGER_API Burger::Sequencer::ImportSong(SongPackage **ppOutput,const uin
 	uint_t uCount = m_uImporterCount;
 	if (uCount) {
 		// Allocate the record
-		SongPackage *pSong = SongPackage::New();
+		SongPackage *pSong = SongPackage::new_object();
 		if (pSong) {
 			ImportProc *ppImporters = m_pImporters;
 			do {
@@ -1085,7 +1085,7 @@ uint_t BURGER_API Burger::Sequencer::ImportSong(SongPackage **ppOutput,const uin
 				++ppImporters;
 			} while (--uCount);
 			if (uResult!=IMPORT_OKAY) {
-				Delete(pSong);
+				delete_object(pSong);
 			} else {
 				// Return the pointer to the caller
 				ppOutput[0] = pSong;
@@ -1138,17 +1138,17 @@ uint_t BURGER_API Burger::Sequencer::CreateReverbTables(void)
 		case SoundManager::TYPECHAR:
 		case SoundManager::TYPEBYTE:
 			// *2 for stereo
-			pBuffer = Alloc(uBufferSize*2);
+			pBuffer = allocate_memory(uBufferSize*2);
 			if (pBuffer) {
 				// Initialize to unsigned byte
-				MemoryFill(pBuffer,0x80U,uBufferSize*2);
+				memory_set(pBuffer,0x80U,uBufferSize*2);
 			}
 			break;
 		default:
 		case SoundManager::TYPELSHORT:
 		case SoundManager::TYPEBSHORT:
 			// *4 for short / Stereo
-			pBuffer = alloc_clear(uBufferSize*4);
+			pBuffer = allocate_memory_clear(uBufferSize*4);
 			break;
 		}
 		// Error?
@@ -1168,7 +1168,7 @@ uint_t BURGER_API Burger::Sequencer::CreateReverbTables(void)
 
 void BURGER_API Burger::Sequencer::DisposeReverbTables(void)
 {
-	Free(m_pReverbBuffer);
+	free_memory(m_pReverbBuffer);
 	m_pReverbBuffer = NULL;
 }
 
@@ -1195,7 +1195,7 @@ uint_t BURGER_API Burger::Sequencer::CreateDriverBuffer(void)
 	// Get the buffer
 	//
 	uint_t uResult = 10;
-	m_pBuffer = Alloc(uBufferSize);
+	m_pBuffer = allocate_memory(uBufferSize);
 	if (m_pBuffer) {
 		m_uBufferSize = uBufferSize;
 		uResult = 0;		// No error
@@ -1211,7 +1211,7 @@ uint_t BURGER_API Burger::Sequencer::CreateDriverBuffer(void)
 
 void BURGER_API Burger::Sequencer::DisposeDriverBuffer(void)
 {
-	Free(m_pBuffer);
+	free_memory(m_pBuffer);
 	m_pBuffer = NULL;
 }
 
@@ -1234,7 +1234,7 @@ uint_t BURGER_API Burger::Sequencer::CreateVolumeBuffer(void)
 	switch (m_eOutputDataType) {
 	case SoundManager::TYPECHAR:
 	case SoundManager::TYPEBYTE:
-		pBuffer = alloc_clear((m_uAccumBufferSize*4) + (m_uMicroDelayBufferSize*2*4));
+		pBuffer = allocate_memory_clear((m_uAccumBufferSize*4) + (m_uMicroDelayBufferSize*2*4));
 		if (pBuffer) {
 			m_pAccumBuffer16 = static_cast<int16_t *>(pBuffer);
 		}
@@ -1243,7 +1243,7 @@ uint_t BURGER_API Burger::Sequencer::CreateVolumeBuffer(void)
 	default:
 	case SoundManager::TYPELSHORT:
 	case SoundManager::TYPEBSHORT:
-		pBuffer = alloc_clear((m_uAccumBufferSize*8) + (m_uMicroDelayBufferSize*2*8));
+		pBuffer = allocate_memory_clear((m_uAccumBufferSize*8) + (m_uMicroDelayBufferSize*2*8));
 		if (pBuffer) {
 			m_pAccumBuffer32 = static_cast<int32_t *>(pBuffer);
 		}
@@ -1265,9 +1265,9 @@ uint_t BURGER_API Burger::Sequencer::CreateVolumeBuffer(void)
 
 void BURGER_API Burger::Sequencer::DisposeVolumeBuffer(void)
 {
-	Free(m_pAccumBuffer32);
+	free_memory(m_pAccumBuffer32);
 	m_pAccumBuffer32 = NULL;
-	Free(m_pAccumBuffer16);
+	free_memory(m_pAccumBuffer16);
 	m_pAccumBuffer16 = NULL;
 }
 
@@ -3618,18 +3618,18 @@ void BURGER_API Burger::Sequencer::PerformSequencing(void)
 		default:
 		case SoundManager::TYPELSHORT:
 		case SoundManager::TYPEBSHORT:
-			MemoryCopy(m_pAccumBuffer32, m_pAccumBuffer32 + m_uAccumBufferSize*2,m_uMicroDelayBufferSize*8);
-			MemoryClear((m_pAccumBuffer32 + m_uMicroDelayBufferSize*2),m_uAccumBufferSize*8);
+		memory_copy(m_pAccumBuffer32, m_pAccumBuffer32 + m_uAccumBufferSize*2,m_uMicroDelayBufferSize*8);
+			memory_clear((m_pAccumBuffer32 + m_uMicroDelayBufferSize*2),m_uAccumBufferSize*8);
 			break;
 
 		case SoundManager::TYPECHAR:
 		case SoundManager::TYPEBYTE:
 			if (m_uMicroDelayBufferSize&1) {
-				MemoryCopy(m_pAccumBuffer16,m_pAccumBuffer16 + m_uAccumBufferSize*2,m_uMicroDelayBufferSize*4 + 1);
-				MemoryClear((m_pAccumBuffer16 + m_uMicroDelayBufferSize*2),(m_uAccumBufferSize+1)*4);
+				memory_copy(m_pAccumBuffer16,m_pAccumBuffer16 + m_uAccumBufferSize*2,m_uMicroDelayBufferSize*4 + 1);
+				memory_clear((m_pAccumBuffer16 + m_uMicroDelayBufferSize*2),(m_uAccumBufferSize+1)*4);
 			} else {
-				MemoryCopy(m_pAccumBuffer16,m_pAccumBuffer16 + m_uAccumBufferSize*2,m_uMicroDelayBufferSize*4);
-				MemoryClear((m_pAccumBuffer16 + m_uMicroDelayBufferSize*2),m_uAccumBufferSize*4);
+				memory_copy(m_pAccumBuffer16,m_pAccumBuffer16 + m_uAccumBufferSize*2,m_uMicroDelayBufferSize*4);
+				memory_clear((m_pAccumBuffer16 + m_uMicroDelayBufferSize*2),m_uAccumBufferSize*4);
 			}
 			break;
 		}
@@ -3653,16 +3653,16 @@ void BURGER_API Burger::Sequencer::PerformSequencing(void)
 		case SoundManager::TYPECHAR:
 		case SoundManager::TYPEBYTE:
 			ComputeReverb(static_cast<uint8_t*>(m_pBuffer),static_cast<const uint8_t*>(m_pReverbBuffer),m_uAccumBufferSize*2,m_uReverbStrength);
-			MemoryCopy(m_pReverbBuffer,static_cast<const uint8_t*>(m_pReverbBuffer) + m_uAccumBufferSize*2,(m_uReverbDelayBufferSize-m_uAccumBufferSize)*2);
-			MemoryCopy(static_cast<uint8_t*>(m_pReverbBuffer) + m_uReverbDelayBufferSize*2 - m_uAccumBufferSize*2,m_pBuffer,m_uAccumBufferSize*2);
+			memory_copy(m_pReverbBuffer,static_cast<const uint8_t*>(m_pReverbBuffer) + m_uAccumBufferSize*2,(m_uReverbDelayBufferSize-m_uAccumBufferSize)*2);
+			memory_copy(static_cast<uint8_t*>(m_pReverbBuffer) + m_uReverbDelayBufferSize*2 - m_uAccumBufferSize*2,m_pBuffer,m_uAccumBufferSize*2);
 			break;
 
 		default:
 		case SoundManager::TYPELSHORT:
 		case SoundManager::TYPEBSHORT:
 			ComputeReverb(static_cast<int16_t*>(m_pBuffer),static_cast<const int16_t *>(m_pReverbBuffer),m_uAccumBufferSize*2,m_uReverbStrength);
-			MemoryCopy(m_pReverbBuffer,static_cast<const uint8_t*>(m_pReverbBuffer) + m_uAccumBufferSize*4,(m_uReverbDelayBufferSize-m_uAccumBufferSize)*4);
-			MemoryCopy(static_cast<uint8_t*>(m_pReverbBuffer) + m_uReverbDelayBufferSize*4 - m_uAccumBufferSize*4,m_pBuffer,m_uAccumBufferSize*4);
+			memory_copy(m_pReverbBuffer,static_cast<const uint8_t*>(m_pReverbBuffer) + m_uAccumBufferSize*4,(m_uReverbDelayBufferSize-m_uAccumBufferSize)*4);
+			memory_copy(static_cast<uint8_t*>(m_pReverbBuffer) + m_uReverbDelayBufferSize*4 - m_uAccumBufferSize*4,m_pBuffer,m_uAccumBufferSize*4);
 			break;
 		}
 	}
@@ -3855,7 +3855,7 @@ uint_t BURGER_API Burger::Sequencer::Play(const char *pFilename)
 	const void *pInput = FileManager::load_file(pFilename,&uInputLength);
 	if (pInput) {
 		uResult = Play(pInput,uInputLength);
-		Free(pInput);
+		free_memory(pInput);
 	}
 	return uResult;
 }
@@ -3917,7 +3917,7 @@ void BURGER_API Burger::Sequencer::DisposeSong(void)
 {
 	StopSequencing();		// Stop reading current partition
 	ClearSequencer();		// Stop driver interrupt function
-	Delete(m_pSongPackage);	// Dispose of the music
+	delete_object(m_pSongPackage);	// Dispose of the music
 	m_pSongPackage = NULL;
 	m_bPaused = FALSE;
 }

@@ -47,7 +47,7 @@ static void BURGER_API GetModes(
 		do {
 			// Space for the attributes
 			DSpContextAttributes MyAttr;
-			Burger::MemoryClear(&MyAttr, sizeof(MyAttr));
+			Burger::memory_clear(&MyAttr, sizeof(MyAttr));
 			if (!DSpContext_GetAttributes(MyRef, &MyAttr)) {
 
 				// If 0x10 is set, it's a stretched context, skip it!

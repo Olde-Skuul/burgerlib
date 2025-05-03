@@ -59,7 +59,7 @@ uint_t BURGER_API Burger::is_debugger_present(void) BURGER_NOEXCEPT
 		// Prepare the output structure
 
 		struct kinfo_proc Output;
-		MemoryClear(&Output, sizeof(Output));
+		memory_clear(&Output, sizeof(Output));
 		size_t uOutputSize = sizeof(Output);
 
 		// Call BSD for the state of the process

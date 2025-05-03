@@ -204,7 +204,7 @@ static pascal OSErr OpenDocMacProcessFilenames(
 							FooPtr->m_Proc(FooPtr->m_pThis, pBuffer, NULL);
 						if (pBuffer != TempBuffer2) {
 							// Release the buffer if needed
-							Burger::Free(pBuffer);
+							Burger::free_memory(pBuffer);
 						}
 						if (iResult) {
 							Burger::Globals::SetErrorCode(
@@ -238,7 +238,7 @@ static pascal OSErr OpenDocMacProcessFilenames(
 							FooPtr->m_Proc(FooPtr->m_pThis, pBuffer, NULL);
 						if (pBuffer != TempBuffer) {
 							// Release the buffer if needed
-							Burger::Free(pBuffer);
+							Burger::free_memory(pBuffer);
 						}
 						if (iResult) {
 							Burger::Globals::SetErrorCode(

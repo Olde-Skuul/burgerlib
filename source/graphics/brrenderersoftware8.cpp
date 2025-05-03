@@ -371,12 +371,12 @@ void Burger::RendererSoftware8::DrawRect(
                             m_pFrameBuffer)[(m_uStride * iY) + iX];
                         // Optimization for memory fill
                         if ((m_uStride == uWidth) && !iX) {
-                            MemoryFill(pDest, static_cast<uint8_t>(uColorIndex),
+                            memory_set(pDest, static_cast<uint8_t>(uColorIndex),
                                 uWidth * uHeight);
                         } else {
                             do {
                                 // Fill memory
-                                MemoryFill(pDest,
+                                memory_set(pDest,
                                     static_cast<uint8_t>(uColorIndex), uWidth);
                                 // Next line down
                                 pDest += m_uStride;

@@ -163,7 +163,7 @@ Burger::eError BURGER_API Burger::FileManager::get_modification_time(
 	SceIoStat Entry;
 
 	// Initialize the attributes list
-	MemoryClear(&Entry, sizeof(Entry));
+	memory_clear(&Entry, sizeof(Entry));
 
 	// Get the directory entry
 	int iError = sceIoGetstat(pFileName->get_native(), &Entry);
@@ -210,7 +210,7 @@ Burger::eError BURGER_API Burger::FileManager::get_creation_time(
 	SceIoStat Entry;
 
 	// Initialize the attributes list
-	MemoryClear(&Entry, sizeof(Entry));
+	memory_clear(&Entry, sizeof(Entry));
 
 	// Get the directory entry
 	int iError = sceIoGetstat(pFileName->get_native(), &Entry);
@@ -258,7 +258,7 @@ uint_t BURGER_API Burger::FileManager::does_file_exist(
 	SceIoStat MyStat;
 
 	// Initialize the attributes list
-	MemoryClear(&MyStat, sizeof(MyStat));
+	memory_clear(&MyStat, sizeof(MyStat));
 
 	// Get the directory entry
 	int eError = sceIoGetstat(pFileName->get_native(), &MyStat);
@@ -303,7 +303,7 @@ Burger::eError BURGER_API Burger::FileManager::create_directory_path(
 	// Already here?
 
 	SceIoStat MyStat;
-	MemoryClear(&MyStat, sizeof(MyStat));
+	memory_clear(&MyStat, sizeof(MyStat));
 
 	int eError = sceIoGetstat(pPath, &MyStat);
 	if (eError >= SCE_OK) {

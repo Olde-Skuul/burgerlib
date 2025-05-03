@@ -215,7 +215,7 @@ Burger::eError Burger::DecompressUnsigned8BitAudio::Process(void *pOutput, uintp
     uintptr_t uCount = minimum(uInputChunkLength, uOutputChunkLength);
 
 	// Copy the data
-	MemoryCopy(pOutput,pInput,uCount);
+	memory_copy(pOutput,pInput,uCount);
 
 	// Store the amount of data that was processed
 
@@ -244,14 +244,14 @@ Burger::eError Burger::DecompressUnsigned8BitAudio::Process(void *pOutput, uintp
 	\brief Allocate and initialize a DecompressUnsigned8BitAudio
 
 	\return A pointer to a default DecompressUnsigned8BitAudio class or \ref NULL if out of memory
-	\sa Delete(const T *)
+	\sa delete_object(const T *)
 
 ***************************************/
 
-Burger::DecompressUnsigned8BitAudio * BURGER_API Burger::DecompressUnsigned8BitAudio::New(void)
+Burger::DecompressUnsigned8BitAudio * BURGER_API Burger::DecompressUnsigned8BitAudio::new_object(void)
 {
 	// Allocate the memory
-	return new (Alloc(sizeof(DecompressUnsigned8BitAudio))) DecompressUnsigned8BitAudio();
+	return new (allocate_memory(sizeof(DecompressUnsigned8BitAudio))) DecompressUnsigned8BitAudio();
 }
 
 
@@ -351,14 +351,14 @@ Burger::eError Burger::DecompressSigned8BitAudio::Process(void *pOutput, uintptr
 	\brief Allocate and initialize a DecompressSigned8BitAudio
 
 	\return A pointer to a default DecompressSigned8BitAudio class or \ref NULL if out of memory
-	\sa Delete(const T *)
+	\sa delete_object(const T *)
 
 ***************************************/
 
-Burger::DecompressSigned8BitAudio * BURGER_API Burger::DecompressSigned8BitAudio::New(void)
+Burger::DecompressSigned8BitAudio * BURGER_API Burger::DecompressSigned8BitAudio::new_object(void)
 {
 	// Allocate the memory
-	return new (Alloc(sizeof(DecompressSigned8BitAudio))) DecompressSigned8BitAudio();
+	return new (allocate_memory(sizeof(DecompressSigned8BitAudio))) DecompressSigned8BitAudio();
 }
 
 
@@ -441,7 +441,7 @@ Burger::eError Burger::Decompress16BitBEAudio::Process(void *pOutput, uintptr_t 
 	// If there is no conversion, just upload the data as is.
 	//
 
-	MemoryCopy(pOutput,pInput,uCount);
+	memory_copy(pOutput,pInput,uCount);
 	uintptr_t uInputConsumed = uCount;
 	uintptr_t uOutputConsumed = uCount;
 #else
@@ -608,14 +608,14 @@ Burger::eError Burger::Decompress16BitBEAudio::Process(void *pOutput, uintptr_t 
 	\brief Allocate and initialize a Decompress16BitBEAudio
 
 	\return A pointer to a default Decompress16BitBEAudio class or \ref NULL if out of memory
-	\sa Delete(const T *)
+	\sa delete_object(const T *)
 
 ***************************************/
 
-Burger::Decompress16BitBEAudio * BURGER_API Burger::Decompress16BitBEAudio::New(void)
+Burger::Decompress16BitBEAudio * BURGER_API Burger::Decompress16BitBEAudio::new_object(void)
 {
 	// Allocate the memory
-	return new (Alloc(sizeof(Decompress16BitBEAudio))) Decompress16BitBEAudio();
+	return new (allocate_memory(sizeof(Decompress16BitBEAudio))) Decompress16BitBEAudio();
 }
 
 
@@ -699,7 +699,7 @@ Burger::eError Burger::Decompress16BitLEAudio::Process(void *pOutput, uintptr_t 
 	// If there is no conversion, just upload the data as is.
 	//
 
-	MemoryCopy(pOutput,pInput,uCount);
+	memory_copy(pOutput,pInput,uCount);
 	uintptr_t uInputConsumed = uCount;
 	uintptr_t uOutputConsumed = uCount;
 #else
@@ -868,14 +868,14 @@ Burger::eError Burger::Decompress16BitLEAudio::Process(void *pOutput, uintptr_t 
 	\brief Allocate and initialize a Decompress16BitLEAudio
 
 	\return A pointer to a default Decompress16BitLEAudio class or \ref NULL if out of memory
-	\sa Delete(const T *)
+	\sa delete_object(const T *)
 
 ***************************************/
 
-Burger::Decompress16BitLEAudio * BURGER_API Burger::Decompress16BitLEAudio::New(void)
+Burger::Decompress16BitLEAudio * BURGER_API Burger::Decompress16BitLEAudio::new_object(void)
 {
 	// Allocate the memory
-	return new (Alloc(sizeof(Decompress16BitLEAudio))) Decompress16BitLEAudio();
+	return new (allocate_memory(sizeof(Decompress16BitLEAudio))) Decompress16BitLEAudio();
 }
 
 
@@ -958,7 +958,7 @@ Burger::eError Burger::Decompress32BitBEAudio::Process(void *pOutput, uintptr_t 
 	// If there is no conversion, just upload the data as is.
 	//
 
-	MemoryCopy(pOutput,pInput,uCount);
+	memory_copy(pOutput,pInput,uCount);
 	uintptr_t uInputConsumed = uCount;
 	uintptr_t uOutputConsumed = uCount;
 #else
@@ -1044,7 +1044,7 @@ Burger::eError Burger::Decompress32BitBEAudio::Process(void *pOutput, uintptr_t 
 				uintptr_t uChunk = minimum(uRemaining,uInputChunkLength);
 
 				// Fill in the cache
-				MemoryCopy(&m_Cache[uCacheSize],pInput,uChunk);
+				memory_copy(&m_Cache[uCacheSize],pInput,uChunk);
 
 				// Consume the input bytes
 
@@ -1145,14 +1145,14 @@ Burger::eError Burger::Decompress32BitBEAudio::Process(void *pOutput, uintptr_t 
 	\brief Allocate and initialize a Decompress32BitBEAudio
 
 	\return A pointer to a default Decompress32BitBEAudio class or \ref NULL if out of memory
-	\sa Delete(const T *)
+	\sa delete_object(const T *)
 
 ***************************************/
 
-Burger::Decompress32BitBEAudio * BURGER_API Burger::Decompress32BitBEAudio::New(void)
+Burger::Decompress32BitBEAudio * BURGER_API Burger::Decompress32BitBEAudio::new_object(void)
 {
 	// Allocate the memory
-	return new (Alloc(sizeof(Decompress32BitBEAudio))) Decompress32BitBEAudio();
+	return new (allocate_memory(sizeof(Decompress32BitBEAudio))) Decompress32BitBEAudio();
 }
 
 
@@ -1236,7 +1236,7 @@ Burger::eError Burger::Decompress32BitLEAudio::Process(void *pOutput, uintptr_t 
 	// If there is no conversion, just upload the data as is.
 	//
 
-	MemoryCopy(pOutput,pInput,uCount);
+	memory_copy(pOutput,pInput,uCount);
 	uintptr_t uInputConsumed = uCount;
 	uintptr_t uOutputConsumed = uCount;
 #else
@@ -1322,7 +1322,7 @@ Burger::eError Burger::Decompress32BitLEAudio::Process(void *pOutput, uintptr_t 
 				uintptr_t uChunk = minimum(uRemaining,uInputChunkLength);
 
 				// Fill in the cache
-				MemoryCopy(&m_Cache[uCacheSize],pInput,uChunk);
+				memory_copy(&m_Cache[uCacheSize],pInput,uChunk);
 
 				// Consume the input bytes
 
@@ -1423,12 +1423,12 @@ Burger::eError Burger::Decompress32BitLEAudio::Process(void *pOutput, uintptr_t 
 	\brief Allocate and initialize a Decompress32BitLEAudio
 
 	\return A pointer to a default Decompress32BitLEAudio class or \ref NULL if out of memory
-	\sa Delete(const T *)
+	\sa delete_object(const T *)
 
 ***************************************/
 
-Burger::Decompress32BitLEAudio * BURGER_API Burger::Decompress32BitLEAudio::New(void)
+Burger::Decompress32BitLEAudio * BURGER_API Burger::Decompress32BitLEAudio::new_object(void)
 {
 	// Allocate the memory
-	return new (Alloc(sizeof(Decompress32BitLEAudio))) Decompress32BitLEAudio();
+	return new (allocate_memory(sizeof(Decompress32BitLEAudio))) Decompress32BitLEAudio();
 }

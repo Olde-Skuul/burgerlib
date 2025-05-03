@@ -39,11 +39,11 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::CompressILBMRLE,Burger::Compress);
 		uint8_t uToken = pDataStream[0];
 		if (uToken>128) {
 			uint_t uCount = 257-uToken;
-			MemoryFill(pOutput,pDataStream[1],uCount);
+			memory_set(pOutput,pDataStream[1],uCount);
 			pDataStream+=2;
 		} else if (uToken<128) {
 			uint_t uCount = uToken+1;
-			MemoryCopy(pOutput,pDataStream+1,uCount);
+			memory_copy(pOutput,pDataStream+1,uCount);
 			pDataStream+=uCount+1;
 		} else if (uToken==128) {
 			// Do nothing, as per ILBM specifications
@@ -218,7 +218,7 @@ Burger::eError Burger::CompressILBMRLE::Process(const void *pInput,uintptr_t uIn
 					uInputChunk = uInputLength;
 				}
 				// Append the input to the cache
-				MemoryCopy(&m_Cache[uCacheUsed],pInput,uInputChunk);
+				memory_copy(&m_Cache[uCacheUsed],pInput,uInputChunk);
 				// Bytes to process
 				uintptr_t uTotal = uCacheUsed+uInputChunk;
 				// Apply compression
@@ -248,7 +248,7 @@ Burger::eError Burger::CompressILBMRLE::Process(const void *pInput,uintptr_t uIn
 				uInputLength -= uInputChunk;
 
 				// Update the cache
-				MemoryCopy(m_Cache,&m_Cache[uActual],uRemaining);
+				memory_copy(m_Cache,&m_Cache[uActual],uRemaining);
 				uCacheUsed = uRemaining;
 				m_uCacheUsed = uCacheUsed;
 
@@ -267,7 +267,7 @@ Burger::eError Burger::CompressILBMRLE::Process(const void *pInput,uintptr_t uIn
 			uRemaining = m_uRemaining;
 			m_uCacheUsed = uRemaining;
 			if (uRemaining) {
-				MemoryCopy(m_Cache,static_cast<const uint8_t *>(pInput)+(uInputLength-uRemaining),uRemaining);
+				memory_copy(m_Cache,static_cast<const uint8_t *>(pInput)+(uInputLength-uRemaining),uRemaining);
 			}
 		}
 	}

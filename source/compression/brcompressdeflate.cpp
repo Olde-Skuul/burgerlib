@@ -610,7 +610,7 @@ uintptr_t Burger::CompressDeflate::ReadBuffer(uint8_t *pOutput,uintptr_t uOutput
 		if (!m_bNoHeader) {
 			m_uAdler = calc_adler32(m_pInput,uInputLength,m_uAdler);
 		}
-		MemoryCopy(pOutput,m_pInput,uInputLength);
+		memory_copy(pOutput,m_pInput,uInputLength);
 		m_pInput += uInputLength;
 	}
 	return uInputLength;
@@ -640,7 +640,7 @@ void Burger::CompressDeflate::FillWindow(void)
 		
 		if (m_uStringStart >= c_uWSize+(c_uWSize-MIN_LOOKAHEAD)) {
 
-			MemoryCopy(m_Window,m_Window+c_uWSize,c_uWSize);
+			memory_copy(m_Window,m_Window+c_uWSize,c_uWSize);
 			m_uMatchStart -= c_uWSize;
 			m_uStringStart -= c_uWSize;		// we now have m_uStringStart >= MAX_DIST
 			m_iBlockStart -= c_uWSize;
@@ -1481,22 +1481,22 @@ int Burger::CompressDeflate::DeflateInit(void)
 	m_uLookAhead = 0;
 	m_uPreviousLength = 0;
 	m_bInitialized = TRUE;
-	MemoryClear(&m_DynamicLengthTrees,sizeof(m_DynamicLengthTrees));
-	MemoryClear(&m_DynamicDistanceTrees,sizeof(m_DynamicDistanceTrees));
-	MemoryClear(&m_BitLengthTrees,sizeof(m_BitLengthTrees));
+	memory_clear(&m_DynamicLengthTrees,sizeof(m_DynamicLengthTrees));
+	memory_clear(&m_DynamicDistanceTrees,sizeof(m_DynamicDistanceTrees));
+	memory_clear(&m_BitLengthTrees,sizeof(m_BitLengthTrees));
 
-	MemoryClear(&m_LiteralDescription,sizeof(m_LiteralDescription));
-	MemoryClear(&m_DistanceDescription,sizeof(m_DistanceDescription));
-	MemoryClear(&m_BitLengthDescription,sizeof(m_BitLengthDescription));
-	MemoryClear(&m_BitLengthCount,sizeof(m_BitLengthCount));
-	MemoryClear(&m_Heap,sizeof(m_Heap));
-	MemoryClear(&m_Window,sizeof(m_Window));
-	MemoryClear(&m_Previous,sizeof(m_Previous));
-	MemoryClear(&m_Head,sizeof(m_Head));
-	MemoryClear(&m_Depth,sizeof(m_Depth));
-	MemoryClear(&m_DataBuffer,sizeof(m_DataBuffer));
-	MemoryClear(&m_LiteralBuffer,sizeof(m_LiteralBuffer));
-	MemoryClear(&m_PendingBuffer,sizeof(m_PendingBuffer));
+	memory_clear(&m_LiteralDescription,sizeof(m_LiteralDescription));
+	memory_clear(&m_DistanceDescription,sizeof(m_DistanceDescription));
+	memory_clear(&m_BitLengthDescription,sizeof(m_BitLengthDescription));
+	memory_clear(&m_BitLengthCount,sizeof(m_BitLengthCount));
+	memory_clear(&m_Heap,sizeof(m_Heap));
+	memory_clear(&m_Window,sizeof(m_Window));
+	memory_clear(&m_Previous,sizeof(m_Previous));
+	memory_clear(&m_Head,sizeof(m_Head));
+	memory_clear(&m_Depth,sizeof(m_Depth));
+	memory_clear(&m_DataBuffer,sizeof(m_DataBuffer));
+	memory_clear(&m_LiteralBuffer,sizeof(m_LiteralBuffer));
+	memory_clear(&m_PendingBuffer,sizeof(m_PendingBuffer));
 
 	m_iHeapLength = 0;
 	m_iHeapMaximum = 0;

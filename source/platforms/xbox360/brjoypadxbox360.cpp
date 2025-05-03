@@ -35,8 +35,8 @@ Burger::Joypad::Joypad(GameApp* pAppInstance) BURGER_NOEXCEPT
 	  m_uDeviceCount(MAXJOYSTICKS)
 {
 	// Initialize everything
-	MemoryClear(m_Data, sizeof(m_Data));
-	MemoryClear(m_XInputGamepads, sizeof(m_XInputGamepads));
+	memory_clear(m_Data, sizeof(m_Data));
+	memory_clear(m_XInputGamepads, sizeof(m_XInputGamepads));
 
 	//
 	// Start allocating joypad devices here
@@ -365,8 +365,8 @@ uint_t BURGER_API Burger::XInputGetGamepadState(uint_t uWhich,
 				// of the entire structure from orbit, just to be sure
 
 				if (pXInputGamePad->m_bInserted) {
-					MemoryClear(pXInputGamePad, sizeof(XInputGamePad_t));
-					// Restore these two values because the MemoryClear()
+					memory_clear(pXInputGamePad, sizeof(XInputGamePad_t));
+					// Restore these two values because the memory_clear()
 					// erased them
 					pXInputGamePad->m_bConnected = TRUE;
 					pXInputGamePad->m_bInserted = TRUE;
@@ -465,7 +465,7 @@ uint_t BURGER_API Burger::XInputGetGamepadState(uint_t uWhich,
 			}
 		} else {
 			// Zap the buffer if there is no XInput
-			MemoryClear(pXInputGamePad, sizeof(XInputGamePad_t));
+			memory_clear(pXInputGamePad, sizeof(XInputGamePad_t));
 		}
 	}
 	return uResult;

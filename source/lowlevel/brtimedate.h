@@ -51,8 +51,8 @@
 #include "brxbox360types.h"
 #endif
 
-#if defined(BURGER_VITA) && !defined(__BRVITATYPES_H__)
-#include "brvitatypes.h"
+#if defined(BURGER_VITA) && !defined(__PSVITA_TYPES_H__)
+#include "psvita_types.h"
 #endif
 
 /* BEGIN */

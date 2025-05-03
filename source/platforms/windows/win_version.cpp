@@ -100,7 +100,7 @@ uint32_t BURGER_API Burger::Win32::get_version_flags(void) BURGER_NOEXCEPT
 		// Note: This structure hasn't changed since Visual Studio 2003, so the
 		// size isn't an issue
 		OSVERSIONINFOEXW OSVersionInfo;
-		MemoryClear(&OSVersionInfo, sizeof(OSVersionInfo));
+		memory_clear(&OSVersionInfo, sizeof(OSVersionInfo));
 		OSVersionInfo.dwOSVersionInfoSize = sizeof(OSVersionInfo);
 
 		// XP no service pack

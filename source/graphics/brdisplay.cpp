@@ -207,7 +207,7 @@ Burger::Display::VideoCardDescription::VideoCardDescription():
 	m_SystemRect.Clear();
 	m_CurrentResolution.Clear();
 #if defined(BURGER_WINDOWS)
-	MemoryClear(&m_GUID, sizeof(m_GUID));
+memory_clear(&m_GUID, sizeof(m_GUID));
 #endif
 }
 
@@ -272,7 +272,7 @@ void BURGER_API Burger::Display::InitDefaults(GameApp* pGameApp)
 	m_pRenderer = NULL;
 
 #if defined(BURGER_WINDOWS)
-	MemoryClear(m_WindowPlacement, sizeof(m_WindowPlacement));
+memory_clear(m_WindowPlacement, sizeof(m_WindowPlacement));
 #endif
 
 	m_pResize = NULL;
@@ -297,8 +297,8 @@ void BURGER_API Burger::Display::InitDefaults(GameApp* pGameApp)
 	m_bPaletteDirty = TRUE;
 	m_bPaletteVSync = FALSE;
 
-	MemoryClear(m_pBoundTextures, sizeof(m_pBoundTextures));
-	MemoryClear(m_Palette, sizeof(m_Palette));
+	memory_clear(m_pBoundTextures, sizeof(m_pBoundTextures));
+	memory_clear(m_Palette, sizeof(m_Palette));
 #if defined(BURGER_MACOS)
 	m_Palette[0 * 3 + 0] = 255;
 	m_Palette[0 * 3 + 1] = 255;
@@ -471,12 +471,12 @@ void Burger::Display::EndScene(void) {}
 
 Burger::Texture* Burger::Display::CreateTextureObject(void)
 {
-	return new (Alloc(sizeof(Texture))) Texture;
+	return new (allocate_memory(sizeof(Texture))) Texture;
 }
 
 Burger::VertexBuffer* Burger::Display::CreateVertexBufferObject(void)
 {
-	return new (Alloc(sizeof(VertexBuffer))) VertexBuffer;
+	return new (allocate_memory(sizeof(VertexBuffer))) VertexBuffer;
 }
 
 void Burger::Display::Resize(uint_t uWidth, uint_t uHeight)
@@ -628,7 +628,7 @@ Burger::Texture* BURGER_API Burger::Display::CreateTexture(uint_t uWidth,
 	Texture* pTexture = CreateTextureObject();
 	if (pTexture) {
 		if (pTexture->GetImage()->Init(uWidth, uHeight, uPixelType)) {
-			Delete(pTexture);
+			delete_object(pTexture);
 			pTexture = NULL;
 		} else {
 			pTexture->SetWrapping(uWrapping);
@@ -1033,7 +1033,7 @@ Burger::VertexBuffer* BURGER_API Burger::Display::CreateVertexBuffer(
 	if (pVertexBuffer) {
 		// Discard on error
 		if (pVertexBuffer->LoadData(this, pDescription)) {
-			Delete(pVertexBuffer);
+			delete_object(pVertexBuffer);
 			pVertexBuffer = NULL;
 		}
 	}
@@ -1132,7 +1132,7 @@ void BURGER_API Burger::Display::SetPalette(
 			(m_bPaletteDirty ||
 				MemoryCompare(
 					m_Palette + (uStart * 3), pPalette, uCount * 3))) {
-			MemoryCopy(m_Palette + (uStart * 3), pPalette,
+						memory_copy(m_Palette + (uStart * 3), pPalette,
 				uCount * 3); // Update the palette
 			m_bPaletteDirty = TRUE;
 		}
@@ -1280,7 +1280,7 @@ void BURGER_API Burger::Display::SetPaletteBlack(void)
 {
 	// Perform a compare to the palette to force an update only when changed
 	uint8_t TempPalette[sizeof(m_Palette)];
-	MemoryClear(m_Palette, sizeof(m_Palette));
+	memory_clear(m_Palette, sizeof(m_Palette));
 	SetPalette(TempPalette);
 }
 
@@ -1298,7 +1298,7 @@ void BURGER_API Burger::Display::SetPaletteBlack(void)
 void BURGER_API Burger::Display::SetPaletteWhite(void)
 {
 	uint8_t TempPalette[sizeof(m_Palette)];
-	MemoryFill(TempPalette, 255, sizeof(TempPalette));
+	memory_set(TempPalette, 255, sizeof(TempPalette));
 	SetPalette(TempPalette);
 }
 
@@ -1576,7 +1576,7 @@ void BURGER_API Burger::Display::FadeTo(
 void BURGER_API Burger::Display::FadeToBlack(FadeProc pProc, void* pData)
 {
 	uint8_t TempPalette[sizeof(m_Palette)];
-	MemoryClear(TempPalette, sizeof(TempPalette));
+	memory_clear(TempPalette, sizeof(TempPalette));
 	FadeTo(TempPalette, pProc, pData);
 }
 
@@ -1598,7 +1598,7 @@ void BURGER_API Burger::Display::FadeToBlack(FadeProc pProc, void* pData)
 void BURGER_API Burger::Display::FadeToWhite(FadeProc pProc, void* pData)
 {
 	uint8_t TempPalette[sizeof(m_Palette)];
-	MemoryFill(TempPalette, 255, sizeof(TempPalette));
+	memory_set(TempPalette, 255, sizeof(TempPalette));
 	FadeTo(TempPalette, pProc, pData);
 }
 

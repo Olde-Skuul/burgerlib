@@ -26,10 +26,10 @@
 	to something that uses OpenGL, DirectX or any other high overhead
 	functionality. The only code linked in is the generic destructor.
 
-	Use of the \ref Base class allows the generic Burger::Delete(const Base*)
-	function to operate.
+	Use of the \ref Base class allows the generic Burger::delete_object(
+	const Base*) function to operate.
 
-	\sa Burger::Delete(const Base*)
+	\sa Burger::delete_object(const Base*)
 
 ***************************************/
 
@@ -51,13 +51,13 @@ BURGER_CREATE_STATICRTTI_BASE(Burger::Base);
 	\brief Delete a base class.
 
 	If the pointer passed is not nullptr, call the destructor and then dispose
-	of the pointer with a call to \ref Free(const void *)
+	of the pointer with a call to \ref free_memory(const void *)
 
 	\param pInput Pointer to a base class
 
 ***************************************/
 
-void BURGER_API Burger::Delete(const Base* pInput) BURGER_NOEXCEPT
+void BURGER_API Burger::delete_object(const Base* pInput) BURGER_NOEXCEPT
 {
 	// Valid pointer?
 	if (pInput) {
@@ -66,7 +66,7 @@ void BURGER_API Burger::Delete(const Base* pInput) BURGER_NOEXCEPT
 		const_cast<Base*>(pInput)->~Base();
 
 		// Dispose of the memory
-		Free(pInput);
+		free_memory(pInput);
 	}
 }
 

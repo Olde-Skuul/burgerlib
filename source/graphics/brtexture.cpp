@@ -561,7 +561,7 @@ uint_t BURGER_API Burger::Texture::CallbackRezFileTGA(Texture *pTexture,eLoader 
 
 	// Release the user data
 	case LOADER_SHUTDOWN:
-		Free(pTexture->m_pUserData);
+		free_memory(pTexture->m_pUserData);
 		pTexture->m_pUserData = NULL;
 		uResult = 0;
 		break;
@@ -588,7 +588,7 @@ void BURGER_API Burger::Texture::LoadTGA(RezFile *pRezFile,uint_t uRezNum)
 	// Get rid of any previous loader
 	ShutdownImageMemory();
 	if (pRezFile) {
-		RezFileLoad_t *pRezFileLoad = static_cast<RezFileLoad_t *>(Alloc(sizeof(RezFileLoad_t)));
+		RezFileLoad_t *pRezFileLoad = static_cast<RezFileLoad_t *>(allocate_memory(sizeof(RezFileLoad_t)));
 		pRezFileLoad->m_pRezFile = pRezFile;
 		pRezFileLoad->m_uRezNum = uRezNum;
 		m_pUserData = pRezFileLoad;
@@ -626,7 +626,7 @@ uint_t BURGER_API Burger::Texture::CallbackFileTGA(Texture *pTexture,eLoader uLo
 
 	// Release the user data
 	case LOADER_SHUTDOWN:
-		Free(pTexture->m_pUserData);
+		free_memory(pTexture->m_pUserData);
 		pTexture->m_pUserData = NULL;
 		uResult = 0;
 		break;
@@ -688,7 +688,7 @@ uint_t BURGER_API Burger::Texture::CallbackFilenameTGA(Texture *pTexture,eLoader
 
 	// Release the user data
 	case LOADER_SHUTDOWN:
-		Delete(static_cast<Filename *>(pTexture->m_pUserData));
+		delete_object(static_cast<Filename *>(pTexture->m_pUserData));
 		pTexture->m_pUserData = NULL;
 		uResult = 0;
 		break;
@@ -715,7 +715,7 @@ void BURGER_API Burger::Texture::LoadTGA(Filename *pFilename)
 	// Get rid of any previous loader
 	ShutdownImageMemory();
 	if (pFilename) {
-		m_pUserData = Filename::New(pFilename[0]);
+		m_pUserData = Filename::new_object(pFilename[0]);
 		m_pLoader = CallbackFilenameTGA;
 		m_uDirty |= DIRTY_IMAGE;
 	}
@@ -754,7 +754,7 @@ uint_t BURGER_API Burger::Texture::CallbackRezFilePNG(Texture *pTexture,eLoader 
 
 	// Release the user data
 	case LOADER_SHUTDOWN:
-		Free(pTexture->m_pUserData);
+		free_memory(pTexture->m_pUserData);
 		pTexture->m_pUserData = NULL;
 		uResult = 0;
 		break;
@@ -781,7 +781,7 @@ void BURGER_API Burger::Texture::LoadPNG(RezFile *pRezFile,uint_t uRezNum)
 	// Get rid of any previous loader
 	ShutdownImageMemory();
 	if (pRezFile) {
-		RezFileLoad_t *pRezFileLoad = static_cast<RezFileLoad_t *>(Alloc(sizeof(RezFileLoad_t)));
+		RezFileLoad_t *pRezFileLoad = static_cast<RezFileLoad_t *>(allocate_memory(sizeof(RezFileLoad_t)));
 		pRezFileLoad->m_pRezFile = pRezFile;
 		pRezFileLoad->m_uRezNum = uRezNum;
 		m_pUserData = pRezFileLoad;
@@ -818,7 +818,7 @@ uint_t BURGER_API Burger::Texture::CallbackFilePNG(Texture *pTexture,eLoader uLo
 
 	// Release the user data
 	case LOADER_SHUTDOWN:
-		Free(pTexture->m_pUserData);
+		free_memory(pTexture->m_pUserData);
 		pTexture->m_pUserData = NULL;
 		uResult = 0;
 		break;
@@ -880,7 +880,7 @@ uint_t BURGER_API Burger::Texture::CallbackFilenamePNG(Texture *pTexture,eLoader
 
 	// Release the user data
 	case LOADER_SHUTDOWN:
-		Delete(static_cast<Filename *>(pTexture->m_pUserData));
+		delete_object(static_cast<Filename *>(pTexture->m_pUserData));
 		pTexture->m_pUserData = NULL;
 		uResult = 0;
 		break;
@@ -907,7 +907,7 @@ void BURGER_API Burger::Texture::LoadPNG(Filename *pFilename)
 	// Get rid of any previous loader
 	ShutdownImageMemory();
 	if (pFilename) {
-		m_pUserData = Filename::New(pFilename[0]);
+		m_pUserData = Filename::new_object(pFilename[0]);
 		m_pLoader = CallbackFilenamePNG;
 		m_uDirty |= DIRTY_IMAGE;
 	}
@@ -946,7 +946,7 @@ uint_t BURGER_API Burger::Texture::CallbackRezFileBMP(Texture *pTexture,eLoader 
 
 	// Release the user data
 	case LOADER_SHUTDOWN:
-		Free(pTexture->m_pUserData);
+		free_memory(pTexture->m_pUserData);
 		pTexture->m_pUserData = NULL;
 		uResult = 0;
 		break;
@@ -973,7 +973,7 @@ void BURGER_API Burger::Texture::LoadBMP(RezFile *pRezFile,uint_t uRezNum)
 	// Get rid of any previous loader
 	ShutdownImageMemory();
 	if (pRezFile) {
-		RezFileLoad_t *pRezFileLoad = static_cast<RezFileLoad_t *>(Alloc(sizeof(RezFileLoad_t)));
+		RezFileLoad_t *pRezFileLoad = static_cast<RezFileLoad_t *>(allocate_memory(sizeof(RezFileLoad_t)));
 		pRezFileLoad->m_pRezFile = pRezFile;
 		pRezFileLoad->m_uRezNum = uRezNum;
 		m_pUserData = pRezFileLoad;
@@ -1010,7 +1010,7 @@ uint_t BURGER_API Burger::Texture::CallbackFileBMP(Texture *pTexture,eLoader uLo
 
 	// Release the user data
 	case LOADER_SHUTDOWN:
-		Free(pTexture->m_pUserData);
+		free_memory(pTexture->m_pUserData);
 		pTexture->m_pUserData = NULL;
 		uResult = 0;
 		break;
@@ -1072,7 +1072,7 @@ uint_t BURGER_API Burger::Texture::CallbackFilenameBMP(Texture *pTexture,eLoader
 
 	// Release the user data
 	case LOADER_SHUTDOWN:
-		Delete(static_cast<Filename *>(pTexture->m_pUserData));
+		delete_object(static_cast<Filename *>(pTexture->m_pUserData));
 		pTexture->m_pUserData = NULL;
 		uResult = 0;
 		break;
@@ -1099,7 +1099,7 @@ void BURGER_API Burger::Texture::LoadBMP(Filename *pFilename)
 	// Get rid of any previous loader
 	ShutdownImageMemory();
 	if (pFilename) {
-		m_pUserData = Filename::New(pFilename[0]);
+		m_pUserData = Filename::new_object(pFilename[0]);
 		m_pLoader = CallbackFilenameBMP;
 		m_uDirty |= DIRTY_IMAGE;
 	}
@@ -1158,7 +1158,7 @@ uint_t BURGER_API Burger::Texture::CallbackRezFileGIF(Texture *pTexture,eLoader 
 
 	// Release the user data
 	case LOADER_SHUTDOWN:
-		Free(pTexture->m_pUserData);
+		free_memory(pTexture->m_pUserData);
 		pTexture->m_pUserData = NULL;
 		uResult = 0;
 		break;
@@ -1185,7 +1185,7 @@ void BURGER_API Burger::Texture::LoadGIF(RezFile *pRezFile,uint_t uRezNum)
 	// Get rid of any previous loader
 	ShutdownImageMemory();
 	if (pRezFile) {
-		RezFileLoad_t *pRezFileLoad = static_cast<RezFileLoad_t *>(Alloc(sizeof(RezFileLoad_t)));
+		RezFileLoad_t *pRezFileLoad = static_cast<RezFileLoad_t *>(allocate_memory(sizeof(RezFileLoad_t)));
 		pRezFileLoad->m_pRezFile = pRezFile;
 		pRezFileLoad->m_uRezNum = uRezNum;
 		m_pUserData = pRezFileLoad;
@@ -1243,7 +1243,7 @@ uint_t BURGER_API Burger::Texture::CallbackFileGIF(Texture *pTexture,eLoader uLo
 
 	// Release the user data
 	case LOADER_SHUTDOWN:
-		Free(pTexture->m_pUserData);
+		free_memory(pTexture->m_pUserData);
 		pTexture->m_pUserData = NULL;
 		uResult = 0;
 		break;
@@ -1325,7 +1325,7 @@ uint_t BURGER_API Burger::Texture::CallbackFilenameGIF(Texture *pTexture,eLoader
 
 	// Release the user data
 	case LOADER_SHUTDOWN:
-		Delete(static_cast<Filename *>(pTexture->m_pUserData));
+		delete_object(static_cast<Filename *>(pTexture->m_pUserData));
 		pTexture->m_pUserData = NULL;
 		uResult = 0;
 		break;
@@ -1352,7 +1352,7 @@ void BURGER_API Burger::Texture::LoadGIF(Filename *pFilename)
 	// Get rid of any previous loader
 	ShutdownImageMemory();
 	if (pFilename) {
-		m_pUserData = Filename::New(pFilename[0]);
+		m_pUserData = Filename::new_object(pFilename[0]);
 		m_pLoader = CallbackFilenameGIF;
 		m_uDirty |= DIRTY_IMAGE;
 	}

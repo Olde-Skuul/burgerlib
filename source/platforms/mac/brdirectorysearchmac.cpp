@@ -149,7 +149,7 @@ Burger::eError Burger::DirectorySearch::open(Filename* pDirName) BURGER_NOEXCEPT
 				Str255 Name;
 				CInfoPBRec InfoPBRec;
 
-				MemoryClear(&InfoPBRec, sizeof(InfoPBRec));
+				memory_clear(&InfoPBRec, sizeof(InfoPBRec));
 				InfoPBRec.hFileInfo.ioNamePtr = Name;
 				InfoPBRec.hFileInfo.ioVRefNum = MySpec.vRefNum;
 				short iIndex = 1;

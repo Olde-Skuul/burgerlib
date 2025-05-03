@@ -103,7 +103,7 @@ Burger::OutputMemoryStream::OutputMemoryStream(
 		do {
 			// Make a copy of the chunk.
 			Chunk_t* pNew =
-				static_cast<Chunk_t*>(alloc_copy(pChunk, sizeof(Chunk_t)));
+				static_cast<Chunk_t*>(allocate_memory_copy(pChunk, sizeof(Chunk_t)));
 
 			// If not the first chunk, add to the linked list
 			// or set the root pointer
@@ -152,7 +152,7 @@ Burger::OutputMemoryStream& Burger::OutputMemoryStream::operator=(
 			do {
 				// Make a copy of the chunk.
 				Chunk_t* pNew =
-					static_cast<Chunk_t*>(alloc_copy(pChunk, sizeof(Chunk_t)));
+					static_cast<Chunk_t*>(allocate_memory_copy(pChunk, sizeof(Chunk_t)));
 
 				// If not the first chunk, add to the linked list
 				// or set the root pointer
@@ -262,7 +262,7 @@ void BURGER_API Burger::OutputMemoryStream::Clear(void) BURGER_NOEXCEPT
 		const Chunk_t* pNext;
 		do {
 			pNext = pChunk->m_pNext;
-			Free(pChunk);
+			free_memory(pChunk);
 			pChunk = pNext;
 		} while (pNext);
 		m_pRoot = nullptr;
@@ -589,7 +589,7 @@ Burger::eError BURGER_API Burger::OutputMemoryStream::Save(
 					if (uRemaining < uChunkSize) {
 						uChunkSize = uRemaining;
 					}
-					MemoryCopy(pWork, pChunk->m_Buffer, uChunkSize);
+					memory_copy(pWork, pChunk->m_Buffer, uChunkSize);
 					pWork += uChunkSize;
 					pChunk = pChunk->m_pNext;
 					// All done?
@@ -636,7 +636,7 @@ Burger::eError BURGER_API Burger::OutputMemoryStream::Flatten(
 			if (uRemaining < uChunkSize) {
 				uChunkSize = uRemaining;
 			}
-			MemoryCopy(pOutput, pChunk->m_Buffer, uChunkSize);
+			memory_copy(pOutput, pChunk->m_Buffer, uChunkSize);
 			pOutput = static_cast<uint8_t*>(pOutput) + uChunkSize;
 			pChunk = pChunk->m_pNext;
 			// All done?
@@ -651,7 +651,7 @@ Burger::eError BURGER_API Burger::OutputMemoryStream::Flatten(
 	\brief Flatten the data into a single buffer
 
 	Allocate a buffer and fill it with the data in the stream. When the buffer
-	is no longer needed, release it with a call to Burger::Free()
+	is no longer needed, release it with a call to Burger::free_memory()
 
 	\param pLength Size of the buffer returned
 	\return nullptr on error, or a valid pointer to the buffer returned
@@ -662,7 +662,7 @@ void* BURGER_API Burger::OutputMemoryStream::Flatten(
 	uintptr_t* pLength) const BURGER_NOEXCEPT
 {
 	uintptr_t uRemaining = m_uFileSize;
-	void* pResult = Alloc(uRemaining);
+	void* pResult = allocate_memory(uRemaining);
 	if (!pResult) {
 		// Error!
 		uRemaining = 0;
@@ -676,7 +676,7 @@ void* BURGER_API Burger::OutputMemoryStream::Flatten(
 				if (uRemaining < uChunkSize) {
 					uChunkSize = uRemaining;
 				}
-				MemoryCopy(pOutput, pChunk->m_Buffer, uChunkSize);
+				memory_copy(pOutput, pChunk->m_Buffer, uChunkSize);
 				pOutput = static_cast<uint8_t*>(pOutput) + uChunkSize;
 				pChunk = pChunk->m_pNext;
 				// All done?
@@ -910,7 +910,7 @@ Burger::eError BURGER_API Burger::OutputMemoryStream::Append(
 
 	// Looks like another buffer is needed
 	// Make sure it's cleared out in case the mark is skipped ahead
-	Chunk_t* pNewChunk = static_cast<Chunk_t*>(alloc_clear(sizeof(Chunk_t)));
+	Chunk_t* pNewChunk = static_cast<Chunk_t*>(allocate_memory_clear(sizeof(Chunk_t)));
 	if (!pNewChunk) {
 		// Error!!! Data is corrupt from now on!
 		m_uError = kErrorOutOfMemory;
@@ -1625,7 +1625,7 @@ Burger::eError BURGER_API Burger::OutputMemoryStream::Overwrite(
 					}
 
 					// Overwrite this chunk
-					MemoryCopy(&pChunk->m_Buffer[uSkip], pInput, uChunkSize);
+					memory_copy(&pChunk->m_Buffer[uSkip], pInput, uChunkSize);
 
 					// Consume this input data
 					pInput = static_cast<const uint8_t*>(pInput) + uChunkSize;

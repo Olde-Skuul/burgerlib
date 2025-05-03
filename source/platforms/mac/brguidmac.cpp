@@ -83,7 +83,7 @@ static void BURGER_API get_fake_mac_address(
 	};
 
 	Temp_t Stuff;
-	Burger::MemoryClear(&Stuff, sizeof(Stuff));
+	Burger::memory_clear(&Stuff, sizeof(Stuff));
 
 	// Let's start by reading in random information to seed a random number
 
@@ -102,7 +102,7 @@ static void BURGER_API get_fake_mac_address(
 
 	// Get information about the boot volume
 	HParamBlockRec param;
-	Burger::MemoryClear(&param, sizeof(param));
+	Burger::memory_clear(&param, sizeof(param));
 	param.volumeParam.ioVolIndex = 0;
 	param.volumeParam.ioNamePtr = nullptr;
 	param.volumeParam.ioVRefNum = Stuff.vBootVol;
@@ -125,7 +125,7 @@ static void BURGER_API get_fake_mac_address(
 	// Let's mix it up to make a true mess
 	Burger::MD5_t Mixer;
 	Burger::hash(&Mixer, &Stuff, sizeof(Stuff));
-	Burger::MemoryCopy(pOutput, &Mixer, sizeof(*pOutput));
+	Burger::memory_copy(pOutput, &Mixer, sizeof(*pOutput));
 }
 
 /***************************************
@@ -203,7 +203,7 @@ void BURGER_API Burger::GUID_init(GUID* pOutput) BURGER_NOEXCEPT
 {
 #define kMaxTimeAdjust 9
 
-	MemoryClear(pOutput, sizeof(GUID));
+memory_clear(pOutput, sizeof(GUID));
 
 #if defined(BURGER_CARBON)
 	// Mac OS Carbon has a function in MacOSX that will do the job
@@ -319,7 +319,7 @@ void BURGER_API Burger::GUID_init(GUID* pOutput) BURGER_NOEXCEPT
 	pOutput->Data4[1] = static_cast<uint8_t>(uTempSequence);
 
 	// Save off the ethernet address for the suffix
-	MemoryCopy(&pOutput->Data4[2], &pCache->m_Address, 6);
+	memory_copy(&pOutput->Data4[2], &pCache->m_Address, 6);
 }
 
 #endif

@@ -511,7 +511,7 @@ void BURGER_API Burger::CPUID(CPUID_t* pOutput) BURGER_NOEXCEPT
 	//
 	// Clear out the result
 	//
-	MemoryClear(pOutput, sizeof(CPUID_t));
+	memory_clear(pOutput, sizeof(CPUID_t));
 	pOutput->m_uCPUType = CPUID_t::kCPUUnknown;
 
 	//
@@ -879,7 +879,14 @@ abort:
 	} while (__STWCX(const_cast<uint32_t*>(pOutput), 0, uNew) == 0);
 	return uResult;
 
-// Microsoft/Codewarrior/Watcom
+	// Microsoft Xbox classic is an outlier
+#elif defined(BURGER_XBOX)
+	return _InterlockedCompareExchange(
+			   reinterpret_cast<long*>(const_cast<uint32_t*>(pOutput)),
+			   static_cast<long>(uNew),
+			   static_cast<long>(uOld)) == static_cast<long>(uOld);
+
+	// Microsoft/Codewarrior/Watcom
 #elif defined(BURGER_MSVC) || \
 	((defined(BURGER_WATCOM) || defined(BURGER_METROWERKS)) && \
 		defined(BURGER_INTEL))
@@ -970,6 +977,12 @@ loop:	lwarx	uTemp,0,pOutput2
 		__DCBST(const_cast<uint32_t*>(pOutput), 0);
 	} while (__STWCX(const_cast<uint32_t*>(pOutput), 0, uInput) == 0);
 
+// Xbox classic is an outlier
+#elif defined(BURGER_XBOX)
+	uTemp = static_cast<uint32_t>(_InterlockedExchange(
+		reinterpret_cast<long*>(const_cast<uint32_t*>(pOutput)),
+		static_cast<long>(uInput)));
+
 // Microsoft/Codewarrior/Watcom
 #elif defined(BURGER_MSVC) || \
 	((defined(BURGER_WATCOM) || defined(BURGER_METROWERKS)) && \
@@ -1054,6 +1067,11 @@ loop:	lwarx	uTemp,0,pInput2
 	} while (__STWCX(const_cast<uint32_t*>(pInput), 0, uTemp) == 0);
 	return uTemp;
 
+	// Xbox classic is an outlier
+#elif defined(BURGER_XBOX)
+	return static_cast<uint32_t>(_InterlockedExchangeAdd(
+		reinterpret_cast<long*>(const_cast<uint32_t*>(pInput)), 0));
+
 // Microsoft/Codewarrior/Watcom
 #elif defined(BURGER_MSVC) || \
 	((defined(BURGER_WATCOM) || defined(BURGER_METROWERKS)) && \
@@ -1137,7 +1155,13 @@ loop:	lwarx	uResult,0,pInput
 	} while (__STWCX(const_cast<uint32_t*>(pOutput), 0, uTemp + uInput) == 0);
 	return uTemp;
 
-// Microsoft/Codewarrior/Watcom
+// Xbox classic is an outlier
+#elif defined(BURGER_XBOX)
+	return static_cast<uint32_t>(_InterlockedExchangeAdd(
+		reinterpret_cast<long*>(const_cast<uint32_t*>(pOutput)),
+		static_cast<long>(uInput)));
+
+	// Microsoft/Codewarrior/Watcom
 #elif defined(BURGER_MSVC) || \
 	((defined(BURGER_WATCOM) || defined(BURGER_METROWERKS)) && \
 		defined(BURGER_INTEL))
@@ -1238,6 +1262,11 @@ abort:
 #elif defined(BURGER_MSVC) && defined(BURGER_ARM)
 	return _InterlockedExchange_acq(
 			   reinterpret_cast<volatile long*>(pInput), 1) == 0;
+
+	// Xbox classic is an outlier
+#elif defined(BURGER_XBOX)
+	return _InterlockedExchange(
+			   reinterpret_cast<long*>(const_cast<uint32_t*>(pInput)), 1) == 0;
 
 // Microsoft/Codewarrior/Watcom
 #elif defined(BURGER_MSVC) || \

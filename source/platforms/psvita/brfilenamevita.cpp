@@ -144,7 +144,7 @@ Burger::eError BURGER_API Burger::Filename::set_native(
 		uInputLength + 6; // Could prepend :app0:, 6 characters
 	char* pOutput = m_Filename;
 	if (uOutputLength >= sizeof(m_Filename)) {
-		pOutput = static_cast<char*>(Alloc(uOutputLength));
+		pOutput = static_cast<char*>(allocate_memory(uOutputLength));
 		if (!pOutput) {
 			// We're boned
 			return kErrorOutOfMemory;
@@ -158,7 +158,7 @@ Burger::eError BURGER_API Burger::Filename::set_native(
 	if (!pMountName) { // Must I prefix with the current directory?
 		// Use the default directory
 		if (pInput[0] == '/') {
-			MemoryCopy(pOutput, ":app0:", 6);
+			memory_copy(pOutput, ":app0:", 6);
 			pOutput += 6;
 		} else {
 			pOutput[0] = '8';
@@ -170,7 +170,7 @@ Burger::eError BURGER_API Burger::Filename::set_native(
 		uintptr_t uMountNameSize =
 			static_cast<uintptr_t>((pMountName - pInput) + 1);
 		pOutput[0] = ':';
-		MemoryCopy(pOutput + 1, pInput, uMountNameSize);
+		memory_copy(pOutput + 1, pInput, uMountNameSize);
 		pOutput += uMountNameSize + 1;
 		pInput += uMountNameSize;
 	}

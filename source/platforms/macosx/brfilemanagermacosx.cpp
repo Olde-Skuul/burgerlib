@@ -43,7 +43,6 @@
 #include <Foundation/NSAutoreleasePool.h>
 #include <Foundation/NSFileManager.h>
 #include <Foundation/NSString.h>
-#undef Free
 
 /***************************************
 

@@ -163,7 +163,7 @@ static uint_t BURGER_API TestWin1252(void) BURGER_NOEXCEPT
 
 	// Perform a test for conversion to lower case using Win1252
 	WCHAR WideBufferCase[256];
-	Burger::MemoryCopy(WideBufferCase, WideBuffer, 255 * sizeof(WCHAR));
+	Burger::memory_copy(WideBufferCase, WideBuffer, 255 * sizeof(WCHAR));
 	CharLowerBuffW(WideBufferCase, 255);
 	uTest = FALSE;
 	i = 0;
@@ -182,7 +182,7 @@ static uint_t BURGER_API TestWin1252(void) BURGER_NOEXCEPT
 	ReportFailure("Burger::Win1252::g_LowerCaseTable[%u] is invalid!", uTest,
 		static_cast<uint_t>(i + 1));
 
-	Burger::MemoryCopy(WideBufferCase, WideBuffer, 255 * sizeof(WCHAR));
+	Burger::memory_copy(WideBufferCase, WideBuffer, 255 * sizeof(WCHAR));
 	CharUpperBuffW(WideBufferCase, 255);
 
 	// The character 0x192 'f' does not have the upper case version in Win1252,
@@ -568,7 +568,7 @@ static uint_t BURGER_API TestISOLatin1(void) BURGER_NOEXCEPT
 
 	// Perform a test for conversion to lower case using Win1252
 	WCHAR WideBufferCase[256];
-	Burger::MemoryCopy(WideBufferCase, WideBuffer, 255 * sizeof(WCHAR));
+	Burger::memory_copy(WideBufferCase, WideBuffer, 255 * sizeof(WCHAR));
 	CharLowerBuffW(WideBufferCase, 255);
 
 	uTest = FALSE;
@@ -588,7 +588,7 @@ static uint_t BURGER_API TestISOLatin1(void) BURGER_NOEXCEPT
 	ReportFailure("Burger::ISOLatin1::g_LowerCaseTable[%u] is invalid!", uTest,
 		static_cast<uint_t>(i + 1));
 
-	Burger::MemoryCopy(WideBufferCase, WideBuffer, 255 * sizeof(WCHAR));
+	Burger::memory_copy(WideBufferCase, WideBuffer, 255 * sizeof(WCHAR));
 	CharUpperBuffW(WideBufferCase, 255);
 
 	// The character 0xFF 'y' with umlaut does not have the upper case version
@@ -806,7 +806,7 @@ static uint_t BURGER_API TestWin437(void) BURGER_NOEXCEPT
 
 	// Perform a test for conversion to lower case using Win437
 	WCHAR WideBufferCase[256];
-	Burger::MemoryCopy(WideBufferCase, WideBuffer, 255 * sizeof(WCHAR));
+	Burger::memory_copy(WideBufferCase, WideBuffer, 255 * sizeof(WCHAR));
 	CharLowerBuffW(WideBufferCase, 255);
 
 	// Several characters are Greek letters used for math, both their lower case
@@ -833,7 +833,7 @@ static uint_t BURGER_API TestWin437(void) BURGER_NOEXCEPT
 	ReportFailure("Burger::Win437::g_LowerCaseTable[%u] is invalid!", uTest,
 		static_cast<uint_t>(i + 1));
 
-	Burger::MemoryCopy(WideBufferCase, WideBuffer, 255 * sizeof(WCHAR));
+	Burger::memory_copy(WideBufferCase, WideBuffer, 255 * sizeof(WCHAR));
 	CharUpperBuffW(WideBufferCase, 255);
 
 	// The character 0x192 'f' does not have the upper case version in Win437,
@@ -1052,7 +1052,7 @@ static uint_t BURGER_API TestUTF16IsValid(void) BURGER_NOEXCEPT
 
 		if (pWork->m_uValid) {
 			// Create the UTF8 string
-			Burger::MemoryCopy(TempString, pWork->m_UTF8, 4);
+			Burger::memory_copy(TempString, pWork->m_UTF8, 4);
 
 			// Is this a string that can be represented in one surrogate?
 			uint16_t uMatch16;
@@ -1460,7 +1460,7 @@ static uint_t TestUTF32(void) BURGER_NOEXCEPT
 		//
 
 		// Create a byte stream
-		Burger::MemoryCopy(TempString, pWork->m_UTF8, 4);
+		Burger::memory_copy(TempString, pWork->m_UTF8, 4);
 
 		// Value to match to
 		uint32_t uMatch32;

@@ -155,17 +155,17 @@ public:
 		return m_uTotalAllocatedMemory;
 	}
 
-	BURGER_INLINE void* alloc(uintptr_t uSize) BURGER_NOEXCEPT
+	BURGER_INLINE void* allocate_memory(uintptr_t uSize) BURGER_NOEXCEPT
 	{
 		return alloc_proc(this, uSize);
 	}
 
-	BURGER_INLINE void free(const void* pInput) BURGER_NOEXCEPT
+	BURGER_INLINE void free_memory(const void* pInput) BURGER_NOEXCEPT
 	{
 		return free_proc(this, pInput);
 	}
 
-	BURGER_INLINE void* realloc(
+	BURGER_INLINE void* reallocate_memory(
 		const void* pInput, uintptr_t uSize) BURGER_NOEXCEPT
 	{
 		return realloc_proc(this, pInput, uSize);
@@ -214,20 +214,20 @@ public:
 	{
 	}
 
-	void* alloc(uintptr_t uSize) const BURGER_NOEXCEPT BURGER_FINAL
+	void* allocate_memory(uintptr_t uSize) const BURGER_NOEXCEPT BURGER_FINAL
 	{
-		return m_pMemoryManagerHandle->alloc(uSize);
+		return m_pMemoryManagerHandle->allocate_memory(uSize);
 	}
 
-	void free(const void* pInput) const BURGER_NOEXCEPT BURGER_FINAL
+	void free_memory(const void* pInput) const BURGER_NOEXCEPT BURGER_FINAL
 	{
-		return m_pMemoryManagerHandle->free(pInput);
+		return m_pMemoryManagerHandle->free_memory(pInput);
 	}
 
-	void* realloc(
+	void* reallocate_memory(
 		const void* pInput, uintptr_t uSize) const BURGER_NOEXCEPT BURGER_FINAL
 	{
-		return m_pMemoryManagerHandle->realloc(pInput, uSize);
+		return m_pMemoryManagerHandle->reallocate_memory(pInput, uSize);
 	}
 };
 

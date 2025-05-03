@@ -44,7 +44,7 @@ protected:
 
 public:
 	RandomMersenneTwist(uint32_t uNewSeed = 5489U) BURGER_NOEXCEPT;
-	static RandomMersenneTwist* BURGER_API New(
+	static RandomMersenneTwist* BURGER_API new_object(
 		uint32_t uNewSeed = 0) BURGER_NOEXCEPT;
 
 	void set_seed(uint32_t uNewSeed) BURGER_NOEXCEPT BURGER_OVERRIDE;

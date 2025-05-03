@@ -48,7 +48,7 @@ public:
 		if (pElement) {
 			do {
 				Element *pNext = pElement->m_pNext;
-				Delete(pElement);
+				delete_object(pElement);
 				pElement = pNext;
 			} while (pElement);
 		}
@@ -64,7 +64,7 @@ public:
 	void pop(void) {
 		Element *pElement = m_pFirstElement;
 		m_pFirstElement = pElement->m_pNext;
-		Delete(pElement);
+		delete_object(pElement);
 		--m_uCount;
 		if (m_pLastElement == pElement) {
 			m_pLastElement = NULL;
@@ -72,7 +72,7 @@ public:
 		}
 	}
 	void push(const T& rData) {
-		Element *pElement = new (Alloc(sizeof(Element))) Element(rData);
+		Element *pElement = new (allocate_memory(sizeof(Element))) Element(rData);
 		if (!m_pLastElement) {
 			BURGER_ASSERT((!m_pFirstElement) && (!m_uCount));
 			m_pLastElement = pElement;

@@ -713,7 +713,7 @@ Burger::eError Burger::DecompressMicrosoftADPCM::Process(void *pOutput, uintptr_
 				uintptr_t uChunk = minimum(uRemaining,uInputChunkLength);
 
 				// Fill in the cache
-				MemoryCopy(&m_Cache[uCacheSize],pInput,uChunk);
+				memory_copy(&m_Cache[uCacheSize],pInput,uChunk);
 
 				// Consume the input bytes
 
@@ -809,14 +809,14 @@ Burger::eError Burger::DecompressMicrosoftADPCM::Process(void *pOutput, uintptr_
 	\brief Allocate and initialize a DecompressMicrosoftADPCM
 
 	\return A pointer to a default DecompressMicrosoftADPCM class or \ref NULL if out of memory
-	\sa Delete(const T *)
+	\sa delete_object(const T *)
 
 ***************************************/
 
-Burger::DecompressMicrosoftADPCM * BURGER_API Burger::DecompressMicrosoftADPCM::New(void)
+Burger::DecompressMicrosoftADPCM * BURGER_API Burger::DecompressMicrosoftADPCM::new_object(void)
 {
 	// Allocate the memory
-	return new (Alloc(sizeof(DecompressMicrosoftADPCM))) DecompressMicrosoftADPCM();
+	return new (allocate_memory(sizeof(DecompressMicrosoftADPCM))) DecompressMicrosoftADPCM();
 }
 
 

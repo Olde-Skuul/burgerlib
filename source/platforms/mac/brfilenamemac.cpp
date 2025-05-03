@@ -99,7 +99,7 @@ void BURGER_API Burger::Filename::purge_directory_cache(void)
 	uintptr_t i = BURGER_ARRAYSIZE(m_DirectoryCache);
 	ExpandCache_t* pWork = m_DirectoryCache;
 	do {
-		Free(pWork->m_pName);
+		free_memory(pWork->m_pName);
 		pWork->m_pName = nullptr;
 		++pWork;
 	} while (--i);
@@ -312,11 +312,11 @@ Burger::eError BURGER_API Burger::Filename::set_application_directory(
 
 	// FSSpec of the current app
 	FSSpec MySpec;
-	MemoryClear(&MySpec, sizeof(MySpec));
+	memory_clear(&MySpec, sizeof(MySpec));
 
 	// My input process
 	ProcessInfoRec MyProcess;
-	MemoryClear(&MyProcess, sizeof(MyProcess));
+	memory_clear(&MyProcess, sizeof(MyProcess));
 	MyProcess.processInfoLength = sizeof(MyProcess);
 
 	// I don't want the name
@@ -510,7 +510,7 @@ Burger::eError BURGER_API Burger::Filename::get_FSSpec(
 	FSSpec* pFSSpec) BURGER_NOEXCEPT
 {
 	// Clear it out
-	MemoryClear(pFSSpec, sizeof(FSSpec));
+	memory_clear(pFSSpec, sizeof(FSSpec));
 
 	// Make sure the path has been processed
 	const char* pNative = get_native();
@@ -651,7 +651,7 @@ FSRef* BURGER_API BURGER_API Burger::Filename::get_FSRef(void) BURGER_NOEXCEPT
 	newly allocated pointer to a larger buffer to hold the requested data.
 
 	\note If the returned pointer is not the pointer passed in via pOutput,
-		dispose of it with a called to \ref Burger::Free(const void *) when
+		dispose of it with a called to \ref Burger::free_memory(const void *) when
 		done.
 
 	\maconly
@@ -1096,7 +1096,7 @@ Burger::eError BURGER_API Burger::Filename::get_native_Carbon(
 				break;
 			}
 			// Since this worked, skip to the next
-			MemoryCopy(m_FSRef, &TempRef, sizeof(TempRef));
+			memory_copy(m_FSRef, &TempRef, sizeof(TempRef));
 
 			// Already end of string?
 			if (!pEnd[0]) {

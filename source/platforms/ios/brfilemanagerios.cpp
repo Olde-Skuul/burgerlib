@@ -31,7 +31,6 @@
 #include <sys/errno.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#undef Free
 
 #if !defined(DOXYGEN)
 //
@@ -116,7 +115,7 @@ Burger::eError BURGER_API Burger::FileManager::get_volume_name(
 			FInfoAttrBuf Entry;
 
 			// Initialize the attributes list
-			MemoryClear(&AttributesList, sizeof(AttributesList));
+			memory_clear(&AttributesList, sizeof(AttributesList));
 			// "sizeof" for the structure
 			AttributesList.bitmapcount = ATTR_BIT_MAP_COUNT;
 			// Let's get the name, type of file, creation time, modification

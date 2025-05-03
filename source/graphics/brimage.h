@@ -65,10 +65,10 @@ protected:
 public:
 	Image();
 	~Image();
-	static Image * BURGER_API New(void);
-	static Image * BURGER_API New(uint_t uWidth,uint_t uHeight,ePixelTypes eType);
-	static Image * BURGER_API New(uint_t uWidth,uint_t uHeight,ePixelTypes eType,uint_t uMipMaps);
-	static Image * BURGER_API New(const Image *pInput);
+	static Image * BURGER_API new_object(void);
+	static Image * BURGER_API new_object(uint_t uWidth,uint_t uHeight,ePixelTypes eType);
+	static Image * BURGER_API new_object(uint_t uWidth,uint_t uHeight,ePixelTypes eType,uint_t uMipMaps);
+	static Image * BURGER_API new_object(const Image *pInput);
 	void Init(uint_t uWidth,uint_t uHeight,ePixelTypes eType,uintptr_t uStride,const uint8_t *pImage,uint_t uFlags=0,uint_t uMipMaps=0);
 	uint_t Init(uint_t uWidth,uint_t uHeight,ePixelTypes eType);
 	uint_t Init(uint_t uWidth,uint_t uHeight,ePixelTypes eType,uint_t uMipMaps);

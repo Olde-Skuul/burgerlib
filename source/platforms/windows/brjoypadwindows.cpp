@@ -136,9 +136,9 @@ static BOOL CALLBACK EnumJoysticksCallback(
 		JoystickFound* pFound = &pJoystick->m_Joysticks[uIndex];
 
 		// Get the GUIDs from the device
-		Burger::MemoryCopy(
+		Burger::memory_copy(
 			&pFound->m_InstanceGUID, &pdidInstance->guidInstance, sizeof(GUID));
-		Burger::MemoryCopy(
+		Burger::memory_copy(
 			&pFound->m_ProductGUID, &pdidInstance->guidProduct, sizeof(GUID));
 		// Convert the names to UTF-8
 		pFound->m_InstanceName.assign(static_cast<const uint16_t*>(
@@ -241,7 +241,7 @@ static BOOL CALLBACK EnumObjectsCallback(
 	// Was there a valid input object found?
 	if (bGotOne) {
 		GUID* pGUID = &pCallback->GUID[uIndex];
-		Burger::MemoryCopy(pGUID, &pObject->guidType, sizeof(GUID));
+		Burger::memory_copy(pGUID, &pObject->guidType, sizeof(GUID));
 		pCurrent->pguid = pGUID;
 		pCallback->Format.dwNumObjs = uIndex + 1;
 		if (uIndex >= (Burger::Joypad::MAXBUTTONS + Burger::Joypad::MAXAXIS +
@@ -268,14 +268,14 @@ Burger::Joypad::Joypad(GameApp* pAppInstance) BURGER_NOEXCEPT
 	  m_uDeviceCount(0)
 {
 	// Initialize everything
-	MemoryClear(m_XInputGamepads, sizeof(m_XInputGamepads));
+	memory_clear(m_XInputGamepads, sizeof(m_XInputGamepads));
 	uint_t i = BURGER_ARRAYSIZE(m_Data);
 	JoypadData_t* pJoypadData = m_Data;
 	do {
 		pJoypadData->m_pJoystickDevice = nullptr;
-		MemoryClear(
+		memory_clear(
 			&pJoypadData->m_InstanceGUID, sizeof(pJoypadData->m_InstanceGUID));
-		MemoryClear(
+			memory_clear(
 			&pJoypadData->m_ProductGUID, sizeof(pJoypadData->m_ProductGUID));
 		pJoypadData->m_bConnected = FALSE;
 		pJoypadData->m_bInserted = FALSE;
@@ -285,10 +285,10 @@ Burger::Joypad::Joypad(GameApp* pAppInstance) BURGER_NOEXCEPT
 		pJoypadData->m_uAxisCount = 0;
 		pJoypadData->m_uButtonState = 0;
 		pJoypadData->m_uButtonStatePressed = 0;
-		MemoryClear(&pJoypadData->m_uAxis, sizeof(pJoypadData->m_uAxis));
-		MemoryClear(&pJoypadData->m_uAxisPercents,
+		memory_clear(&pJoypadData->m_uAxis, sizeof(pJoypadData->m_uAxis));
+		memory_clear(&pJoypadData->m_uAxisPercents,
 			sizeof(pJoypadData->m_uAxisPercents));
-		MemoryClear(&pJoypadData->m_uAxisDigitalRanges,
+			memory_clear(&pJoypadData->m_uAxisDigitalRanges,
 			sizeof(pJoypadData->m_uAxisDigitalRanges));
 		++pJoypadData;
 	} while (--i);
@@ -351,9 +351,9 @@ Burger::Joypad::Joypad(GameApp* pAppInstance) BURGER_NOEXCEPT
 						pJoystickDeviceLocal;
 
 					pJoypadData->m_pJoystickDevice = pJoystickDevice;
-					MemoryCopy(&pJoypadData->m_InstanceGUID,
+					memory_copy(&pJoypadData->m_InstanceGUID,
 						&pFound->m_InstanceGUID, sizeof(GUID));
-					MemoryCopy(&pJoypadData->m_ProductGUID,
+						memory_copy(&pJoypadData->m_ProductGUID,
 						&pFound->m_ProductGUID, sizeof(GUID));
 					pJoypadData->m_InstanceName = pFound->m_InstanceName;
 					pJoypadData->m_ProductName = pFound->m_ProductName;
@@ -931,8 +931,8 @@ uint_t BURGER_API Burger::XInputGetGamepadState(uint_t uWhich,
 				// of the entire structure from orbit, just to be sure
 
 				if (pXInputGamePad->m_bInserted) {
-					MemoryClear(pXInputGamePad, sizeof(XInputGamePad_t));
-					// Restore these two values because the MemoryClear()
+					memory_clear(pXInputGamePad, sizeof(XInputGamePad_t));
+					// Restore these two values because the memory_clear()
 					// erased them
 					pXInputGamePad->m_bConnected = TRUE;
 					pXInputGamePad->m_bInserted = TRUE;
@@ -1031,7 +1031,7 @@ uint_t BURGER_API Burger::XInputGetGamepadState(uint_t uWhich,
 			}
 		} else {
 			// Zap the buffer if there is no XInput
-			MemoryClear(pXInputGamePad, sizeof(XInputGamePad_t));
+			memory_clear(pXInputGamePad, sizeof(XInputGamePad_t));
 		}
 	}
 	return uResult;
@@ -1105,7 +1105,7 @@ uint_t BURGER_API Burger::IsDeviceXInput(const GUID* pGuid) BURGER_NOEXCEPT
 					do {
 						// Get 20 at a time
 						ULONG uReturned;
-						MemoryClear(DevicePointers, sizeof(DevicePointers));
+						memory_clear(DevicePointers, sizeof(DevicePointers));
 						if ((pEnumDevices->Next(10000,
 								 BURGER_ARRAYSIZE(DevicePointers),
 								 DevicePointers, &uReturned) < 0) ||
@@ -1241,7 +1241,7 @@ uint_t BURGER_API Burger::IsDeviceXInput(const GUID* pGuid) BURGER_NOEXCEPT
 
 			// Make a buffer for the list
 			RAWINPUTDEVICELIST* pList = static_cast<RAWINPUTDEVICELIST*>(
-				Alloc(sizeof(RAWINPUTDEVICELIST) * uDeviceCount));
+				allocate_memory(sizeof(RAWINPUTDEVICELIST) * uDeviceCount));
 			if (pList) {
 
 				// Read in the list and continue if the list has anything
@@ -1296,7 +1296,7 @@ uint_t BURGER_API Burger::IsDeviceXInput(const GUID* pGuid) BURGER_NOEXCEPT
 						++pWorkList;
 					} while (--i);
 				}
-				Free(pList);
+				free_memory(pList);
 			}
 		}
 	}

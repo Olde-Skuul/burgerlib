@@ -56,12 +56,12 @@
 #if !defined(DOXYGEN)
 static uint_t ScanVideoModes(DEVMODEW *pOutput,uint_t uWidth,uint_t uHeight,uint_t uDepth)
 {
-	Burger::MemoryClear(pOutput,sizeof(DEVMODEW));
+	Burger::memory_clear(pOutput,sizeof(DEVMODEW));
 	DWORD uModeNumber=0;
 	uint_t bFoundOne = FALSE;
 	for (;;) {
 		DEVMODEW TestMode;
-		Burger::MemoryClear(&TestMode,sizeof(TestMode));	// Clear it out
+		Burger::memory_clear(&TestMode,sizeof(TestMode));	// Clear it out
 		TestMode.dmSize = sizeof(TestMode);			// Prep the data table size
 		// End of the list?
 		if (EnumDisplaySettingsW(NULL,uModeNumber,&TestMode)==FALSE) {
@@ -77,7 +77,7 @@ static uint_t ScanVideoModes(DEVMODEW *pOutput,uint_t uWidth,uint_t uHeight,uint
 				TestMode.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT | DM_BITSPERPEL | DM_DISPLAYFREQUENCY;
 				if (ChangeDisplaySettingsExW(NULL,&TestMode,NULL,CDS_TEST,NULL) == DISP_CHANGE_SUCCESSFUL) {
 					// this is the best mode so far
-					Burger::MemoryCopy(pOutput,&TestMode,sizeof(DEVMODEW));
+					Burger::memory_copy(pOutput,&TestMode,sizeof(DEVMODEW));
 					bFoundOne = TRUE;
 				}
 		}
@@ -228,11 +228,11 @@ uint_t Burger::DisplayOpenGL::Init(uint_t uWidth,uint_t uHeight,uint_t uDepth,ui
 	m_pOpenGLDeviceContext = GetDC(pWindow);
 
 	// Determine the true color pixel format the system can use
-	// Commented out lines that were storing only zeros since MemoryClear()
+	// Commented out lines that were storing only zeros since memory_clear()
 	// took care of that already.
 
 	PIXELFORMATDESCRIPTOR PixelFormat;
-	MemoryClear(&PixelFormat,sizeof(PixelFormat));
+	memory_clear(&PixelFormat,sizeof(PixelFormat));
 	PixelFormat.nSize = sizeof(PixelFormat);
 	PixelFormat.nVersion = 1;					// Don't change.
 	PixelFormat.dwFlags = PFD_DRAW_TO_WINDOW	// support window
@@ -333,7 +333,7 @@ void Burger::DisplayOpenGL::Shutdown(void)
 		ChangeDisplaySettingsW(NULL,0);		// Switch video mode to default
 		m_bResolutionChanged = FALSE;
 	}
-	Free(m_pCompressedFormats);
+	free_memory(m_pCompressedFormats);
 	m_pCompressedFormats = NULL;
 	m_uCompressedFormatCount = 0;
 }

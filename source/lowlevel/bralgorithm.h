@@ -34,25 +34,25 @@
 /* BEGIN */
 namespace Burger {
 
-// Default deleter for Burger::Delete
+// Default deleter for Burger::delete_object
 template<class T>
 struct default_delete_Base {
-	/** Perform the delete with Burger::Delete() */
+	/** Perform the delete with Burger::delete_object() */
 	BURGER_INLINE void operator()(T* pInput) const BURGER_NOEXCEPT
 	{
 		BURGER_STATIC_ASSERT(0 < sizeof(T));
-		Delete(pInput);
+		delete_object(pInput);
 	}
 };
 
-// Default deleter for Burger::Alloc and Free
+// Default deleter for Burger::allocate_memory and free_memory
 template<class T>
 struct default_delete_Free {
-	/** Perform the delete with Burger::Free() */
+	/** Perform the delete with Burger::free_memory() */
 	BURGER_INLINE void operator()(T* pInput) const BURGER_NOEXCEPT
 	{
 		BURGER_STATIC_ASSERT(0 < sizeof(T));
-		Free(pInput);
+		free_memory(pInput);
 	}
 };
 

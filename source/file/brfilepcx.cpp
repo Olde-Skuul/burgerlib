@@ -144,7 +144,7 @@ Burger::FilePCX::FilePCX() :
 	m_uXPixelsPerInch(DEFAULT_PIXELS_PER_INCH),		//72 DPI
 	m_uYPixelsPerInch(DEFAULT_PIXELS_PER_INCH)		//72 DPI
 {
-	MemoryClear(m_EGAPalette,sizeof(m_EGAPalette));
+	memory_clear(m_EGAPalette,sizeof(m_EGAPalette));
 }
 
 /*! ************************************
@@ -226,7 +226,7 @@ Burger::Image * Burger::FilePCX::Load(InputMemoryStream *pInput)
 		// Handle the 8 bit paletted image
 
 		if (uBitPlanes==1) {
-			pImage = Image::New(uWidth,uHeight,Image::PIXELTYPE8BIT);
+			pImage = Image::new_object(uWidth,uHeight,Image::PIXELTYPE8BIT);
 			if (pImage) {
 				uint8_t *pDest = pImage->GetImage();
 				do {
@@ -270,12 +270,12 @@ Burger::Image * Burger::FilePCX::Load(InputMemoryStream *pInput)
 			}
 		} else {
 			// Handle the 24 bits per pixel image
-			pImage = Image::New(uWidth,uHeight,Image::PIXELTYPE888);
+			pImage = Image::new_object(uWidth,uHeight,Image::PIXELTYPE888);
 			if (pImage) {
 				// Allocate the temp buffer here to reduce the chance
 				// of memory fragmentation
 				// Note: Added 32 to the buffer size to prevent buffer overruns
-				uint8_t *pTempBuffer = static_cast<uint8_t *>(Alloc(uWidth*3+32));
+				uint8_t *pTempBuffer = static_cast<uint8_t *>(allocate_memory(uWidth*3+32));
 				if (!pTempBuffer) {
 					pBadNews = "Out of memory.";
 				} else {
@@ -298,7 +298,7 @@ Burger::Image * Burger::FilePCX::Load(InputMemoryStream *pInput)
 						pDest+=pImage->GetStride();
 					} while (--uHeight);
 					// Release the temp buffer
-					Free(pTempBuffer);
+					free_memory(pTempBuffer);
 				}
 			}
 		}
@@ -306,7 +306,7 @@ Burger::Image * Burger::FilePCX::Load(InputMemoryStream *pInput)
 
 	// If there was an error, clean up
 	if (pBadNews) {
-		Delete(pImage);
+		delete_object(pImage);
 		Debug::Warning(pBadNews);
 		pImage = NULL;
 	}

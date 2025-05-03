@@ -72,7 +72,7 @@ Burger::SimpleArrayBase::SimpleArrayBase(uintptr_t uChunkSize,
 	void* pData = nullptr;
 	if (uDefault) {
 		// Get the default buffer and die if failed in debug
-		pData = Alloc(uChunkSize * uDefault);
+		pData = allocate_memory(uChunkSize * uDefault);
 		if (!pData) {
 			// Set the size to empty
 			uDefault = 0;
@@ -104,7 +104,7 @@ Burger::SimpleArrayBase::SimpleArrayBase(
 	const uintptr_t uChunkSize = rData.m_uChunkSize;
 	m_uChunkSize = uChunkSize;
 	if (uCount) {
-		m_pData = alloc_copy(rData.m_pData, uChunkSize * uCount);
+		m_pData = allocate_memory_copy(rData.m_pData, uChunkSize * uCount);
 		if (!m_pData) {
 			m_uBufferSize = 0;
 			m_uSize = 0;
@@ -119,7 +119,7 @@ Burger::SimpleArrayBase::SimpleArrayBase(
 	\fn Burger::SimpleArrayBase::~SimpleArrayBase()
 	\brief Standard destructor
 
-	Releases the memory buffer with a call to Free(const void *)
+	Releases the memory buffer with a call to free_memory(const void *)
 
 	\sa SimpleArrayBase(uintptr_t), SimpleArrayBase(uintptr_t,uintptr_t) or
 		SimpleArrayBase(const SimpleArrayBase&)
@@ -164,7 +164,7 @@ Burger::SimpleArrayBase& Burger::SimpleArrayBase::operator=(
 			// Set the new size
 			m_uSize = uCount;
 			m_uBufferSize = uCount;
-			m_pData = alloc_copy(rData.m_pData, uChunkSize * uCount);
+			m_pData = allocate_memory_copy(rData.m_pData, uChunkSize * uCount);
 			if (!m_pData) {
 				m_uSize = 0;
 				m_uBufferSize = 0;
@@ -188,7 +188,7 @@ Burger::SimpleArrayBase& Burger::SimpleArrayBase::operator=(
 
 void BURGER_API Burger::SimpleArrayBase::clear(void) BURGER_NOEXCEPT
 {
-	Free(m_pData);
+	free_memory(m_pData);
 	m_pData = nullptr;
 	m_uBufferSize = 0;
 	m_uSize = 0;
@@ -228,7 +228,7 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::remove_at(
 				static_cast<uint8_t*>(m_pData) + (uIndex * uChunkSize);
 
 			// Copy over the single entry
-			MemoryMove(
+			memory_move(
 				pMark, pMark + uChunkSize, uChunkSize * (uSize - uIndex));
 		}
 		uResult = kErrorNone;
@@ -310,7 +310,7 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::reserve(
 		if (m_uSize > uNewBufferSize) {
 			m_uSize = uNewBufferSize;
 		}
-		void* pData = Realloc(m_pData, m_uChunkSize * uNewBufferSize);
+		void* pData = reallocate_memory(m_pData, m_uChunkSize * uNewBufferSize);
 
 		// If a bad pointer, return the error
 		if (!pData) {
@@ -355,7 +355,7 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(
 		if (uResult == kErrorNone) {
 			// Copy in the new entries
 			const uintptr_t uChunkSize = m_uChunkSize;
-			MemoryCopy(static_cast<uint8_t*>(m_pData) + (uSize * uChunkSize),
+			memory_copy(static_cast<uint8_t*>(m_pData) + (uSize * uChunkSize),
 				pData, uCount * uChunkSize);
 		}
 	}

@@ -17,33 +17,33 @@
 /*! ************************************
 
 	\struct Burger::Base_delete
-	\brief Delete an object using Burger::Delete()
+	\brief Delete an object using Burger::delete_object()
 
 	A template to pass to \ref Burger::unique_ptr to delete the object with
-	Burger::Delete.
+	Burger::delete_object.
 
 	Most classes in Burgerlib use the New allocator to use the Burgerlib memory
-	manager, as such they need to be released using the Burger::Delete
+	manager, as such they need to be released using the Burger::delete_object
 	function.
 
-	\tparam T Type of object to delete with Burger::Delete()
-	\sa Burger::unique_ptr or Burger::Delete()
+	\tparam T Type of object to delete with Burger::delete_object()
+	\sa Burger::unique_ptr or Burger::delete_object()
 
 ***************************************/
 
 /*! ************************************
 
 	\struct Burger::Free_delete
-	\brief Delete an object using Burger::Free()
+	\brief Delete an object using Burger::free_memory()
 
 	A template to pass to \ref Burger::unique_ptr to delete the object with
-	Burger::Free().
+	Burger::free_memory().
 
-	When memory is allocated with Burger::Alloc(), it should be released with
-	Burger::Free(), this deleter handles the case.
+	When memory is allocated with Burger::allocate_memory(), it should be released with
+	Burger::free_memory(), this deleter handles the case.
 
-	\tparam T Type of object to delete with Burger::Free()
-	\sa unique_ptr or Burger::Free()
+	\tparam T Type of object to delete with Burger::free_memory()
+	\sa unique_ptr or Burger::free_memory()
 
 ***************************************/
 

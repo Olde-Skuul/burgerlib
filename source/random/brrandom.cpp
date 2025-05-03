@@ -94,10 +94,10 @@ Burger::Random::Random(uint32_t uNewSeed) BURGER_NOEXCEPT
 
 ***************************************/
 
-Burger::Random* BURGER_API Burger::Random::New(
+Burger::Random* BURGER_API Burger::Random::new_object(
 	uint32_t uNewSeed) BURGER_NOEXCEPT
 {
-	Random* pResult = static_cast<Random*>(Alloc(sizeof(Random)));
+	Random* pResult = static_cast<Random*>(allocate_memory(sizeof(Random)));
 	if (pResult) {
 		new (pResult) Random(uNewSeed);
 	}

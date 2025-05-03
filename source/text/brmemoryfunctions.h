@@ -22,13 +22,13 @@
 /* BEGIN */
 namespace Burger {
 
-extern void BURGER_API MemoryCopy(
+extern void BURGER_API memory_copy(
 	void* pOutput, const void* pInput, uintptr_t uCount) BURGER_NOEXCEPT;
-extern void BURGER_API MemoryMove(
+extern void BURGER_API memory_move(
 	void* pOutput, const void* pInput, uintptr_t uCount) BURGER_NOEXCEPT;
-extern void BURGER_API MemoryClear(
+extern void BURGER_API memory_clear(
 	void* pOutput, uintptr_t uCount) BURGER_NOEXCEPT;
-extern void BURGER_API MemoryFill(
+extern void BURGER_API memory_set(
 	void* pOutput, uint8_t uFill, uintptr_t uCount) BURGER_NOEXCEPT;
 extern void BURGER_API MemoryNot(
 	void* pOutput, uintptr_t uCount) BURGER_NOEXCEPT;

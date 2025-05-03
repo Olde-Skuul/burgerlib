@@ -251,7 +251,7 @@ Burger::Image * Burger::FileDDS::Load(InputMemoryStream *pInput)
 	}
 	if (!pBadNews) {
 		// Get the input buffer
-		pImage = Image::New(uWidth,uHeight,eType,uMipMapCount);
+		pImage = Image::new_object(uWidth,uHeight,eType,uMipMapCount);
 		if (pImage) {
 			uintptr_t uLength = Image::GetSuggestedBufferSize(uWidth,uHeight,eType,uMipMapCount);
 			uint8_t *pDest = pImage->GetImage();
@@ -299,7 +299,7 @@ Burger::Image * Burger::FileDDS::Load(InputMemoryStream *pInput)
 	// If there was an error, clean up
 	if (pBadNews) {
 		Debug::Warning(pBadNews);
-		Delete(pImage);
+		delete_object(pImage);
 		pImage = NULL;
 	}
 	return pImage;

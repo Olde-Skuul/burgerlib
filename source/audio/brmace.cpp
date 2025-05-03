@@ -348,7 +348,7 @@ const int16_t Burger::MACEState_t::g_Table8Big[1024] = {
 
 void BURGER_API Burger::MACEState_t::Clear(void)
 {
-	MemoryClear(this,sizeof(*this));
+	memory_clear(this,sizeof(*this));
 }
 
 /*! ************************************
@@ -459,7 +459,7 @@ void BURGER_API Burger::MACEExp1to6(const uint8_t *pInput,uint8_t *pOutput,uintp
 	// First, is there an input buffer?
 
 	if (!pInputState) {
-		MemoryClear(&TempState,sizeof(TempState));		// Zero out my own buffer
+		memory_clear(&TempState,sizeof(TempState));		// Zero out my own buffer
 		pInputState = &TempState;						// Save the pointer
 	}
 
@@ -468,7 +468,7 @@ void BURGER_API Burger::MACEExp1to6(const uint8_t *pInput,uint8_t *pOutput,uintp
 	if (!pOutputState) {
 		pOutputState = pInputState;		// Use the input as the output
 	} else {
-		MemoryCopy(pOutputState,pInputState,sizeof(MACEState_t));	// Copy to the next buffer
+		memory_copy(pOutputState,pInputState,sizeof(MACEState_t));	// Copy to the next buffer
 	}
 
 	// Anything to decompress?
@@ -600,7 +600,7 @@ void BURGER_API Burger::MACEExp1to3(const uint8_t *pInput,uint8_t *pOutput,uintp
 	// First, is there an input buffer?
 
 	if (!pInputState) {
-		MemoryClear(&TempState,sizeof(TempState));		// Zero out my own buffer
+		memory_clear(&TempState,sizeof(TempState));		// Zero out my own buffer
 		pInputState = &TempState;						// Save the pointer
 	}
 
@@ -609,7 +609,7 @@ void BURGER_API Burger::MACEExp1to3(const uint8_t *pInput,uint8_t *pOutput,uintp
 	if (!pOutputState) {
 		pOutputState = pInputState;									// Use the input as the output
 	} else {
-		MemoryCopy(pOutputState,pInputState,sizeof(MACEState_t));	// Copy to the next buffer
+		memory_copy(pOutputState,pInputState,sizeof(MACEState_t));	// Copy to the next buffer
 	}
 
 	// Anything to decompress?
@@ -931,7 +931,7 @@ Burger::eError Burger::DecompressMace3::Process(void *pOutput, uintptr_t uOutput
 				uintptr_t uChunk = minimum(uRemaining,uInputChunkLength);
 
 				// Fill in the cache
-				MemoryCopy(&m_Cache[uCacheSize],pInput,uChunk);
+				memory_copy(&m_Cache[uCacheSize],pInput,uChunk);
 
 				// Consume the input bytes
 
@@ -957,7 +957,7 @@ Burger::eError Burger::DecompressMace3::Process(void *pOutput, uintptr_t uOutput
 			{
 				// Copy the compressed data into the intermediate buffer
 				uint8_t Buffer[6*2];
-				MemoryCopy(Buffer,m_Cache,uInputGranularity);
+				memory_copy(Buffer,m_Cache,uInputGranularity);
 
 				if (!m_bStereo) {
 					// Mono is easy!
@@ -1010,14 +1010,14 @@ Burger::eError Burger::DecompressMace3::Process(void *pOutput, uintptr_t uOutput
 	\brief Allocate and initialize a DecompressMace3
 
 	\return A pointer to a default DecompressMace3 class or \ref NULL if out of memory
-	\sa Delete(const T *)
+	\sa delete_object(const T *)
 
 ***************************************/
 
-Burger::DecompressMace3 * BURGER_API Burger::DecompressMace3::New(void)
+Burger::DecompressMace3 * BURGER_API Burger::DecompressMace3::new_object(void)
 {
 	// Allocate the memory
-	return new (Alloc(sizeof(DecompressMace3))) DecompressMace3();
+	return new (allocate_memory(sizeof(DecompressMace3))) DecompressMace3();
 }
 
 
@@ -1233,7 +1233,7 @@ Burger::eError Burger::DecompressMace6::Process(void *pOutput, uintptr_t uOutput
 				uintptr_t uChunk = minimum(uRemaining,uInputChunkLength);
 
 				// Fill in the cache
-				MemoryCopy(&m_Cache[uCacheSize],pInput,uChunk);
+				memory_copy(&m_Cache[uCacheSize],pInput,uChunk);
 
 				// Consume the input bytes
 
@@ -1259,7 +1259,7 @@ Burger::eError Burger::DecompressMace6::Process(void *pOutput, uintptr_t uOutput
 			{
 				// Copy the compressed data into the intermediate buffer
 				uint8_t Buffer[6*2];
-				MemoryCopy(Buffer,m_Cache,uInputGranularity);
+				memory_copy(Buffer,m_Cache,uInputGranularity);
 
 				if (!m_bStereo) {
 					// Mono is easy!
@@ -1312,12 +1312,12 @@ Burger::eError Burger::DecompressMace6::Process(void *pOutput, uintptr_t uOutput
 	\brief Allocate and initialize a DecompressMace6
 
 	\return A pointer to a default DecompressMace6 class or \ref NULL if out of memory
-	\sa Delete(const T *)
+	\sa delete_object(const T *)
 
 ***************************************/
 
-Burger::DecompressMace6 * BURGER_API Burger::DecompressMace6::New(void)
+Burger::DecompressMace6 * BURGER_API Burger::DecompressMace6::new_object(void)
 {
 	// Allocate the memory
-	return new (Alloc(sizeof(DecompressMace6))) DecompressMace6();
+	return new (allocate_memory(sizeof(DecompressMace6))) DecompressMace6();
 }

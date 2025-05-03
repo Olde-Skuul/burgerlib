@@ -211,7 +211,7 @@ static uint_t ReportDecompress(uint8_t* pBuffer, const uint8_t* pOriginal,
 			++pTest;
 		} while (--i);
 	}
-	MemoryFill(pBuffer, 0xD5, uOriginalSize + 80);
+	memory_set(pBuffer, 0xD5, uOriginalSize + 80);
 	return uFailure;
 }
 
@@ -225,9 +225,9 @@ static uint_t TestILBMDecompress(void) BURGER_NOEXCEPT
 	uint8_t Buffer[sizeof(RawData) + 80];
 
 	// Perform a simple decompression test and test for buffer overrun
-	DecompressILBMRLE* pTester = New<DecompressILBMRLE>();
+	DecompressILBMRLE* pTester = new_object<DecompressILBMRLE>();
 
-	MemoryFill(Buffer, 0xD5, sizeof(Buffer));
+	memory_set(Buffer, 0xD5, sizeof(Buffer));
 	eError Error = pTester->Process(
 		Buffer, sizeof(RawData), ILBMCompressed, sizeof(ILBMCompressed));
 	if (Error != kErrorNone) {
@@ -350,7 +350,7 @@ static uint_t TestILBMDecompress(void) BURGER_NOEXCEPT
 	} while (++uSplit < sizeof(ILBMCompressed));
 	uFailure |= ReportDecompress(Buffer, RawData, sizeof(RawData),
 		"DecompressILBMRLE::Process(Buffer,sizeof(RawData),ILBMCompressed,1)");
-	Delete(pTester);
+	delete_object(pTester);
 	return uFailure;
 }
 
@@ -363,7 +363,7 @@ static uint_t TestILBMCompress(void) BURGER_NOEXCEPT
 	uint_t uFailure = FALSE;
 
 	// Perform a simple Compression test and test for buffer overrun
-	CompressILBMRLE* pTester = New<CompressILBMRLE>();
+	CompressILBMRLE* pTester = new_object<CompressILBMRLE>();
 
 	eError Error = pTester->Process(RawData, sizeof(RawData));
 	if (Error != kErrorNone) {
@@ -470,7 +470,7 @@ static uint_t TestILBMCompress(void) BURGER_NOEXCEPT
 			TRUE, static_cast<uint32_t>(uSplit));
 		uFailure = TRUE;
 	}
-	Delete(pTester);
+	delete_object(pTester);
 	return uFailure;
 }
 
@@ -484,9 +484,9 @@ static uint_t TestLZSSDecompress(void) BURGER_NOEXCEPT
 	uint8_t Buffer[sizeof(RawData) + 80];
 
 	// Perform a simple decompression test and test for buffer overrun
-	DecompressLZSS* pTester = New<DecompressLZSS>();
+	DecompressLZSS* pTester = new_object<DecompressLZSS>();
 
-	MemoryFill(Buffer, 0xD5, sizeof(Buffer));
+	memory_set(Buffer, 0xD5, sizeof(Buffer));
 	eError Error = pTester->Process(
 		Buffer, sizeof(RawData), LZSSCompressed, sizeof(LZSSCompressed));
 	if (Error != kErrorNone) {
@@ -609,7 +609,7 @@ static uint_t TestLZSSDecompress(void) BURGER_NOEXCEPT
 	} while (++uSplit < sizeof(LZSSCompressed));
 	uFailure |= ReportDecompress(Buffer, RawData, sizeof(RawData),
 		"DecompressLZSS::Process(Buffer,sizeof(RawData),LZSSCompressed,1)");
-	Delete(pTester);
+	delete_object(pTester);
 	return uFailure;
 }
 
@@ -622,7 +622,7 @@ static uint_t TestLZSSCompress(void) BURGER_NOEXCEPT
 	uint_t uFailure = FALSE;
 
 	// Perform a simple Compression test and test for buffer overrun
-	CompressLZSS* pTester = New<CompressLZSS>();
+	CompressLZSS* pTester = new_object<CompressLZSS>();
 
 	eError Error = pTester->Process(RawData, sizeof(RawData));
 	if (Error != kErrorNone) {
@@ -728,7 +728,7 @@ static uint_t TestLZSSCompress(void) BURGER_NOEXCEPT
 			TRUE, static_cast<uint32_t>(uSplit));
 		uFailure = TRUE;
 	}
-	Delete(pTester);
+	delete_object(pTester);
 	return uFailure;
 }
 
@@ -742,9 +742,9 @@ static uint_t TestDeflateDecompress(void) BURGER_NOEXCEPT
 	uint8_t Buffer[sizeof(RawData) + 80];
 
 	// Perform a simple decompression test and test for buffer overrun
-	DecompressDeflate* pTester = New<DecompressDeflate>();
+	DecompressDeflate* pTester = new_object<DecompressDeflate>();
 
-	MemoryFill(Buffer, 0xD5, sizeof(Buffer));
+	memory_set(Buffer, 0xD5, sizeof(Buffer));
 	eError Error = pTester->Process(
 		Buffer, sizeof(RawData), DeflateCompressed, sizeof(DeflateCompressed));
 	if (Error != kErrorNone) {
@@ -867,7 +867,7 @@ static uint_t TestDeflateDecompress(void) BURGER_NOEXCEPT
 	} while (++uSplit < sizeof(DeflateCompressed));
 	uFailure |= ReportDecompress(Buffer, RawData, sizeof(RawData),
 		"DecompressDeflate::Process(Buffer,sizeof(RawData),DeflateCompressed,1)");
-	Delete(pTester);
+	delete_object(pTester);
 	return uFailure;
 }
 
@@ -882,7 +882,7 @@ static uint_t TestDeflateCompress(void) BURGER_NOEXCEPT
 	uint_t uFailure = FALSE;
 
 	// Perform a simple Compression test and test for buffer overrun
-	CompressDeflate* pTester = New<CompressDeflate>();
+	CompressDeflate* pTester = new_object<CompressDeflate>();
 
 	eError Error = pTester->Process(RawData, sizeof(RawData));
 	if (Error != kErrorNone) {
@@ -989,7 +989,7 @@ static uint_t TestDeflateCompress(void) BURGER_NOEXCEPT
 			TRUE, static_cast<uint32_t>(uSplit));
 		uFailure = TRUE;
 	}
-	Delete(pTester);
+	delete_object(pTester);
 	return uFailure;
 }
 

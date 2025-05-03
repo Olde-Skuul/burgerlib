@@ -1072,9 +1072,11 @@ EXCLUDE                = ../source/version.h \
                          ../source/platforms/macosx/templatemacosx.h \
                          ../source/platforms/darwin/templatedarwin.h \
                          ../source/platforms/ps4/templateps4.h \
+                         ../source/platforms/psvita/templatepsvita.h \
                          ../source/platforms/unix/templateunix.h \
                          ../source/platforms/linux/templatelinux.h \
                          ../source/platforms/switch/templateswitch.h \
+                         ../source/platforms/xbox/templatexbox.h \
                          ../source/platforms/xbox360/templatexbox360.h \
                          ../source/platforms/msdos/templatemsdos.h
 
@@ -1115,6 +1117,7 @@ EXCLUDE_PATTERNS       = .git \
                          unix_*.h \
                          linux_*.h \
                          switch_*.h \
+                         psvita_*.h \
                          ps3_*.h \
                          ps4_*.h \
                          ps5_*.h \
@@ -1124,6 +1127,7 @@ EXCLUDE_PATTERNS       = .git \
                          ios_*.h \
                          osx_*.h \
                          darwin_*.h \
+                         xbox_*.h \
                          x360_*.h \
                          one_*.h \
                          msdos_*.h \

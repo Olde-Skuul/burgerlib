@@ -220,7 +220,7 @@ public:
 		BURGER_INLINE uintptr_t GetAudioBufferSize(void) const { return m_uBufferSize; }
 		BURGER_INLINE uint_t IsUploaded(void) const { return m_pBufferData!=NULL; }
 #endif
-		static Buffer * BURGER_API New(void);
+		static Buffer * BURGER_API new_object(void);
 	};
 
 	class Voice {
@@ -319,7 +319,7 @@ protected:
 public:
 	SoundManager(GameApp *pGameApp);
 	virtual ~SoundManager();
-	static SoundManager * BURGER_API New(GameApp *pGameApp);
+	static SoundManager * BURGER_API new_object(GameApp *pGameApp);
 	uint_t BURGER_API Init(void);
 	void BURGER_API Shutdown(void);
 	uint_t BURGER_API Play(Buffer *pInput,Voice **ppCookie=NULL);

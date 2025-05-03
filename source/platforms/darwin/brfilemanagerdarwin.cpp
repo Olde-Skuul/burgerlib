@@ -70,7 +70,7 @@ void BURGER_API Burger::FileManager::platform_setup(void) BURGER_NOEXCEPT
 
 void BURGER_API Burger::FileManager::platform_shutdown(void) BURGER_NOEXCEPT
 {
-	Free(m_pBootName);
+	free_memory(m_pBootName);
 	m_pBootName = nullptr;
 	m_uBootNameSize = 0;
 }
@@ -112,7 +112,7 @@ uint32_t BURGER_API Burger::FileManager::get_creator_type(Filename* pFileName)
 	attrlist AttributesList;
 
 	// Initialize the attributes list
-	MemoryClear(&AttributesList, sizeof(AttributesList));
+	memory_clear(&AttributesList, sizeof(AttributesList));
 	// "sizeof" for the structure
 	AttributesList.bitmapcount = ATTR_BIT_MAP_COUNT;
 
@@ -172,7 +172,7 @@ uint32_t BURGER_API Burger::FileManager::get_file_type(Filename* pFileName)
 	attrlist AttributesList;
 
 	// Initialize the attributes list
-	MemoryClear(&AttributesList, sizeof(AttributesList));
+	memory_clear(&AttributesList, sizeof(AttributesList));
 	// "sizeof" for the structure
 	AttributesList.bitmapcount = ATTR_BIT_MAP_COUNT;
 
@@ -240,7 +240,7 @@ Burger::eError BURGER_API Burger::FileManager::get_creator_and_file_type(
 	attrlist AttributesList;
 
 	// Initialize the attributes list
-	MemoryClear(&AttributesList, sizeof(AttributesList));
+	memory_clear(&AttributesList, sizeof(AttributesList));
 	// "sizeof" for the structure
 	AttributesList.bitmapcount = ATTR_BIT_MAP_COUNT;
 
@@ -303,7 +303,7 @@ Burger::eError BURGER_API Burger::FileManager::set_creator_type(
 	attrlist AttributesList;
 
 	// Initialize the attributes list
-	MemoryClear(&AttributesList, sizeof(AttributesList));
+	memory_clear(&AttributesList, sizeof(AttributesList));
 	// "sizeof" for the structure
 	AttributesList.bitmapcount = ATTR_BIT_MAP_COUNT;
 
@@ -371,7 +371,7 @@ Burger::eError BURGER_API Burger::FileManager::set_file_type(
 	attrlist AttributesList;
 
 	// Initialize the attributes list
-	MemoryClear(&AttributesList, sizeof(AttributesList));
+	memory_clear(&AttributesList, sizeof(AttributesList));
 	// "sizeof" for the structure
 	AttributesList.bitmapcount = ATTR_BIT_MAP_COUNT;
 
@@ -441,7 +441,7 @@ Burger::eError BURGER_API Burger::FileManager::set_creator_and_file_type(
 	attrlist AttributesList;
 
 	// Initialize the attributes list
-	MemoryClear(&AttributesList, sizeof(AttributesList));
+	memory_clear(&AttributesList, sizeof(AttributesList));
 
 	// "sizeof" for the structure
 	AttributesList.bitmapcount = ATTR_BIT_MAP_COUNT;

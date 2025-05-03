@@ -278,7 +278,7 @@ static uint_t BURGER_API TestGetEnvironmentString(
 		ReportFailure(
 			"Burger::GetEnvironmentString(\"JAPANESE\") = \"%s\", expected \"%s\"",
 			uTest, pTest, pTest, SAILORMOON);
-		Burger::Free(pTest);
+		Burger::free_memory(pTest);
 	} else {
 		if (uVerbose & VERBOSE_MSG) {
 			Message("JAPANESE environment variable not found");

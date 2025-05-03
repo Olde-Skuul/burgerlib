@@ -2,7 +2,7 @@
 
 	Global Master Memory Manager
 
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -17,10 +17,6 @@
 
 #ifndef __BRTYPES_H__
 #include "brtypes.h"
-#endif
-
-#ifndef __BRWATCOM_H__
-#include "brwatcom.h"
 #endif
 
 #ifndef __BRMEMORYMANAGER_H__
@@ -47,19 +43,19 @@ public:
 	}
 };
 
-extern void* BURGER_API Alloc(uintptr_t uSize) BURGER_NOEXCEPT;
-extern void BURGER_API Free(const void* pInput) BURGER_NOEXCEPT;
-extern void* BURGER_API Realloc(
+extern void* BURGER_API allocate_memory(uintptr_t uSize) BURGER_NOEXCEPT;
+extern void BURGER_API free_memory(const void* pInput) BURGER_NOEXCEPT;
+extern void* BURGER_API reallocate_memory(
 	const void* pInput, uintptr_t uSize) BURGER_NOEXCEPT;
 
-extern void* BURGER_API alloc_clear(uintptr_t uSize) BURGER_NOEXCEPT;
-extern void* BURGER_API alloc_copy(
+extern void* BURGER_API allocate_memory_clear(uintptr_t uSize) BURGER_NOEXCEPT;
+extern void* BURGER_API allocate_memory_copy(
 	const void* pInput, uintptr_t uSize) BURGER_NOEXCEPT;
 
 template<class T>
-T* BURGER_API New(void) BURGER_NOEXCEPT
+T* BURGER_API new_object(void) BURGER_NOEXCEPT
 {
-	void* pResult = Burger::Alloc(sizeof(T));
+	void* pResult = Burger::allocate_memory(sizeof(T));
 	if (pResult) {
 		new (pResult) T();
 	}
@@ -67,11 +63,11 @@ T* BURGER_API New(void) BURGER_NOEXCEPT
 }
 
 template<class T>
-void BURGER_API Delete(const T* pInput) BURGER_NOEXCEPT
+void BURGER_API delete_object(const T* pInput) BURGER_NOEXCEPT
 {
 	if (pInput) {
 		const_cast<T*>(pInput)->~T();
-		Free(pInput);
+		free_memory(pInput);
 	}
 }
 }

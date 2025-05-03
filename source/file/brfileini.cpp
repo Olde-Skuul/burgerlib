@@ -239,10 +239,10 @@ Burger::FileINI::Comment::~Comment()
 
 ***************************************/
 
-Burger::FileINI::Comment * BURGER_API Burger::FileINI::Comment::New(void)
+Burger::FileINI::Comment * BURGER_API Burger::FileINI::Comment::new_object(void)
 {
 	// Allocate the memory
-	return new (Alloc(sizeof(Comment))) Comment();
+	return new (allocate_memory(sizeof(Comment))) Comment();
 }
 
 /*! ************************************
@@ -253,10 +253,10 @@ Burger::FileINI::Comment * BURGER_API Burger::FileINI::Comment::New(void)
 
 ***************************************/
 
-Burger::FileINI::Comment * BURGER_API Burger::FileINI::Comment::New(const char *pComment)
+Burger::FileINI::Comment * BURGER_API Burger::FileINI::Comment::new_object(const char *pComment)
 {
 	// Allocate the memory
-	return new (Alloc(sizeof(Comment))) Comment(pComment);
+	return new (allocate_memory(sizeof(Comment))) Comment(pComment);
 }
 
 
@@ -651,12 +651,12 @@ void BURGER_API Burger::FileINI::Entry::GetString(String *pOutput,const char *pD
 		char *pBuffer = Buffer;
 		// Will the buffer hold?
 		if (uLength>=sizeof(Buffer)) {
-			pBuffer = static_cast<char *>(Alloc(uLength+1));
+			pBuffer = static_cast<char *>(allocate_memory(uLength+1));
 		}
 		ParseQuotedString(pBuffer,uLength+1,m_Value.c_str());
 		pOutput->assign(pBuffer);
 		if (pBuffer!=Buffer) {
-			Free(pBuffer);
+			free_memory(pBuffer);
 		}
 	}
 }
@@ -711,10 +711,10 @@ void BURGER_API Burger::FileINI::Entry::SetString(const char *pValue)
 
 ***************************************/
 
-Burger::FileINI::Entry * BURGER_API Burger::FileINI::Entry::New(void)
+Burger::FileINI::Entry * BURGER_API Burger::FileINI::Entry::new_object(void)
 {
 	// Allocate the memory
-	return new (Alloc(sizeof(Entry))) Entry();
+	return new (allocate_memory(sizeof(Entry))) Entry();
 }
 
 /*! ************************************
@@ -726,10 +726,10 @@ Burger::FileINI::Entry * BURGER_API Burger::FileINI::Entry::New(void)
 
 ***************************************/
 
-Burger::FileINI::Entry * BURGER_API Burger::FileINI::Entry::New(const char *pKey,const char *pValue)
+Burger::FileINI::Entry * BURGER_API Burger::FileINI::Entry::new_object(const char *pKey,const char *pValue)
 {
 	// Allocate the memory
-	return new (Alloc(sizeof(Entry))) Entry(pKey,pValue);
+	return new (allocate_memory(sizeof(Entry))) Entry(pKey,pValue);
 }
 
 
@@ -808,7 +808,7 @@ Burger::FileINI::Section::~Section()
 	if (pGeneric!=&m_Root) {
 		// Dispose of all the objects in the list
 		do {
-			Delete(pGeneric);
+			delete_object(pGeneric);
 			// Since the object unlinked, pull from the root
 			pGeneric = m_Root.GetNext();
 		} while (pGeneric!=&m_Root);
@@ -911,7 +911,7 @@ uint_t BURGER_API Burger::FileINI::Section::Save(OutputMemoryStream *pOutput) co
 
 Burger::FileINI::Entry * BURGER_API Burger::FileINI::Section::AddEntry(const char *pKey,const char *pValue)
 {
-	Entry *pEntry = Entry::New(pKey,pValue);
+	Entry *pEntry = Entry::new_object(pKey,pValue);
 	if (pEntry) {
 		m_Root.InsertBefore(pEntry);
 	}
@@ -979,7 +979,7 @@ Burger::FileINI::Entry * BURGER_API Burger::FileINI::Section::FindEntry(const ch
 	// Not found and create flag set?
 	if (!pResult && bAlwaysCreate) {
 		// Create it with no data
-		pResult = Entry::New(pKey,"");
+		pResult = Entry::new_object(pKey,"");
 		if (pResult) {
 			// Insert it after the last located entry (But before the last comments)
 			// This will allow any spacing from the entries to the next section to be
@@ -1002,7 +1002,7 @@ Burger::FileINI::Entry * BURGER_API Burger::FileINI::Section::FindEntry(const ch
 
 Burger::FileINI::Comment * BURGER_API Burger::FileINI::Section::AddComment(const char *pComment)
 {
-	Comment *pEntry = Comment::New(pComment);
+	Comment *pEntry = Comment::new_object(pComment);
 	if (pEntry) {
 		m_Root.InsertBefore(pEntry);
 	}
@@ -1437,10 +1437,10 @@ void BURGER_API Burger::FileINI::Section::SetString(const char *pKey,const char 
 
 ***************************************/
 
-Burger::FileINI::Section * BURGER_API Burger::FileINI::Section::New(void)
+Burger::FileINI::Section * BURGER_API Burger::FileINI::Section::new_object(void)
 {
 	// Allocate the memory
-	return new (Alloc(sizeof(Section))) Section();
+	return new (allocate_memory(sizeof(Section))) Section();
 }
 
 /*! ************************************
@@ -1451,10 +1451,10 @@ Burger::FileINI::Section * BURGER_API Burger::FileINI::Section::New(void)
 
 ***************************************/
 
-Burger::FileINI::Section * BURGER_API Burger::FileINI::Section::New(const char *pSection)
+Burger::FileINI::Section * BURGER_API Burger::FileINI::Section::new_object(const char *pSection)
 {
 	// Allocate the memory
-	return new (Alloc(sizeof(Section))) Section(pSection);
+	return new (allocate_memory(sizeof(Section))) Section(pSection);
 }
 
 /*! ************************************
@@ -1521,14 +1521,14 @@ Burger::FileINI::~FileINI()
 	\brief Allocate and initialize a FileINI
 
 	\return A pointer to an empty FileINI structure or \ref NULL if out of memory
-	\sa New(InputMemoryStream *,uint_t), New(const char *,uint_t) or New(Filename *,uint_t)
+	\sa new_object(InputMemoryStream *,uint_t), new_object(const char *,uint_t) or new_object(Filename *,uint_t)
 
 ***************************************/
 
-Burger::FileINI * BURGER_API Burger::FileINI::New(void)
+Burger::FileINI * BURGER_API Burger::FileINI::new_object(void)
 {
 	// Allocate the memory
-	return new (Alloc(sizeof(FileINI))) FileINI();
+	return new (allocate_memory(sizeof(FileINI))) FileINI();
 }
 
 /*! ************************************
@@ -1542,15 +1542,15 @@ Burger::FileINI * BURGER_API Burger::FileINI::New(void)
 	\param pFilename Pointer to a "C" string of a valid Burgerlib filename
 	\param bAlwaysCreate \ref TRUE if the file can't be opened, return an empty record instead
 	\return A pointer to an empty FileINI structure or \ref NULL if out of memory
-	\sa New(InputMemoryStream *,uint_t), New(void) or New(Filename *,uint_t)
+	\sa new_object(InputMemoryStream *,uint_t), new_object(void) or new_object(Filename *,uint_t)
 
 ***************************************/
 
-Burger::FileINI * BURGER_API Burger::FileINI::New(const char *pFilename,uint_t bAlwaysCreate)
+Burger::FileINI * BURGER_API Burger::FileINI::new_object(const char *pFilename,uint_t bAlwaysCreate)
 {
 	// Convert to a filename object
 	Filename NewName(pFilename);
-	return New(&NewName,bAlwaysCreate);
+	return new_object(&NewName,bAlwaysCreate);
 }
 
 /*! ************************************
@@ -1564,23 +1564,23 @@ Burger::FileINI * BURGER_API Burger::FileINI::New(const char *pFilename,uint_t b
 	\param pFilename Pointer to a Filename record
 	\param bAlwaysCreate \ref TRUE if the file can't be opened, return an empty record instead
 	\return A pointer to an empty FileINI structure or \ref NULL if out of memory
-	\sa New(InputMemoryStream *,uint_t), New(void) or New(const char *,uint_t)
+	\sa new_object(InputMemoryStream *,uint_t), new_object(void) or new_object(const char *,uint_t)
 
 ***************************************/
 
-Burger::FileINI * BURGER_API Burger::FileINI::New(Filename *pFilename,uint_t bAlwaysCreate)
+Burger::FileINI * BURGER_API Burger::FileINI::new_object(Filename *pFilename,uint_t bAlwaysCreate)
 {
 	InputMemoryStream Stream;
 	FileINI *pResult;
 	// Load into a stream
 	if (!Stream.Open(pFilename)) {
 		// Create the record
-		pResult = New(&Stream,bAlwaysCreate);
+		pResult = new_object(&Stream,bAlwaysCreate);
 	} else if (!bAlwaysCreate) {
 		pResult = NULL;
 	} else {
 		// Create an empty record on missing file or file read error
-		pResult = New();
+		pResult = new_object();
 	}
 	return pResult;
 }
@@ -1596,20 +1596,20 @@ Burger::FileINI * BURGER_API Burger::FileINI::New(Filename *pFilename,uint_t bAl
 	\param pInput Pointer to a InputMemoryStream record that has the text file image
 	\param bAlwaysCreate \ref TRUE if the file can't be opened, return an empty record instead
 	\return A pointer to an empty FileINI structure or \ref NULL if out of memory
-	\sa New(Filename *,uint_t), New(void) or New(const char *,uint_t)
+	\sa new_object(Filename *,uint_t), new_object(void) or new_object(const char *,uint_t)
 
 ***************************************/
 
-Burger::FileINI * BURGER_API Burger::FileINI::New(InputMemoryStream *pInput,uint_t bAlwaysCreate)
+Burger::FileINI * BURGER_API Burger::FileINI::new_object(InputMemoryStream *pInput,uint_t bAlwaysCreate)
 {
-	FileINI *pResult = New();	// Init the structure
+	FileINI *pResult = new_object();	// Init the structure
 	if (pResult) {
 		// Fill in the data
 		if (pResult->Init(pInput)) {
 			// Failure? Destroy or return a class instance anyways?
 			if (!bAlwaysCreate) {
 				// On error, delete it
-				Delete(pInput);
+				delete_object(pInput);
 				pInput = NULL;
 			}
 		}
@@ -1707,7 +1707,7 @@ uint_t BURGER_API Burger::FileINI::Init(InputMemoryStream *pInput)
 			}
 		}
 		if (!pSection) {
-			pSection = Section::New();
+			pSection = Section::new_object();
 			m_Root.InsertAfter(pSection);
 		}
 		// Is this a Foo = Bar entry?
@@ -1752,8 +1752,8 @@ void BURGER_API Burger::FileINI::Shutdown(void)
 	if (pGeneric!=&m_Root) {
 		// Dispose of all the objects in the list
 		do {
-			Delete(pGeneric);
-			// Delete() unlinks the entry, fetch from the root
+			delete_object(pGeneric);
+			// delete_object() unlinks the entry, fetch from the root
 			pGeneric = m_Root.GetNext();
 		} while (pGeneric!=&m_Root);
 	}
@@ -1850,7 +1850,7 @@ uint_t BURGER_API Burger::FileINI::Save(OutputMemoryStream *pOutput) const
 
 Burger::FileINI::Section * BURGER_API Burger::FileINI::AddSection(const char *pSectionName)
 {
-	Section *pSection = Section::New(pSectionName);
+	Section *pSection = Section::new_object(pSectionName);
 	if (pSection) {
 		// Insert at the end of the list
 		m_Root.InsertBefore(pSection);
@@ -1912,5 +1912,5 @@ Burger::FileINI::Section * BURGER_API Burger::FileINI::FindSection(const char *p
 void BURGER_API Burger::FileINI::DeleteSection(const char *pSectionName)
 {
 	Section *pSection = FindSection(pSectionName);
-	Delete(pSection);
+	delete_object(pSection);
 }

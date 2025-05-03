@@ -902,7 +902,7 @@ static uint_t BURGER_API UnitTestFormattingSingleChar(intptr_t iStartWidth,
 			// No padding possible.
 			if (iWidth > 1) {
 				// Fill the buffer
-				Burger::MemoryFill(
+				Burger::memory_set(
 					Expected, 0x20, static_cast<uintptr_t>(iWidth));
 				Expected[iWidth] = 0;
 
@@ -923,7 +923,7 @@ static uint_t BURGER_API UnitTestFormattingSingleChar(intptr_t iStartWidth,
 
 			// Perform the test with a garbage filled buffer
 			char TestString[128];
-			Burger::MemoryFill(TestString, 0x44, sizeof(TestString));
+			Burger::memory_set(TestString, 0x44, sizeof(TestString));
 			Burger::ArgumentType Parm(rStartChar);
 			Parm.m_Data.m_uInt8 = static_cast<uint8_t>(uTestCharacter);
 
@@ -1036,7 +1036,7 @@ static uint_t BURGER_API UnitTestFormattingSingleWChar(intptr_t iStartWidth,
 				Burger::string_copy(Expected, UTF8Buffer);
 			} else {
 				// Fill the buffer
-				Burger::MemoryFill(
+				Burger::memory_set(
 					Expected, 0x20, static_cast<uintptr_t>(iWidth));
 				Expected[iWidth] = 0;
 
@@ -1047,14 +1047,14 @@ static uint_t BURGER_API UnitTestFormattingSingleWChar(intptr_t iStartWidth,
 					pStart += (iWidth - uExpectedLength);
 				}
 				// Copy in the "char"
-				Burger::MemoryCopy(pStart, UTF8Buffer, uExpectedLength);
+				Burger::memory_copy(pStart, UTF8Buffer, uExpectedLength);
 				uExpectedLength = static_cast<uintptr_t>(iWidth);
 			}
 			Expected[uExpectedLength] = 0;
 
 			// Perform the test with a garbage filled buffer
 			char TestString[128];
-			Burger::MemoryFill(TestString, 0x44, sizeof(TestString));
+			Burger::memory_set(TestString, 0x44, sizeof(TestString));
 			Burger::ArgumentType Parm(rStartChar);
 			if (Parm.GetDataLengthInBytes() == 2) {
 				Parm.m_Data.m_uInt16 = static_cast<uint16_t>(uTestCharacter);

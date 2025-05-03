@@ -654,7 +654,7 @@ uint16_t BURGER_API Burger::Globals::RegisterWindowClass(uint_t uIconResID)
 		}
 
 		WNDCLASSEXW WindowClass;
-		MemoryClear(&WindowClass, sizeof(WindowClass));
+		memory_clear(&WindowClass, sizeof(WindowClass));
 		WindowClass.cbSize = sizeof(WindowClass);
 		WindowClass.style = CS_DBLCLKS;             // Accept double clicks
 		WindowClass.lpfnWndProc = InternalCallBack; // My window callback
@@ -735,9 +735,9 @@ int BURGER_API Burger::Globals::ExecuteTool(
 
 	// Prepare the process information
 	PROCESS_INFORMATION ProcessInfo;
-	MemoryClear(&ProcessInfo, sizeof(ProcessInfo));
+	memory_clear(&ProcessInfo, sizeof(ProcessInfo));
 	STARTUPINFOW StartupInfo;
-	MemoryClear(&StartupInfo, sizeof(StartupInfo));
+	memory_clear(&StartupInfo, sizeof(StartupInfo));
 	StartupInfo.cb = sizeof(StartupInfo);
 
 	// Assume no text capturing
@@ -749,7 +749,7 @@ int BURGER_API Burger::Globals::ExecuteTool(
 	if (pOutput) {
 		// Create a pipe for STDOUT
 		SECURITY_ATTRIBUTES SecurityAttributes;
-		MemoryClear(&SecurityAttributes, sizeof(SecurityAttributes));
+		memory_clear(&SecurityAttributes, sizeof(SecurityAttributes));
 		SecurityAttributes.nLength = sizeof(SecurityAttributes);
 		SecurityAttributes.bInheritHandle = TRUE;
 		SecurityAttributes.lpSecurityDescriptor = nullptr;

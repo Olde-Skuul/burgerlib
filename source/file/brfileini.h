@@ -87,8 +87,8 @@ public:
 		BURGER_INLINE const char *GetText(void) const { return m_Comment.c_str(); }
 		BURGER_INLINE void SetText(const char *pInput) { m_Comment.assign(pInput); }
 		BURGER_INLINE void SetText(const String *pInput) { m_Comment = pInput[0]; }
-		static Comment * BURGER_API New(void);
-		static Comment * BURGER_API New(const char *pComment);
+		static Comment * BURGER_API new_object(void);
+		static Comment * BURGER_API new_object(const char *pComment);
 	};
 
 	class Entry : public Generic {
@@ -117,8 +117,8 @@ public:
 		void BURGER_API SetDouble(double fValue);
 		void BURGER_API GetString(String *pOutput,const char *pDefault) const;
 		void BURGER_API SetString(const char *pValue);
-		static Entry * BURGER_API New(void);
-		static Entry * BURGER_API New(const char *pKey,const char *pValue);
+		static Entry * BURGER_API new_object(void);
+		static Entry * BURGER_API new_object(const char *pKey,const char *pValue);
 	};
 
 	class Section : public Generic {
@@ -152,8 +152,8 @@ public:
 		void BURGER_API SetDouble(const char *pKey,double dValue);
 		void BURGER_API GetString(String *pOutput,const char *pKey,const char *pDefault) const;
 		void BURGER_API SetString(const char *pKey,const char *pValue);
-		static Section * BURGER_API New(void);
-		static Section * BURGER_API New(const char *pSection);
+		static Section * BURGER_API new_object(void);
+		static Section * BURGER_API new_object(const char *pSection);
 	};
 
 	BURGER_DISABLE_COPY(FileINI);
@@ -162,10 +162,10 @@ private:
 public:
 	FileINI();
 	~FileINI();
-	static FileINI * BURGER_API New(void);
-	static FileINI * BURGER_API New(const char *pFilename,uint_t bAlwaysCreate=FALSE);
-	static FileINI * BURGER_API New(Filename *pFilename,uint_t bAlwaysCreate=FALSE);
-	static FileINI * BURGER_API New(InputMemoryStream *pInput,uint_t bAlwaysCreate=FALSE);
+	static FileINI * BURGER_API new_object(void);
+	static FileINI * BURGER_API new_object(const char *pFilename,uint_t bAlwaysCreate=FALSE);
+	static FileINI * BURGER_API new_object(Filename *pFilename,uint_t bAlwaysCreate=FALSE);
+	static FileINI * BURGER_API new_object(InputMemoryStream *pInput,uint_t bAlwaysCreate=FALSE);
 	uint_t BURGER_API Init(const char *pFilename);
 	uint_t BURGER_API Init(Filename *pFilename);
 	uint_t BURGER_API Init(InputMemoryStream *pInput);

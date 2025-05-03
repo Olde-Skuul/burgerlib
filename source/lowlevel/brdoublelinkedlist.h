@@ -76,7 +76,7 @@ public:
 		return static_cast<DoubleLinkedList*>(m_pPrev);
 	}
 
-	static DoubleLinkedList* BURGER_API New(void) BURGER_NOEXCEPT;
+	static DoubleLinkedList* BURGER_API new_object(void) BURGER_NOEXCEPT;
 };
 
 }

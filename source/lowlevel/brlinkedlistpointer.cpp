@@ -121,17 +121,17 @@
 
 	\brief Create a new LinkedListPointer instance
 
-	Allocate memory using Burger::Alloc() and initialize a LinkedListPointer
+	Allocate memory using Burger::allocate_memory() and initialize a LinkedListPointer
 	with it.
 
 	\return \ref nullptr if out of memory
-	\sa Delete(const T *)
+	\sa delete_object(const T *)
 
 ***************************************/
 
-Burger::LinkedListPointer* BURGER_API Burger::LinkedListPointer::New(
+Burger::LinkedListPointer* BURGER_API Burger::LinkedListPointer::new_object(
 	void* pInput) BURGER_NOEXCEPT
 {
 	// Manually allocate the memory
-	return new (Alloc(sizeof(LinkedListPointer))) LinkedListPointer(pInput);
+	return new (allocate_memory(sizeof(LinkedListPointer))) LinkedListPointer(pInput);
 }

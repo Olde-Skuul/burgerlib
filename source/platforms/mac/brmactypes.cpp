@@ -100,7 +100,7 @@ void BURGER_API Burger::InitFSRefParam(FSRefParam* pFSRefParam, FSRef* pFSRef,
 	uint32_t uCatInfoBitmap) BURGER_NOEXCEPT
 {
 	// Initialize the record
-	MemoryClear(pFSRefParam, sizeof(FSRefParam));
+	memory_clear(pFSRefParam, sizeof(FSRefParam));
 	pFSRefParam->ref = pFSRef;
 	pFSRefParam->whichInfo = uCatInfoBitmap;
 }
@@ -170,7 +170,7 @@ int BURGER_API Burger::GetFilenameFromPathname(
 
 					// Create the Pascal filename output
 					pOutput[0] = static_cast<uint8_t>(uIndexEnd);
-					MemoryCopy(&pOutput[1], &pInput[uIndex + 1], uIndexEnd);
+					memory_copy(&pOutput[1], &pInput[uIndex + 1], uIndexEnd);
 
 					// We're good!
 					iMacError = noErr;
@@ -1253,7 +1253,7 @@ int BURGER_API Burger::DoGetCatInfo(CInfoPBRec* pOutput,
 		pOutput->dirInfo.ioFDirIndex = -1;
 	} else {
 		// Copy the name into the output buffer
-		MemoryCopy(pOutputName, pName, pName[0] + 1U);
+		memory_copy(pOutputName, pName, pName[0] + 1U);
 
 		// Use ioNamePtr and ioDirID
 		pOutput->dirInfo.ioFDirIndex = 0;
@@ -2812,7 +2812,7 @@ int Burger::FileCopy(short svRefNumSource, long lDirIDSource,
 	// Check for the destination file name. Was it supplied, or will it be
 	// extracted from the source name?
 	if (pCopyname) {
-		MemoryCopy(NewFilename, pCopyname, pCopyname[0] + 1U);
+		memory_copy(NewFilename, pCopyname, pCopyname[0] + 1U);
 	} else {
 		short sTempVolume;
 		iMacError = GetFileLocation(&sTempVolume,

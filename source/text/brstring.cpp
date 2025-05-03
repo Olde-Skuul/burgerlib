@@ -31,8 +31,8 @@
 	to allocated memory if the internal string buffer is too large. Since
 	most strings rarely exceed 56 bytes in length, this class will be able to
 	allocate and free strings with no calls to a memory manager. Only
-	when the string exceeds the internal buffer will Burger::Alloc()
-	and Burger::Free() be used.
+	when the string exceeds the internal buffer will Burger::allocate_memory()
+	and Burger::free_memory() be used.
 
 	Functions exist to convert UTF16 and UTF32 data into UTF8 format,
 	which this string class uses internally for data storage.
@@ -63,7 +63,7 @@ char* BURGER_API Burger::String::constructor_reserve(
 	if (uBufferSize >= kBufferSize) {
 
 		// Buffer is allocated.
-		pResult = static_cast<char*>(Alloc(uBufferSize + 1));
+		pResult = static_cast<char*>(allocate_memory(uBufferSize + 1));
 		// Oh oh...
 		if (!pResult) {
 			// Failure case, neuter the class and return nullptr
@@ -92,7 +92,7 @@ char* BURGER_API Burger::String::constructor_reserve(
 	\brief Copy "C" string without safeguards.
 
 	If the string is under \ref kBufferSize -1 bytes in length AND it's not
-	using the a buffer where a call to MemoryCopy() would fail, then call this
+	using the a buffer where a call to memory_copy() would fail, then call this
 	function to copy the string since it performs some optimizations that cannot
 	be done if either case of the input data were true.
 
@@ -111,7 +111,7 @@ void BURGER_API Burger::String::assign_small(const char* pInput) BURGER_NOEXCEPT
 	uintptr_t uLength = string_length(pInput);
 	m_uLength = uLength;
 	// The string already has a terminating zero
-	MemoryCopy(m_pData, pInput, uLength + 1);
+	memory_copy(m_pData, pInput, uLength + 1);
 }
 
 /*! ************************************
@@ -119,7 +119,7 @@ void BURGER_API Burger::String::assign_small(const char* pInput) BURGER_NOEXCEPT
 	\brief Copy an array of characters to a String with shortcuts
 
 	If the string is under \ref kBufferSize -1 bytes in length AND it's not
-	using the a buffer where a call to MemoryCopy() would fail, then call this
+	using the a buffer where a call to memory_copy() would fail, then call this
 	function to update the string since it performs some optimizations that
 	cannot be done if either case of the input data were true. A zero will be
 	appended to the final string. The input string should not contain a zero.
@@ -142,7 +142,7 @@ void BURGER_API Burger::String::assign_small(
 	m_uLength = uLength;
 	// Ensure it's terminated
 	m_pData[uLength] = 0;
-	MemoryCopy(m_pData, pInput, uLength);
+	memory_copy(m_pData, pInput, uLength);
 }
 
 /*! ************************************
@@ -170,7 +170,7 @@ Burger::String::String(const Burger::String& rInput) BURGER_NOEXCEPT
 	// Get the adjusted length
 	uInputLength = m_uLength;
 	// Copy the data
-	MemoryCopy(pWork, rInput.m_pData, uInputLength);
+	memory_copy(pWork, rInput.m_pData, uInputLength);
 }
 
 /*! ************************************
@@ -199,7 +199,7 @@ Burger::String::String(String&& rInput) BURGER_NOEXCEPT
 	} else {
 		// No need to neuter the original class.
 		m_pData = m_Raw;
-		MemoryCopy(m_Raw, rInput.m_Raw, rInput.m_uLength + 1);
+		memory_copy(m_Raw, rInput.m_Raw, rInput.m_uLength + 1);
 	}
 }
 
@@ -222,7 +222,7 @@ Burger::String& Burger::String::operator=(String&& rInput) BURGER_NOEXCEPT
 
 			// Capturing the other pointer. Release our pointer
 			if (m_pData != m_Raw) {
-				Free(m_pData);
+				free_memory(m_pData);
 			}
 
 			// Copy the contents
@@ -238,7 +238,7 @@ Burger::String& Burger::String::operator=(String&& rInput) BURGER_NOEXCEPT
 
 		} else {
 			// If the buffer is big enough, just copy and be done with it.
-			MemoryCopy(m_pData, rInput.m_pData, rInput.m_uLength + 1);
+			memory_copy(m_pData, rInput.m_pData, rInput.m_uLength + 1);
 			m_uLength = rInput.m_uLength;
 		}
 	}
@@ -293,7 +293,7 @@ Burger::String::String(const Burger::String& rInput, uintptr_t uStart,
 	// Get the adjusted length
 	uInputLength = m_uLength;
 	// Copy the data
-	MemoryCopy(pWork, pInput, uInputLength);
+	memory_copy(pWork, pInput, uInputLength);
 }
 
 /*! ************************************
@@ -321,7 +321,7 @@ Burger::String::String(const char* pInput) BURGER_NOEXCEPT
 	// Get the adjusted length
 	uInputLength = m_uLength;
 	// Copy the data
-	MemoryCopy(pWork, pInput, uInputLength);
+	memory_copy(pWork, pInput, uInputLength);
 }
 
 /*! ************************************
@@ -361,7 +361,7 @@ Burger::String::String(const char* pInput, uintptr_t uPadding) BURGER_NOEXCEPT
 	// constructor_reserve() sets the length to buffersize, correct it.
 	m_uLength = uInputLength;
 	// Copy the data
-	MemoryCopy(pWork, pInput, uInputLength);
+	memory_copy(pWork, pInput, uInputLength);
 }
 
 /*! ************************************
@@ -462,7 +462,7 @@ Burger::String::String(
 	// Get the adjusted length
 	uInputLength = m_uLength;
 	// Copy the data
-	MemoryCopy(pWork, pInput, uInputLength);
+	memory_copy(pWork, pInput, uInputLength);
 }
 
 /*! ************************************
@@ -522,7 +522,7 @@ Burger::String::String(char iInput, uintptr_t uFillSize) BURGER_NOEXCEPT
 	// Get the adjusted length
 	uFillSize = m_uLength;
 	// Fill in the data
-	MemoryFill(pWork, static_cast<uint8_t>(iInput), uFillSize);
+	memory_set(pWork, static_cast<uint8_t>(iInput), uFillSize);
 }
 
 /*! ************************************
@@ -559,14 +559,14 @@ Burger::String::String(const char* pInput1, const char* pInput2) BURGER_NOEXCEPT
 	if (uLength1 > uInputLength) {
 		uLength1 = uInputLength;
 	}
-	MemoryCopy(pWork, pInput1, uLength1);
+	memory_copy(pWork, pInput1, uLength1);
 
 	pWork += uLength1;
 	uInputLength -= uLength1;
 	if (uLength2 > uInputLength) {
 		uLength2 = uInputLength;
 	}
-	MemoryCopy(pWork, pInput2, uLength2);
+	memory_copy(pWork, pInput2, uLength2);
 }
 
 /*! ************************************
@@ -609,21 +609,21 @@ Burger::String::String(const char* pInput1, const char* pInput2,
 	if (uLength1 > uInputLength) {
 		uLength1 = uInputLength;
 	}
-	MemoryCopy(pWork, pInput1, uLength1);
+	memory_copy(pWork, pInput1, uLength1);
 
 	pWork += uLength1;
 	uInputLength -= uLength1;
 	if (uLength2 > uInputLength) {
 		uLength2 = uInputLength;
 	}
-	MemoryCopy(pWork, pInput2, uLength2);
+	memory_copy(pWork, pInput2, uLength2);
 
 	pWork += uLength2;
 	uInputLength -= uLength2;
 	if (uLength3 > uInputLength) {
 		uLength3 = uInputLength;
 	}
-	MemoryCopy(pWork, pInput3, uLength3);
+	memory_copy(pWork, pInput3, uLength3);
 }
 
 /*! ************************************
@@ -671,28 +671,28 @@ Burger::String::String(const char* pInput1, const char* pInput2,
 	if (uLength1 > uInputLength) {
 		uLength1 = uInputLength;
 	}
-	MemoryCopy(pWork, pInput1, uLength1);
+	memory_copy(pWork, pInput1, uLength1);
 
 	pWork += uLength1;
 	uInputLength -= uLength1;
 	if (uLength2 > uInputLength) {
 		uLength2 = uInputLength;
 	}
-	MemoryCopy(pWork, pInput2, uLength2);
+	memory_copy(pWork, pInput2, uLength2);
 
 	pWork += uLength2;
 	uInputLength -= uLength2;
 	if (uLength3 > uInputLength) {
 		uLength3 = uInputLength;
 	}
-	MemoryCopy(pWork, pInput3, uLength3);
+	memory_copy(pWork, pInput3, uLength3);
 
 	pWork += uLength3;
 	uInputLength -= uLength3;
 	if (uLength4 > uInputLength) {
 		uLength4 = uInputLength;
 	}
-	MemoryCopy(pWork, pInput4, uLength4);
+	memory_copy(pWork, pInput4, uLength4);
 }
 
 /*! ************************************
@@ -841,7 +841,7 @@ Burger::eError BURGER_API Burger::String::assign(
 	}
 	m_uLength = uLength;
 	char* pWork = m_pData;
-	MemoryFill(pWork, static_cast<uint8_t>(iInput), uLength);
+	memory_set(pWork, static_cast<uint8_t>(iInput), uLength);
 	pWork[uLength] = 0;
 	// Return error
 	return uResult;
@@ -881,7 +881,7 @@ void BURGER_API Burger::String::assign(String&& rInput) BURGER_NOEXCEPT
 {
 	// If this string has a buffer, dispose of it.
 	if (m_pData != m_Raw) {
-		Free(m_pData);
+		free_memory(m_pData);
 	}
 
 	// Does the other one have a buffer?
@@ -899,7 +899,7 @@ void BURGER_API Burger::String::assign(String&& rInput) BURGER_NOEXCEPT
 		rInput.m_Raw[0] = 0;
 	} else {
 		// Copy as POD
-		MemoryCopy(m_Raw, rInput.m_Raw, rInput.m_uLength + 1);
+		memory_copy(m_Raw, rInput.m_Raw, rInput.m_uLength + 1);
 		m_pData = m_Raw;
 		m_uLength = rInput.m_uLength;
 		m_uBufferSize = kBufferSize - 1;
@@ -962,7 +962,7 @@ Burger::eError BURGER_API Burger::String::assign(
 	}
 	m_uLength = uInputLength;
 	char* pWork = m_pData;
-	MemoryCopy(pWork, pInput, uInputLength);
+	memory_copy(pWork, pInput, uInputLength);
 	pWork[uInputLength] = 0;
 	// Return error
 	return uResult;
@@ -1330,7 +1330,7 @@ Burger::eError BURGER_API Burger::String::resize(
 			const uintptr_t uFillCount = uSize - m_uLength;
 
 			// Fill in the extra data with zeros plus the terminating zero
-			MemoryClear(m_pData + m_uLength, uFillCount + 1);
+			memory_clear(m_pData + m_uLength, uFillCount + 1);
 
 			m_uLength = uSize;
 		}
@@ -1373,7 +1373,7 @@ Burger::eError BURGER_API Burger::String::reserve(
 	if (uNewBufferSize > m_uBufferSize) {
 
 		// Create a new buffer
-		char* pDest = static_cast<char*>(Alloc(uNewBufferSize + 1));
+		char* pDest = static_cast<char*>(allocate_memory(uNewBufferSize + 1));
 
 		// Oh oh...
 		if (!pDest) {
@@ -1387,11 +1387,11 @@ Burger::eError BURGER_API Burger::String::reserve(
 			m_uBufferSize = uNewBufferSize;
 			const char* pWork = m_pData;
 			m_pData = pDest;
-			MemoryCopy(pDest, pWork, m_uLength + 1);
+			memory_copy(pDest, pWork, m_uLength + 1);
 
 			// Discard previous memory if it was allocated
 			if (pWork != m_Raw) {
-				Free(pWork);
+				free_memory(pWork);
 			}
 		}
 	}
@@ -1911,7 +1911,7 @@ void BURGER_API Burger::String::clear(void) BURGER_NOEXCEPT
 
 	// Dispose of the data?
 	if (pWork != m_Raw) {
-		Free(pWork);
+		free_memory(pWork);
 	}
 
 	// Reset to power up defaults
@@ -1947,7 +1947,7 @@ uintptr_t BURGER_API Burger::String::copy(
 		uOutputSize = uLength;
 	}
 	// Copy the string
-	MemoryCopy(pOutput, m_pData, uOutputSize);
+	memory_copy(pOutput, m_pData, uOutputSize);
 
 	return uOutputSize;
 }
@@ -1997,7 +1997,7 @@ uintptr_t BURGER_API Burger::String::PCopy(
 		// Pascal length
 		pOutput[0] = static_cast<uint8_t>(uOutputSize);
 		// Copy the string
-		MemoryCopy(pOutput + 1, m_pData, uOutputSize);
+		memory_copy(pOutput + 1, m_pData, uOutputSize);
 	}
 	return uOutputSize;
 }
@@ -2105,11 +2105,11 @@ Burger::eError BURGER_API Burger::String::insert(
 		m_uLength = uTotalLength;
 		// Move tail end of the string to make room new data
 		uintptr_t uInsertOffset = uStart + uLength;
-		MemoryMove(m_pData + uInsertOffset, m_pData + uStart,
+		memory_move(m_pData + uInsertOffset, m_pData + uStart,
 			(uOriginalLength - uStart) + 1);
 
 		// Insert the new data
-		MemoryCopy(m_pData + uStart, pInput, uLength);
+		memory_copy(m_pData + uStart, pInput, uLength);
 	}
 	return uResult;
 }
@@ -2228,14 +2228,14 @@ Burger::eError BURGER_API Burger::String::append(
 		// No error? Append it
 		if (!uResult) {
 			// Append it
-			MemoryCopy(m_pData + uInputLength1, pInput, uInputSize);
+			memory_copy(m_pData + uInputLength1, pInput, uInputSize);
 			m_pData[uTotalLength] = 0;
 			m_uLength = uTotalLength;
 		}
 
 	} else {
 		// Append it
-		MemoryCopy(m_pData + uInputLength1, pInput, uInputSize);
+		memory_copy(m_pData + uInputLength1, pInput, uInputSize);
 		m_pData[uTotalLength] = 0;
 		m_uLength = uTotalLength;
 	}
@@ -2344,7 +2344,7 @@ Burger::String& BURGER_API Burger::String::Left(
 			pDest = m_Raw; // Used the internal buffer
 		} else {
 			// Get a new string
-			pDest = static_cast<char*>(Alloc(uNewLength + 1));
+			pDest = static_cast<char*>(allocate_memory(uNewLength + 1));
 			if (!pDest) {
 				m_uLength = 0; // No memory!!!
 				m_Raw[0] = 0;
@@ -2353,17 +2353,17 @@ Burger::String& BURGER_API Burger::String::Left(
 				return *this;
 			}
 			m_uBufferSize = uNewLength;
-			MemoryCopy(pDest, pWork, uOldLen);
+			memory_copy(pDest, pWork, uOldLen);
 		}
 		m_pData = pDest;       // Save the new buffer pointer
 		pDest[uNewLength] = 0; // End it
 		// Fill in the extra
-		MemoryFill(pDest + uOldLen, static_cast<uint8_t>(iInput),
+		memory_set(pDest + uOldLen, static_cast<uint8_t>(iInput),
 			uNewLength - uOldLen);
 		// Get rid of the old string?
 		if (pWork != m_Raw) {
 			// Bye bye
-			Free(pWork);
+			free_memory(pWork);
 		}
 	} else {
 		// Set the end character for shrinkage
@@ -2398,7 +2398,7 @@ Burger::String& BURGER_API Burger::String::Right(
 		if (uNewLength < kBufferSize) {
 			pDest = m_Raw; // Used the internal buffer
 		} else {
-			pDest = static_cast<char*>(Alloc(uNewLength + 1));
+			pDest = static_cast<char*>(allocate_memory(uNewLength + 1));
 			if (!pDest) {
 				m_uLength = 0; // No memory!!!
 				m_Raw[0] = 0;
@@ -2408,21 +2408,21 @@ Burger::String& BURGER_API Burger::String::Right(
 			}
 			m_uBufferSize = uNewLength;
 			// Copy the old string
-			MemoryCopy(pDest, pWork, uOldLen);
+			memory_copy(pDest, pWork, uOldLen);
 		}
 		m_pData = pDest; // Save the new buffer pointer
 		// Copy over the characters from the right
-		MemoryMove(pDest + uNewLength - uOldLen, pDest, uOldLen + 1);
+		memory_move(pDest + uNewLength - uOldLen, pDest, uOldLen + 1);
 		// Fill in the extra
-		MemoryFill(pDest, static_cast<uint8_t>(iInput), uNewLength - uOldLen);
+		memory_set(pDest, static_cast<uint8_t>(iInput), uNewLength - uOldLen);
 		// Get rid of the old string?
 		if (pWork != m_Raw) {
 			// Bye bye
-			Free(pWork);
+			free_memory(pWork);
 		}
 	} else {
 		// Copy over the characters from the right
-		MemoryMove(pWork, pWork + uOldLen - uNewLength, uNewLength + 1);
+		memory_move(pWork, pWork + uOldLen - uNewLength, uNewLength + 1);
 	}
 	return *this;
 }

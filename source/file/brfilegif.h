@@ -61,7 +61,7 @@ class GIFEncoder {
 	uint_t m_HashTable[cHashSize];	///< Hash for quick match in the LZW buffer for encoding strings
 public:
 	GIFEncoder();
-	static GIFEncoder * BURGER_API New(void);
+	static GIFEncoder * BURGER_API new_object(void);
     static BURGER_INLINE uint_t GetHashKey(uint_t uInput) { return ((uInput >> cLZBits) ^ uInput) & cHashKeyMask; }
     static BURGER_INLINE uint_t GetKey(uint_t uInput) { return uInput >> cLZBits; }
     static BURGER_INLINE uint_t PutKey(uint_t uInput) { return uInput << cLZBits; }
@@ -92,7 +92,7 @@ class GIFDecoder {
 	uint_t GetCode(uint_t uBitsRequested);
 public:
 	GIFDecoder();
-	static GIFDecoder * BURGER_API New(void);
+	static GIFDecoder * BURGER_API new_object(void);
 	const char *Unpack(uint8_t *pOutput,uintptr_t uOutputLength,InputMemoryStream *pInput);
 };
 
@@ -127,7 +127,7 @@ public:
 	static const uint32_t AUXTYPE = 0x656C676F;		///< 'ogle'
 #endif
 	FileGIF();
-	static FileGIF * BURGER_API New(void);
+	static FileGIF * BURGER_API new_object(void);
 	uint_t Load(Image *pOutput,InputMemoryStream *pInput);
 	uint_t LoadNextFrame(Image *pOutput,InputMemoryStream *pInput);
 	uint_t Save(OutputMemoryStream *pOutput,const Image *pImage);

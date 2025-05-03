@@ -350,7 +350,7 @@ Burger::eError BURGER_API Burger::tls_data_set_fallback(
 					}
 
 					// In either case, discard this record
-					Free(pRecord);
+					free_memory(pRecord);
 				} else {
 
 					// Just update the record
@@ -372,7 +372,7 @@ Burger::eError BURGER_API Burger::tls_data_set_fallback(
 
 		// Allocate a new record
 		pRecord = static_cast<ThreadLocalStorageRecord_t*>(
-			Alloc(sizeof(ThreadLocalStorageRecord_t)));
+			allocate_memory(sizeof(ThreadLocalStorageRecord_t)));
 
 		// Allocation failure?
 		if (!pRecord) {
@@ -538,7 +538,7 @@ Burger::eError BURGER_API Burger::tls_set(uint32_t uIndex, const void* pThis,
 			// Reallocate the buffer for the new entries
 			// The -1 is because ThreadLocalStorage_t has a single record
 			// already
-			pTLS = static_cast<ThreadLocalStorage_t*>(Realloc(pTLS,
+			pTLS = static_cast<ThreadLocalStorage_t*>(reallocate_memory(pTLS,
 				sizeof(ThreadLocalStorage_t) +
 					((uNewCount - 1) * sizeof(ThreadLocalStorageEntry_t))));
 
@@ -617,7 +617,7 @@ void BURGER_API Burger::tls_release(void) BURGER_NOEXCEPT
 		tls_data_set(nullptr);
 
 		// Actually dispose of the memory
-		Free(pTLS);
+		free_memory(pTLS);
 	}
 }
 
@@ -700,7 +700,7 @@ Burger::Thread::~Thread()
 	wait();
 
 	// Make sure the name is released
-	Free(m_pName);
+	free_memory(m_pName);
 	m_pName = nullptr;
 
 #if defined(BURGER_WIIU)
@@ -744,7 +744,7 @@ Burger::eError BURGER_API Burger::Thread::start(FunctionPtr pFunction,
 		return kErrorThreadAlreadyStarted;
 	}
 	// Release the thread name, if one was present
-	Free(m_pName);
+	free_memory(m_pName);
 
 	// Set up all the thread's values
 	m_pFunction = pFunction;
@@ -764,7 +764,7 @@ Burger::eError BURGER_API Burger::Thread::start(FunctionPtr pFunction,
 	// Are are boned?
 	if (uResult) {
 		m_uState = kStateInvalid;
-		Free(m_pName);
+		free_memory(m_pName);
 		m_pName = nullptr;
 	}
 

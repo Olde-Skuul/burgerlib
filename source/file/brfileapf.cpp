@@ -103,7 +103,7 @@ Burger::Image * Burger::FileAPF::Load(InputMemoryStream *pInput)
 			}
 
 			// Load in the palette
-			MemoryClear(m_Palette,sizeof(m_Palette));
+			memory_clear(m_Palette,sizeof(m_Palette));
 			if (uNumberColorTables) {
 				uNumberColorTables <<= 4U;
 				RGBAWord8_t *pColor = m_Palette;
@@ -122,7 +122,7 @@ Burger::Image * Burger::FileAPF::Load(InputMemoryStream *pInput)
 				pBadNews = "The image has a height of zero.";
 				break;
 			}
-			pImage = Image::New(uPixelsPerScanLine,uNumberOfScanLines,Image::PIXELTYPE8BIT);
+			pImage = Image::new_object(uPixelsPerScanLine,uNumberOfScanLines,Image::PIXELTYPE8BIT);
 			if (!pImage) {
 				pBadNews = "Memory error in creating Image.";
 				break;
@@ -130,7 +130,7 @@ Burger::Image * Burger::FileAPF::Load(InputMemoryStream *pInput)
 
 			// Create a buffer for the scan line description
 
-			ScanLineDescription_t *pScanLineDescription = static_cast<ScanLineDescription_t *>(Alloc(sizeof(ScanLineDescription_t)*uNumberOfScanLines + (uPixelsPerScanLine)));
+			ScanLineDescription_t *pScanLineDescription = static_cast<ScanLineDescription_t *>(allocate_memory(sizeof(ScanLineDescription_t)*uNumberOfScanLines + (uPixelsPerScanLine)));
 			if (!pScanLineDescription) {
 				pBadNews = "Memory error in temporary buffer.";
 				break;
@@ -181,7 +181,7 @@ Burger::Image * Burger::FileAPF::Load(InputMemoryStream *pInput)
 					pDest+=pImage->GetStride();
 				} while (--uNumberOfScanLines);
 			}
-			Free(pScanLineDescription);
+			free_memory(pScanLineDescription);
 			break;
 		}
 
@@ -193,7 +193,7 @@ Burger::Image * Burger::FileAPF::Load(InputMemoryStream *pInput)
 
 	if (pBadNews) {
 		Debug::Warning(pBadNews);
-		Delete(pImage);
+		delete_object(pImage);
 		pImage = NULL;
 	}
 	return pImage;

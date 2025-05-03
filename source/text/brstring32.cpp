@@ -28,8 +28,8 @@
 	to allocated memory if the internal string buffer is too large. Since
 	most strings rarely exceed 120 bytes in length, this class will be able to
 	allocate and free strings with no calls to a memory manager. Only
-	when the string exceeds the internal buffer will Burger::Alloc()
-	and Burger::Free() be used.
+	when the string exceeds the internal buffer will Burger::allocate_memory()
+	and Burger::free_memory() be used.
 
 	Functions exist to convert UTF8 and UTF16 data into UTF32 format,
 	which this string class uses internally for data storage.
@@ -60,7 +60,7 @@ Burger::String32::String32(const Burger::String32& rInput)
 	const uint32_t* pInput = rInput.m_pData;
 	if (uInputLength >= BUFFERSIZE) { // Buffer big enough?
 		pWork = static_cast<uint32_t*>(
-			Alloc((uInputLength + 1) * sizeof(uint32_t)));
+			allocate_memory((uInputLength + 1) * sizeof(uint32_t)));
 		if (!pWork) { // Oh oh...
 			pWork = m_Raw;
 			pInput = g_EmptyString32;
@@ -69,7 +69,7 @@ Burger::String32::String32(const Burger::String32& rInput)
 	}
 	m_uLength = uInputLength; // Save the new length
 	m_pData = pWork;          // Set the pointer
-	MemoryCopy(pWork, pInput,
+	memory_copy(pWork, pInput,
 		(uInputLength + 1) *
 			sizeof(uint32_t)); // Copy the string and the ending NULL
 }
@@ -108,7 +108,7 @@ Burger::String32::String32(
 	uint32_t* pWork = m_Raw;
 	if (uInputLength >= BUFFERSIZE) { // Buffer big enough?
 		pWork = static_cast<uint32_t*>(
-			Alloc((uInputLength + 1) * sizeof(uint32_t)));
+			allocate_memory((uInputLength + 1) * sizeof(uint32_t)));
 		if (!pWork) { // Oh oh...
 			pWork = m_Raw;
 			uInputLength = 0; // Don't copy anything
@@ -119,7 +119,7 @@ Burger::String32::String32(
 	pWork[uInputLength] = 0;
 	m_uLength = uInputLength; // Save the new length
 	m_pData = pWork;          // Set the pointer
-	MemoryCopy(
+	memory_copy(
 		pWork, pInput, uInputLength * sizeof(uint32_t)); // Copy the string
 }
 
@@ -146,7 +146,7 @@ Burger::String32::String32(const char* pInput) BURGER_NOEXCEPT
 	uint32_t* pWork = m_Raw;
 	if (uInputLength >= BUFFERSIZE) { // Buffer big enough?
 		pWork = static_cast<uint32_t*>(
-			Burger::Alloc((uInputLength + 1) * sizeof(uint32_t)));
+			Burger::allocate_memory((uInputLength + 1) * sizeof(uint32_t)));
 		if (!pWork) { // Oh oh...
 			pWork = m_Raw;
 			pInput = g_EmptyString;
@@ -186,7 +186,7 @@ Burger::String32::String32(const char* pInput, uintptr_t uPadding)
 	uint32_t* pWork = m_Raw;
 	if ((uInputLength + uPadding) >= BUFFERSIZE) { // Buffer big enough?
 		pWork = static_cast<uint32_t*>(
-			Alloc((uInputLength + uPadding + 1) * sizeof(uint32_t)));
+			allocate_memory((uInputLength + uPadding + 1) * sizeof(uint32_t)));
 		if (!pWork) { // Oh oh...
 			pWork = m_Raw;
 			pInput = g_EmptyString;
@@ -220,7 +220,7 @@ Burger::String32::String32(const uint32_t* pInput)
 	uint32_t* pWork = m_Raw;
 	if (uInputLength >= BUFFERSIZE) { // Buffer big enough?
 		pWork = static_cast<uint32_t*>(
-			Alloc((uInputLength + 1) * sizeof(uint32_t)));
+			allocate_memory((uInputLength + 1) * sizeof(uint32_t)));
 		if (!pWork) { // Oh oh...
 			pWork = m_Raw;
 			pInput = g_EmptyString32;
@@ -229,7 +229,7 @@ Burger::String32::String32(const uint32_t* pInput)
 	}
 	m_uLength = uInputLength; // Save the new length
 	m_pData = pWork;          // Set the pointer
-	MemoryCopy(pWork, pInput,
+	memory_copy(pWork, pInput,
 		(uInputLength + 1) * sizeof(uint32_t)); // Copy the string
 }
 
@@ -360,7 +360,7 @@ Burger::eError BURGER_API Burger::String32::assign(
 	uintptr_t uInputLength = string_length(pInput); // Length of the new string
 	if (uInputLength >= BUFFERSIZE) {               // Buffer big enough?
 		pDest = static_cast<uint32_t*>(
-			Alloc((uInputLength + 1) * sizeof(uint32_t)));
+			allocate_memory((uInputLength + 1) * sizeof(uint32_t)));
 		if (!pDest) { // Oh oh...
 			pDest = m_Raw;
 			uInputLength = 0;            // Don't copy anything
@@ -371,10 +371,10 @@ Burger::eError BURGER_API Burger::String32::assign(
 	const uint32_t* pOld = m_pData;
 	m_uLength = uInputLength; // Save the new length
 	m_pData = pDest;          // Set the pointer
-	MemoryMove(pDest, pInput,
+	memory_move(pDest, pInput,
 		(uInputLength + 1) * sizeof(uint32_t)); // Copy the string
 	if (pOld != m_Raw) {                        // Discard previous memory
-		Free(pOld);
+		free_memory(pOld);
 	}
 	// Return error
 	return uResult;
@@ -406,7 +406,7 @@ Burger::eError BURGER_API Burger::String32::assign(
 	// Buffer big enough?
 	if (uInputLength >= BUFFERSIZE) {
 		pDest = static_cast<uint32_t*>(
-			Alloc((uInputLength + 1) * sizeof(uint32_t)));
+			allocate_memory((uInputLength + 1) * sizeof(uint32_t)));
 		if (!pDest) { // Oh oh...
 			pDest = m_Raw;
 			uInputLength = 0;            // Don't copy anything
@@ -421,7 +421,7 @@ Burger::eError BURGER_API Burger::String32::assign(
 	UTF32::translate_from_UTF8(pDest, uInputLength + 1, pInput);
 	// Discard previous memory
 	if (pOld != m_Raw) {
-		Free(pOld);
+		free_memory(pOld);
 	}
 	// Return error
 	return uResult;
@@ -460,7 +460,7 @@ Burger::eError BURGER_API Burger::String32::SetBufferSize(
 			uint32_t* pDest = m_Raw;
 			// Allocate a new buffer if needed
 			if (uSize >= BUFFERSIZE) { // Buffer big enough?
-				pDest = static_cast<uint32_t*>(Alloc((uSize + 1) * 4));
+				pDest = static_cast<uint32_t*>(allocate_memory((uSize + 1) * 4));
 				if (!pDest) { // Oh oh...
 					pDest = m_Raw;
 					uSize = 0; // Don't copy anything
@@ -473,10 +473,10 @@ Burger::eError BURGER_API Burger::String32::SetBufferSize(
 				// Truncate the string
 				uDestSize = uSize;
 			}
-			MemoryCopy(pDest, pWork, uDestSize * 4);
+			memory_copy(pDest, pWork, uDestSize * 4);
 			pDest[uDestSize] = 0; // Ensure the buffer is zero terminated
 			if (pWork != m_Raw) { // Discard previous memory
-				Free(pWork);
+				free_memory(pWork);
 			}
 			m_pData = pDest;   // Set the pointer
 			m_uLength = uSize; // Save the new length
@@ -502,7 +502,7 @@ Burger::String32& Burger::String32::operator=(const Burger::String32& rInput)
 	if (this != &rInput) { // Am I copying myself?
 		uint32_t* pWork = m_pData;
 		if (pWork != m_Raw) { // Discard previous memory
-			Free(pWork);
+			free_memory(pWork);
 			pWork = m_Raw;
 		}
 
@@ -510,7 +510,7 @@ Burger::String32& Burger::String32::operator=(const Burger::String32& rInput)
 		const uint32_t* pInput = rInput.m_pData;   // Copy the new length
 		if (uInputLength >= BUFFERSIZE) {          // Buffer big enough?
 			pWork = static_cast<uint32_t*>(
-				Alloc((uInputLength + 1) * sizeof(uint32_t)));
+				allocate_memory((uInputLength + 1) * sizeof(uint32_t)));
 			if (!pWork) { // Oh oh...
 				pWork = m_Raw;
 				uInputLength = 0;         // Don't copy anything
@@ -519,7 +519,7 @@ Burger::String32& Burger::String32::operator=(const Burger::String32& rInput)
 		}
 		m_uLength = uInputLength; // Save the new length
 		m_pData = pWork;          // Set the pointer
-		MemoryCopy(pWork, pInput,
+		memory_copy(pWork, pInput,
 			(uInputLength + 1) * sizeof(uint32_t)); // Copy the string
 	}
 	return *this;
@@ -581,7 +581,7 @@ Burger::String32& Burger::String32::operator=(char cInput)
 {
 	uint32_t* pWork = m_pData;
 	if (pWork != m_Raw) { // Discard previous memory
-		Free(pWork);
+		free_memory(pWork);
 		pWork = m_Raw;
 	}
 
@@ -713,6 +713,6 @@ void Burger::String32::clear(void) BURGER_NOEXCEPT
 	m_uLength = 0;             // No length
 	m_Raw[0] = 0;              // Kill the string
 	if (pWork != m_Raw) {      // Dispose of the data
-		Free(pWork);           // Kill the old memory
+		free_memory(pWork);           // Kill the old memory
 	}
 }

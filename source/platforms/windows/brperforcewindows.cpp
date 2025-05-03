@@ -68,7 +68,7 @@ uint_t BURGER_API Burger::Perforce::Init(void)
 		uint_t bFilenameInitialized = FALSE;
 		if (pAppdirectory) {
 			m_PerforceFilename.set_native(pAppdirectory);
-			Free(pAppdirectory);
+			free_memory(pAppdirectory);
 			m_PerforceFilename.join("p4.exe");
 			// Is there an exec here?
 			if (FileManager::does_file_exist(&m_PerforceFilename)) {
@@ -82,7 +82,7 @@ uint_t BURGER_API Burger::Perforce::Init(void)
 			pAppdirectory = GetEnvironmentString("ProgramFiles");
 			if (pAppdirectory) {
 				m_PerforceFilename.set_native(pAppdirectory);
-				Free(pAppdirectory);
+				free_memory(pAppdirectory);
 				m_PerforceFilename.join("Perforce:p4.exe");
 				if (FileManager::does_file_exist(&m_PerforceFilename)) {
 					bFilenameInitialized = TRUE;

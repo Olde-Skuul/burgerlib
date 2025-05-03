@@ -67,9 +67,9 @@ public:
 	File(Filename* pFileName, eFileAccess uAccess = kReadOnly) BURGER_NOEXCEPT;
 	~File();
 
-	static File* BURGER_API New(
+	static File* BURGER_API new_object(
 		const char* pFileName, eFileAccess uAccess = kReadOnly) BURGER_NOEXCEPT;
-	static File* BURGER_API New(
+	static File* BURGER_API new_object(
 		Filename* pFileName, eFileAccess uAccess = kReadOnly) BURGER_NOEXCEPT;
 
 	BURGER_INLINE Filename* get_filename(void) BURGER_NOEXCEPT

@@ -2,7 +2,7 @@
 
 	Memory Manager Base Class
 
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -84,7 +84,7 @@ public:
 	BURGER_CONSTEXPR allocator(const allocator&) BURGER_DEFAULT_CONSTRUCTOR;
 
 	/* Assignment copy constructor. */
-	//allocator& operator=(const allocator&) BURGER_DEFAULT_CONSTRUCTOR;
+	// allocator& operator=(const allocator&) BURGER_DEFAULT_CONSTRUCTOR;
 
 #if defined(BURGER_RVALUE_REFERENCES)
 	/** Move constructor. */
@@ -205,58 +205,59 @@ class AllocatorBase: public Base {
 
 public:
 	AllocatorBase() BURGER_DEFAULT_CONSTRUCTOR;
-	virtual void* alloc(uintptr_t uSize) const BURGER_NOEXCEPT = 0;
-	virtual void free(const void* pInput) const BURGER_NOEXCEPT = 0;
-	virtual void* realloc(
+	virtual void* allocate_memory(uintptr_t uSize) const BURGER_NOEXCEPT = 0;
+	virtual void free_memory(const void* pInput) const BURGER_NOEXCEPT = 0;
+	virtual void* reallocate_memory(
 		const void* pInput, uintptr_t uSize) const BURGER_NOEXCEPT = 0;
 
-	void* BURGER_API alloc_clear(uintptr_t uSize) const BURGER_NOEXCEPT;
-	void* BURGER_API alloc_copy(
+	void* BURGER_API allocate_memory_clear(uintptr_t uSize) const BURGER_NOEXCEPT;
+	void* BURGER_API allocate_memory_copy(
 		const void* pInput, uintptr_t uSize) const BURGER_NOEXCEPT;
 };
 
 struct MemoryManager {
 
 	/** Function prototype for allocating memory */
-	typedef void*(BURGER_API* ProcAlloc)(MemoryManager* pThis, uintptr_t uSize);
+	typedef void*(BURGER_API* allocate_proc_t)(
+		MemoryManager* pThis, uintptr_t uSize);
 
 	/** Function prototype for releasing memory */
-	typedef void(BURGER_API* ProcFree)(
+	typedef void(BURGER_API* free_proc_t)(
 		MemoryManager* pThis, const void* pInput);
 
 	/** Function prototype for reallocating memory. */
-	typedef void*(BURGER_API* ProcRealloc)(
+	typedef void*(BURGER_API* reallocate_proc_t)(
 		MemoryManager* pThis, const void* pInput, uintptr_t uSize);
 
 	/** Function prototype for destructor */
-	typedef void(BURGER_API* ProcShutdown)(MemoryManager* pThis);
+	typedef void(BURGER_API* shutdown_callback_t)(MemoryManager* pThis);
 
 	/** Pointer to allocation function */
-	ProcAlloc m_pAlloc;
+	allocate_proc_t m_pAllocate;
 
 	/** Pointer to memory release function */
-	ProcFree m_pFree;
+	free_proc_t m_pFree;
 
 	/** Pointer to the memory reallocation function */
-	ProcRealloc m_pRealloc;
+	reallocate_proc_t m_pReallocate;
 
 	/** Pointer to the shutdown function */
-	ProcShutdown m_pShutdown;
+	shutdown_callback_t m_pShutdown;
 
-	BURGER_INLINE void* alloc(uintptr_t uSize) BURGER_NOEXCEPT
+	BURGER_INLINE void* allocate_memory(uintptr_t uSize) BURGER_NOEXCEPT
 	{
-		return m_pAlloc(this, uSize);
+		return m_pAllocate(this, uSize);
 	}
 
-	BURGER_INLINE void free(const void* pInput) BURGER_NOEXCEPT
+	BURGER_INLINE void free_memory(const void* pInput) BURGER_NOEXCEPT
 	{
 		return m_pFree(this, pInput);
 	}
 
-	BURGER_INLINE void* realloc(
+	BURGER_INLINE void* reallocate_memory(
 		const void* pInput, uintptr_t uSize) BURGER_NOEXCEPT
 	{
-		return m_pRealloc(this, pInput, uSize);
+		return m_pReallocate(this, pInput, uSize);
 	}
 
 	BURGER_INLINE void shutdown(void) BURGER_NOEXCEPT
@@ -264,12 +265,12 @@ struct MemoryManager {
 		m_pShutdown(this);
 	}
 
-	void* BURGER_API alloc_clear(uintptr_t uSize) BURGER_NOEXCEPT;
+	void* BURGER_API allocate_memory_clear(uintptr_t uSize) BURGER_NOEXCEPT;
 
 	static void BURGER_API shutdown(MemoryManager* pThis) BURGER_NOEXCEPT;
 };
 
-extern void* BURGER_API alloc_platform_memory(uintptr_t uSize) BURGER_NOEXCEPT;
+extern void* BURGER_API allocate_platform_memory(uintptr_t uSize) BURGER_NOEXCEPT;
 extern void BURGER_API free_platform_memory(const void* pInput) BURGER_NOEXCEPT;
 }
 /* END */

@@ -174,7 +174,7 @@ static HRESULT __stdcall EnumerateVideoDevice(GUID* pGUID, char* pDescription,
 			Burger::Display::VideoCardDescription Entry;
 
 			// Get the specific display GUID
-			Burger::MemoryCopy(&Entry.m_GUID, pGUID, sizeof(GUID));
+			Burger::memory_copy(&Entry.m_GUID, pGUID, sizeof(GUID));
 
 			// Set the device enumeration
 			Entry.m_uDevNumber = static_cast<uint_t>(pOutput->size());
@@ -204,8 +204,8 @@ static HRESULT __stdcall EnumerateVideoDevice(GUID* pGUID, char* pDescription,
 			// Is it hardware accelerated?
 			DDCAPS_DX7 DriverCaps;
 			DDCAPS_DX7 HardwareCaps;
-			Burger::MemoryClear(&DriverCaps, sizeof(DriverCaps));
-			Burger::MemoryClear(&HardwareCaps, sizeof(HardwareCaps));
+			Burger::memory_clear(&DriverCaps, sizeof(DriverCaps));
+			Burger::memory_clear(&HardwareCaps, sizeof(HardwareCaps));
 			DriverCaps.dwSize = sizeof(DriverCaps);
 			HardwareCaps.dwSize = sizeof(HardwareCaps);
 			if (pDirectDraw7->GetCaps(&DriverCaps, &HardwareCaps) == DD_OK) {
@@ -220,7 +220,7 @@ static HRESULT __stdcall EnumerateVideoDevice(GUID* pGUID, char* pDescription,
 			// the device driver. (Will fall back to Generic PnP)
 
 			DISPLAY_DEVICEA MonitorDesc;
-			Burger::MemoryClear(&MonitorDesc, sizeof(MonitorDesc));
+			Burger::memory_clear(&MonitorDesc, sizeof(MonitorDesc));
 			MonitorDesc.cb = sizeof(MonitorDesc);
 			if (EnumDisplayDevicesA(pName, 0, &MonitorDesc, 0)) {
 				Entry.m_MonitorName = MonitorDesc.DeviceString;

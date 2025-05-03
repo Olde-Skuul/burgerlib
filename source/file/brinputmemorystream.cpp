@@ -109,7 +109,7 @@ Burger::InputMemoryStream::InputMemoryStream(Filename *pFilename) BURGER_NOEXCEP
 
 	\param pBuffer Pointer to an array of bytes to stream from
 	\param uBufferSize Length of the array in bytes
-	\param bDontFree \ref FALSE (Default) will have the class call Burger::Free(const void *)
+	\param bDontFree \ref FALSE (Default) will have the class call Burger::free_memory(const void *)
 		on the input pointer on class shutdown. \ref TRUE will disable this behavior.
 	
 ***************************************/
@@ -149,7 +149,7 @@ void BURGER_API Burger::InputMemoryStream::Clear(void) BURGER_NOEXCEPT
 {
 	// Can the buffer be freed?
 	if (m_pData && !m_bDontFree) {
-		Free(m_pData);
+		free_memory(m_pData);
 	}
 	m_pWork = NULL;
 	m_pEndOfBuffer = NULL;
@@ -361,12 +361,12 @@ uint_t BURGER_API Burger::InputMemoryStream::Open(Filename *pFilename) BURGER_NO
 	If the buffer pointer is \ref NULL or there is a zero
 	length buffer, the class will be given an empty buffer and no
 	data will be streamed. The data is assumed to be able to be freed
-	by Burger::Free(const void *), if this is not the case, pass
+	by Burger::free_memory(const void *), if this is not the case, pass
 	\ref TRUE in bDontFree to disable this feature.
 
 	\param pBuffer Pointer to an array of bytes to stream from
 	\param uBufferSize Length of the array in bytes
-	\param bDontFree \ref FALSE (Default) will have the class call Burger::Free(const void *)
+	\param bDontFree \ref FALSE (Default) will have the class call Burger::free_memory(const void *)
 		on the input pointer on class shutdown. \ref TRUE will disable this behavior.
 	
 ***************************************/
@@ -490,7 +490,7 @@ void BURGER_API Burger::InputMemoryStream::GetString(String *pOutput) BURGER_NOE
 	if (uOutputSize) {
 		// Copy the string into the new buffer
 		// SetBufferSize() sets the null terminator
-		MemoryCopy(pOutput->c_str(),m_pWork,uOutputSize);
+		memory_copy(pOutput->c_str(),m_pWork,uOutputSize);
 	}
 	m_pWork = pWork;		// Consume the input
 }
@@ -928,7 +928,7 @@ uintptr_t BURGER_API Burger::InputMemoryStream::Get(void *pOutput,uintptr_t uOut
 		if (uRemaining<uOutputSize) {
 			uOutputSize = uRemaining;
 		}
-		MemoryCopy(pOutput,pWork,uOutputSize);
+		memory_copy(pOutput,pWork,uOutputSize);
 		pWork+=uOutputSize;
 		m_pWork = pWork;
 		uResult = uOutputSize;

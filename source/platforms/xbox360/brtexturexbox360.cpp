@@ -137,12 +137,12 @@ uint_t Burger::Texture::CheckLoad(Display* pDisplay)
 			} else {
 				if (static_cast<uintptr_t>(DestRect.Pitch) ==
 					m_Image.GetStride(i)) {
-					MemoryCopy(DestRect.pBits, m_Image.GetImage(), uBufferSize);
+						memory_copy(DestRect.pBits, m_Image.GetImage(), uBufferSize);
 				} else {
 					uint_t uHeight = m_Image.GetHeight(i);
 					uint32_t* pDest = static_cast<uint32_t*>(DestRect.pBits);
 					do {
-						MemoryCopy(pDest, pImage, m_Image.GetStride());
+						memory_copy(pDest, pImage, m_Image.GetStride());
 						pDest += DestRect.Pitch;
 						pImage += m_Image.GetStride();
 					} while (--uHeight);

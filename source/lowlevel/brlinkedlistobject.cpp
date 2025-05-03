@@ -31,7 +31,7 @@
 	Each LinkedListObjects::Object also has a pointer to the generic data that
 	is contained and also a pointer to a function to discard the data once the
 	entry itself is deleted. The function pointer could be \ref nullptr meaning
-	that the data can be deleted with a simple call to Burger::Free(). The data
+	that the data can be deleted with a simple call to Burger::free_memory(). The data
 	could also be pointing to the end of the base LinkedListObjects::Object
 	structure if the LinkedListObjects::Object structure is part of a larger
 	structure.
@@ -75,7 +75,7 @@
 	Each LinkedListObjects::Object has a pointer to the generic data that is
 	contained and also a pointer to a function to discard the data once the
 	entry itself is deleted. The function pointer could be nullptr meaning that
-	the data can be deleted with a simple call to Burger::Free(). The data could
+	the data can be deleted with a simple call to Burger::free_memory(). The data could
 	also be pointing to the end of the base LinkedListObjects::Object structure
 	if the LinkedListObjects::Object structure is part of a larger structure.
 
@@ -123,7 +123,7 @@ void BURGER_API Burger::LinkedListObjects::Object::proc_null(
 
 	\brief Memory release proc for releasing the data and object
 
-	Call Burger::Free() on both the Object and data pointers. This is the
+	Call Burger::free_memory() on both the Object and data pointers. This is the
 	default behavior if no function was supplied
 
 	\param pObject Pointer to the Object and data to delete
@@ -136,15 +136,15 @@ void BURGER_API Burger::LinkedListObjects::Object::proc_null(
 void BURGER_API Burger::LinkedListObjects::Object::proc_free_object_and_data(
 	Object* pObject) BURGER_NOEXCEPT
 {
-	Free(pObject->m_pData);
-	Free(pObject);
+	free_memory(pObject->m_pData);
+	free_memory(pObject);
 }
 
 /*! ************************************
 
 	\brief Memory release proc for releasing the data only
 
-	Call Burger::Free() on the data pointer only. The Object is assumed to be
+	Call Burger::free_memory() on the data pointer only. The Object is assumed to be
 	either static or allocated elsewhere
 
 	The data pointer is set to \ref nullptr
@@ -161,7 +161,7 @@ void BURGER_API Burger::LinkedListObjects::Object::proc_free_object_and_data(
 void BURGER_API Burger::LinkedListObjects::Object::proc_free_data(
 	Object* pObject) BURGER_NOEXCEPT
 {
-	Free(pObject->m_pData);
+	free_memory(pObject->m_pData);
 	pObject->m_pData = nullptr;
 }
 
@@ -169,7 +169,7 @@ void BURGER_API Burger::LinkedListObjects::Object::proc_free_data(
 
 	\brief Memory release proc for releasing the object only
 
-	Call Burger::Free() on the Object pointer only. The data is assumed to
+	Call Burger::free_memory() on the Object pointer only. The data is assumed to
 	be either static or allocated elsewhere
 
 	\param pObject Pointer to the Object to delete
@@ -183,7 +183,7 @@ void BURGER_API Burger::LinkedListObjects::Object::proc_free_data(
 void BURGER_API Burger::LinkedListObjects::Object::proc_free_object(
 	Object* pObject) BURGER_NOEXCEPT
 {
-	Free(pObject);
+	free_memory(pObject);
 }
 
 /*! ************************************
@@ -291,9 +291,9 @@ void Burger::LinkedListObjects::Object::shutdown(void) BURGER_NOEXCEPT
 
 	\brief Create a new Object instance
 
-	Allocate memory using Burger::Alloc() and initialize an Object with it.
+	Allocate memory using Burger::allocate_memory() and initialize an Object with it.
 
-	\note Since this object was allocated with the Burger::Alloc() function, use
+	\note Since this object was allocated with the Burger::allocate_memory() function, use
 		the disposal functions proc_free_object(Object*) or
 		proc_free_object_and_data(Object*) to release it
 
@@ -309,11 +309,11 @@ void Burger::LinkedListObjects::Object::shutdown(void) BURGER_NOEXCEPT
 ***************************************/
 
 Burger::LinkedListObjects::Object* BURGER_API
-Burger::LinkedListObjects::Object::New(
+Burger::LinkedListObjects::Object::new_object(
 	void* pData, ProcDataDelete pProc) BURGER_NOEXCEPT
 {
 	// Manually allocate the memory
-	return new (Alloc(sizeof(Object))) Object(pData, pProc);
+	return new (allocate_memory(sizeof(Object))) Object(pData, pProc);
 }
 
 /*! ************************************
@@ -892,7 +892,7 @@ void Burger::LinkedListObjects::append(
 	void* pData, Object::ProcDataDelete pDataDelete) BURGER_NOEXCEPT
 {
 	// Create the new object
-	Object* pObject = Object::New(pData, pDataDelete);
+	Object* pObject = Object::new_object(pData, pDataDelete);
 
 	// If successful, append it
 	if (pObject) {
@@ -918,7 +918,7 @@ void Burger::LinkedListObjects::prepend(
 	void* pData, Object::ProcDataDelete pDataDelete) BURGER_NOEXCEPT
 {
 	// Create the new object
-	Object* pObject = Object::New(pData, pDataDelete);
+	Object* pObject = Object::new_object(pData, pDataDelete);
 
 	// If successful, prepend it
 	if (pObject) {
@@ -945,7 +945,7 @@ void Burger::LinkedListObjects::append(const char* pString) BURGER_NOEXCEPT
 	if (pStringCopy) {
 
 		// Create the new object
-		Object* pObject = Object::New(pStringCopy);
+		Object* pObject = Object::new_object(pStringCopy);
 
 		// If successful, append it
 		if (pObject) {
@@ -972,7 +972,7 @@ void Burger::LinkedListObjects::prepend(const char* pString) BURGER_NOEXCEPT
 	char* pStringCopy = StringDuplicate(pString);
 	if (pStringCopy) {
 		// Create the new object
-		Object* pObject = Object::New(pStringCopy);
+		Object* pObject = Object::new_object(pStringCopy);
 		// If successful, append it
 		if (pObject) {
 			prepend(pObject);

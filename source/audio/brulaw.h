@@ -49,7 +49,7 @@ public:
 	DecompressULaw();
 	eError Reset(void) BURGER_OVERRIDE;
 	eError Process(void *pOutput, uintptr_t uOutputChunkSize,const void *pInput, uintptr_t uInputChunkLength) BURGER_OVERRIDE;
-	static DecompressULaw * BURGER_API New(void);
+	static DecompressULaw * BURGER_API new_object(void);
 };
 }
 /* END */

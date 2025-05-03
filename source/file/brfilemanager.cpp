@@ -119,7 +119,7 @@ Burger::FileManager::FileManager() BURGER_NOEXCEPT: m_uQueueStart(0),
 													m_pBootName(nullptr)
 #endif
 {
-	MemoryClear(m_IOQueue, sizeof(m_IOQueue));
+	memory_clear(m_IOQueue, sizeof(m_IOQueue));
 
 #if 0
 	// Start up the worker thread
@@ -207,7 +207,7 @@ Burger::eError BURGER_API Burger::FileManager::initialize(void) BURGER_NOEXCEPT
 	eError uError = kErrorNone;
 	FileManager* pThis = g_pFileManager;
 	if (!pThis) {
-		pThis = new (Alloc(sizeof(FileManager))) FileManager;
+		pThis = new (allocate_memory(sizeof(FileManager))) FileManager;
 		g_pFileManager = pThis;
 
 		// Set the platform specific variables
@@ -237,7 +237,7 @@ void BURGER_API Burger::FileManager::shut_down(void) BURGER_NOEXCEPT
 	// Dispose of the global file manager instance
 	if (g_pFileManager) {
 		g_pFileManager->~FileManager();
-		Free(g_pFileManager);
+		free_memory(g_pFileManager);
 		g_pFileManager = nullptr;
 	}
 }
@@ -1681,7 +1681,7 @@ Burger::eError BURGER_API Burger::FileManager::copy_file(
 		uintptr_t uMaxChunk =
 			static_cast<uintptr_t>((uLength < 0x100000U) ? uLength : 0x100000U);
 
-		uint8_t* pBuffer = static_cast<uint8_t*>(Alloc(uMaxChunk));
+		uint8_t* pBuffer = static_cast<uint8_t*>(allocate_memory(uMaxChunk));
 		if (pBuffer) {
 
 			// Open the dest file
@@ -1726,7 +1726,7 @@ Burger::eError BURGER_API Burger::FileManager::copy_file(
 		}
 
 		// Release the copy buffer
-		Free(pBuffer);
+		free_memory(pBuffer);
 	}
 
 	// Close the source file
@@ -1900,7 +1900,7 @@ Burger::eError BURGER_API Burger::FileManager::save_text_file(
 	buffer size.
 
 	This function is a quick and easy way to read the contents of a file into a
-	buffer. The buffer must be deleted with a call to \ref Burger::Free(
+	buffer. The buffer must be deleted with a call to \ref Burger::free_memory(
 	const void*)
 
 	\note This function does no data translation. The buffer contains an exact
@@ -1934,7 +1934,7 @@ void* BURGER_API Burger::FileManager::load_file(
 	optional buffer size.
 
 	This function is a quick and easy way to read the contents of a file into a
-	buffer. The buffer must be deleted with a call to \ref Burger::Free(
+	buffer. The buffer must be deleted with a call to \ref Burger::free_memory(
 	const void *)
 
 	\note This function does no data translation. The buffer contains an exact
@@ -1977,11 +1977,11 @@ void* BURGER_API Burger::FileManager::load_file(
 			Debug::PrintString(".\n");
 		}
 #endif
-		pResult = Alloc(static_cast<uintptr_t>(uNewSize));
+		pResult = allocate_memory(static_cast<uintptr_t>(uNewSize));
 		if (pResult) {
 			if (FileRef.read(pResult, static_cast<uintptr_t>(uNewSize)) !=
 				uNewSize) {
-				Free(pResult);
+				free_memory(pResult);
 				pResult = nullptr;
 				uNewSize = 0;
 			}

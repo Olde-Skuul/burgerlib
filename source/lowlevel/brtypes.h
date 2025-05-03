@@ -712,8 +712,8 @@
 #endif
 #endif
 
-#if (defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || \
-	defined(BURGER_XBOXONE)) || \
+#if (defined(BURGER_WINDOWS) || defined(BURGER_XBOX) || \
+	defined(BURGER_XBOX360) || defined(BURGER_XBOXONE)) || \
 	defined(DOXYGEN)
 #define BURGER_XBOXLIVE
 #endif

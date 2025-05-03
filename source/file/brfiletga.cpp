@@ -363,7 +363,7 @@ uint_t BURGER_API Burger::FileTGA::Load(Image *pOutput,InputMemoryStream *pInput
 
 	if (!pBadNews) {
 		if (uColorMapType == 1 || uColorMapType==9) {		// Palette present!
-			MemoryClear(m_Palette,sizeof(m_Palette));
+			memory_clear(m_Palette,sizeof(m_Palette));
 
 			if (uColorMapLength) {			// Any colors used?
 				uint_t i = uColorMapOrigin;	// Get the starting color

@@ -35,8 +35,8 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::SoundBufferRez,Burger::SoundManager::Buf
 	call Upload() directly.
 
 	This is a reference counted class, as such it can
-	only be created with a call to New() and disposed
-	of by a call to Release(). Delete() will likely
+	only be created with a call to new_object() and disposed
+	of by a call to Release(). delete_object() will likely
 	asset with a "refcount is not zero" error.
 
 ***************************************/
@@ -166,9 +166,9 @@ void Burger::SoundBufferRez::Set(RezFile *pRezFile,uint_t uRezNum)
 
 ***************************************/
 
-Burger::SoundBufferRez * BURGER_API Burger::SoundBufferRez::New(void)
+Burger::SoundBufferRez * BURGER_API Burger::SoundBufferRez::new_object(void)
 {
-	SoundBufferRez *pBuffer = new (Alloc(sizeof(SoundBufferRez))) SoundBufferRez();
+	SoundBufferRez *pBuffer = new (allocate_memory(sizeof(SoundBufferRez))) SoundBufferRez();
 	if (pBuffer) {
 		pBuffer->AddRef();
 	}
@@ -185,9 +185,9 @@ Burger::SoundBufferRez * BURGER_API Burger::SoundBufferRez::New(void)
 
 ***************************************/
 
-Burger::SoundBufferRez * BURGER_API Burger::SoundBufferRez::New(RezFile *pRezFile,uint_t uRezNum)
+Burger::SoundBufferRez * BURGER_API Burger::SoundBufferRez::new_object(RezFile *pRezFile,uint_t uRezNum)
 {
-	SoundBufferRez *pBuffer = new (Alloc(sizeof(SoundBufferRez))) SoundBufferRez(pRezFile,uRezNum);
+	SoundBufferRez *pBuffer = new (allocate_memory(sizeof(SoundBufferRez))) SoundBufferRez(pRezFile,uRezNum);
 	if (pBuffer) {
 		pBuffer->AddRef();
 	}

@@ -396,7 +396,7 @@ Burger::RezFile::RezGroup_t * BURGER_API Burger::RezFile::ParseRezFileHeader(con
 
 		// Now I have the length I need to make my new header, create it
 
-		RezGroup_t *pResult = static_cast<RezGroup_t *>(Alloc(uNewLength+uTextLength));
+		RezGroup_t *pResult = static_cast<RezGroup_t *>(allocate_memory(uNewLength+uTextLength));
 		// Valid pointer?
 		if (pResult) {
 			const char *pAdjusted = reinterpret_cast<const char *>(pResult)+uAdjust;
@@ -514,7 +514,7 @@ Burger::RezFile::RezGroup_t * BURGER_API Burger::RezFile::ParseRezFileHeader(con
 				} while (--uGroupCount);
 			}
 			// Copy up the filenames if needed
-			MemoryCopy(pGroup,pWork,uTextLength);
+			memory_copy(pGroup,pWork,uTextLength);
 			return pResult;
 		}
 	}
@@ -574,8 +574,8 @@ void BURGER_API Burger::RezFile::ProcessRezNames(void)
 		FilenameToRezNum_t *pRezNames = m_pRezNames;
 		if ((uTotal!=m_uRezNameCount) || !pRezNames) {
 		// Save the main values
-			Free(m_pRezNames);
-			pRezNames = static_cast<FilenameToRezNum_t *>(Alloc(sizeof(FilenameToRezNum_t)*uTotal));
+			free_memory(m_pRezNames);
+			pRezNames = static_cast<FilenameToRezNum_t *>(allocate_memory(sizeof(FilenameToRezNum_t)*uTotal));
 			m_uRezNameCount = uTotal;
 			m_pRezNames = pRezNames;
 		}
@@ -619,7 +619,7 @@ void BURGER_API Burger::RezFile::ProcessRezNames(void)
 		}
 	}
 	// No data is present. Just delete any previous data
-	Free(m_pRezNames);
+	free_memory(m_pRezNames);
 	m_uRezNameCount = 0;
 	m_pRezNames = nullptr;
 }
@@ -649,7 +649,7 @@ void BURGER_API Burger::RezFile::FixupFilenames(char *pText)
 			if (pNewText) {
 				pNewEntry->m_pRezName = pText;
 				uintptr_t uLength = string_length(pNewText)+1;
-				MemoryCopy(pText,pNewText,uLength);
+				memory_copy(pText,pNewText,uLength);
 				pText+=uLength;
 			}
 			++pNewEntry;
@@ -708,7 +708,7 @@ Burger::RezFile::~RezFile()
 
 	\brief Create a new RezFile instance
 
-	Allocate memory using Burger::Alloc() and 
+	Allocate memory using Burger::allocate_memory() and 
 	initialize a RezFile with it.
 
 	\param pMemoryManager Pointer to a valid handle based memory manager
@@ -716,14 +716,14 @@ Burger::RezFile::~RezFile()
 	\param uStartOffset Offset in bytes from the start of the file where the rezfile image resides. Normally this is zero.
 
 	\return \ref NULL if out of memory or the file is not a valid rezfile
-	\sa Burger::Delete(const RezFile *)
+	\sa Burger::delete_object(const RezFile *)
 
 ***************************************/
 
-Burger::RezFile * BURGER_API Burger::RezFile::New(Burger::MemoryManagerHandle *pMemoryManager,const char *pFileName,uint32_t uStartOffset)
+Burger::RezFile * BURGER_API Burger::RezFile::new_object(Burger::MemoryManagerHandle *pMemoryManager,const char *pFileName,uint32_t uStartOffset)
 {
 	// Manually allocate the memory
-	RezFile *pThis = new (Alloc(sizeof(RezFile))) RezFile(pMemoryManager);
+	RezFile *pThis = new (allocate_memory(sizeof(RezFile))) RezFile(pMemoryManager);
 	if (pThis) {
 	// Load up the data
 		if (!pThis->Init(pFileName,uStartOffset)) {
@@ -731,7 +731,7 @@ Burger::RezFile * BURGER_API Burger::RezFile::New(Burger::MemoryManagerHandle *p
 			return pThis;
 		}
 		// Kill the malformed class
-		Delete(pThis);
+		delete_object(pThis);
 	}
 	// Sorry Charlie!
 	return NULL;
@@ -787,14 +787,14 @@ uint_t BURGER_API Burger::RezFile::Init(const char *pFileName,uint32_t uStartOff
 					}
 
 					// Allocate memory to load header
-					uint8_t *pData = static_cast<uint8_t *>(Alloc(MyHeader.m_uMemSize));
+					uint8_t *pData = static_cast<uint8_t *>(allocate_memory(MyHeader.m_uMemSize));
 					if (pData) {
 						// Read in the file header
 						if (m_File.read(pData,MyHeader.m_uMemSize)==MyHeader.m_uMemSize) {
 							RezGroup_t *pRezGroup = ParseRezFileHeader(pData,&MyHeader,uSwapFlag,uStartOffset);
 							if (pRezGroup) {
 								// Dispose of the loaded data
-								Free(pData);
+								free_memory(pData);
 								// Save the file reference
 								m_uGroupCount = MyHeader.m_uGroupCount;	// Get the resource count
 								m_pGroups = pRezGroup;	// Get the memory
@@ -804,7 +804,7 @@ uint_t BURGER_API Burger::RezFile::Init(const char *pFileName,uint32_t uStartOff
 							}
 						}
 						// Release the file header
-						Free(pData);
+						free_memory(pData);
 					}
 				}
 			}
@@ -856,9 +856,9 @@ void BURGER_API Burger::RezFile::Shutdown(void)
 		} while (--uGroupCount);
 	}
 	// Release the resource groups
-	Free(m_pGroups);
+	free_memory(m_pGroups);
 	// Release the name list
-	Free(m_pRezNames);
+	free_memory(m_pRezNames);
 	m_pGroups = NULL;
 	m_pRezNames = NULL;
 	m_uRezNameCount = 0;
@@ -1099,7 +1099,7 @@ uint_t BURGER_API Burger::RezFile::AddName(const char *pRezName)
 	uintptr_t uOldDictionarySize = GetRezGroupBytes();
 
 	// New buffer
-	RezGroup_t *pNewGroup = static_cast<RezGroup_t *>(Alloc(uOldDictionarySize + uNewStringLength + sizeof(RezGroup_t)));
+	RezGroup_t *pNewGroup = static_cast<RezGroup_t *>(allocate_memory(uOldDictionarySize + uNewStringLength + sizeof(RezGroup_t)));
 	if (!pNewGroup) {
 		return INVALIDREZNUM;	// I'm boned
 	}
@@ -1122,7 +1122,7 @@ uint_t BURGER_API Burger::RezFile::AddName(const char *pRezName)
 		pNewGroup->m_Array[0].m_uLength = 0;
 		pNewGroup->m_Array[0].m_uFlags = 0;
 		pNewGroup->m_Array[0].m_uCompressedLength = 0;
-		MemoryCopy(pText,pRezName,uNewStringLength);
+		memory_copy(pText,pRezName,uNewStringLength);
 		ProcessRezNames();
 		return 1;			// Resource 1 allocated
 	}
@@ -1145,12 +1145,12 @@ uint_t BURGER_API Burger::RezFile::AddName(const char *pRezName)
 		pNewGroup->m_uBaseRezNum = uRezNum;
 		pNewEntry = pNewGroup->m_Array;
 		// The data is AFTER the new entry
-		MemoryCopy(pNewEntry+1,pGroup->m_Array,sizeof(RezEntry_t)*uCount);
+		memory_copy(pNewEntry+1,pGroup->m_Array,sizeof(RezEntry_t)*uCount);
 	} else {
 		pNewGroup->m_uBaseRezNum = uRezNum;
 		uRezNum += uCount;	// Append
 		// The data is BEFORE the new entry
-		MemoryCopy(pNewGroup->m_Array,pGroup->m_Array,sizeof(RezEntry_t)*uCount);
+		memory_copy(pNewGroup->m_Array,pGroup->m_Array,sizeof(RezEntry_t)*uCount);
 		pNewEntry = &pNewGroup->m_Array[uCount];
 	}
 
@@ -1175,7 +1175,7 @@ uint_t BURGER_API Burger::RezFile::AddName(const char *pRezName)
 		// Am I going to merge two groups?
 		if (pNextGroup->m_uBaseRezNum==(uRezNum+1)) {
 			uCount = pNextGroup->m_uCount;
-			MemoryCopy(pNewEntry,pNextGroup->m_Array,sizeof(RezEntry_t)*uCount);
+			memory_copy(pNewEntry,pNextGroup->m_Array,sizeof(RezEntry_t)*uCount);
 			pNewGroup->m_uCount += uCount;		// Adjust the count to do the merge
 			pNewGroup = reinterpret_cast<RezGroup_t *>(pNewEntry+uCount);
 			pGroup = static_cast<RezGroup_t *>(static_cast<void *>(&pNextGroup->m_Array[uCount]));
@@ -1190,7 +1190,7 @@ uint_t BURGER_API Burger::RezFile::AddName(const char *pRezName)
 		if (uGroupCount) {
 			do {
 				uCount = pGroup->m_uCount;
-				MemoryCopy(pNewGroup,pGroup,sizeof(RezGroup_t)+(sizeof(RezEntry_t)*(uCount-1)));
+				memory_copy(pNewGroup,pGroup,sizeof(RezGroup_t)+(sizeof(RezEntry_t)*(uCount-1)));
 				pNewGroup = static_cast<RezGroup_t *>(static_cast<void *>(&pNewGroup->m_Array[uCount]));
 				pGroup = static_cast<RezGroup_t *>(static_cast<void *>(&pGroup->m_Array[uCount]));
 			} while (--uGroupCount);
@@ -1201,7 +1201,7 @@ uint_t BURGER_API Burger::RezFile::AddName(const char *pRezName)
 		pText = reinterpret_cast<char *>(&pNewGroup->m_Array[uCount+1]);
 	}
 	FixupFilenames(pText);
-	Free(pGroupToDelete);
+	free_memory(pGroupToDelete);
 	return uRezNum;
 }
 
@@ -1250,8 +1250,8 @@ void BURGER_API Burger::RezFile::Remove(uint_t uRezNum)
 	uint_t uGroupCount = m_uGroupCount;
 	// If there is only one entry, surrender
 	if (uGroupCount==1 && pGroupToDelete->m_uCount==1) {
-		Free(pGroupToDelete);
-		Free(m_pRezNames);
+		free_memory(pGroupToDelete);
+		free_memory(m_pRezNames);
 		m_pGroups = NULL;
 		m_pRezNames = NULL;
 		m_uRezNameCount = 0;
@@ -1262,7 +1262,7 @@ void BURGER_API Burger::RezFile::Remove(uint_t uRezNum)
 	// Note: This scan will remove the deleted string from the size, but retain the size for
 	// the deleted record, I need the padding just in case I have a group split.
 
-	RezGroup_t *pNewGroup = static_cast<RezGroup_t *>(Alloc(GetRezGroupBytes()));
+	RezGroup_t *pNewGroup = static_cast<RezGroup_t *>(allocate_memory(GetRezGroupBytes()));
 	if (!pNewGroup) {
 		return;
 	}
@@ -1326,7 +1326,7 @@ void BURGER_API Burger::RezFile::Remove(uint_t uRezNum)
 
 	// Release the old buffer now (It had the strings)
 
-	Free(pGroupToDelete);
+	free_memory(pGroupToDelete);
 }
 
 /*! ************************************
@@ -1682,7 +1682,7 @@ void ** BURGER_API Burger::RezFile::LoadHandle(uint_t uRezNum,uint_t *pLoadedFla
 		}
 		m_pMemoryManager->set_ID(ppData,uRezNum);		// Set the ID to the handle
 		uint32_t BufferSize = (PackedLength<MAXBUFFER) ? PackedLength : MAXBUFFER;
-		uint8_t *PackedPtr = static_cast<uint8_t *>(Alloc(BufferSize));	// Get Buffer
+		uint8_t *PackedPtr = static_cast<uint8_t *>(allocate_memory(BufferSize));	// Get Buffer
 		if (!PackedPtr) {				// No compressed data buffer?
 			m_pMemoryManager->free_handle(ppData);
 			pEntry->m_uFlags &= (~ENTRYFLAGSREFCOUNT);		// Kill the ref count
@@ -1709,7 +1709,7 @@ void ** BURGER_API Burger::RezFile::LoadHandle(uint_t uRezNum,uint_t *pLoadedFla
 			PackedSize -= ChunkSize;
 		} while (PackedSize);
 		pDecompressor->Reset();		// Force a shutdown
-		Free(PackedPtr);	/* Release the temp buffer */
+		free_memory(PackedPtr);	/* Release the temp buffer */
 		m_pMemoryManager->unlock(ppData);
 		if (pLoadedFlag) {
 			pLoadedFlag[0] = TRUE;		/* Data is new */
@@ -1844,7 +1844,7 @@ uint_t BURGER_API Burger::RezFile::Read(uint_t uRezNum,void *pBuffer,uintptr_t u
 			uBufferSize = uLength;			// Use the smaller
 			uResult = FALSE;				// It's ok
 		}
-		MemoryCopy(pBuffer,ppData[0],uBufferSize);	// Copy the data
+		memory_copy(pBuffer,ppData[0],uBufferSize);	// Copy the data
 		Release(uRezNum);	// Release the data
 	}
 	// Return FALSE if OK

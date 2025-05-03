@@ -610,7 +610,7 @@ void Burger::Display::Shutdown(void)
 		[m_pWindowController release];
 		m_pWindowController = NULL;
 	}
-	Free(m_pCompressedFormats);
+	free_memory(m_pCompressedFormats);
 	m_pCompressedFormats = NULL;
 	m_uCompressedFormatCount = 0;
 }

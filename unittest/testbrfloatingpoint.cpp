@@ -1259,7 +1259,7 @@ static uint_t BURGER_API TestIntToFloat(void) BURGER_NOEXCEPT
 		uintptr_t index = 0;
 		float fTempArray[4];
 		do {
-			Burger::MemoryFill(fTempArray, 0x55, sizeof(fTempArray));
+			Burger::memory_set(fTempArray, 0x55, sizeof(fTempArray));
 			Burger::int_to_float(&fTempArray[index], &iOriginal);
 			fTest = fTempArray[index];
 			uFailure = (fTest != fExpected);
@@ -1352,7 +1352,7 @@ static uint_t BURGER_API TestFixedToFloat(void) BURGER_NOEXCEPT
 		uintptr_t index = 0;
 		float fTempArray[4];
 		do {
-			Burger::MemoryFill(fTempArray, 0x55, sizeof(fTempArray));
+			Burger::memory_set(fTempArray, 0x55, sizeof(fTempArray));
 			Burger::fixed_to_float(&fTempArray[index], &iOriginal);
 			fTest = fTempArray[index];
 			uFailure = (fTest != fExpected);

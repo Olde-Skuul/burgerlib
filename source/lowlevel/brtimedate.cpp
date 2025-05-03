@@ -527,7 +527,7 @@ Burger::eError Burger::TimeDate_t::StoreTimeT(
 	return kErrorNotSupportedOnThisPlatform;
 #else
 	struct tm TheTime;
-	MemoryClear(&TheTime, sizeof(TheTime));
+	memory_clear(&TheTime, sizeof(TheTime));
 	TheTime.tm_year = static_cast<int>(m_uYear - 1900);
 	TheTime.tm_mon = static_cast<int>(m_bMonth - 1);
 	TheTime.tm_mday = static_cast<int>(m_bDay);
@@ -590,7 +590,7 @@ Burger::eError Burger::TimeDate_t::Store(
 	timespec* pTimeSpec) const BURGER_NOEXCEPT
 {
 #if defined(BURGER_DS)
-	MemoryClear(pTimeSpec, sizeof(timespec));
+memory_clear(pTimeSpec, sizeof(timespec));
 	return kErrorNotSupportedOnThisPlatform;
 #else
 	uintptr_t TheTime;

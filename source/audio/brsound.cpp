@@ -211,7 +211,7 @@ Burger::SoundManager::SoundCardDescription::SoundCardDescription() :
 	m_uMaximumSampleRate(22050)
 {
 #if defined(BURGER_WINDOWS)
-	MemoryClear(&m_GUID,sizeof(m_GUID));
+	memory_clear(&m_GUID,sizeof(m_GUID));
 #endif
 }
 
@@ -237,7 +237,7 @@ Burger::SoundManager::SoundCardDescription::~SoundCardDescription()
 
 Burger::SoundManager::BufferDecoder::BufferDecoder()
 {
-	MemoryClear(this,sizeof(*this));
+	memory_clear(this,sizeof(*this));
 }
 
 /*! ************************************
@@ -250,7 +250,7 @@ Burger::SoundManager::BufferDecoder::BufferDecoder()
 
 Burger::SoundManager::BufferDecoder::~BufferDecoder()
 {
-	Delete(m_pDecompresser);
+	delete_object(m_pDecompresser);
 	m_pDecompresser = NULL;
 }
 
@@ -265,11 +265,11 @@ Burger::SoundManager::BufferDecoder::~BufferDecoder()
 void BURGER_API Burger::SoundManager::BufferDecoder::Clear(void)
 {
 	// Release any decompresser
-	Delete(m_pDecompresser);
+	delete_object(m_pDecompresser);
 	m_pDecompresser = NULL;
 	m_uCompressedLength = 0;
 	m_uSampleCount = 0;
-	MemoryClear(static_cast<BufferDescription_t *>(this),sizeof(BufferDescription_t));
+	memory_clear(static_cast<BufferDescription_t *>(this),sizeof(BufferDescription_t));
 }
 
 
@@ -584,48 +584,48 @@ uint_t BURGER_API Burger::SoundManager::BufferDecoder::ParseSoundFileImage(const
 		DecompressAudio *pDecompresser = NULL;
 		switch (m_eDataType&TYPEMASK) {
 		case TYPELFLOAT:
-			pDecompresser = Decompress32BitLEAudio::New();
+			pDecompresser = Decompress32BitLEAudio::new_object();
 			break;
 
 		case TYPEBFLOAT:
-			pDecompresser = Decompress32BitBEAudio::New();
+			pDecompresser = Decompress32BitBEAudio::new_object();
 			break;
 				
 		case TYPELSHORT:
-			pDecompresser = Decompress16BitLEAudio::New();
+			pDecompresser = Decompress16BitLEAudio::new_object();
 			break;
 
 		case TYPEBSHORT:
-			pDecompresser = Decompress16BitBEAudio::New();
+			pDecompresser = Decompress16BitBEAudio::new_object();
 			break;
 
 		default:
 		case TYPEBYTE:
-			pDecompresser = DecompressUnsigned8BitAudio::New();
+			pDecompresser = DecompressUnsigned8BitAudio::new_object();
 			break;
 
 		case TYPECHAR:
-			pDecompresser = DecompressSigned8BitAudio::New();
+			pDecompresser = DecompressSigned8BitAudio::new_object();
 			break;
 
 		case TYPEMACE3:
-			pDecompresser = DecompressMace3::New();
+			pDecompresser = DecompressMace3::new_object();
 			break;
 
 		case TYPEMACE6:
-			pDecompresser = DecompressMace6::New();
+			pDecompresser = DecompressMace6::new_object();
 			break;
 
 		case TYPEALAW:
-			pDecompresser = DecompressALaw::New();
+			pDecompresser = DecompressALaw::new_object();
 			break;
 
 		case TYPEULAW:
-			pDecompresser = DecompressULaw::New();
+			pDecompresser = DecompressULaw::new_object();
 			break;
 
 		case TYPEADPCM:
-			pDecompresser = DecompressMicrosoftADPCM::New();
+			pDecompresser = DecompressMicrosoftADPCM::new_object();
 			static_cast<DecompressMicrosoftADPCM *>(pDecompresser)->SetBlockSize(uBlockAlign);
 			static_cast<DecompressMicrosoftADPCM *>(pDecompresser)->SetSamplesPerBlock(uSamplesPerBlock);
 			break;
@@ -856,7 +856,7 @@ uint_t BURGER_API Burger::SoundManager::Buffer::Init(const BufferDescription_t *
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360)) || defined(DOXYGEN)
 void Burger::SoundManager::Buffer::Shutdown(void)
 {
-	Free(m_pBufferData);
+	free_memory(m_pBufferData);
 	m_pBufferData = NULL;
 	m_uBufferSize = 0;
 }
@@ -886,7 +886,7 @@ uint_t Burger::SoundManager::Buffer::Upload(SoundManager * /* pSoundManager */)
 		// Create a buffer for the sound
 		
 		uintptr_t uBufferSize = m_Decoder.m_uSoundLength;
-		void *pBuffer = Alloc(uBufferSize);
+		void *pBuffer = allocate_memory(uBufferSize);
 		if (pBuffer) {
 			m_pBufferData = pBuffer;
 			m_uBufferSize = uBufferSize;
@@ -908,9 +908,9 @@ uint_t Burger::SoundManager::Buffer::Upload(SoundManager * /* pSoundManager */)
 
 ***************************************/
 
-Burger::SoundManager::Buffer * BURGER_API Burger::SoundManager::Buffer::New(void)
+Burger::SoundManager::Buffer * BURGER_API Burger::SoundManager::Buffer::new_object(void)
 {
-	Buffer *pBuffer = new (Alloc(sizeof(Buffer))) Buffer();
+	Buffer *pBuffer = new (allocate_memory(sizeof(Buffer))) Buffer();
 	if (pBuffer) {
 		pBuffer->AddRef();
 	}
@@ -1369,14 +1369,14 @@ Burger::SoundManager::~SoundManager()
 
 	\param pGameApp Pointer to the parent game application
 	\return A pointer to a default SoundManager class or \ref NULL if out of memory
-	\sa Delete(const T *)
+	\sa delete_object(const T *)
 
 ***************************************/
 
-Burger::SoundManager * BURGER_API Burger::SoundManager::New(GameApp *pGameApp)
+Burger::SoundManager * BURGER_API Burger::SoundManager::new_object(GameApp *pGameApp)
 {
 	// Allocate the memory
-	return new (Alloc(sizeof(SoundManager))) SoundManager(pGameApp);
+	return new (allocate_memory(sizeof(SoundManager))) SoundManager(pGameApp);
 }
 
 /*! ************************************
@@ -1570,7 +1570,7 @@ void BURGER_API Burger::SoundManager::SetVolume(uint_t uVolume)
 
 Burger::SoundManager::Buffer * BURGER_API Burger::SoundManager::NewBuffer(void *pWaveFile,uintptr_t uLength)
 {
-	Buffer *pBuffer = Buffer::New();
+	Buffer *pBuffer = Buffer::new_object();
 	if (pBuffer) {
 		BufferDecoder *pDecoder = pBuffer->GetBufferDescription();
 		if (pDecoder->ParseSoundFileImage(pWaveFile,uLength)) {
@@ -1664,7 +1664,7 @@ void BURGER_API Burger::CopySoundData(void *pOutput,const void *pInput,uintptr_t
 		case SoundManager::TYPELFLOAT:
 #endif
 			// Copy as is
-			MemoryCopy(pOutput,pInput,uLength);
+			memory_copy(pOutput,pInput,uLength);
 			break;
 		case SoundManager::TYPECHAR:
 			swap_chars_to_bytes(pOutput,pInput,uLength);
@@ -1709,10 +1709,10 @@ void BURGER_API Burger::ClearSoundData(void *pOutput,uintptr_t uLength,SoundMana
 {
 	switch (eType) {
 	default:
-		MemoryClear(pOutput,uLength);
+		memory_clear(pOutput,uLength);
 		break;
 	case SoundManager::TYPEBYTE:
-		MemoryFill(pOutput,0x80U,uLength);
+		memory_set(pOutput,0x80U,uLength);
 		break;
 	}
 }

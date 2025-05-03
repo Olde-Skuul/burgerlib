@@ -50,7 +50,7 @@ Burger::VertexBuffer::VertexBuffer() :
 	m_uFlags(FLAG_VERTEXDIRTY)
 {
 #if defined(BURGER_WINDOWS) || defined(BURGER_OPENGL)
-	MemoryClear(&m_Platform,sizeof(m_Platform));
+memory_clear(&m_Platform,sizeof(m_Platform));
 #endif
 }
 
@@ -108,8 +108,8 @@ uint_t BURGER_API Burger::VertexBuffer::LoadData(Display *pDisplay,const VertexA
 		pBuffer = pDescription->m_pVertexArray;
 		if (!(uFlags&FLAGAOS_DONTCOPY_VERTICES)) {
 
-			// If pBuffer is NULL, it will act as Alloc()
-			pBuffer = alloc_copy(pBuffer,uSize);
+			// If pBuffer is NULL, it will act as allocate_memory()
+			pBuffer = allocate_memory_copy(pBuffer,uSize);
 			BURGER_ASSERT(pBuffer);
 			if (!pBuffer) {
 				uSize = 0;
@@ -132,8 +132,8 @@ uint_t BURGER_API Burger::VertexBuffer::LoadData(Display *pDisplay,const VertexA
 		pBuffer = pDescription->m_pElements;
 		if (!(uFlags&FLAGAOS_DONTCOPY_ELEMENTS)) {
 
-			// If pBuffer is NULL, it will act as Alloc()
-			pBuffer = alloc_copy(pBuffer,uSize);
+			// If pBuffer is NULL, it will act as allocate_memory()
+			pBuffer = allocate_memory_copy(pBuffer,uSize);
 			BURGER_ASSERT(pBuffer);
 			if (!pBuffer) {
 				uSize = 0;
@@ -196,8 +196,8 @@ uint_t BURGER_API Burger::VertexBuffer::LoadData(Display *pDisplay,const VertexA
 		pBuffer = pDescription->m_pMembers;
 		if (!(uFlags&FLAGAOS_DONTCOPY_MEMBERS)) {
 
-			// If pBuffer is NULL, it will act as Alloc()
-			pBuffer = alloc_copy(pBuffer,uAttributeCount*sizeof(uint_t));
+			// If pBuffer is NULL, it will act as allocate_memory()
+			pBuffer = allocate_memory_copy(pBuffer,uAttributeCount*sizeof(uint_t));
 			BURGER_ASSERT(pBuffer);
 			if (!pBuffer) {
 				uAttributeCount = 0;
@@ -238,21 +238,21 @@ void BURGER_API Burger::VertexBuffer::PurgeData(void)
 {
 	// Only erase buffers that have been allocated
 	if (!(m_uFlags&FLAGAOS_DONTCOPY_VERTICES)) {
-		Free(m_pVertexArray);
+		free_memory(m_pVertexArray);
 	}
 	m_pVertexArray = NULL;
 	m_uVertexArraySize = 0;
 
 	// Elements were copied?
 	if (!(m_uFlags&FLAGAOS_DONTCOPY_ELEMENTS)) {
-		Free(m_pElements);
+		free_memory(m_pElements);
 	}
 	m_pElements = NULL;
 	m_uElementSize = 0;
 
 	// Members were copies?
 	if (!(m_uFlags&FLAGAOS_DONTCOPY_MEMBERS)) {
-		Free(m_pMembers);
+		free_memory(m_pMembers);
 	}
 	m_pMembers = NULL;
 	m_uMemberCount = 0;

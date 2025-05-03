@@ -51,7 +51,7 @@
 		// Wrap up the processing
 		Context.finalize();
 		// Return the resulting hash
-		MemoryCopy(pOutput,&Context.m_Hash,16);
+		memory_copy(pOutput,&Context.m_Hash,16);
 	\endcode
 
 	\sa \ref MD4_t or hash(MD4_t *,const void *,uintptr_t)
@@ -253,7 +253,7 @@ void BURGER_API Burger::MD4Hasher_t::process(
 
 	// Transform as many times as possible.
 	if (uLength >= i) {
-		MemoryCopy(&m_CacheBuffer[uIndex], pInput, i);
+		memory_copy(&m_CacheBuffer[uIndex], pInput, i);
 		process(m_CacheBuffer);
 
 		if ((i + 63U) < uLength) {
@@ -269,7 +269,7 @@ void BURGER_API Burger::MD4Hasher_t::process(
 
 	// Buffer remaining input
 
-	MemoryCopy(&m_CacheBuffer[uIndex], static_cast<const uint8_t*>(pInput) + i,
+	memory_copy(&m_CacheBuffer[uIndex], static_cast<const uint8_t*>(pInput) + i,
 		uLength - i);
 }
 
@@ -288,7 +288,7 @@ void BURGER_API Burger::MD4Hasher_t::finalize(void) BURGER_NOEXCEPT
 {
 	uint8_t Padding[64];
 	Padding[0] = 0x80U;
-	MemoryClear(&Padding[1], 63U);
+	memory_clear(&Padding[1], 63U);
 
 	// Save number of bits
 
@@ -335,5 +335,5 @@ void BURGER_API Burger::hash(
 	Context.finalize();
 
 	// Return the resulting hash
-	MemoryCopy(pOutput, &Context.m_Hash, 16);
+	memory_copy(pOutput, &Context.m_Hash, 16);
 }

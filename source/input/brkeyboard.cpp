@@ -397,8 +397,8 @@ Burger::Keyboard::Keyboard(GameApp* pAppInstance) BURGER_NOEXCEPT
 	  m_uInitialDelay(500),
 	  m_uRepeatDelay(33)
 {
-	MemoryClear(m_KeyArray, sizeof(m_KeyArray));
-	MemoryClear(&m_RepeatEvent, sizeof(m_RepeatEvent));
+	memory_clear(m_KeyArray, sizeof(m_KeyArray));
+	memory_clear(&m_RepeatEvent, sizeof(m_RepeatEvent));
 }
 
 /*! ************************************
@@ -774,7 +774,7 @@ void BURGER_API Burger::Keyboard::Flush(void) BURGER_NOEXCEPT
 		pWork[0] = pWork[0] & (~(KEYCAPPRESSED * 0x01010101U));
 		++pWork;
 	} while (--uCount);
-	MemoryClear(&m_RepeatEvent, sizeof(m_RepeatEvent));
+	memory_clear(&m_RepeatEvent, sizeof(m_RepeatEvent));
 }
 
 /*! ************************************

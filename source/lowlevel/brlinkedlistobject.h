@@ -90,7 +90,7 @@ public:
 		}
 
 	public:
-		static Object* BURGER_API New(void* pData,
+		static Object* BURGER_API new_object(void* pData,
 			ProcDataDelete pProc = proc_free_object_and_data) BURGER_NOEXCEPT;
 
 		BURGER_INLINE Object* get_next(void) const BURGER_NOEXCEPT

@@ -248,8 +248,8 @@ Burger::Keyboard::Keyboard(GameApp* pAppInstance) BURGER_NOEXCEPT
 	  m_uRepeatDelay(33)
 {
 	// Clear my variables
-	MemoryClear(m_KeyArray, sizeof(m_KeyArray));
-	MemoryClear(&m_RepeatEvent, sizeof(m_RepeatEvent));
+	memory_clear(m_KeyArray, sizeof(m_KeyArray));
+	memory_clear(&m_RepeatEvent, sizeof(m_RepeatEvent));
 
 	pAppInstance->AddRoutine(Poll, NULL, this, RunQueue::PRIORITY_KEYBOARD);
 }

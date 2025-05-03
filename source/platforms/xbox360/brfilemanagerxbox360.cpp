@@ -109,7 +109,7 @@ Burger::eError BURGER_API Burger::FileManager::get_volume_name(
 		// Drive name template ( "DVD:\\" )
 		uintptr_t uLength = string_length(gVolumeNames[uVolumeNum]);
 		char InputName[16];
-		MemoryCopy(InputName, gVolumeNames[uVolumeNum], uLength);
+		memory_copy(InputName, gVolumeNames[uVolumeNum], uLength);
 		InputName[uLength] = ':';
 		InputName[uLength + 1] = '\\';
 		InputName[uLength + 2] = 0;
@@ -132,7 +132,7 @@ Burger::eError BURGER_API Burger::FileManager::get_volume_name(
 				OutputName[0] = ':';
 
 				// Device disk name
-				MemoryCopy(OutputName + 1, gVolumeNames[uVolumeNum], uLength);
+				memory_copy(OutputName + 1, gVolumeNames[uVolumeNum], uLength);
 
 				// End with a colon
 				OutputName[uLength + 1] = ':';

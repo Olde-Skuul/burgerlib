@@ -197,7 +197,7 @@ Burger::eError Burger::DirectorySearch::get_next_entry(
 	if (uIndex >= m_Entries.size()) {
 
 		// Clear out the entry and exit with an error
-		MemoryClear(pEntry, sizeof(*pEntry));
+		memory_clear(pEntry, sizeof(*pEntry));
 		uResult = kErrorNotEnumerating;
 
 	} else {
@@ -251,7 +251,7 @@ Burger::eError Burger::DirectorySearch::get_next_entry(
 	eError uResult;
 	for (;;) {
 		if (uIndex >= m_Entries.size()) {
-			MemoryClear(pEntry, sizeof(*pEntry));
+			memory_clear(pEntry, sizeof(*pEntry));
 			uResult = kErrorNotEnumerating;
 			break;
 		}
@@ -300,7 +300,7 @@ void Burger::DirectorySearch::close(void) BURGER_NOEXCEPT
 		// Release the memory allocated for the filenames
 		DirectoryEntry_t* pWork = m_Entries.data();
 		do {
-			Free(pWork->m_pName);
+			free_memory(pWork->m_pName);
 			++pWork;
 		} while (--uCount);
 	}
@@ -327,7 +327,7 @@ void Burger::DirectorySearch::close(void) BURGER_NOEXCEPT
 Burger::eError Burger::DirectorySearch::direntry_copy(
 	DirectoryEntry_t* pOutput, const DirectoryEntry_t* pInput) BURGER_NOEXCEPT
 {
-	MemoryCopy(pOutput, pInput, sizeof(DirectoryEntry_t));
+	memory_copy(pOutput, pInput, sizeof(DirectoryEntry_t));
 	return kErrorNone;
 }
 #endif

@@ -49,7 +49,7 @@
 		// Wrap up the processing
 		Context.finalize();
 		// Return the resulting hash
-		MemoryCopy(pOutput,&Context.m_Hash,16);
+		memory_copy(pOutput,&Context.m_Hash,16);
 	\endcode
 
 	\sa \ref MD2_t or hash(MD2_t *,const void *,uintptr_t)
@@ -90,7 +90,7 @@ BURGER_ALIGN(static const uint8_t, g_MD2PiTable[256], 16) = {41, 46, 67, 201,
 void BURGER_API Burger::MD2Hasher_t::init(void) BURGER_NOEXCEPT
 {
 	// Just erase the structure
-	MemoryClear(this, sizeof(*this));
+	memory_clear(this, sizeof(*this));
 }
 
 /*! ************************************
@@ -216,7 +216,7 @@ void BURGER_API Burger::MD2Hasher_t::process(
 	if (uLength >= i) {
 		// Update the internal cache (To clear out previously pending bytes)
 
-		MemoryCopy(&m_CacheBuffer[uIndex], pInput, i);
+		memory_copy(&m_CacheBuffer[uIndex], pInput, i);
 
 		// Process this chunk
 		process(m_CacheBuffer);
@@ -240,7 +240,7 @@ void BURGER_API Burger::MD2Hasher_t::process(
 
 	// Buffer remaining input in the cache (Can be zero)
 
-	MemoryCopy(&m_CacheBuffer[uIndex], static_cast<const uint8_t*>(pInput) + i,
+	memory_copy(&m_CacheBuffer[uIndex], static_cast<const uint8_t*>(pInput) + i,
 		uLength - i);
 }
 
@@ -261,7 +261,7 @@ void BURGER_API Burger::MD2Hasher_t::finalize(void) BURGER_NOEXCEPT
 
 	// Pad out to multiple of 16.
 	const uintptr_t uLength = 16U - m_uCount;
-	MemoryFill(Padding, static_cast<uint8_t>(uLength), uLength);
+	memory_set(Padding, static_cast<uint8_t>(uLength), uLength);
 	process(Padding, uLength);
 
 	// Extend with checksum
@@ -297,5 +297,5 @@ void BURGER_API Burger::hash(
 	Context.finalize();
 
 	// Return the resulting hash
-	MemoryCopy(pOutput, &Context.m_Hash, 16);
+	memory_copy(pOutput, &Context.m_Hash, 16);
 }

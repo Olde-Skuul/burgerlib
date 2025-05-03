@@ -127,7 +127,7 @@ private:
 public:
 	RezFile(MemoryManagerHandle *pMemoryManager);
 	~RezFile();
-	static RezFile * BURGER_API New(MemoryManagerHandle *pMemoryManager,const char *pFileName,uint32_t uStartOffset=0);
+	static RezFile * BURGER_API new_object(MemoryManagerHandle *pMemoryManager,const char *pFileName,uint32_t uStartOffset=0);
 	uint_t BURGER_API Init(const char *pFileName,uint32_t uStartOffset=0);
 	void BURGER_API Shutdown(void);
 	void BURGER_API PurgeCache(void);

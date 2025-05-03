@@ -50,7 +50,7 @@ Burger::DetectMultiLaunch::~DetectMultiLaunch()
 		sem_unlink(m_pName);
 
 		// Release the name
-		Free(m_pName);
+		free_memory(m_pName);
 		m_pName = nullptr;
 	}
 }

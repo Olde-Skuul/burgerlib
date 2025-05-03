@@ -66,7 +66,7 @@ Burger::eError Burger::DirectorySearch::open(Filename* pDirName) BURGER_NOEXCEPT
 				continue;
 			}
 			DirectoryEntry_t Entry;
-			MemoryClear(&Entry, sizeof(Entry));
+			memory_clear(&Entry, sizeof(Entry));
 
 			Entry.m_bDir = pDirEntry->d_type == DT_DIR;
 			// Make a copy of the string and store it
@@ -106,7 +106,7 @@ Burger::eError Burger::DirectorySearch::direntry_copy(
 	DirectoryEntry_t* pOutput, const DirectoryEntry_t* pInput) BURGER_NOEXCEPT
 {
 	// Init the rest of the records
-	MemoryClear(pOutput, sizeof(DirectoryEntry_t));
+	memory_clear(pOutput, sizeof(DirectoryEntry_t));
 	pOutput->m_pName = pInput->m_pName;
 	pOutput->m_bDir = pInput->m_bDir;
 

@@ -137,29 +137,29 @@ Burger::File::~File()
 
 	\brief Create a new File instance
 
-	Allocate memory using Burger::Alloc() and initialize a File with it.
+	Allocate memory using Burger::allocate_memory() and initialize a File with it.
 
 	\param pFileName Pointer to a "C" string containing a Burgerlib pathname
 	\param uAccess Enumeration on permissions requested on the opened file
 
 	\return \ref nullptr if out of memory or the file didn't successfully open
 
-	\sa \ref Delete(const T*)
+	\sa \ref delete_object(const T*)
 
 ***************************************/
 
-Burger::File* BURGER_API Burger::File::New(
+Burger::File* BURGER_API Burger::File::new_object(
 	const char* pFileName, eFileAccess uAccess) BURGER_NOEXCEPT
 {
 	// Manually allocate the memory
-	File* pThis = new (Alloc(sizeof(File))) File();
+	File* pThis = new (allocate_memory(sizeof(File))) File();
 	if (pThis) {
 
 		// Load up the data
 		if (pThis->open(pFileName, uAccess) != kErrorNone) {
 
 			// Kill the malformed class
-			Delete(pThis);
+			delete_object(pThis);
 			pThis = nullptr;
 		}
 	}
@@ -170,29 +170,29 @@ Burger::File* BURGER_API Burger::File::New(
 
 	\brief Create a new File instance
 
-	Allocate memory using Burger::Alloc() and initialize a File with it.
+	Allocate memory using Burger::allocate_memory() and initialize a File with it.
 
 	\param pFileName Pointer to a Burger::Filename object
 	\param uAccess Enumeration on permissions requested on the opened file
 
 	\return \ref nullptr if out of memory or the file didn't successfully open
 
-	\sa \ref Delete(const T*)
+	\sa \ref delete_object(const T*)
 
 ***************************************/
 
-Burger::File* BURGER_API Burger::File::New(
+Burger::File* BURGER_API Burger::File::new_object(
 	Filename* pFileName, eFileAccess uAccess) BURGER_NOEXCEPT
 {
 	// Manually allocate the memory
-	File* pThis = new (Alloc(sizeof(File))) File();
+	File* pThis = new (allocate_memory(sizeof(File))) File();
 	if (pThis) {
 
 		// Load up the data
 		if (pThis->open(pFileName, uAccess) != kErrorNone) {
 
 			// Kill the malformed class
-			Delete(pThis);
+			delete_object(pThis);
 			pThis = nullptr;
 		}
 	}

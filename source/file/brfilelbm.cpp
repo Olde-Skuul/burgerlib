@@ -138,7 +138,7 @@ const char * BURGER_API Burger::FileLBM::UnpackILBMData(uint8_t *pOutput,uintptr
 const char * BURGER_API Burger::FileLBM::UnpackILBM(uint8_t *pOutput,uint_t uWidth,uint_t uHeight,uint_t uDepth,InputMemoryStream *pInput)
 {
 	uint_t uBytesPerPixel = (uDepth+7U)>>3U;
-	uint8_t *pTempLineBuffer = static_cast<uint8_t *>(Alloc((uWidth+16)*uBytesPerPixel));	// Buffer to deinterleave memory
+	uint8_t *pTempLineBuffer = static_cast<uint8_t *>(allocate_memory((uWidth+16)*uBytesPerPixel));	// Buffer to deinterleave memory
 	if (!pTempLineBuffer) {			// Error (How!!)
 		return "Out of memory.";
 	}
@@ -153,7 +153,7 @@ const char * BURGER_API Burger::FileLBM::UnpackILBM(uint8_t *pOutput,uint_t uWid
 		}
 
 		// Merge the planes
-		MemoryClear(pOutput,uWidth);	// Clear out the old line
+		memory_clear(pOutput,uWidth);	// Clear out the old line
 		uint_t uPlaneIndex = 0;			// Start at the first bit plane
 		uint_t uPlaneMask = 1;			// Init dest mask
 		do {
@@ -181,7 +181,7 @@ const char * BURGER_API Burger::FileLBM::UnpackILBM(uint8_t *pOutput,uint_t uWid
 		pOutput=pOutput+uWidth;			// Next line down please
 	} while (--uHeight);
 
-	Free(pTempLineBuffer);		// Release the line buffer
+	free_memory(pTempLineBuffer);		// Release the line buffer
 	return pBadNews;			// Return error code if any
 }
 
@@ -304,7 +304,7 @@ Burger::Image * Burger::FileLBM::Load(InputMemoryStream *pInput)
 		if (uDepth<9) {		// Get the palette
 			pBadNews = SeekIffChunk(pInput,CMAPASCII,uStartOffset);	// Read in the palette
 			if (!pBadNews) {
-				MemoryClear(m_Palette,sizeof(m_Palette));
+				memory_clear(m_Palette,sizeof(m_Palette));
 				uint32_t uPaletteSize = pInput->GetBigWord32()/3U;
 				if (uPaletteSize>256) {
 					uPaletteSize = 256;
@@ -330,15 +330,15 @@ Burger::Image * Burger::FileLBM::Load(InputMemoryStream *pInput)
 		if (!pBadNews) {
 			pInput->SkipForward(4);
 			if (FormType) {
-				pImage = Image::New(uWidth,uHeight,Image::PIXELTYPE8BIT);
+				pImage = Image::new_object(uWidth,uHeight,Image::PIXELTYPE8BIT);
 				if (pImage) {
 					pBadNews = UnpackILBMData(pImage->GetImage(),(uint32_t)uWidth*uHeight,pInput);
 				}
 			} else {
 				if (uDepth==24) {
-					pImage = Image::New(uWidth,uHeight,Image::PIXELTYPE888);
+					pImage = Image::new_object(uWidth,uHeight,Image::PIXELTYPE888);
 				} else {
-					pImage = Image::New(uWidth,uHeight,Image::PIXELTYPE8BIT);
+					pImage = Image::new_object(uWidth,uHeight,Image::PIXELTYPE8BIT);
 				}
 				if (pImage) {
 					pBadNews = UnpackILBM(pImage->GetImage(),uWidth,uHeight,uDepth,pInput);
@@ -349,7 +349,7 @@ Burger::Image * Burger::FileLBM::Load(InputMemoryStream *pInput)
 	// If there was an error, clean up
 	if (pBadNews) {
 		Debug::Warning(pBadNews);
-		Delete(pImage);
+		delete_object(pImage);
 		pImage = NULL;
 	}
 	return pImage;

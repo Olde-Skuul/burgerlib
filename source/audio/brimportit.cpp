@@ -499,7 +499,7 @@ uint_t BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const uint8_t
 									pInstrData->m_uNumberSamples = 0;
 									pInstrData->SetName(pInstrumentFormat->m_Name);
 
-									MemoryClear(pInstrData->m_WhichSampleForNote,sizeof(pInstrData->m_WhichSampleForNote));
+									memory_clear(pInstrData->m_WhichSampleForNote,sizeof(pInstrData->m_WhichSampleForNote));
 
 									uint_t uMinSamp = 200;
 									uint_t j = 0;
@@ -542,7 +542,7 @@ uint_t BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const uint8_t
 												}
 												if (prevSamp != newsamp) {
 													prevSamp = newsamp;
-													Sequencer::SampleDescription *pSampleDescription = Sequencer::SampleDescription::New();
+													Sequencer::SampleDescription *pSampleDescription = Sequencer::SampleDescription::new_object();
 													if (!pSampleDescription) {
 														// Uh oh...
 														uResult = Sequencer::IMPORT_OUTOFMEMORY;
@@ -577,7 +577,7 @@ uint_t BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const uint8_t
 													pSampleDescription->SetName(pSampleFormat->m_Name);
 													if (pSampleDescription->m_uSampleSize) {
 														const void *pDigital = pInput+LittleEndian::load_unaligned(&pSampleFormat->m_uSampleOffset);
-														pSampleDescription->m_pSample = alloc_copy(pDigital,pSampleDescription->m_uSampleSize);
+														pSampleDescription->m_pSample = allocate_memory_copy(pDigital,pSampleDescription->m_uSampleSize);
 														if (!pSampleDescription->m_pSample) {
 															// Uh oh...
 															uResult = Sequencer::IMPORT_OUTOFMEMORY;
@@ -634,7 +634,7 @@ uint_t BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const uint8_t
 										pInstrData->m_uNumberSamples = 1;
 										pInstrData->m_uVolumeFadeSpeed = Sequencer::cDefaultVolumeFade;
 
-										Sequencer::SampleDescription *pSampleDescription = Sequencer::SampleDescription::New();
+										Sequencer::SampleDescription *pSampleDescription = Sequencer::SampleDescription::new_object();
 										if (!pSampleDescription) {
 											// Uh oh...
 											uResult = Sequencer::IMPORT_OUTOFMEMORY;
@@ -659,7 +659,7 @@ uint_t BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const uint8_t
 
 										pSampleDescription->m_iRelativeNote	= -12;
 										pInstrData->SetName(pSampleFormat->m_Name);
-										pSampleDescription->m_pSample = alloc_copy(pDigitalSample,pSampleDescription->m_uSampleSize);
+										pSampleDescription->m_pSample = allocate_memory_copy(pDigitalSample,pSampleDescription->m_uSampleSize);
 										if (!pSampleDescription->m_pSample) {
 											// Uh oh...
 											uResult = Sequencer::IMPORT_OUTOFMEMORY;
@@ -706,7 +706,7 @@ uint_t BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const uint8_t
 							uint_t uPatternOffset = LittleEndian::load_unaligned(&pPatternOffsets[i]);
 							if (uPatternOffset) {
 								uint8_t PreviousVariables[Sequencer::cTrackMaxCount];
-								MemoryClear(PreviousVariables,sizeof(PreviousVariables));
+								memory_clear(PreviousVariables,sizeof(PreviousVariables));
 
 								const ITPatternFormat_t *pPatternFormat = static_cast<const ITPatternFormat_t*>(static_cast<const void *>(pInput + uPatternOffset));
 								uint_t uPatternLength = LittleEndian::load_unaligned(&pPatternFormat->m_uLength);
@@ -775,7 +775,7 @@ uint_t BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const uint8_t
 								
 								// No Data for this pattern - Clear Pattern
 
-								pOutput->m_pPartitions[i] = Sequencer::PatternData_t::New(1,uChannelCount);
+								pOutput->m_pPartitions[i] = Sequencer::PatternData_t::new_object(1,uChannelCount);
 								if (!pOutput->m_pPartitions[i]) {
 									uResult = Sequencer::IMPORT_OUTOFMEMORY;
 									break;
@@ -786,7 +786,7 @@ uint_t BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const uint8_t
 								const ITPatternFormat_t *pPatternFormat = static_cast<const ITPatternFormat_t*>(static_cast<const void *>(pInput + uPatternOffset));
 								uint_t uRows = LittleEndian::load_unaligned(&pPatternFormat->m_uRows);
 
-								pOutput->m_pPartitions[i] = Sequencer::PatternData_t::New(uRows,uChannelCount);
+								pOutput->m_pPartitions[i] = Sequencer::PatternData_t::new_object(uRows,uChannelCount);
 								if (!pOutput->m_pPartitions[i]) {
 									uResult = Sequencer::IMPORT_OUTOFMEMORY;
 									break;
@@ -797,7 +797,7 @@ uint_t BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const uint8_t
 								uint8_t PreviousVolumes[Sequencer::cTrackMaxCount];
 								uint8_t PreviousArguments[Sequencer::cTrackMaxCount];
 								uint8_t PreviousCommands[Sequencer::cTrackMaxCount];
-								MemoryClear(PreviousVariables,sizeof(PreviousVariables));
+								memory_clear(PreviousVariables,sizeof(PreviousVariables));
 
 								uint_t uPatternLength = LittleEndian::load_unaligned(&pPatternFormat->m_uLength);
 								pWork = pPatternFormat->m_Data;

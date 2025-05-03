@@ -52,7 +52,7 @@ private:
 	}
 
 public:
-	static ProxyReferenceCounter* BURGER_API New(void) BURGER_NOEXCEPT;
+	static ProxyReferenceCounter* BURGER_API new_object(void) BURGER_NOEXCEPT;
 	BURGER_INLINE uint_t IsParentAlive(void) const BURGER_NOEXCEPT
 	{
 		return m_bParentAlive;
@@ -68,7 +68,7 @@ public:
 	BURGER_INLINE void Release(void) BURGER_NOEXCEPT
 	{
 		if (--m_uRefCount == 0) {
-			Free(this);
+			free_memory(this);
 		}
 	}
 };
@@ -91,7 +91,7 @@ public:
 	BURGER_INLINE void Release(void) BURGER_NOEXCEPT
 	{
 		if (--m_uRefCount == 0) {
-			Delete(this);
+			delete_object(this);
 		}
 	}
 };

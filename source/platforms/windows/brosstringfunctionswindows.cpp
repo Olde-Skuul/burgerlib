@@ -65,13 +65,13 @@ Burger::eError BURGER_API Burger::GetUserLoginName(
 	GetUserNameW(nullptr, &uBufferSize);
 	if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
 		WCHAR* pBuffer =
-			static_cast<WCHAR*>(alloc_clear(sizeof(WCHAR) * (uBufferSize + 1)));
+			static_cast<WCHAR*>(allocate_memory_clear(sizeof(WCHAR) * (uBufferSize + 1)));
 		if (pBuffer) {
 			if (GetUserNameW(pBuffer, &uBufferSize)) {
 				uResult = pOutput->assign(static_cast<const uint16_t*>(
 					static_cast<const void*>(pBuffer)));
 			}
-			Free(pBuffer);
+			free_memory(pBuffer);
 		}
 	}
 
@@ -192,13 +192,13 @@ Burger::eError BURGER_API Burger::GetMachineName(
 		if (!GetComputerNameExW(
 				ComputerNameDnsHostname, nullptr, &uBufferSize)) {
 			WCHAR* pBuffer = static_cast<WCHAR*>(
-				alloc_clear(sizeof(WCHAR) * (uBufferSize + 1)));
+				allocate_memory_clear(sizeof(WCHAR) * (uBufferSize + 1)));
 			if (GetComputerNameExW(
 					ComputerNameDnsHostname, pBuffer, &uBufferSize)) {
 				uResult = pOutput->assign(static_cast<const uint16_t*>(
 					static_cast<const void*>(pBuffer)));
 			}
-			Free(pBuffer);
+			free_memory(pBuffer);
 		}
 
 		// If that didn't work, punt.
@@ -243,7 +243,7 @@ Burger::eError BURGER_API Burger::GetFullPathNameUTF8(
 
 		if (uExpandedLength >= BURGER_ARRAYSIZE(ExpandedPath)) {
 			pExpanded = static_cast<WCHAR*>(
-				Alloc((uExpandedLength + 2) * sizeof(WCHAR)));
+				allocate_memory((uExpandedLength + 2) * sizeof(WCHAR)));
 			if (pExpanded) {
 				uExpandedLength = GetFullPathNameW(
 					reinterpret_cast<const WCHAR*>(Temp16.c_str()),
@@ -265,7 +265,7 @@ Burger::eError BURGER_API Burger::GetFullPathNameUTF8(
 
 			// Delete the temp buffer
 			if (pExpanded != ExpandedPath) {
-				Free(pExpanded);
+				free_memory(pExpanded);
 			}
 		}
 	}

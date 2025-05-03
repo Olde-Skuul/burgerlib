@@ -41,7 +41,7 @@ protected:
 
 public:
 	Random(uint32_t uNewSeed = 728056387U) BURGER_NOEXCEPT;
-	static Random* BURGER_API New(uint32_t uNewSeed = 0) BURGER_NOEXCEPT;
+	static Random* BURGER_API new_object(uint32_t uNewSeed = 0) BURGER_NOEXCEPT;
 
 	void set_seed(uint32_t uNewSeed) BURGER_NOEXCEPT BURGER_OVERRIDE;
 	uint32_t get(void) BURGER_NOEXCEPT BURGER_OVERRIDE;

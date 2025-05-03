@@ -107,7 +107,7 @@
 	\note This is a structure, as such, it's the application's responsibility
 	to zero out this structure on instantiation manually. Generally, this is
 	created as an array, so it's encouraged to call
-	\ref MemoryClear(void *,uintptr_t) on the entire array on creation.
+	\ref memory_clear(void *,uintptr_t) on the entire array on creation.
 
 ***************************************/
 
@@ -1775,14 +1775,14 @@ uintptr_t BURGER_API Burger::SafePrint::ParamInfo_t::FormatTextString(
 					pOutText, uCharsWritten + 1, pArg->m_Data.m_pUInt16);
 				pOutText[uCharsWritten] = Temp;
 			} else {
-				MemoryCopy(pOutText, g_NullString, uCharsWritten);
+				memory_copy(pOutText, g_NullString, uCharsWritten);
 			}
 		} else {
 			const char* pSrcText = pArg->GetText();
 			if (!pSrcText) {
 				pSrcText = g_NullString;
 			}
-			MemoryCopy(pOutText, pSrcText, uCharsWritten);
+			memory_copy(pOutText, pSrcText, uCharsWritten);
 		}
 	}
 	return GetOutputLength();
@@ -1820,7 +1820,7 @@ uintptr_t BURGER_API Burger::SafePrint::ParamInfo_t::FormatBool(
         (bIsValueZero) ? "FALSE" : "TRUE" :
 		(bIsValueZero) ? "false" :
                          "true";
-	MemoryCopy(pOutText, pSrcText, uNumChars);
+						 memory_copy(pOutText, pSrcText, uNumChars);
 	return GetOutputLength();
 }
 
@@ -2441,7 +2441,7 @@ Burger::SafePrint::ProcessResults_t::GenerateFormatOutputToBuffer(
 				}
 			} else {
 				// fast path, we don't have '%%' sequences to convert
-				MemoryCopy(pOutputBuffer + uCharCount, pSrcText, uBytesToCopy);
+				memory_copy(pOutputBuffer + uCharCount, pSrcText, uBytesToCopy);
 				uCharCount += uBytesToCopy;
 			}
 			break;
@@ -3931,7 +3931,7 @@ intptr_t BURGER_API Burger::GetFormattedLength(const char* pFormat,
 
 	SafePrint::ProcessResults_t TheProcessResults;
 	SafePrint::ParamInfo_t ParamIntoTable[SafePrint::kMAX_OUTPUT_COMMANDS];
-	MemoryClear(ParamIntoTable, sizeof(ParamIntoTable));
+	memory_clear(ParamIntoTable, sizeof(ParamIntoTable));
 
 	// Analyze everything and determine what we'll output
 	const uint_t bParseOk = TheProcessResults.FormatPreProcess(
@@ -3993,7 +3993,7 @@ intptr_t BURGER_API Burger::SprintfUserAlloc(
 
 	SafePrint::ProcessResults_t TheProcessResults;
 	SafePrint::ParamInfo_t ParamIntoTable[SafePrint::kMAX_OUTPUT_COMMANDS];
-	MemoryClear(ParamIntoTable, sizeof(ParamIntoTable));
+	memory_clear(ParamIntoTable, sizeof(ParamIntoTable));
 
 	// Analyze everything and determine what we'll output
 	const uint_t bParseOk = TheProcessResults.FormatPreProcess(
@@ -4075,7 +4075,7 @@ intptr_t BURGER_API Burger::Sprintf(char* pOutput, const char* pFormat,
 	// Setup for parsing engine
 	SafePrint::ProcessResults_t TheProcessResults;
 	SafePrint::ParamInfo_t ParamIntoTable[SafePrint::kMAX_OUTPUT_COMMANDS];
-	MemoryClear(ParamIntoTable, sizeof(ParamIntoTable));
+	memory_clear(ParamIntoTable, sizeof(ParamIntoTable));
 
 	// Analyze everything and determine what we'll output
 	uint_t bParseOk = TheProcessResults.FormatPreProcess(
@@ -4142,7 +4142,7 @@ intptr_t BURGER_API Burger::Snprintf(char* pOutput, uintptr_t uOutputSize,
 
 	SafePrint::ProcessResults_t TheProcessResults;
 	SafePrint::ParamInfo_t ParamIntoTable[SafePrint::kMAX_OUTPUT_COMMANDS];
-	MemoryClear(ParamIntoTable, sizeof(ParamIntoTable));
+	memory_clear(ParamIntoTable, sizeof(ParamIntoTable));
 
 	// Analyze everything and determine what we'll output
 	const uint_t bParseOk = TheProcessResults.FormatPreProcess(
@@ -4199,7 +4199,7 @@ intptr_t BURGER_API Burger::Printf(const char* pFormat, uintptr_t uArgCount,
 	// Setup for parsing engine
 	SafePrint::ProcessResults_t TheProcessResults;
 	SafePrint::ParamInfo_t ParamIntoTable[SafePrint::kMAX_OUTPUT_COMMANDS];
-	MemoryClear(ParamIntoTable, sizeof(ParamIntoTable));
+	memory_clear(ParamIntoTable, sizeof(ParamIntoTable));
 
 	// Analyze everything and determine what we'll output
 	const uint_t bParseOk = TheProcessResults.FormatPreProcess(
@@ -4257,7 +4257,7 @@ intptr_t BURGER_API Burger::Fprintf(FILE* fp, const char* pFormat,
 
 	SafePrint::ProcessResults_t TheProcessResults;
 	SafePrint::ParamInfo_t ParamIntoTable[SafePrint::kMAX_OUTPUT_COMMANDS];
-	MemoryClear(ParamIntoTable, sizeof(ParamIntoTable));
+	memory_clear(ParamIntoTable, sizeof(ParamIntoTable));
 
 	// Analyze everything and determine what we'll output
 	const uint_t bParseOk = TheProcessResults.FormatPreProcess(
@@ -4315,7 +4315,7 @@ intptr_t BURGER_API Burger::DebugSnprintf(char* pOutput, uintptr_t uOutputSize,
 	// parse loop
 	SafePrint::ProcessResults_t TheProcessResults;
 	SafePrint::ParamInfo_t ParamIntoTable[SafePrint::kMAX_OUTPUT_COMMANDS];
-	MemoryClear(ParamIntoTable, sizeof(ParamIntoTable));
+	memory_clear(ParamIntoTable, sizeof(ParamIntoTable));
 
 	const uintptr_t uFormatLength = string_length(pFormat);
 	const uint_t bParseOk = TheProcessResults.FormatPreProcess(

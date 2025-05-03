@@ -59,7 +59,7 @@ uint_t Burger::VertexBuffer::CheckLoad(Display* pDisplay)
 				hResult = m_pD3DVertexBuffer->Lock(
 					0, static_cast<UINT>(m_uVertexArraySize), &pVertices, 0);
 				if (hResult >= 0) {
-					MemoryCopy(pVertices, m_pVertexArray, m_uVertexArraySize);
+					memory_copy(pVertices, m_pVertexArray, m_uVertexArraySize);
 					m_pD3DVertexBuffer->Unlock();
 				}
 			}
@@ -138,7 +138,7 @@ uint_t Burger::VertexBuffer::CheckLoad(Display* pDisplay)
 				hResult = m_pD3DIndexBuffer->Lock(
 					0, static_cast<UINT>(m_uElementSize), &pIndices, 0);
 				if (hResult >= 0) {
-					MemoryCopy(pIndices, m_pElements, m_uElementSize);
+					memory_copy(pIndices, m_pElements, m_uElementSize);
 					m_pD3DIndexBuffer->Unlock();
 				}
 			}

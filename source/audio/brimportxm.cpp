@@ -623,7 +623,7 @@ uint_t BURGER_API Burger::ImportXM(Sequencer::SongPackage *pOutput,const uint8_t
 
 				Sequencer::PatternData_t *pPatternData;
 				if (uPackSize) {
-					pPatternData = Sequencer::PatternData_t::New(uRowCount,uChannelCount);
+					pPatternData = Sequencer::PatternData_t::new_object(uRowCount,uChannelCount);
 					if (!pPatternData) {
 						// Uh oh...
 						uResult = Sequencer::IMPORT_OUTOFMEMORY;
@@ -648,7 +648,7 @@ uint_t BURGER_API Burger::ImportXM(Sequencer::SongPackage *pOutput,const uint8_t
 						uInputLength -= uConsumed;
 					}
 				} else {
-					pPatternData = Sequencer::PatternData_t::New(1,pOutput->m_SongDescription.m_uChannelCount);
+					pPatternData = Sequencer::PatternData_t::new_object(1,pOutput->m_SongDescription.m_uChannelCount);
 					if (!pPatternData) {
 						// Uh oh...
 						uResult = Sequencer::IMPORT_OUTOFMEMORY;
@@ -785,7 +785,7 @@ uint_t BURGER_API Burger::ImportXM(Sequencer::SongPackage *pOutput,const uint8_t
 							}
 							pInput = pInput + uSampleSize;
 							uInputLength -= uSampleSize;
-							Sequencer::SampleDescription *pSampleDescription = Sequencer::SampleDescription::New();
+							Sequencer::SampleDescription *pSampleDescription = Sequencer::SampleDescription::new_object();
 							pOutput->m_pSampleDescriptions[uInstrument*Sequencer::cSampleMaxCount + uSampleIndex] = pSampleDescription;
 							pSampleDescription->m_uSampleSize = LittleEndian::load_unaligned(&pXMSample->m_uLength);
 							pSampleDescription->m_uLoopStart = LittleEndian::load_unaligned(&pXMSample->m_uLoopStart);
@@ -834,7 +834,7 @@ uint_t BURGER_API Burger::ImportXM(Sequencer::SongPackage *pOutput,const uint8_t
 						do {
 
 							Sequencer::SampleDescription *pSampleDescription = pOutput->m_pSampleDescriptions[uInstrument*Sequencer::cSampleMaxCount + uSampleIndex];
-							void *pDestination = Alloc(pSampleDescription->m_uSampleSize);
+							void *pDestination = allocate_memory(pSampleDescription->m_uSampleSize);
 							if (!pDestination) {
 								uResult = Sequencer::IMPORT_OUTOFMEMORY;
 								break;

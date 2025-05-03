@@ -127,7 +127,7 @@ uint_t Burger::Display::Init(
 	// Create my direct draw9 instance
 
 	D3DPRESENT_PARAMETERS d3dpp;
-	MemoryClear(&d3dpp, sizeof(d3dpp));
+	memory_clear(&d3dpp, sizeof(d3dpp));
 	d3dpp.BackBufferWidth = uWidth;
 	d3dpp.BackBufferHeight = uHeight;
 	d3dpp.BackBufferFormat = D3DFMT_A8R8G8B8;
@@ -199,12 +199,12 @@ void Burger::Display::EndScene(void)
 
 Burger::Texture* Burger::Display::CreateTextureObject(void)
 {
-	return new (Alloc(sizeof(Texture))) Texture;
+	return new (allocate_memory(sizeof(Texture))) Texture;
 }
 
 Burger::VertexBuffer* Burger::Display::CreateVertexBufferObject(void)
 {
-	return new (Alloc(sizeof(VertexBuffer))) VertexBuffer;
+	return new (allocate_memory(sizeof(VertexBuffer))) VertexBuffer;
 }
 
 void Burger::Display::SetViewport(

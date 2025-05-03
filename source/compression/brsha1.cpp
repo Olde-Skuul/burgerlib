@@ -52,7 +52,7 @@
 		// Wrap up the processing
 		Context.finalize();
 		// Return the resulting hash
-		MemoryCopy(pOutput,&Context.m_Hash,20);
+		memory_copy(pOutput,&Context.m_Hash,20);
 	\endcode
 
 	\sa \ref SHA1_t or hash(SHA1_t *,const void *,uintptr_t)
@@ -315,7 +315,7 @@ void BURGER_API Burger::SHA1Hasher_t::process(
 
 	if (uLength >= i) { // Should I copy or pack?
 
-		MemoryCopy(&m_CacheBuffer[uIndex], pInput, i);
+		memory_copy(&m_CacheBuffer[uIndex], pInput, i);
 		process(m_CacheBuffer);
 
 		// Perform the checksum directly on the memory buffers
@@ -332,7 +332,7 @@ void BURGER_API Burger::SHA1Hasher_t::process(
 	}
 
 	// Buffer remaining input
-	MemoryCopy(&m_CacheBuffer[uIndex], static_cast<const uint8_t*>(pInput) + i,
+	memory_copy(&m_CacheBuffer[uIndex], static_cast<const uint8_t*>(pInput) + i,
 		uLength - i);
 }
 
@@ -352,7 +352,7 @@ void BURGER_API Burger::SHA1Hasher_t::finalize(void) BURGER_NOEXCEPT
 	// Pad array, first byte is 0x80, rest 0
 	uint8_t Padding[64];
 	Padding[0] = 0x80;
-	MemoryClear(&Padding[1], 63);
+	memory_clear(&Padding[1], 63);
 
 	// Save number of bits
 
@@ -397,5 +397,5 @@ void BURGER_API Burger::hash(
 	Context.finalize();
 
 	// Return the resulting hash
-	MemoryCopy(pOutput, &Context.m_Hash, 20);
+	memory_copy(pOutput, &Context.m_Hash, 20);
 }

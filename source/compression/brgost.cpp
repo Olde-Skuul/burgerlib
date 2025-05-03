@@ -262,7 +262,7 @@ const uint32_t Burger::GOSTHasher_t::g_SBoxTable[4][256] = {
 		// Wrap up the processing
 		Context.finalize();
 		// Return the resulting hash
-		MemoryCopy(pOutput,&Context.m_Hash,32);
+		memory_copy(pOutput,&Context.m_Hash,32);
 	\endcode
 
 	\sa \ref GOST_t or hash(GOST_t *,const void *,uintptr_t)
@@ -283,9 +283,9 @@ void BURGER_API Burger::GOSTHasher_t::init(void) BURGER_NOEXCEPT
 {
 	// Load magic initialization constants.
 
-	MemoryClear(&m_Hash, sizeof(m_Hash));
-	MemoryClear(m_uNativeHash, sizeof(m_uNativeHash));
-	MemoryClear(m_uSum, sizeof(m_uSum));
+	memory_clear(&m_Hash, sizeof(m_Hash));
+	memory_clear(m_uNativeHash, sizeof(m_uNativeHash));
+	memory_clear(m_uSum, sizeof(m_uSum));
 	m_uTotalCount = 0;
 	m_uByteCount = 0;
 }
@@ -625,7 +625,7 @@ void BURGER_API Burger::GOSTHasher_t::process(
 	// Should I copy or pack?
 	if (uLength >= i) {
 
-		MemoryCopy(&m_CacheBuffer[uIndex], pInput, i);
+		memory_copy(&m_CacheBuffer[uIndex], pInput, i);
 		process(m_CacheBuffer);
 
 		// Bit count
@@ -648,7 +648,7 @@ void BURGER_API Burger::GOSTHasher_t::process(
 	}
 
 	// Buffer remaining input
-	MemoryCopy(&m_CacheBuffer[uIndex], static_cast<const uint8_t*>(pInput) + i,
+	memory_copy(&m_CacheBuffer[uIndex], static_cast<const uint8_t*>(pInput) + i,
 		uLength - i);
 }
 
@@ -669,7 +669,7 @@ void BURGER_API Burger::GOSTHasher_t::finalize(void) BURGER_NOEXCEPT
 
 	uintptr_t uByteCount = static_cast<uintptr_t>(m_uByteCount) & 0x1FU;
 	if (uByteCount) {
-		MemoryClear(&m_CacheBuffer[uByteCount], 32U - uByteCount);
+		memory_clear(&m_CacheBuffer[uByteCount], 32U - uByteCount);
 		process(m_CacheBuffer);
 		m_uTotalCount += uByteCount << 3U;
 	}
@@ -677,7 +677,7 @@ void BURGER_API Burger::GOSTHasher_t::finalize(void) BURGER_NOEXCEPT
 	// Hash in the data size count and the data sum
 
 	uint32_t Temp[8];
-	MemoryClear(Temp, sizeof(Temp));
+	memory_clear(Temp, sizeof(Temp));
 	Temp[0] = static_cast<uint32_t>(m_uTotalCount);
 	Temp[1] = static_cast<uint32_t>(m_uTotalCount >> 32U);
 	process(Temp);
@@ -686,7 +686,7 @@ void BURGER_API Burger::GOSTHasher_t::finalize(void) BURGER_NOEXCEPT
 	// Save off the hash in Little Endian format
 
 #if defined(BURGER_LITTLEENDIAN)
-	MemoryCopy(&m_Hash, m_uNativeHash, sizeof(m_Hash));
+memory_copy(&m_Hash, m_uNativeHash, sizeof(m_Hash));
 #else
 	swap_endian(static_cast<uint32_t*>(static_cast<void*>(&m_Hash)),
 		m_uNativeHash, BURGER_ARRAYSIZE(m_uNativeHash));
@@ -722,7 +722,7 @@ void BURGER_API Burger::hash(
 	Context.finalize();
 
 	// Return the resulting hash
-	MemoryCopy(pOutput, &Context.m_Hash, 32);
+	memory_copy(pOutput, &Context.m_Hash, 32);
 }
 
 /*! ************************************

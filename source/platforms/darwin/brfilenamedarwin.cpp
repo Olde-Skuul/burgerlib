@@ -239,7 +239,7 @@ Burger::eError BURGER_API Burger::Filename::set_application_directory(
 	// Got the length?
 	if (iTest == -1) {
 		// Allocate the buffer
-		char* pBuffer = static_cast<char*>(Alloc(uSize + 1));
+		char* pBuffer = static_cast<char*>(allocate_memory(uSize + 1));
 		if (pBuffer) {
 			// Try again
 			iTest = _NSGetExecutablePath(pBuffer, &uSize);
@@ -259,7 +259,7 @@ Burger::eError BURGER_API Burger::Filename::set_application_directory(
 				}
 
 				// Allocate a generous buffer
-				char* pRealPath = static_cast<char*>(Alloc(path_max * 2));
+				char* pRealPath = static_cast<char*>(allocate_memory(path_max * 2));
 
 				// Did it parse?
 				if (realpath(pDirBuffer, pRealPath)) {
@@ -269,10 +269,10 @@ Burger::eError BURGER_API Burger::Filename::set_application_directory(
 				set_native(pDirBuffer);
 
 				// Release the expanded buffer
-				Free(pRealPath);
+				free_memory(pRealPath);
 			}
 			// Clean up
-			Free(pBuffer);
+			free_memory(pBuffer);
 		}
 	}
 	return kErrorNone;

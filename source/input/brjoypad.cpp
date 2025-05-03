@@ -44,7 +44,7 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::Joypad, Burger::Base);
 Burger::Joypad::Joypad(GameApp* pAppInstance) BURGER_NOEXCEPT
 {
 	m_pAppInstance = pAppInstance;
-	MemoryClear(m_Data, sizeof(m_Data));
+	memory_clear(m_Data, sizeof(m_Data));
 }
 #endif
 

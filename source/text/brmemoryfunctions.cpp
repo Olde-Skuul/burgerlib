@@ -32,7 +32,7 @@
 		pointers must point to separate buffers. If they are overlapping
 		buffers, the results are undefined.
 
-	\sa MemoryMove(), MemoryFill() and MemoryClear()
+	\sa memory_move(), memory_set() and memory_clear()
 
 ***************************************/
 
@@ -52,7 +52,7 @@
 
 ***************************************/
 
-void BURGER_API Burger::MemoryCopy(
+void BURGER_API Burger::memory_copy(
 	void* pOutput, const void* pInput, uintptr_t uCount) BURGER_NOEXCEPT
 {
 	// Is the source pointer not long word aligned?
@@ -183,7 +183,7 @@ AlignSource:
 // Generic version assuming a 32 bit CPU
 //
 
-void BURGER_API Burger::MemoryCopy(
+void BURGER_API Burger::memory_copy(
 	void* pOutput, const void* pInput, uintptr_t uCount) BURGER_NOEXCEPT
 {
 	// Do anything?
@@ -277,25 +277,25 @@ void BURGER_API Burger::MemoryCopy(
 	\brief Copy raw memory from one buffer to another in any direction.
 
 	Given a pointer to a byte stream, copy it to a destination buffer using a
-	supplied input length. This differs from MemoryCopy() in that it is
+	supplied input length. This differs from memory_copy() in that it is
 	safe to use this function for up or down memory copies. It will determine
 	which direction to perform the copy in a safe manner. As such, there is a
 	small performance penalty for using this function instead of
-	MemoryCopy().
+	memory_copy().
 
 	\param pOutput Pointer to the buffer to get the copy.
 	\param pInput Pointer to the buffer with the raw data to copy from.
 	\param uCount Size in bytes of the data to copy.
 
-	\sa MemoryCopy(), MemoryClear() and MemoryFill()
+	\sa memory_copy(), memory_clear() and memory_set()
 
 ***************************************/
 
-void BURGER_API Burger::MemoryMove(
+void BURGER_API Burger::memory_move(
 	void* pOutput, const void* pInput, uintptr_t uCount) BURGER_NOEXCEPT
 {
 	if (pOutput <= pInput) {
-		MemoryCopy(pOutput, pInput, uCount);
+		memory_copy(pOutput, pInput, uCount);
 	} else if (uCount) {
 		// Copy in reverse
 		pInput = static_cast<const uint8_t*>(pInput) + (uCount - 1);
@@ -323,11 +323,11 @@ void BURGER_API Burger::MemoryMove(
 		perform the operation quickly in which cache-disabled sections of memory
 		would generate a page fault.
 
-	\sa MemoryFill() and MemoryCopy()
+	\sa memory_set() and memory_copy()
 
 ***************************************/
 
-void BURGER_API Burger::MemoryClear(
+void BURGER_API Burger::memory_clear(
 	void* pOutput, uintptr_t uCount) BURGER_NOEXCEPT
 {
 	if (uCount) {
@@ -353,11 +353,11 @@ void BURGER_API Burger::MemoryClear(
 		perform the operation quickly in which cache-disabled sections of memory
 		would generate a page fault.
 
-	\sa MemoryClear() and MemoryCopy()
+	\sa memory_clear() and memory_copy()
 
 ***************************************/
 
-void BURGER_API Burger::MemoryFill(
+void BURGER_API Burger::memory_set(
 	void* pOutput, uint8_t uFill, uintptr_t uCount) BURGER_NOEXCEPT
 {
 	if (uCount) {

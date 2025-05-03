@@ -366,6 +366,11 @@ BURGER_LIB_SWITCH = (
     "../source/asm/switch_asm"
 )
 
+# Microsoft Xbox classic specific code
+BURGER_LIB_XBOX = (
+    "../source/platforms/xbox",
+)
+
 # Microsoft Xbox 360 specific code
 BURGER_LIB_XBOX_360 = (
     "../source/platforms/xbox360",
@@ -1069,7 +1074,7 @@ def project_settings(project):
 
     # Microsoft platforms
     if platform is PlatformTypes.xbox:
-        # project.source_folders_list.extend(BURGER_LIB_XBOX)
+        project.source_folders_list.extend(BURGER_LIB_XBOX)
         project.source_folders_list.append(
             "../source/asm/masm/vs2003_2010")
 

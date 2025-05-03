@@ -182,7 +182,7 @@ Burger::GridIndexPoints::GridIndexPoints(const Vector4D_t *pBounds,uint_t uXCell
 	BURGER_ASSERT(pBounds->GetTopLeft()->y <= pBounds->GetBottomRight()->y);
 
 	// Allocate the grid.
-	m_ppGrid = static_cast<Entry_t **>(alloc_clear(sizeof(Entry_t*)*uXCells * uYCells));
+	m_ppGrid = static_cast<Entry_t **>(allocate_memory_clear(sizeof(Entry_t*)*uXCells * uYCells));
 }
 
 /*! ************************************
@@ -216,7 +216,7 @@ Burger::GridIndexPoints::GridIndexPoints(const Vector4D_t *pBounds,uintptr_t uIt
 	m_fYCells = static_cast<float>(static_cast<int>(m_uYCells));
 
 	// Allocate the grid.
-	m_ppGrid = static_cast<Entry_t **>(alloc_clear(sizeof(Entry_t*)*m_uXCells * m_uYCells));
+	m_ppGrid = static_cast<Entry_t **>(allocate_memory_clear(sizeof(Entry_t*)*m_uXCells * m_uYCells));
 }
 
 /*! ************************************
@@ -239,14 +239,14 @@ Burger::GridIndexPoints::~GridIndexPoints()
 			if (pEntry) {
 				do {
 					Entry_t *pNext = pEntry->m_pNext;
-					Free(pEntry);
+					free_memory(pEntry);
 					pEntry = pNext;
 				} while (pEntry);
 			}
 			++ppEntry;
 		} while (--uCount);
 	}
-	Free(m_ppGrid);
+	free_memory(m_ppGrid);
 }
 
 /*! ************************************
@@ -448,7 +448,7 @@ void BURGER_API Burger::GridIndexPoints::add(const Vector2D_t *pPoint,uint_t uVa
 	Vector2D_t vCellIndex;
 	GetContainingCellClamped(&vCellIndex,pPoint);
 
-	Entry_t *pEntry = static_cast<Entry_t *>(Alloc(sizeof(Entry_t)));
+	Entry_t *pEntry = static_cast<Entry_t *>(allocate_memory(sizeof(Entry_t)));
 	pEntry->m_Point.Set(pPoint);
 	pEntry->m_uValue = uValue;
 
@@ -485,7 +485,7 @@ void BURGER_API Burger::GridIndexPoints::remove(Entry_t *pEntry)
 		if (pPrevious == pEntry) {
 			// This is the one; unlink it.
 			*ppUnlink = pPrevious->m_pNext;
-			Free(pEntry);
+			free_memory(pEntry);
 			return;
 		}
 		// Go to the next entry.
@@ -988,7 +988,7 @@ Burger::GridIndexBox::iterator Burger::GridIndexBox::begin(const Vector4D_t *pBo
 void BURGER_API Burger::GridIndexBox::add(const Vector4D_t *pBounds,uint_t uValue)
 	// Insert a box, with the given payload, into our index.
 {
-	Entry *pEntry = New<Entry>();
+	Entry *pEntry = new_object<Entry>();
 	pEntry->m_BoundsRect.Set(pBounds);
 	pEntry->m_uValue = uValue;
 
@@ -1009,7 +1009,7 @@ void BURGER_API Burger::GridIndexBox::add(const Vector4D_t *pBounds,uint_t uValu
 	}
 	// To prevent memory leaks, if it wasn't pushed, delete it
 	if (!bPushed) {
-		Delete(pEntry);
+		delete_object(pEntry);
 	}
 }
 
@@ -1052,7 +1052,7 @@ void BURGER_API Burger::GridIndexBox::remove(Entry *pEntry)
 				}
 			}
 		}
-		Delete(pEntry);
+		delete_object(pEntry);
 	}
 }
 

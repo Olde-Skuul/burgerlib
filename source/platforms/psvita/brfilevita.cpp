@@ -108,7 +108,7 @@ uint64_t BURGER_API Burger::File::get_file_size(void) BURGER_NOEXCEPT
 	int fp = static_cast<int>(reinterpret_cast<uintptr_t>(m_pFile));
 	if (fp > SCE_OK) {
 		SceIoStat MyStat;
-		MemoryClear(&MyStat, sizeof(MyStat));
+		memory_clear(&MyStat, sizeof(MyStat));
 		int eError = sceIoGetstatByFd(fp, &MyStat);
 		if (eError >= SCE_OK) {
 			if (static_cast<uint64_t>(MyStat.st_size) <=
@@ -294,7 +294,7 @@ Burger::eError BURGER_API Burger::File::get_modification_time(
 	int fp = static_cast<int>(reinterpret_cast<uintptr_t>(m_pFile));
 	if (fp > SCE_OK) {
 		SceIoStat MyStat;
-		MemoryClear(&MyStat, sizeof(MyStat));
+		memory_clear(&MyStat, sizeof(MyStat));
 		int eError = sceIoGetstatByFd(fp, &MyStat);
 		if (eError >= SCE_OK) {
 			// If it succeeded, the file must exist
@@ -332,7 +332,7 @@ Burger::eError BURGER_API Burger::File::get_creation_time(
 	int fp = static_cast<int>(reinterpret_cast<uintptr_t>(m_pFile));
 	if (fp > SCE_OK) {
 		SceIoStat MyStat;
-		MemoryClear(&MyStat, sizeof(MyStat));
+		memory_clear(&MyStat, sizeof(MyStat));
 		int eError = sceIoGetstatByFd(fp, &MyStat);
 		if (eError >= SCE_OK) {
 			// If it succeeded, the file must exist
@@ -372,7 +372,7 @@ Burger::eError BURGER_API Burger::File::set_modification_time(
 		int fp = static_cast<int>(reinterpret_cast<uintptr_t>(m_pFile));
 		if (fp > SCE_OK) {
 			SceIoStat MyStat;
-			MemoryClear(&MyStat, sizeof(MyStat));
+			memory_clear(&MyStat, sizeof(MyStat));
 			int eError = sceIoGetstatByFd(fp, &MyStat);
 			if (eError >= SCE_OK) {
 				pInput->Store(&MyStat.st_mtime);
@@ -412,7 +412,7 @@ Burger::eError BURGER_API Burger::File::set_creation_time(
 		int fp = static_cast<int>(reinterpret_cast<uintptr_t>(m_pFile));
 		if (fp > SCE_OK) {
 			SceIoStat MyStat;
-			MemoryClear(&MyStat, sizeof(MyStat));
+			memory_clear(&MyStat, sizeof(MyStat));
 			int eError = sceIoGetstatByFd(fp, &MyStat);
 			if (eError >= SCE_OK) {
 				pInput->Store(&MyStat.st_ctime);

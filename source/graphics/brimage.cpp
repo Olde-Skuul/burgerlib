@@ -87,22 +87,22 @@ Burger::Image::~Image()
 	Release this object with a call to delete
 
 	\code 
-		Image *pFoo = Burger::Image::New();
+		Image *pFoo = Burger::Image::new_object();
 		if (pFoo) {
 			DoStuff(pFoo);
-			Delete(pFoo);
+			delete_object(pFoo);
 		}
 	\endcode
 
 	\return A valid pointer if memory is available or \ref NULL if out of memory
-	\sa New(uint_t,uint_t,ePixelTypes)
+	\sa new_object(uint_t,uint_t,ePixelTypes)
 
 ***************************************/
 
-Burger::Image * BURGER_API Burger::Image::New(void)
+Burger::Image * BURGER_API Burger::Image::new_object(void)
 {
 	// Manually allocate the memory
-	Image *pThis = new (Alloc(sizeof(Image))) Image();
+	Image *pThis = new (allocate_memory(sizeof(Image))) Image();
 	return pThis;
 }
 
@@ -115,26 +115,26 @@ Burger::Image * BURGER_API Burger::Image::New(void)
 	Release this object with a call to delete
 
 	\code 
-		Image *pFoo = Burger::Image::New(pOldImage);
+		Image *pFoo = Burger::Image::new_object(pOldImage);
 		if (pFoo) {
 			DoStuff(pFoo);
-			Delete(pFoo);
+			delete_object(pFoo);
 		}
 	\endcode
 
 	\param pInput Pointer to a valid Image to copy from
 	\return A valid pointer if memory is available or \ref NULL if out of memory
-	\sa New(void), New(uint_t,uint_t,ePixelTypes)
+	\sa new_object(void), new_object(uint_t,uint_t,ePixelTypes)
 
 ***************************************/
 
-Burger::Image* BURGER_API Burger::Image::New(const Image *pInput)
+Burger::Image* BURGER_API Burger::Image::new_object(const Image *pInput)
 {
 	// Manually allocate the memory
-	Image *pThis = new (Alloc(sizeof(Image))) Image();
+	Image *pThis = new (allocate_memory(sizeof(Image))) Image();
 	if (pThis) {
 		if (pThis->Init(pInput)) {
-			Delete(pThis);
+			delete_object(pThis);
 			pThis = NULL;
 		}
 	}
@@ -152,10 +152,10 @@ Burger::Image* BURGER_API Burger::Image::New(const Image *pInput)
 
 	\code 
 		// Create memory for a 64x128 32 bits per pixel image
-		Image *pFoo = Burger::Image::New(64,128,Image::PIXELTYPE8888);
+		Image *pFoo = Burger::Image::new_object(64,128,Image::PIXELTYPE8888);
 		if (pFoo) {
 			DoStuff(pFoo);
-			Delete(pFoo);
+			delete_object(pFoo);
 		}
 	\endcode
 
@@ -164,18 +164,18 @@ Burger::Image* BURGER_API Burger::Image::New(const Image *pInput)
 	\param eType Type of pixel data
 
 	\return A valid pointer if memory is available or \ref NULL if out of memory
-	\sa Init(uint_t,uint_t,ePixelTypes), New(void)
+	\sa Init(uint_t,uint_t,ePixelTypes), new_object(void)
 
 ***************************************/
 
-Burger::Image * BURGER_API Burger::Image::New(uint_t uWidth,uint_t uHeight,ePixelTypes eType)
+Burger::Image * BURGER_API Burger::Image::new_object(uint_t uWidth,uint_t uHeight,ePixelTypes eType)
 {
 	// Manually allocate the memory
-	Image *pThis = new (Alloc(sizeof(Image))) Image();
+	Image *pThis = new (allocate_memory(sizeof(Image))) Image();
 	if (pThis) {
 		// Invoke the constructor manually
 		if (pThis->Init(uWidth,uHeight,eType)) {
-			Delete(pThis);
+			delete_object(pThis);
 			pThis = NULL;
 		}
 	}
@@ -193,10 +193,10 @@ Burger::Image * BURGER_API Burger::Image::New(uint_t uWidth,uint_t uHeight,ePixe
 
 	\code 
 		// Create memory for a 256x256 32 bits per pixel image with 3 mip maps (256x256,128x128,64x64)
-		Image *pFoo = Burger::Image::New(256,256,Image::PIXELTYPE8888,3);
+		Image *pFoo = Burger::Image::new_object(256,256,Image::PIXELTYPE8888,3);
 		if (pFoo) {
 			DoStuff(pFoo);
-			Delete(pFoo);
+			delete_object(pFoo);
 		}
 	\endcode
 
@@ -206,18 +206,18 @@ Burger::Image * BURGER_API Burger::Image::New(uint_t uWidth,uint_t uHeight,ePixe
 	\param uMipMaps Number of levels of mipmaps for the image
 
 	\return A valid pointer if memory is available or \ref NULL if out of memory
-	\sa Init(uint_t,uint_t,ePixelTypes,uint_t), New(void)
+	\sa Init(uint_t,uint_t,ePixelTypes,uint_t), new_object(void)
 
 ***************************************/
 
-Burger::Image * BURGER_API Burger::Image::New(uint_t uWidth,uint_t uHeight,ePixelTypes eType,uint_t uMipMaps)
+Burger::Image * BURGER_API Burger::Image::new_object(uint_t uWidth,uint_t uHeight,ePixelTypes eType,uint_t uMipMaps)
 {
 	// Manually allocate the memory
-	Image *pThis = new (Alloc(sizeof(Image))) Image();
+	Image *pThis = new (allocate_memory(sizeof(Image))) Image();
 	if (pThis) {
 		// Invoke the constructor manually
 		if (pThis->Init(uWidth,uHeight,eType,uMipMaps)) {
-			Delete(pThis);
+			delete_object(pThis);
 			pThis = NULL;
 		}
 	}
@@ -238,7 +238,7 @@ Burger::Image * BURGER_API Burger::Image::New(uint_t uWidth,uint_t uHeight,ePixe
 	\param eType Pixel type of the new image
 	\param uStride Bytes per scan line of the new image
 	\param pImage Pointer to the pixels of the new image
-	\param uFlags Flag controlling whether or not the class will call Free() on pImage on shutdown
+	\param uFlags Flag controlling whether or not the class will call free_memory() on pImage on shutdown
 	\param uMipMaps Number of mip maps in the image (Max 16)
 	\sa Shutdown(void), Init(const Image *)
 
@@ -247,7 +247,7 @@ Burger::Image * BURGER_API Burger::Image::New(uint_t uWidth,uint_t uHeight,ePixe
 void Burger::Image::Init(uint_t uWidth,uint_t uHeight,ePixelTypes eType,uintptr_t uStride,const uint8_t *pImage,uint_t uFlags,uint_t uMipMaps)
 {
 	if (!(m_uFlags&FLAGS_IMAGENOTALLOCATED)) {
-		Free(m_pImage);		// Dispose of the memory
+		free_memory(m_pImage);		// Dispose of the memory
 	}
 	m_pImage = const_cast<uint8_t*>(pImage);
 	m_uStride = static_cast<uint_t>(uStride);
@@ -294,7 +294,7 @@ uint_t Burger::Image::Init(uint_t uWidth,uint_t uHeight,ePixelTypes eType)
 		uintptr_t uSize = GetSuggestedBufferSize(uWidth,uHeight,eType);
 		if (uSize) {
 			uResult = 10;
-			void *pData = Alloc(uSize);
+			void *pData = allocate_memory(uSize);
 			if (pData) {
 				// Initialize the record
 				m_pImage = static_cast<uint8_t*>(pData);
@@ -342,7 +342,7 @@ uint_t Burger::Image::Init(uint_t uWidth,uint_t uHeight,ePixelTypes eType,uint_t
 		uintptr_t uSize = GetSuggestedBufferSize(uWidth,uHeight,eType,uMipMaps);
 		if (uSize) {
 			uResult = 10;
-			void *pData = Alloc(uSize);
+			void *pData = allocate_memory(uSize);
 			if (pData) {
 				// Initialize the record
 				m_pImage = static_cast<uint8_t*>(pData);
@@ -400,7 +400,7 @@ uint_t Burger::Image::Init(const Image *pInput)
 			uintptr_t uSourceStride = pInput->m_uStride;
 			uintptr_t uStride = m_uStride;
 			do {
-				MemoryCopy(pWork,pSource,uPixels);
+				memory_copy(pWork,pSource,uPixels);
 				pSource += uSourceStride;
 				pWork += uStride;
 			} while (--uHeight);
@@ -450,7 +450,7 @@ uint_t Burger::Image::InitPNG(InputMemoryStream *pInput,RGBAWord8_t *pPalette)
 			ClearPalette(pPalette);
 		} else {
 			// Copy on success
-			MemoryCopy(pPalette,Loader.GetPalette(),sizeof(pPalette[0])*256);
+			memory_copy(pPalette,Loader.GetPalette(),sizeof(pPalette[0])*256);
 		}
 	}
 	// Return 0 on success!
@@ -589,7 +589,7 @@ uint_t Burger::Image::InitGIF(InputMemoryStream *pInput,RGBAWord8_t *pPalette)
 			ClearPalette(pPalette);
 		} else {
 			// Copy on success
-			MemoryCopy(pPalette,Loader.GetPalette(),sizeof(pPalette[0])*256);
+			memory_copy(pPalette,Loader.GetPalette(),sizeof(pPalette[0])*256);
 		}
 	}
 	// Return 0 on success!
@@ -722,7 +722,7 @@ uint_t Burger::Image::InitTGA(InputMemoryStream *pInput,RGBAWord8_t *pPalette)
 			ClearPalette(pPalette);
 		} else {
 			// Copy on success
-			MemoryCopy(pPalette,Loader.GetPalette(),sizeof(pPalette[0])*256);
+			memory_copy(pPalette,Loader.GetPalette(),sizeof(pPalette[0])*256);
 		}
 	}
 	// Return 0 on success!
@@ -846,7 +846,7 @@ uint_t Burger::Image::InitBMP(InputMemoryStream *pInput,RGBAWord8_t *pPalette)
 			ClearPalette(pPalette);
 		} else {
 			// Copy on success
-			MemoryCopy(pPalette,Loader.GetPalette(),sizeof(pPalette[0])*256);
+			memory_copy(pPalette,Loader.GetPalette(),sizeof(pPalette[0])*256);
 		}
 	}
 	// Return 0 on success!
@@ -978,7 +978,7 @@ void Burger::Image::Transfer(Image *pInput)
 void Burger::Image::Shutdown(void)
 {
 	if (!(m_uFlags&FLAGS_IMAGENOTALLOCATED)) {
-		Free(m_pImage);		// Dispose of the memory
+		free_memory(m_pImage);		// Dispose of the memory
 	}
 	m_pImage = NULL;
 	m_uStride = 0;
@@ -1700,7 +1700,7 @@ void Burger::Image::ClearBitmap(void)
 			uint8_t *pWork = m_pImage;
 			uintptr_t uStride = m_uStride;
 			do {
-				MemoryClear(pWork,uPixels);
+				memory_clear(pWork,uPixels);
 				pWork += uStride;
 			} while (--uHeight);
 		}

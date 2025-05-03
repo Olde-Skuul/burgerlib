@@ -266,7 +266,7 @@ uint_t Burger::Display::Init(uint_t uWidth,uint_t uHeight,uint_t uDepth,uint_t u
 
 void Burger::Display::Shutdown(void)
 {
-	Free(m_pCompressedFormats);
+	free_memory(m_pCompressedFormats);
 	m_pCompressedFormats = NULL;
 	m_uCompressedFormatCount = 0;
 }

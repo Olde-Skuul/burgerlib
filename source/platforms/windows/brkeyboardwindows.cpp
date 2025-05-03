@@ -517,8 +517,8 @@ Burger::Keyboard::Keyboard(GameApp *pAppInstance) BURGER_NOEXCEPT :
 	m_uRepeatDelay(33)
 {
 	// Clear my variables
-	MemoryClear(m_KeyArray,sizeof(m_KeyArray));
-	MemoryClear(&m_RepeatEvent,sizeof(m_RepeatEvent));
+	memory_clear(m_KeyArray,sizeof(m_KeyArray));
+	memory_clear(&m_RepeatEvent,sizeof(m_RepeatEvent));
 
 	// Safety switch to verify the declaration in brwindowstypes.h matches the real thing
     BURGER_STATIC_ASSERT(sizeof(tagSTICKYKEYS)==sizeof(Burger_tagSTICKYKEYS));

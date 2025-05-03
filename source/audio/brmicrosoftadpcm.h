@@ -67,7 +67,7 @@ public:
 	DecompressMicrosoftADPCM();
 	eError Reset(void) BURGER_OVERRIDE;
 	eError Process(void *pOutput, uintptr_t uOutputChunkSize,const void *pInput, uintptr_t uInputChunkLength) BURGER_OVERRIDE;
-	static DecompressMicrosoftADPCM * BURGER_API New(void);
+	static DecompressMicrosoftADPCM * BURGER_API new_object(void);
 	BURGER_INLINE void SetBlockSize(uint_t uBlockSize) { m_uBlockSize = uBlockSize; }
 	BURGER_INLINE void SetSamplesPerBlock(uint_t uSamplesPerBlock) { m_uSamplesPerBlock = uSamplesPerBlock; }
 	void BURGER_API SetMonoDecoder(const void *pInput);

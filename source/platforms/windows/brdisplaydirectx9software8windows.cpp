@@ -94,7 +94,7 @@ uint_t Burger::DisplayDirectX9Software8::Init(uint_t uWidth,uint_t uHeight,uint_
 		} else {
 			m_Renderer.Init(uWidth,uHeight,8,0);
 			uint8_t TempPalette[768];
-			MemoryClear(TempPalette,sizeof(TempPalette));
+			memory_clear(TempPalette,sizeof(TempPalette));
 			TempPalette[765]=255;
 			TempPalette[766]=255;
 			TempPalette[767]=255;

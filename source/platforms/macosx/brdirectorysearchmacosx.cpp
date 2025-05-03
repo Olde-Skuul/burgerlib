@@ -390,7 +390,7 @@ Burger::eError Burger::DirectorySearch::open(Filename* pDirName) BURGER_NOEXCEPT
 
 		// Attributes requested
 		attrlist AttributesList;
-		MemoryClear(&AttributesList, sizeof(AttributesList));
+		memory_clear(&AttributesList, sizeof(AttributesList));
 
 		// "sizeof" for the structure
 		AttributesList.bitmapcount = ATTR_BIT_MAP_COUNT;

@@ -175,7 +175,7 @@ void Burger::Unix::DBusInstance::shutdown(void) BURGER_NOEXCEPT
 	}
 
 	// Release the screen saver disable object
-	Free(m_pDisableObject);
+	free_memory(m_pDisableObject);
 	m_pDisableObject = nullptr;
 }
 
@@ -836,7 +836,7 @@ uint_t Burger::Unix::DBusInstance::x11_screen_saver_disable(
 					DBUS_TYPE_INVALID)) {
 
 				// No longer need this string
-				Free(m_pDisableObject);
+				free_memory(m_pDisableObject);
 				m_pDisableObject = nullptr;
 				bResult = TRUE;
 			}

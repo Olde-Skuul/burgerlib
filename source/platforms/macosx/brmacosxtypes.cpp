@@ -97,8 +97,8 @@ static const CallNames_t g_CallNames[Burger::MacOSXOld::CALL_COUNT] = {
 Burger::MacOSXOld::~MacOSXOld()
 {
 	// Dispose of all resolved calls to Windows
-	MemoryClear(m_pMacOSXCalls, sizeof(m_pMacOSXCalls));
-	MemoryClear(m_bFunctionsTested, sizeof(m_bFunctionsTested));
+	memory_clear(m_pMacOSXCalls, sizeof(m_pMacOSXCalls));
+	memory_clear(m_bFunctionsTested, sizeof(m_bFunctionsTested));
 
 	// Finally, release all of the allocated DLLs
 	uintptr_t i = 0;

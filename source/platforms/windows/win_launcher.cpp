@@ -92,7 +92,7 @@ uint_t BURGER_API Burger::Win32::LaunchMediaCenter(void) BURGER_NOEXCEPT
 		MediaCenterName.set_native(pString);
 
 		// Release the environment string
-		Free(pString);
+		free_memory(pString);
 
 		// Append the filename of the media center
 		MediaCenterName.join("ehome:ehshell.exe");

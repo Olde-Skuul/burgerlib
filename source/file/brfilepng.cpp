@@ -144,7 +144,7 @@ Burger::FilePNG::FilePNG() :
 	m_uChunkSize(0),
 	m_uPNGID(0)
 {
-	MemoryClear(m_Palette,sizeof(m_Palette));
+	memory_clear(m_Palette,sizeof(m_Palette));
 }
 
 /*! ************************************
@@ -251,7 +251,7 @@ uint_t BURGER_API Burger::FilePNG::Load(Image *pOutput,InputMemoryStream *pInput
 		if (eType == Image::PIXELTYPE8BIT) {		// Get the palette
 			pBadNews = SeekPNGChunk(pInput,PLTEASCII); // Read in the palette
 			if (!pBadNews) {
-				MemoryClear(m_Palette,sizeof(m_Palette));
+				memory_clear(m_Palette,sizeof(m_Palette));
 				uint32_t uPaletteSize = m_uChunkSize/3U;
 				if (uPaletteSize>256) {
 					uPaletteSize = 256;
@@ -280,7 +280,7 @@ uint_t BURGER_API Burger::FilePNG::Load(Image *pOutput,InputMemoryStream *pInput
 
 				// It uses Deflate (ZLIB) compression
 
-				DecompressDeflate *pDecompressor = new (Alloc(sizeof(DecompressDeflate))) DecompressDeflate;
+				DecompressDeflate *pDecompressor = new (allocate_memory(sizeof(DecompressDeflate))) DecompressDeflate;
 				const uint8_t *pPacked = pInput->GetPtr();
 				uintptr_t uPackedSize = m_uChunkSize;
 				eError Error = kErrorNone;
@@ -408,7 +408,7 @@ uint_t BURGER_API Burger::FilePNG::Load(Image *pOutput,InputMemoryStream *pInput
 					}
 					pDest+=uWidth;
 				} while (--uHeight);
-				Delete(pDecompressor);
+				delete_object(pDecompressor);
 				if (Error!=kErrorNone) {
 					pBadNews = "Decompression error.";
 				}

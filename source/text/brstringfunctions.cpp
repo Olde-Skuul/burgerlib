@@ -2948,7 +2948,7 @@ void BURGER_API Burger::string_copy(
 			uFinalLength = uOutputSize - 1;
 			pOutput[uFinalLength] = 0;
 		}
-		MemoryCopy(pOutput, pInput, uFinalLength);
+		memory_copy(pOutput, pInput, uFinalLength);
 	}
 }
 
@@ -2983,7 +2983,7 @@ void BURGER_API Burger::string_copy(char* pOutput, uintptr_t uOutputSize,
 		}
 		// Store the ending zero
 		pOutput[uInputSize] = 0;
-		MemoryCopy(pOutput, pInput, uInputSize);
+		memory_copy(pOutput, pInput, uInputSize);
 	}
 }
 
@@ -3045,7 +3045,7 @@ void BURGER_API Burger::string_copy(uint16_t* pOutput, uintptr_t uOutputSize,
 			uFinalLength = uOutputSize - 2;
 			pOutput[uFinalLength / 2] = 0;
 		}
-		MemoryCopy(pOutput, pInput, uFinalLength);
+		memory_copy(pOutput, pInput, uFinalLength);
 	}
 }
 
@@ -3080,7 +3080,7 @@ void BURGER_API Burger::string_copy(uint16_t* pOutput, uintptr_t uOutputSize,
 		}
 		// Store the ending zero
 		pOutput[uInputSize / 2] = 0;
-		MemoryCopy(pOutput, pInput, uInputSize);
+		memory_copy(pOutput, pInput, uInputSize);
 	}
 }
 
@@ -3089,7 +3089,7 @@ void BURGER_API Burger::string_copy(uint16_t* pOutput, uintptr_t uOutputSize,
 	\brief Make a copy of a "C" string.
 
 	The "C" string passed by pInput will be copied into a buffer allocated by
-	\ref Burger::Alloc(uintptr_t). The buffer is exactly the same size of the
+	\ref Burger::allocate_memory(uintptr_t). The buffer is exactly the same size of the
 	string. You must eventually dispose of the string with a call to
 	Burger::StringDelete(const char *).
 
@@ -3110,7 +3110,7 @@ char* BURGER_API Burger::StringDuplicate(const char* pInput) BURGER_NOEXCEPT
 	const uintptr_t uLength = string_length(pInput) + 1;
 
 	// Allocate the memory
-	return static_cast<char*>(alloc_copy(pInput, uLength));
+	return static_cast<char*>(allocate_memory_copy(pInput, uLength));
 }
 
 /*! ************************************
@@ -3118,7 +3118,7 @@ char* BURGER_API Burger::StringDuplicate(const char* pInput) BURGER_NOEXCEPT
 	\brief Make a copy of a "C" string with some padding.
 
 	The "C" string passed by pInput will be copied into a buffer allocated by
-	Burger::Alloc(uintptr_t). The buffer is the same size of the string plus the
+	Burger::allocate_memory(uintptr_t). The buffer is the same size of the string plus the
 	padding value. The extra memory is not initialized but the string does
 	terminate with a zero. You must eventually dispose of the string with a call
 	to Burger::StringDelete(const char *).
@@ -3140,9 +3140,9 @@ char* BURGER_API Burger::StringDuplicate(
 {
 	const uintptr_t uLength = string_length(pInput) + 1; // Get the length
 	char* pResult =
-		static_cast<char*>(Alloc(uLength + uPadding)); // Allocate the memory
+		static_cast<char*>(allocate_memory(uLength + uPadding)); // Allocate the memory
 	if (pResult) {
-		MemoryCopy(pResult, pInput, uLength); // Copy the string
+		memory_copy(pResult, pInput, uLength); // Copy the string
 	}
 	return pResult; // Return the string or nullptr on error
 }
@@ -3165,7 +3165,7 @@ char* BURGER_API Burger::StringDuplicate(
 
 void BURGER_API Burger::StringDelete(const char* pInput) BURGER_NOEXCEPT
 {
-	Free(pInput);
+	free_memory(pInput);
 }
 
 /*! ************************************

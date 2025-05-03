@@ -221,12 +221,12 @@ void Burger::DisplayOpenGL::EndScene(void)
 
 Burger::Texture *Burger::DisplayOpenGL::CreateTextureObject(void)
 {
-	return new (Alloc(sizeof(TextureOpenGL))) TextureOpenGL;
+	return new (allocate_memory(sizeof(TextureOpenGL))) TextureOpenGL;
 }
 
 Burger::VertexBuffer *Burger::DisplayOpenGL::CreateVertexBufferObject(void)
 {
-	return new (Alloc(sizeof(VertexBufferOpenGL))) VertexBufferOpenGL;
+	return new (allocate_memory(sizeof(VertexBufferOpenGL))) VertexBufferOpenGL;
 }
 
 void Burger::DisplayOpenGL::Resize(uint_t uWidth,uint_t uHeight)
@@ -610,7 +610,7 @@ void BURGER_API Burger::DisplayOpenGL::SetupOpenGL(void)
 	// Obtain the supported compressed texture types
 	//
 
-	Free(m_pCompressedFormats);
+	free_memory(m_pCompressedFormats);
 	m_pCompressedFormats = NULL;
 	uint_t uTemp = 0;
 	GLint iTemp = 0;
@@ -620,7 +620,7 @@ void BURGER_API Burger::DisplayOpenGL::SetupOpenGL(void)
 #endif
 	if (iTemp) {
 		GLint iTemp2 = iTemp;
-		GLint *pBuffer = static_cast<GLint *>(Alloc(sizeof(GLint)*iTemp2));
+		GLint *pBuffer = static_cast<GLint *>(allocate_memory(sizeof(GLint)*iTemp2));
 		if (pBuffer) {
 			glGetIntegerv(GL_COMPRESSED_TEXTURE_FORMATS_ARB,pBuffer);
 			uTemp = static_cast<uint_t>(iTemp);
@@ -814,7 +814,7 @@ uint_t BURGER_API Burger::DisplayOpenGL::CompileShader(uint_t GLEnum,const char 
 					glGetShaderiv(uShader,GL_INFO_LOG_LENGTH,&iLogLength);
 					if (iLogLength > 1) {
 						// iLogLength includes space for the terminating null at the end of the string
-						GLchar *pLog = static_cast<GLchar*>(Alloc(static_cast<uintptr_t>(iLogLength)));
+						GLchar *pLog = static_cast<GLchar*>(allocate_memory(static_cast<uintptr_t>(iLogLength)));
 						glGetShaderInfoLog(uShader,iLogLength,&iLogLength,pLog);
 
 						// Note: The log could be so long that it could overflow the
@@ -823,7 +823,7 @@ uint_t BURGER_API Burger::DisplayOpenGL::CompileShader(uint_t GLEnum,const char 
 						Debug::PrintString("Shader compile log:\n");
 						Debug::PrintString(pLog);
 						Debug::PrintString("\n");
-						Free(pLog);
+						free_memory(pLog);
 					}
 					glDeleteShader(uShader);
 					uShader = 0;
@@ -944,12 +944,12 @@ uint_t BURGER_API Burger::DisplayOpenGL::CompileProgram(const char *pVertexShade
 					GLint iLogLength;
 					glGetProgramiv(uProgram,GL_INFO_LOG_LENGTH,&iLogLength);
 					if (iLogLength > 1) {
-						GLchar *pErrorLog = static_cast<GLchar*>(Alloc(static_cast<uintptr_t>(iLogLength)));
+						GLchar *pErrorLog = static_cast<GLchar*>(allocate_memory(static_cast<uintptr_t>(iLogLength)));
 						glGetProgramInfoLog(uProgram,iLogLength,&iLogLength,pErrorLog);
 						Debug::PrintString("Program link log:\n");
 						Debug::PrintString(pErrorLog);
 						Debug::PrintString("\n");
-						Free(pErrorLog);
+						free_memory(pErrorLog);
 					}
 
 				} else {
@@ -965,12 +965,12 @@ uint_t BURGER_API Burger::DisplayOpenGL::CompileProgram(const char *pVertexShade
 						glGetProgramiv(uProgram,GL_INFO_LOG_LENGTH,&iLogLength);
 						Debug::PrintString("Failed to validate program\n");
 						if (iLogLength > 1) {
-							GLchar *pErrorLog = static_cast<GLchar*>(Alloc(static_cast<uintptr_t>(iLogLength)));
+							GLchar *pErrorLog = static_cast<GLchar*>(allocate_memory(static_cast<uintptr_t>(iLogLength)));
 							glGetProgramInfoLog(uProgram, iLogLength, &iLogLength,pErrorLog);
 							Debug::PrintString("Program validate log:\n");
 							Debug::PrintString(pErrorLog);
 							Debug::PrintString("\n");
-							Free(pErrorLog);
+							free_memory(pErrorLog);
 						}
 					} else {
 						// All good!!!

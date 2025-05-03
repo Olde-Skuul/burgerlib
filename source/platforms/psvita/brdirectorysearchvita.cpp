@@ -49,7 +49,7 @@ Burger::eError Burger::DirectorySearch::open(
 
 		for (;;) {
 			SceIoDirent DirEntry;
-			MemoryClear(&DirEntry, sizeof(DirEntry));
+			memory_clear(&DirEntry, sizeof(DirEntry));
 
 			// <0 = Error, 0 = Nothing read, >0 read an entry
 			if (sceIoDread(fp, &DirEntry) <= SCE_OK) {

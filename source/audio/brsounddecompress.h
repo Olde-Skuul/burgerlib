@@ -49,7 +49,7 @@ public:
 	DecompressUnsigned8BitAudio();
 	eError Reset(void) BURGER_OVERRIDE;
 	eError Process(void *pOutput, uintptr_t uOutputChunkSize,const void *pInput, uintptr_t uInputChunkLength) BURGER_OVERRIDE;
-	static DecompressUnsigned8BitAudio * BURGER_API New(void);
+	static DecompressUnsigned8BitAudio * BURGER_API new_object(void);
 };
 
 class DecompressSigned8BitAudio : public DecompressAudio {
@@ -59,7 +59,7 @@ public:
 	DecompressSigned8BitAudio();
 	eError Reset(void) BURGER_OVERRIDE;
 	eError Process(void *pOutput, uintptr_t uOutputChunkSize,const void *pInput, uintptr_t uInputChunkLength) BURGER_OVERRIDE;
-	static DecompressSigned8BitAudio * BURGER_API New(void);
+	static DecompressSigned8BitAudio * BURGER_API new_object(void);
 };
 
 class Decompress16BitBEAudio : public DecompressAudio {
@@ -80,7 +80,7 @@ public:
 	Decompress16BitBEAudio();
 	eError Reset(void) BURGER_OVERRIDE;
 	eError Process(void *pOutput, uintptr_t uOutputChunkSize,const void *pInput, uintptr_t uInputChunkLength) BURGER_OVERRIDE;
-	static Decompress16BitBEAudio * BURGER_API New(void);
+	static Decompress16BitBEAudio * BURGER_API new_object(void);
 };
 
 class Decompress16BitLEAudio : public DecompressAudio {
@@ -101,7 +101,7 @@ public:
 	Decompress16BitLEAudio();
 	eError Reset(void) BURGER_OVERRIDE;
 	eError Process(void *pOutput, uintptr_t uOutputChunkSize,const void *pInput, uintptr_t uInputChunkLength) BURGER_OVERRIDE;
-	static Decompress16BitLEAudio * BURGER_API New(void);
+	static Decompress16BitLEAudio * BURGER_API new_object(void);
 };
 
 class Decompress32BitBEAudio : public DecompressAudio {
@@ -122,7 +122,7 @@ public:
 	Decompress32BitBEAudio();
 	eError Reset(void) BURGER_OVERRIDE;
 	eError Process(void *pOutput, uintptr_t uOutputChunkSize,const void *pInput, uintptr_t uInputChunkLength) BURGER_OVERRIDE;
-	static Decompress32BitBEAudio * BURGER_API New(void);
+	static Decompress32BitBEAudio * BURGER_API new_object(void);
 };
 
 class Decompress32BitLEAudio : public DecompressAudio {
@@ -143,7 +143,7 @@ public:
 	Decompress32BitLEAudio();
 	eError Reset(void) BURGER_OVERRIDE;
 	eError Process(void *pOutput, uintptr_t uOutputChunkSize,const void *pInput, uintptr_t uInputChunkLength) BURGER_OVERRIDE;
-	static Decompress32BitLEAudio * BURGER_API New(void);
+	static Decompress32BitLEAudio * BURGER_API new_object(void);
 };
 }
 /* END */

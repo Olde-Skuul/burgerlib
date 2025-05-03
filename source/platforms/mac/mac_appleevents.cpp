@@ -58,7 +58,7 @@ int16_t BURGER_API Burger::MacOS::get_FSSpec_nth_desc(
 		if (uSize < sizeof(*pFSSpec)) {
 			uError = memSCErr;
 		} else {
-			MemoryCopy(pFSSpec, *(firstDesc.dataHandle), sizeof(*pFSSpec));
+			memory_copy(pFSSpec, *(firstDesc.dataHandle), sizeof(*pFSSpec));
 		}
 #endif
 		OSErr uDisposeError = AEDisposeDesc(&firstDesc);
