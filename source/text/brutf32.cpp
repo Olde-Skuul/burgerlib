@@ -180,15 +180,15 @@ uint_t BURGER_API Burger::UTF32::is_valid(
 	any data that is invalid.
 
 	\note This function will not move the pointer forward, use
-		UTF8::NextToken(const char *) instead.
+		UTF8::next_token(const char *) instead.
 
 	\param pInput Pointer to a valid UTF8 "C" string, ``nullptr`` will page
 		fault.
 
 	\return The UTF32 code or \ref kInvalid if invalid. 0x00 is not invalid.
 
-	\sa translate_from_UTF8(const char **), UTF8::GetTokenSize(const char *) or
-		UTF8::NextToken(const char *).
+	\sa translate_from_UTF8(const char **), UTF8::get_token_size(const char *) or
+		UTF8::next_token(const char *).
 
 ***************************************/
 
@@ -270,8 +270,8 @@ uint32_t BURGER_API Burger::UTF32::translate_from_UTF8(
 		page fault.
 
 	\return The UTF32 code or \ref kInvalid if invalid. 0x00 is not invalid.
-	\sa FromUTF8(const char *), UTF8::GetTokenSize(const char *) or
-		UTF8::NextToken(const char *).
+	\sa FromUTF8(const char *), UTF8::get_token_size(const char *) or
+		UTF8::next_token(const char *).
 
 ***************************************/
 
@@ -282,7 +282,7 @@ uint32_t BURGER_API BURGER_API Burger::UTF32::translate_from_UTF8(
 	// Decode the data
 	const uint32_t uResult = translate_from_UTF8(pInput);
 	if (uResult != kInvalid) {
-		ppInput[0] = UTF8::NextToken(pInput);
+		ppInput[0] = UTF8::next_token(pInput);
 	}
 	return uResult;
 }

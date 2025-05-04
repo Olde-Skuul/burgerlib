@@ -32,9 +32,9 @@ public:
 	static uint_t BURGER_API is_valid(const char* pInput) BURGER_NOEXCEPT;
 	static uint_t BURGER_API is_valid(
 		const char* pInput, uintptr_t uInputSize) BURGER_NOEXCEPT;
-	static uintptr_t BURGER_API GetTokenSize(
+	static uintptr_t BURGER_API get_token_size(
 		const char* pInput) BURGER_NOEXCEPT;
-	static const char* BURGER_API NextToken(const char* pInput) BURGER_NOEXCEPT;
+	static const char* BURGER_API next_token(const char* pInput) BURGER_NOEXCEPT;
 
 	static uintptr_t BURGER_API GetMacRomanUSSize(
 		uint_t uInput) BURGER_NOEXCEPT;

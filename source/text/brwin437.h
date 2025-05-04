@@ -2,7 +2,7 @@
 
 	String handlers for Win437 support
 
-	Copyright (c) 2021-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 2021-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -27,10 +27,10 @@
 namespace Burger {
 class Win437: public CodePage {
 public:
-	BURGER_ALIGN(static const uint8_t, g_UpperCaseTable[256], 16);
-	BURGER_ALIGN(static const uint8_t, g_LowerCaseTable[256], 16);
-	BURGER_ALIGN(static const uint8_t, g_ToUTF8Table[128][4], 16);
-	BURGER_ALIGN(static const uint16_t, g_ToUTF16Table[128], 16);
+	BURGER_ALIGN(static const uint8_t, g_UpperCase[256], 16);
+	BURGER_ALIGN(static const uint8_t, g_LowerCase[256], 16);
+	BURGER_ALIGN(static const uint8_t, g_ToUTF8[128][4], 16);
+	BURGER_ALIGN(static const uint16_t, g_ToUTF16[128], 16);
 	static uint32_t BURGER_API translate_from_UTF8(
 		const char* pInput) BURGER_NOEXCEPT;
 	static uintptr_t BURGER_API translate_from_UTF8(char* pOutput,

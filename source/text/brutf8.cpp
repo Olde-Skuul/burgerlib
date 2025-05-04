@@ -486,7 +486,7 @@ uint_t BURGER_API Burger::UTF8::is_valid(
 
 ***************************************/
 
-uintptr_t BURGER_API Burger::UTF8::GetTokenSize(
+uintptr_t BURGER_API Burger::UTF8::get_token_size(
 	const char* pInput) BURGER_NOEXCEPT
 {
 	return UTF8::TokenSizeTable[reinterpret_cast<const uint8_t*>(pInput)[0]];
@@ -505,7 +505,7 @@ uintptr_t BURGER_API Burger::UTF8::GetTokenSize(
 
 ***************************************/
 
-const char* BURGER_API Burger::UTF8::NextToken(
+const char* BURGER_API Burger::UTF8::next_token(
 	const char* pInput) BURGER_NOEXCEPT
 {
 	return pInput +
@@ -542,7 +542,7 @@ uintptr_t BURGER_API Burger::UTF8::GetMacRomanUSSize(
 			uResult = 0U;
 		} else {
 			// The MacRomanUS table only has 2 or 3 byte tokens
-			const uint8_t* pTable = MacRomanUS::g_ToUTF8Table[uInput - 0x80U];
+			const uint8_t* pTable = MacRomanUS::g_ToUTF8[uInput - 0x80U];
 			uResult = 2U;
 			// Is there a third character?
 			if (pTable[2]) {
@@ -584,7 +584,7 @@ uintptr_t BURGER_API Burger::UTF8::GetMacRomanUSSize(
 			if (uTemp >= 0x80U) {
 				// The MacRomanUS table only has 2 or 3 byte tokens
 				const uint8_t* pTable =
-					MacRomanUS::g_ToUTF8Table[uTemp - 0x80U];
+					MacRomanUS::g_ToUTF8[uTemp - 0x80U];
 				uResult += 2U;
 				// Is there a third character?
 				if (pTable[2]) {
@@ -629,7 +629,7 @@ uintptr_t BURGER_API Burger::UTF8::GetMacRomanUSSize(
 			if (uTemp >= 0x80U) {
 				// The MacRomanUS table only has 2 or 3 byte tokens
 				const uint8_t* pTable =
-					MacRomanUS::g_ToUTF8Table[uTemp - 0x80U];
+					MacRomanUS::g_ToUTF8[uTemp - 0x80U];
 				uResult += 2U;
 				// Is there a third character?
 				if (pTable[2]) {
@@ -674,7 +674,7 @@ uintptr_t BURGER_API Burger::UTF8::FromMacRomanUS(
 			uSize = 0U;
 		} else {
 			// The MacRomanUS table only has 2 or 3 byte tokens
-			const uint8_t* pSrc = MacRomanUS::g_ToUTF8Table[uInput - 0x80U];
+			const uint8_t* pSrc = MacRomanUS::g_ToUTF8[uInput - 0x80U];
 			reinterpret_cast<uint8_t*>(pOutput)[0] = pSrc[0];
 			reinterpret_cast<uint8_t*>(pOutput)[1] = pSrc[1];
 
@@ -752,7 +752,7 @@ uintptr_t BURGER_API Burger::UTF8::FromMacRomanUS(
 			} else {
 
 				// The MacRomanUS table only has 2 or 3 byte tokens
-				const uint8_t* pSrc = MacRomanUS::g_ToUTF8Table[uTemp - 0x80U];
+				const uint8_t* pSrc = MacRomanUS::g_ToUTF8[uTemp - 0x80U];
 				if (pWorkPtr < pEndPtr) {
 					// Write the first character
 					pWorkPtr[0] = pSrc[0];
@@ -856,7 +856,7 @@ uintptr_t BURGER_API Burger::UTF8::FromMacRomanUS(char* pOutput,
 			} else {
 
 				// The MacRomanUS table only has 2 or 3 byte tokens
-				const uint8_t* pSrc = MacRomanUS::g_ToUTF8Table[uTemp - 0x80U];
+				const uint8_t* pSrc = MacRomanUS::g_ToUTF8[uTemp - 0x80U];
 				if (pWorkPtr < pEndPtr) {
 					// Write the first character
 					pWorkPtr[0] = pSrc[0];
@@ -921,7 +921,7 @@ uintptr_t BURGER_API Burger::UTF8::GetWin1252Size(uint_t uInput) BURGER_NOEXCEPT
 			uResult = 0U;
 		} else {
 			// The Win1252 table only has 2 or 3 byte tokens
-			const uint8_t* pTable = Win1252::g_ToUTF8Table[uInput - 0x80U];
+			const uint8_t* pTable = Win1252::g_ToUTF8[uInput - 0x80U];
 			uResult = 2U;
 			// Is there a third character?
 			if (pTable[2]) {
@@ -962,7 +962,7 @@ uintptr_t BURGER_API Burger::UTF8::GetWin1252Size(
 			// ASCII?
 			if (uTemp >= 0x80U) {
 				// The Win1252 table only has 2 or 3 byte tokens
-				const uint8_t* pTable = Win1252::g_ToUTF8Table[uTemp - 0x80U];
+				const uint8_t* pTable = Win1252::g_ToUTF8[uTemp - 0x80U];
 				uResult += 2U;
 				// Is there a third character?
 				if (pTable[2]) {
@@ -1006,7 +1006,7 @@ uintptr_t BURGER_API Burger::UTF8::GetWin1252Size(
 			// ASCII?
 			if (uTemp >= 0x80U) {
 				// The Win1252 table only has 2 or 3 byte tokens
-				const uint8_t* pTable = Win1252::g_ToUTF8Table[uTemp - 0x80U];
+				const uint8_t* pTable = Win1252::g_ToUTF8[uTemp - 0x80U];
 				uResult += 2U;
 				// Is there a third character?
 				if (pTable[2]) {
@@ -1054,7 +1054,7 @@ uintptr_t BURGER_API Burger::UTF8::FromWin1252(
 			uSize = 0U;
 		} else {
 			// The Win1252 table only has 2 or 3 byte tokens
-			const uint8_t* pSrc = Win1252::g_ToUTF8Table[uInput - 0x80U];
+			const uint8_t* pSrc = Win1252::g_ToUTF8[uInput - 0x80U];
 			reinterpret_cast<uint8_t*>(pOutput)[0] = pSrc[0];
 			reinterpret_cast<uint8_t*>(pOutput)[1] = pSrc[1];
 
@@ -1136,7 +1136,7 @@ uintptr_t BURGER_API Burger::UTF8::FromWin1252(
 			} else {
 
 				// The Win1252 table only has 2 or 3 byte tokens
-				const uint8_t* pSrc = Win1252::g_ToUTF8Table[Temp - 0x80U];
+				const uint8_t* pSrc = Win1252::g_ToUTF8[Temp - 0x80U];
 				if (pWorkPtr < pEndPtr) {
 					// Write the first character
 					pWorkPtr[0] = pSrc[0];
@@ -1241,7 +1241,7 @@ uintptr_t BURGER_API Burger::UTF8::FromWin1252(char* pOutput,
 			} else {
 
 				// The Win1252 table only has 2 or 3 byte tokens
-				const uint8_t* pSrc = Win1252::g_ToUTF8Table[uTemp - 0x80U];
+				const uint8_t* pSrc = Win1252::g_ToUTF8[uTemp - 0x80U];
 				if (pWorkPtr < pEndPtr) {
 					// Write the first character
 					pWorkPtr[0] = pSrc[0];
@@ -1306,7 +1306,7 @@ uintptr_t BURGER_API Burger::UTF8::GetWin437Size(uint_t uInput) BURGER_NOEXCEPT
 			uResult = 0U;
 		} else {
 			// The Win1252 table only has 2 or 3 byte tokens
-			const uint8_t* pTable = Win437::g_ToUTF8Table[uInput - 0x80U];
+			const uint8_t* pTable = Win437::g_ToUTF8[uInput - 0x80U];
 			uResult = 2U;
 			// Is there a third character?
 			if (pTable[2]) {
@@ -1347,7 +1347,7 @@ uintptr_t BURGER_API Burger::UTF8::GetWin437Size(
 			// ASCII?
 			if (uTemp >= 0x80U) {
 				// The Win1252 table only has 2 or 3 byte tokens
-				const uint8_t* pTable = Win437::g_ToUTF8Table[uTemp - 0x80U];
+				const uint8_t* pTable = Win437::g_ToUTF8[uTemp - 0x80U];
 				uResult += 2U;
 				// Is there a third character?
 				if (pTable[2]) {
@@ -1391,7 +1391,7 @@ uintptr_t BURGER_API Burger::UTF8::GetWin437Size(
 			// ASCII?
 			if (uTemp >= 0x80U) {
 				// The Win1252 table only has 2 or 3 byte tokens
-				const uint8_t* pTable = Win437::g_ToUTF8Table[uTemp - 0x80U];
+				const uint8_t* pTable = Win437::g_ToUTF8[uTemp - 0x80U];
 				uResult += 2U;
 				// Is there a third character?
 				if (pTable[2]) {
@@ -1439,7 +1439,7 @@ uintptr_t BURGER_API Burger::UTF8::FromWin437(
 			uSize = 0U;
 		} else {
 			// The Win437 table only has 2 or 3 byte tokens
-			const uint8_t* pSrc = Win437::g_ToUTF8Table[uInput - 0x80U];
+			const uint8_t* pSrc = Win437::g_ToUTF8[uInput - 0x80U];
 			reinterpret_cast<uint8_t*>(pOutput)[0] = pSrc[0];
 			reinterpret_cast<uint8_t*>(pOutput)[1] = pSrc[1];
 
@@ -1521,7 +1521,7 @@ uintptr_t BURGER_API Burger::UTF8::FromWin437(
 			} else {
 
 				// The Win437 table only has 2 or 3 byte tokens
-				const uint8_t* pSrc = Win437::g_ToUTF8Table[Temp - 0x80U];
+				const uint8_t* pSrc = Win437::g_ToUTF8[Temp - 0x80U];
 				if (pWorkPtr < pEndPtr) {
 					// Write the first character
 					pWorkPtr[0] = pSrc[0];
@@ -1626,7 +1626,7 @@ uintptr_t BURGER_API Burger::UTF8::FromWin437(char* pOutput,
 			} else {
 
 				// The Win437 table only has 2 or 3 byte tokens
-				const uint8_t* pSrc = Win437::g_ToUTF8Table[uTemp - 0x80U];
+				const uint8_t* pSrc = Win437::g_ToUTF8[uTemp - 0x80U];
 				if (pWorkPtr < pEndPtr) {
 					// Write the first character
 					pWorkPtr[0] = pSrc[0];
@@ -1807,7 +1807,7 @@ uintptr_t BURGER_API Burger::UTF8::FromISOLatin1(
 			uSize = 0U;
 		} else {
 			// The ISOLatin1 table only has 2 byte tokens
-			const uint8_t* pSrc = ISOLatin1::g_ToUTF8Table[uInput - 0x80U];
+			const uint8_t* pSrc = ISOLatin1::g_ToUTF8[uInput - 0x80U];
 			reinterpret_cast<uint8_t*>(pOutput)[0] = pSrc[0];
 			reinterpret_cast<uint8_t*>(pOutput)[1] = pSrc[1];
 			uSize = 2U;
@@ -1879,7 +1879,7 @@ uintptr_t BURGER_API Burger::UTF8::FromISOLatin1(
 			} else {
 
 				// The ISOLatin1 table only has 2 byte tokens
-				const uint8_t* pSrc = ISOLatin1::g_ToUTF8Table[uTemp - 0x80U];
+				const uint8_t* pSrc = ISOLatin1::g_ToUTF8[uTemp - 0x80U];
 				if (pWorkPtr < pEndPtr) {
 					// Write the first character
 					pWorkPtr[0] = pSrc[0];
@@ -1974,7 +1974,7 @@ uintptr_t BURGER_API Burger::UTF8::FromISOLatin1(char* pOutput,
 			} else {
 
 				// The Win1252 table only has 2 byte tokens
-				const uint8_t* pSrc = ISOLatin1::g_ToUTF8Table[uTemp - 0x80U];
+				const uint8_t* pSrc = ISOLatin1::g_ToUTF8[uTemp - 0x80U];
 				if (pWorkPtr < pEndPtr) {
 					// Write the first character
 					pWorkPtr[0] = pSrc[0];

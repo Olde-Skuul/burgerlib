@@ -3630,11 +3630,11 @@ uint_t BURGER_API Burger::Wildcardcmp(
 	do {
 		// Main entry, assume no previous state
 		// Grab an input char
-		uTemp = ISOLatin1::g_UpperCaseTable[reinterpret_cast<const uint8_t*>(
+		uTemp = ISOLatin1::g_UpperCase[reinterpret_cast<const uint8_t*>(
 			pInput)[0]];
 		// Get a wildcard char
 		uint_t uWild =
-			ISOLatin1::g_UpperCaseTable[reinterpret_cast<const uint8_t*>(
+			ISOLatin1::g_UpperCase[reinterpret_cast<const uint8_t*>(
 				pWildcard)[0]];
 
 		// Is the wildcard a "?"
@@ -3660,7 +3660,7 @@ uint_t BURGER_API Burger::Wildcardcmp(
 			if (uTemp) {
 				// Recursively call myself until a match of the pattern is found
 				// or I give up
-				uWild = ISOLatin1::g_UpperCaseTable[uWild]; // Upper case
+				uWild = ISOLatin1::g_UpperCase[uWild]; // Upper case
 				do {
 					if (uTemp ==
 						uWild) { // Follow the input until the marker is found
@@ -3670,7 +3670,7 @@ uint_t BURGER_API Burger::Wildcardcmp(
 						}
 					}
 					++pInput;
-					uTemp = ISOLatin1::g_UpperCaseTable
+					uTemp = ISOLatin1::g_UpperCase
 						[reinterpret_cast<const uint8_t*>(pInput)[0]];
 				} while (uTemp);
 			}

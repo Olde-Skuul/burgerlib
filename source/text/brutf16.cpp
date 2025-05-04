@@ -208,14 +208,14 @@ uint_t BURGER_API Burger::UTF16::is_valid(
 	quantity and will return an error.
 
 	\note This function will not move the pointer forward, use
-	Burger::UTF8::NextToken(const char *) instead.
+	Burger::UTF8::next_token(const char *) instead.
 
 	\param pInput Pointer to a valid UTF8 "C" string.
 	\return The UTF16 code or Burger::UTF16::kInvalid if invalid. 0x00 is not
 		invalid.
 
-	\sa Burger::UTF8::GetTokenSize(const char *) or
-		Burger::UTF8::NextToken(const char *).
+	\sa Burger::UTF8::get_token_size(const char *) or
+		Burger::UTF8::next_token(const char *).
 
 ***************************************/
 

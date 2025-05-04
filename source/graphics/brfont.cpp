@@ -94,7 +94,7 @@ void Burger::Font::Draw(const char *pInput,uintptr_t uLength)
 				break;
 			}
 			DrawChar(uChar);						// Draw the character
-			pInput = UTF8::NextToken(pInput);		// Next
+			pInput = UTF8::next_token(pInput);		// Next
 		} while (pInput<pEnd);
 	}
 }
