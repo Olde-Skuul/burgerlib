@@ -16,6 +16,7 @@
 #include "testmacros.h"
 #include "bratomic.h"
 #include "brfloatingpoint.h"
+#include "brfphalf.h"
 #include "brglobals.h"
 #include "brnumberstring.h"
 #include "brstring.h"
@@ -462,6 +463,7 @@ static void BURGER_API ShowCompilerMacros(uint_t uVerbose) BURGER_NOEXCEPT
 		SHOW_MACRO(__ATOM__);
 		SHOW_MACRO(__SSE__);
 		SHOW_MACRO(__SSE2__);
+		SHOW_MACRO(__F16C__);
 		SHOW_MACRO(__AVX__);
 		SHOW_MACRO(__AVX2__);
 		SHOW_MACRO(__AVX512BW__);
@@ -490,6 +492,8 @@ static void BURGER_API ShowCompilerMacros(uint_t uVerbose) BURGER_NOEXCEPT
 		SHOW_MACRO(__aarch64__);
 		SHOW_MACRO(__ARM_NEON__);
 		SHOW_MACRO(_M_ARM_FP);
+		SHOW_MACRO(__ARM_FP);
+		SHOW_MACRO(__ARM_NEON_FP16_INTRINSICS);
 
 		// C++ feature macros, usually found in GNU or clang
 
@@ -640,6 +644,7 @@ static void BURGER_API ShowMacros(uint_t uVerbose) BURGER_NOEXCEPT
 		SHOW_MACRO(BURGER_OPENGL);
 		SHOW_MACRO(BURGER_OPENGLES);
 		SHOW_MACRO(BURGER_VULKAN);
+		SHOW_MACRO(BURGER_FLOAT16_EMULATED);
 	}
 }
 

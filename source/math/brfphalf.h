@@ -2,7 +2,7 @@
 
 	16 bit float manager
 
-	Copyright (c) 2020-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 2020-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -22,54 +22,74 @@
 /* BEGIN */
 namespace Burger {
 
-typedef uint16_t float16_t;
+// If the compiler supports float16, declare it
+#if __has_keyword(__fp16) || \
+	(defined(BURGER_ARM) && \
+		(defined(__ARM_FP16_FORMAT_IEEE) || (__ARM_FEATURE_MVE & 2)))
+typedef __fp16 float16_t;
 
-extern float16_t BURGER_API convert_to_float16(float fInput) BURGER_NOEXCEPT;
-extern float BURGER_API convert_to_float(float16_t uInput) BURGER_NOEXCEPT;
+#elif (__has_keyword(_Float16) || \
+	(!defined(BURGER_MSVC) && defined(BURGER_INTEL) && \
+		(defined(__F16C__) || \
+			(defined(BURGER_SSE2) && defined(BURGER_AVX))))) && \
+	!defined(DOXYGEN)
+typedef _Float16 float16_t;
+
+#else
+#define BURGER_FLOAT16_EMULATED
+typedef uint16_t float16_t;
+#endif
+
+extern uint16_t BURGER_API convert_to_float16(float fInput) BURGER_NOEXCEPT;
+extern float BURGER_API convert_to_float(uint16_t uInput) BURGER_NOEXCEPT;
 
 class Half {
-	/** Binary representation of a 16 bit float */
-	float16_t m_uData;
+	union {
+		/** Binary representation of a 16 bit float */
+		uint16_t u;
+		/** The native format of a 16 bit float on platforms that support it */
+		float16_t f;
+	};
 
 public:
 	Half() BURGER_NOEXCEPT {}
-	Half(float16_t uData) BURGER_NOEXCEPT: m_uData(uData) {}
+	Half(uint16_t uData) BURGER_NOEXCEPT: u(uData) {}
 	Half(float fInput) BURGER_NOEXCEPT;
 
 	operator float() const BURGER_NOEXCEPT;
 
 	BURGER_INLINE operator uint16_t() const BURGER_NOEXCEPT
 	{
-		return m_uData;
+		return u;
 	}
 
 	BURGER_INLINE uint_t is_finite() const BURGER_NOEXCEPT
 	{
-		return (static_cast<uint_t>(m_uData) & (0x1FU << 10U)) < (31U << 10U);
+		return (static_cast<uint_t>(u) & (0x1FU << 10U)) < (31U << 10U);
 	}
 
 	BURGER_INLINE uint_t is_infinity() const BURGER_NOEXCEPT
 	{
-		const uint_t uTemp = m_uData;
+		const uint_t uTemp = u;
 		return ((uTemp & (0x1FU << 10U)) == (31U << 10U)) &&
 			(!(uTemp & 0x3FFU));
 	}
 
 	BURGER_INLINE uint_t is_nan() const BURGER_NOEXCEPT
 	{
-		const uint_t uTemp = m_uData;
+		const uint_t uTemp = u;
 		return ((uTemp & (0x1FU << 10U)) == (31U << 10U)) && (uTemp & 0x3FFU);
 	}
 
 	BURGER_INLINE uint_t is_normalized() const BURGER_NOEXCEPT
 	{
-		const uint_t uTemp = static_cast<uint_t>(m_uData) & (31U << 10U);
+		const uint_t uTemp = static_cast<uint_t>(u) & (31U << 10U);
 		return uTemp && (uTemp < (31U << 10U));
 	}
 
 	BURGER_INLINE uint_t is_denormalized() const BURGER_NOEXCEPT
 	{
-		const uint_t uTemp = m_uData;
+		const uint_t uTemp = u;
 
 		// Zero exponent and a non-zero mantissa
 		return !(uTemp & (31U << 10U)) && (uTemp & 0x3FFU);
@@ -77,12 +97,12 @@ public:
 
 	BURGER_INLINE uint_t is_zero() const BURGER_NOEXCEPT
 	{
-		return (m_uData & 0x7FFFU) != 0;
+		return (u & 0x7FFFU) != 0;
 	}
 
 	BURGER_INLINE uint_t is_negative() const BURGER_NOEXCEPT
 	{
-		return (m_uData & 0x8000U) != 0;
+		return (u & 0x8000U) != 0;
 	}
 
 	Half operator-() const BURGER_NOEXCEPT;

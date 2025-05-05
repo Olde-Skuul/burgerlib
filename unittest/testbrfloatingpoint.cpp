@@ -14,6 +14,7 @@
 
 #include "testbrfloatingpoint.h"
 #include "brfloatingpoint.h"
+#include "brfphalf.h"
 #include "brfpinfo.h"
 #include "brmemoryfunctions.h"
 #include "brnumberstringhex.h"
@@ -1648,8 +1649,8 @@ static uint_t TestCeilFloat(void) BURGER_NOEXCEPT
 		const float fExpected = pWork[1];
 		const uint_t uFailure = (fTest != fExpected);
 		uResult |= uFailure;
-		ReportFailure("Burger::get_ceiling(%.16g) = %.16g / Wanted %.16g", uFailure,
-			fOriginal, fTest, fExpected);
+		ReportFailure("Burger::get_ceiling(%.16g) = %.16g / Wanted %.16g",
+			uFailure, fOriginal, fTest, fExpected);
 		pWork += 2;
 	} while (--i);
 	return uResult;
@@ -1748,7 +1749,8 @@ static uint_t TestCeilDouble(void) BURGER_NOEXCEPT
 		const double fExpected = pWork[1];
 		const uint_t uFailure = (fTest != fExpected);
 		uResult |= uFailure;
-		ReportFailure("Burger::get_ceiling((double)%.16g) = %.16g / Wanted %.16g",
+		ReportFailure(
+			"Burger::get_ceiling((double)%.16g) = %.16g / Wanted %.16g",
 			uFailure, fOriginal, fTest, fExpected);
 		pWork += 2;
 	} while (--i);
@@ -2265,8 +2267,8 @@ static uint_t TestSinDouble(void) BURGER_NOEXCEPT
 		const double fError = Burger::absolute(fSin - fXSin);
 		const uint_t uFailure = (1.2e-15 < fError);
 		uResult |= uFailure;
-		ReportFailure("Burger::get_sine(%.16g) = %.16g / Difference %.16g", uFailure,
-			fRadians, fXSin, fSin, fError);
+		ReportFailure("Burger::get_sine(%.16g) = %.16g / Difference %.16g",
+			uFailure, fRadians, fXSin, fSin, fError);
 
 	} while (++x < 640);
 	return uResult;
@@ -2311,10 +2313,104 @@ static uint_t TestCosDouble(void) BURGER_NOEXCEPT
 		const double fError = Burger::absolute(fCos - fXCos);
 		const uint_t uFailure = (1.2e-15 < fError);
 		uResult |= uFailure;
-		ReportFailure("Burger::get_cosine(%.16g) = %.16g / Difference %.16g", uFailure,
-			fRadians, fXCos, fCos, fError);
+		ReportFailure("Burger::get_cosine(%.16g) = %.16g / Difference %.16g",
+			uFailure, fRadians, fXCos, fCos, fError);
 
 	} while (++x < 640);
+	return uResult;
+}
+
+//
+// Test convert_to_float16(float)
+//
+
+struct FloatShort_t {
+	Burger::uint32_float_t m_fValue;
+	uint16_t m_uValue;
+};
+
+static const FloatShort_t g_To16Test[] = {
+	{{0x00000000U}, 0x0000U}, // 0.0f
+	{{0x80000000U}, 0x8000U}, // 0.0f
+	{{0x3380346CU}, 0x0001U}, // Epsilon
+	{{0xB380346CU}, 0x8001U}, // -Epsilon
+	{{0x3F800000U}, 0x3C00U}, // 1.0f
+	{{0xBF800000U}, 0xBC00U}, // 1.0f
+	{{0x3F8CCCCDU}, 0x3C66U}, // 1.1f
+	{{0x477FE000U}, 0x7BFFU}, // 65504
+	{{0x477FEFFFU}, 0x7BFFU}, // 65519.9999
+	{{0x477FF000U}, 0x7C00U}, // 65520
+	{{0xC77FE000U}, 0xFBFFU}, // -65504
+	{{0xC77FEFFFU}, 0xFBFFU}, // -65519.9999
+	{{0xC77FF000U}, 0xFC00U}, // -65520
+	{{0x7F800000U}, 0x7C00U}, // Inf
+	{{0xFF800000U}, 0xFC00U}, // -Inf
+	{{0x7FBFFFFFU}, 0x7FFFU}, // Nan
+	{{0xFFBFFFFFU}, 0xFFFFU}  // -Nan
+};
+
+static uint_t TestConvertToFloat16(void) BURGER_NOEXCEPT
+{
+	uint_t uResult = FALSE;
+	const FloatShort_t* pWork = g_To16Test;
+	uintptr_t i = BURGER_ARRAYSIZE(g_To16Test);
+	do {
+		// Note: Use volatile to force the compiler to use 32 bit float
+		// precision
+		uint16_t uTest = Burger::convert_to_float16(pWork->m_fValue.f);
+		const uint_t uFailure = (pWork->m_uValue != uTest);
+		uResult |= uFailure;
+		if (uFailure) {
+			ReportFailure(
+				"Burger::convert_to_float16((float)%.16g) = 0x%04X / Wanted 0x%04X",
+				uFailure, pWork->m_fValue.f, uTest, pWork->m_uValue);
+		}
+		++pWork;
+	} while (--i);
+
+	return uResult;
+}
+
+//
+// Test convert_to_float(uint16_t)
+//
+
+static const FloatShort_t g_From16Test[] = {
+	{{0x00000000U}, 0x0000U}, // 0.0f
+	{{0x80000000U}, 0x8000U}, // 0.0f
+	{{0x33800000U}, 0x0001U}, // Epsilon
+	{{0xB3800000U}, 0x8001U}, // -Epsilon
+	{{0x3F800000U}, 0x3C00U}, // 1.0f
+	{{0xBF800000U}, 0xBC00U}, // 1.0f
+	{{0x3F8CC000U}, 0x3C66U}, // 1.1f
+	{{0x477FE000U}, 0x7BFFU}, // 65504
+	{{0xC77FE000U}, 0xFBFFU}, // -65504
+	{{0x7F800000U}, 0x7C00U}, // Inf
+	{{0xFF800000U}, 0xFC00U}, // -Inf
+	{{0x7FFFE000U}, 0x7FFFU}, // Nan
+	{{0xFFFFE000U}, 0xFFFFU}  // -Nan
+};
+
+static uint_t TestConvertToFloat(void) BURGER_NOEXCEPT
+{
+	uint_t uResult = FALSE;
+	const FloatShort_t* pWork = g_From16Test;
+	uintptr_t i = BURGER_ARRAYSIZE(g_From16Test);
+	do {
+		// Note: Use volatile to force the compiler to use 32 bit float
+		// precision
+		Burger::uint32_float_t Test;
+		Test.f = Burger::convert_to_float(pWork->m_uValue);
+		const uint_t uFailure = (pWork->m_fValue.w != Test.w);
+		uResult |= uFailure;
+		if (uFailure) {
+			ReportFailure(
+				"Burger::convert_to_float((uint16_t)0x%04X) = %.16g 0x%08X / Wanted 0x%08X",
+				uFailure, pWork->m_uValue, Test.f, Test.w, pWork->m_fValue.w);
+		}
+		++pWork;
+	} while (--i);
+
 	return uResult;
 }
 
@@ -2370,6 +2466,10 @@ int BURGER_API TestBrfloatingpoint(uint_t uVerbose) BURGER_NOEXCEPT
 	uResult |= TestSinDouble();
 	uResult |= TestCosFloat();
 	uResult |= TestCosDouble();
+
+	// Test 16 bit floats
+	uResult |= TestConvertToFloat16();
+	uResult |= TestConvertToFloat();
 
 	if (!uResult && (uVerbose & VERBOSE_MSG)) {
 		Message("Passed all Floating Point Math tests!");

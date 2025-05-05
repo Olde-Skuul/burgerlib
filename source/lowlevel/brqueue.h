@@ -19,6 +19,10 @@
 #include "brtypes.h"
 #endif
 
+#ifndef __BRASSERT_H__
+#include "brassert.h"
+#endif
+
 #ifndef __BRGLOBALMEMORYMANAGER_H__
 #include "brglobalmemorymanager.h"
 #endif

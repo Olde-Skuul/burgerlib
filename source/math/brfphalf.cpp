@@ -2,7 +2,7 @@
 
 	16 bit float manager
 
-	Copyright (c) 2020-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 2020-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -15,15 +15,47 @@
 #include "brfphalf.h"
 #include "brstructs.h"
 
+// These platforms have hardware support
+#if ((defined(BURGER_MACOSX) && defined(BURGER_ARM)) || \
+	defined(BURGER_XBOXONE) || defined(BURGER_PS4) || defined(BURGER_PS5) || \
+	defined(BURGER_SWITCH)) && \
+	!defined(DOXYGEN)
+#define USE_INTRINSICS
+#endif
+
+#if defined(USE_INTRINSICS) && defined(BURGER_INTEL)
+#include <immintrin.h>
+#endif
+
+#if defined(USE_INTRINSICS) && defined(BURGER_ARM)
+#include <arm_neon.h>
+#endif
+
 /*! ************************************
 
 	\typedef Burger::float16_t
 	\brief 16 bit float
 
-	Typedef that directly maps to a uint16_t to hold in a register, a 16 bit
-	floating point number.
+	Typedef that directly maps to a __fp16 or _Float16 type if the compiler
+	supports it. Otherwise it is a uint16_t to hold a 16 bit floating point
+	number.
 
-	\sa Half
+	\sa Half, or BURGER_FLOAT16_EMULATED
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_FLOAT16_EMULATED
+	\brief Define to determine if 16 bit float support is not supported in
+		hardware.
+
+	If this define exists, then the code being generated for 16 bit floating
+	point is through software. If this define does not exist, then the typedef
+	Burger::float16_t maps to a compiler supported native data type that has
+	hardware support for the data format.
+
+	\sa BURGER_ARM, BURGER_INTEL, BURGER_AVX, BURGER_NEON, or Burger::Half
 
 ***************************************/
 
@@ -42,13 +74,30 @@
 
 	\return 16 bit float as a uint16_t
 
-	\sa Half, or convert_to_float(float16_t)
+	\sa Half, or convert_to_float(uint16_t)
 
 ***************************************/
 
-Burger::float16_t BURGER_API Burger::convert_to_float16(
-	float fInput) BURGER_NOEXCEPT
+uint16_t BURGER_API Burger::convert_to_float16(float fInput) BURGER_NOEXCEPT
 {
+#if defined(USE_INTRINSICS) && defined(BURGER_INTEL)
+	// Convert float to SSE
+	__m128 vValue = _mm_set_ss(fInput);
+	// Use hardware to convert to FP16
+	__m128i iValue = _mm_cvtps_ph(vValue, _MM_FROUND_TO_NEAREST_INT);
+	// Return the value
+	return static_cast<uint16_t>(_mm_cvtsi128_si32(iValue));
+
+#elif defined(USE_INTRINSICS) && defined(BURGER_ARM)
+	// Convert float to Neon
+	float32x4_t vValue = vdupq_n_f32(fInput);
+	// Use hardware to convert to FP16
+	float16x4_t iValue = vcvt_f16_f32(vValue);
+	// Return the value
+	return vget_lane_u16(vreinterpret_u16_f16(iValue), 0);
+
+#else
+
 	// Convert the float into a binary integer, literally
 	uint32_float_t holder;
 	holder.set_float(fInput);
@@ -106,14 +155,8 @@ Burger::float16_t BURGER_API Burger::convert_to_float16(
 			// Infinity!
 			return static_cast<uint16_t>(uSign | 0x7C00U);
 		}
-
-		// NaN! Chop off the excess bits
-		uMantissa >>= (23U - 10U);
-
-		// Note: Test for zero and force to non-zero to prevent accidental
-		// conversion to infinity.
-		return static_cast<uint16_t>(
-			uSign | 0x7C00U | uMantissa | (uMantissa == 0));
+		// NaN!
+		return static_cast<uint16_t>(0x7FFFU | uSign);
 	}
 
 	// What remains is a normalized float, perform the actual conversion
@@ -137,6 +180,8 @@ Burger::float16_t BURGER_API Burger::convert_to_float16(
 	// Return the final float16
 	return static_cast<uint16_t>(
 		uSign | (iExponent << 10U) | (uMantissa >> 13U));
+
+#endif
 }
 
 /*! ************************************
@@ -156,8 +201,26 @@ Burger::float16_t BURGER_API Burger::convert_to_float16(
 
 ***************************************/
 
-float BURGER_API Burger::convert_to_float(float16_t uInput) BURGER_NOEXCEPT
+float BURGER_API Burger::convert_to_float(uint16_t uInput) BURGER_NOEXCEPT
 {
+#if defined(USE_INTRINSICS) && defined(BURGER_INTEL)
+	// Convert short to SSE
+	__m128i iValue = _mm_cvtsi32_si128(static_cast<int>(uInput));
+	// Use hardware to convert to 32 bit float
+	__m128 vValue = _mm_cvtph_ps(iValue);
+	// Return the value
+	return _mm_cvtss_f32(vValue);
+
+#elif defined(USE_INTRINSICS) && defined(BURGER_ARM)
+	// Convert short to Neon
+	uint16x4_t iValue = vdup_n_u16(uInput);
+	// Use hardware to convert to 32 bit float
+	float32x4_t vValue = vcvt_f32_f16(vreinterpret_f16_u16(iValue));
+	// Return the value
+	return vgetq_lane_f32(vValue, 0);
+
+#else
+
 	// Used for int -> float binary conversion
 	uint32_float_t holder;
 
@@ -199,7 +262,7 @@ float BURGER_API Burger::convert_to_float(float16_t uInput) BURGER_NOEXCEPT
 			// Positive or negative infinity
 			return uSign ? g_fNegInf : g_fInf;
 		}
-		return uSign ? g_fNegQNan : g_fQNan;
+		return uSign ? g_fNegNan : g_fNan;
 	}
 
 	// Perform the conversion
@@ -209,6 +272,7 @@ float BURGER_API Burger::convert_to_float(float16_t uInput) BURGER_NOEXCEPT
 	// Assemble the 32 bit float and return
 	holder.set_uint32(uSign | (uExponent << 23U) | uMantissa);
 	return holder.get_float();
+#endif
 }
 
 /*! ************************************
@@ -221,9 +285,9 @@ float BURGER_API Burger::convert_to_float(float16_t uInput) BURGER_NOEXCEPT
 
 	While this class exists, it is recommended to perform math operations with
 	float or double until a final result is created and then the result is
-	converted to the float16 data type.
+	converted to the \ref float16_t data type.
 
-	\sa convert_to_float16(float), or convert_to_float(float16_t)
+	\sa convert_to_float16(float), or convert_to_float(uint16_t)
 
 ***************************************/
 
@@ -234,13 +298,13 @@ float BURGER_API Burger::convert_to_float(float16_t uInput) BURGER_NOEXCEPT
 
 	This constructor does NOT initialize this class.
 
-	\sa Half(float16_t), or Half(float)
+	\sa Half(uint16_t), or Half(float)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::Half::Half(float16_t)
+	\fn Burger::Half::Half(uint16_t)
 	\brief Constructor with 16 bit float.
 
 	Initialize with a 16 bit float.
@@ -255,13 +319,13 @@ float BURGER_API Burger::convert_to_float(float16_t uInput) BURGER_NOEXCEPT
 
 	Initialize with a 32 bit float, which is converted into a 16 bit float.
 
-	\sa Half(float16_t), or Half()
+	\sa Half(uint16_t), or Half()
 
 ***************************************/
 
 Burger::Half::Half(float fInput) BURGER_NOEXCEPT
 {
-	m_uData = convert_to_float16(fInput);
+	u = convert_to_float16(fInput);
 }
 
 /*! ************************************
@@ -276,7 +340,7 @@ Burger::Half::Half(float fInput) BURGER_NOEXCEPT
 
 Burger::Half::operator float() const BURGER_NOEXCEPT
 {
-	return convert_to_float(m_uData);
+	return convert_to_float(u);
 }
 
 /*! ************************************
@@ -393,7 +457,7 @@ Burger::Half::operator float() const BURGER_NOEXCEPT
 
 Burger::Half Burger::Half::operator-() const BURGER_NOEXCEPT
 {
-	return Half(static_cast<float16_t>(m_uData ^ 0x8000U));
+	return Half(static_cast<uint16_t>(u ^ 0x8000U));
 }
 
 /*! ************************************
@@ -410,7 +474,7 @@ Burger::Half Burger::Half::operator-() const BURGER_NOEXCEPT
 
 Burger::Half& Burger::Half::operator=(const Half& rInput) BURGER_NOEXCEPT
 {
-	m_uData = rInput.m_uData;
+	u = rInput.u;
 	return *this;
 }
 
@@ -429,7 +493,7 @@ Burger::Half& Burger::Half::operator=(const Half& rInput) BURGER_NOEXCEPT
 
 Burger::Half& Burger::Half::operator=(float fInput) BURGER_NOEXCEPT
 {
-	m_uData = convert_to_float16(fInput);
+	u = convert_to_float16(fInput);
 	return *this;
 }
 
@@ -451,8 +515,7 @@ Burger::Half& Burger::Half::operator=(float fInput) BURGER_NOEXCEPT
 
 Burger::Half& Burger::Half::operator+=(const Half& rInput) BURGER_NOEXCEPT
 {
-	m_uData = convert_to_float16(
-		convert_to_float(m_uData) + convert_to_float(rInput.m_uData));
+	u = convert_to_float16(convert_to_float(u) + convert_to_float(rInput.u));
 	return *this;
 }
 
@@ -474,7 +537,7 @@ Burger::Half& Burger::Half::operator+=(const Half& rInput) BURGER_NOEXCEPT
 
 Burger::Half& Burger::Half::operator+=(float fInput) BURGER_NOEXCEPT
 {
-	m_uData = convert_to_float16(convert_to_float(m_uData) + fInput);
+	u = convert_to_float16(convert_to_float(u) + fInput);
 	return *this;
 }
 
@@ -496,8 +559,7 @@ Burger::Half& Burger::Half::operator+=(float fInput) BURGER_NOEXCEPT
 
 Burger::Half& Burger::Half::operator-=(const Half& rInput) BURGER_NOEXCEPT
 {
-	m_uData = convert_to_float16(
-		convert_to_float(m_uData) - convert_to_float(rInput.m_uData));
+	u = convert_to_float16(convert_to_float(u) - convert_to_float(rInput.u));
 	return *this;
 }
 
@@ -519,7 +581,7 @@ Burger::Half& Burger::Half::operator-=(const Half& rInput) BURGER_NOEXCEPT
 
 Burger::Half& Burger::Half::operator-=(float fInput) BURGER_NOEXCEPT
 {
-	m_uData = convert_to_float16(convert_to_float(m_uData) - fInput);
+	u = convert_to_float16(convert_to_float(u) - fInput);
 	return *this;
 }
 
@@ -541,8 +603,7 @@ Burger::Half& Burger::Half::operator-=(float fInput) BURGER_NOEXCEPT
 
 Burger::Half& Burger::Half::operator*=(const Half& rInput) BURGER_NOEXCEPT
 {
-	m_uData = convert_to_float16(
-		convert_to_float(m_uData) * convert_to_float(rInput.m_uData));
+	u = convert_to_float16(convert_to_float(u) * convert_to_float(rInput.u));
 	return *this;
 }
 
@@ -564,7 +625,7 @@ Burger::Half& Burger::Half::operator*=(const Half& rInput) BURGER_NOEXCEPT
 
 Burger::Half& Burger::Half::operator*=(float fInput) BURGER_NOEXCEPT
 {
-	m_uData = convert_to_float16(convert_to_float(m_uData) * fInput);
+	u = convert_to_float16(convert_to_float(u) * fInput);
 	return *this;
 }
 
@@ -586,8 +647,7 @@ Burger::Half& Burger::Half::operator*=(float fInput) BURGER_NOEXCEPT
 
 Burger::Half& Burger::Half::operator/=(const Half& rInput) BURGER_NOEXCEPT
 {
-	m_uData = convert_to_float16(
-		convert_to_float(m_uData) / convert_to_float(rInput.m_uData));
+	u = convert_to_float16(convert_to_float(u) / convert_to_float(rInput.u));
 	return *this;
 }
 
@@ -609,6 +669,6 @@ Burger::Half& Burger::Half::operator/=(const Half& rInput) BURGER_NOEXCEPT
 
 Burger::Half& Burger::Half::operator/=(float fInput) BURGER_NOEXCEPT
 {
-	m_uData = convert_to_float16(convert_to_float(m_uData) / fInput);
+	u = convert_to_float16(convert_to_float(u) / fInput);
 	return *this;
 }

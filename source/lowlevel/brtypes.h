@@ -783,6 +783,14 @@
 #define __has_include_next(x) 0
 #endif
 
+#if !defined(__is_identifier)
+#define __is_identifier(x) 1
+#endif
+
+#if !defined(__has_keyword)
+#define __has_keyword(x) !(__is_identifier(x))
+#endif
+
 #if !defined(__GNUC_PREREQ)
 #if defined(__GNUC__) && defined(__GNUC_MINOR__)
 #define __GNUC_PREREQ(maj, min) \

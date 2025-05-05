@@ -2274,6 +2274,32 @@ s
 
 /*! ************************************
 
+	\def __is_identifier
+	\brief Clang feature macro for __is_identifier.
+
+	On non-clang compilers, this compiles to 1.
+
+	[Clang documentation on __is_identifier](https://clang.llvm.org/docs/LanguageExtensions.html#is-identifier)
+
+	\sa BURGER_CLANG
+
+***************************************/
+
+/*! ************************************
+
+	\def __has_keyword
+	\brief Clang helper macro for detecteding keywords.
+
+	On non-clang compilers, this compiles to 0.
+
+	On Clang, it will return \ref TRUE if the parameter is considered a C++ keyword.
+
+	\sa BURGER_CLANG. or __is_identifier
+
+***************************************/
+
+/*! ************************************
+
 	\def __GNUC_PREREQ
 	\brief GNUC version test macro
 
