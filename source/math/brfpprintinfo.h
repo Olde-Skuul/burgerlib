@@ -193,7 +193,7 @@ public:
 			(m_uPrintResult <= kResultLastSpecial);
 	}
 
-	BURGER_INLINE uint_t is_infinity(void) const BURGER_NOEXCEPT
+	BURGER_INLINE uint_t is_infinite(void) const BURGER_NOEXCEPT
 	{
 		return (m_uPrintResult == kResultPositiveInfinity) ||
 			(m_uPrintResult == kResultNegativeInfinity);

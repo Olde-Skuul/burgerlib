@@ -117,8 +117,8 @@ static Burger::eError BURGER_API OldWay(
 			// If it's . or .. directories, skip them
 			uint_t uFlags = pDOSData->m_uAttrib;
 			if (!(uFlags & 0x10U) ||
-				(Burger::StringCompare(".", pDOSData->m_FileName) &&
-					Burger::StringCompare("..", pDOSData->m_FileName))) {
+				(Burger::string_compare(".", pDOSData->m_FileName) &&
+					Burger::string_compare("..", pDOSData->m_FileName))) {
 
 				// New directory entry
 				Burger::DirectoryEntry_t Entry;
@@ -234,8 +234,8 @@ static Burger::eError BURGER_API NewWay(
 			// If it's . or .. directories, skip them
 			uint_t uFlags = pDOSData->m_uAttrib;
 			if (!(uFlags & 0x10U) ||
-				(Burger::StringCompare(".", pDOSData->m_FileName) &&
-					Burger::StringCompare("..", pDOSData->m_FileName))) {
+				(Burger::string_compare(".", pDOSData->m_FileName) &&
+					Burger::string_compare("..", pDOSData->m_FileName))) {
 
 				// New directory entry
 				Burger::DirectoryEntry_t Entry;

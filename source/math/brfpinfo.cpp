@@ -466,7 +466,7 @@ void BURGER_API Burger::FPInfo::init_double(double dValue) BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\fn Burger::FPInfo::is_infinity(void) const
+	\fn Burger::FPInfo::is_infinite(void) const
 	\brief Detect if a number is infinity
 
 	\return \ref TRUE if the number is infinity, \ref FALSE if it's not

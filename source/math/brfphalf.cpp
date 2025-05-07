@@ -354,72 +354,98 @@ Burger::Half::operator float() const BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\fn Burger::Half::is_finite() const
 	\brief Test if the value is finite.
 
 	If the contained value is a finite value, return \ref TRUE
 
 	\return \ref TRUE or \ref FALSE
 
-	\sa is_infinity() const, or is_nan() const
+	\sa is_infinite() const, or is_NaN(void) const
 
 ***************************************/
 
+uint_t BURGER_API Burger::Half::is_finite(void) const BURGER_NOEXCEPT
+{
+	return (static_cast<uint_t>(u) & (0x1FU << 10U)) < (31U << 10U);
+}
+
 /*! ************************************
 
-	\fn Burger::Half::is_infinity() const
 	\brief Test if the value is infinite.
 
 	If the contained value is a infinite value, return \ref TRUE
 
 	\return \ref TRUE or \ref FALSE
 
-	\sa is_finite() const, or is_nan() const
+	\sa is_finite(void) const, or is_NaN(void) const
 
 ***************************************/
 
+uint_t BURGER_API Burger::Half::is_infinite(void) const BURGER_NOEXCEPT
+{
+	const uint_t uTemp = u;
+	return ((uTemp & (0x1FU << 10U)) == (31U << 10U)) && (!(uTemp & 0x3FFU));
+}
+
 /*! ************************************
 
-	\fn Burger::Half::is_nan() const
 	\brief Test if the value is NaN.
 
 	If the contained value is a NaN (Not a Number) value, return \ref TRUE
 
 	\return \ref TRUE or \ref FALSE
 
-	\sa is_finite() const, or is_infinity() const
+	\sa is_finite(void) const, or is_infinite() const
 
 ***************************************/
 
+uint_t BURGER_API Burger::Half::is_NaN(void) const BURGER_NOEXCEPT
+{
+	const uint_t uTemp = u;
+	return ((uTemp & (0x1FU << 10U)) == (31U << 10U)) && (uTemp & 0x3FFU);
+}
+
 /*! ************************************
 
-	\fn Burger::Half::is_normalized() const
 	\brief Test if the value is normalzed.
 
 	If the contained value is normalized, return \ref TRUE
 
 	\return \ref TRUE or \ref FALSE
 
-	\sa is_denormalized() const
+	\sa is_denormalized(void) const
 
 ***************************************/
 
+uint_t BURGER_API Burger::Half::is_normal(void) const BURGER_NOEXCEPT
+{
+	const uint_t uTemp = static_cast<uint_t>(u) & (31U << 10U);
+	return uTemp && (uTemp < (31U << 10U));
+}
+
 /*! ************************************
 
-	\fn Burger::Half::is_denormalized() const
 	\brief Test if the value is denormalzed.
 
 	If the contained value is denormalized, return \ref TRUE
 
 	\return \ref TRUE or \ref FALSE
 
-	\sa is_normalized() const
+	\sa is_normal(void) const
 
 ***************************************/
 
+uint_t BURGER_API Burger::Half::is_denormalized(void) const BURGER_NOEXCEPT
+{
+	const uint_t uTemp = u;
+
+	// Zero exponent and a non-zero mantissa
+	return !(uTemp & (31U << 10U)) && (uTemp & 0x3FFU);
+}
+
 /*! ************************************
 
-	\fn Burger::Half::is_zero() const
+	\fn Burger::Half::is_zero(void) const
 	\brief Test if the value is zero.
 
 	If the contained value is zero, return \ref TRUE
@@ -428,13 +454,13 @@ Burger::Half::operator float() const BURGER_NOEXCEPT
 
 	\return \ref TRUE or \ref FALSE
 
-	\sa is_negative() const
+	\sa is_negative(void) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::Half::is_negative() const
+	\fn Burger::Half::is_negative(void) const
 	\brief Test if the value is negative.
 
 	If the contained value has the sign bit set, return \ref TRUE

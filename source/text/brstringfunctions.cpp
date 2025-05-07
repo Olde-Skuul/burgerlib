@@ -3331,11 +3331,11 @@ void BURGER_API Burger::StringConcatenate(uint16_t* pOutput,
 
 	\return Zero if identical, <0 if pInput1<pInput2 and >0 if pInput1>pInput2
 
-	\sa Burger::StringCompare(const char *,const char *,uintptr_t)
+	\sa Burger::string_compare(const char *,const char *,uintptr_t)
 
 ***************************************/
 
-int BURGER_API Burger::StringCompare(
+int BURGER_API Burger::string_compare(
 	const char* pInput1, const char* pInput2) BURGER_NOEXCEPT
 {
 	int iTemp;
@@ -3374,11 +3374,11 @@ int BURGER_API Burger::StringCompare(
 
 	\return Zero if identical, <0 if pInput1<pInput2 and >0 if pInput1>pInput2
 
-	\sa Burger::StringCompare(const char *,const char *)
+	\sa Burger::string_compare(const char *,const char *)
 
 ***************************************/
 
-int BURGER_API Burger::StringCompare(const char* pInput1, const char* pInput2,
+int BURGER_API Burger::string_compare(const char* pInput1, const char* pInput2,
 	uintptr_t uMaxLength) BURGER_NOEXCEPT
 {
 	int iTemp = 0;
@@ -3415,11 +3415,11 @@ int BURGER_API Burger::StringCompare(const char* pInput1, const char* pInput2,
 
 	\return Zero if identical, <0 if pInput1<pInput2 and >0 if pInput1>pInput2
 
-	\sa Burger::StringCompare(const uint16_t *,const uint16_t *,uintptr_t)
+	\sa Burger::string_compare(const uint16_t *,const uint16_t *,uintptr_t)
 
 ***************************************/
 
-int BURGER_API Burger::StringCompare(
+int BURGER_API Burger::string_compare(
 	const uint16_t* pInput1, const uint16_t* pInput2) BURGER_NOEXCEPT
 {
 	int iTemp;
@@ -3459,11 +3459,11 @@ int BURGER_API Burger::StringCompare(
 	\param uMaxLength Maximum number of bytes to check
 	\return Zero if identical, <0 if pInput1<pInput2 and >0 if pInput1>pInput2
 
-	\sa Burger::StringCompare(const uint16_t *,const uint16_t *)
+	\sa Burger::string_compare(const uint16_t *,const uint16_t *)
 
 ***************************************/
 
-int BURGER_API Burger::StringCompare(const uint16_t* pInput1,
+int BURGER_API Burger::string_compare(const uint16_t* pInput1,
 	const uint16_t* pInput2, uintptr_t uMaxLength) BURGER_NOEXCEPT
 {
 	int iTemp = 0;
@@ -3507,7 +3507,7 @@ int BURGER_API Burger::StringCompare(const uint16_t* pInput1,
 
 	\return Zero if identical, <0 if pInput1<pInput2 and >0 if pInput1>pInput2
 
-	\sa Burger::StringCompare(const char *,const char *),
+	\sa Burger::string_compare(const char *,const char *),
 		Burger::StringCaseCompare(const char *,const char *,uintptr_t)
 
 ***************************************/

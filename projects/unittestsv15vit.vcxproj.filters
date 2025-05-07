@@ -529,10 +529,13 @@
     <ClInclude Include="..\source\memory\brmemorymanager.h">
       <Filter>source\memory</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\platforms\psvita\brvitamemory.h">
+    <ClInclude Include="..\source\platforms\psvita\psvita_memory.h">
       <Filter>source\platforms\psvita</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\platforms\psvita\brvitatypes.h">
+    <ClInclude Include="..\source\platforms\psvita\psvita_types.h">
+      <Filter>source\platforms\psvita</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\psvita\templatepsvita.h">
       <Filter>source\platforms\psvita</Filter>
     </ClInclude>
     <ClInclude Include="..\source\random\brmersennetwist.h">
@@ -1195,7 +1198,7 @@
     <ClCompile Include="..\source\platforms\psvita\brtimedatevita.cpp">
       <Filter>source\platforms\psvita</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\platforms\psvita\brvitamemory.cpp">
+    <ClCompile Include="..\source\platforms\psvita\psvita_memory.cpp">
       <Filter>source\platforms\psvita</Filter>
     </ClCompile>
     <ClCompile Include="..\source\random\brmersennetwist.cpp">

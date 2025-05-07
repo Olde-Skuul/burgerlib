@@ -215,7 +215,7 @@ public:
 		return (m_uFlags >> kFlagIndefiniteNANShift) & 1U;
 	}
 
-	BURGER_INLINE uint_t is_infinity(void) const BURGER_NOEXCEPT
+	BURGER_INLINE uint_t is_infinite(void) const BURGER_NOEXCEPT
 	{
 		return (m_uFlags >> kFlagInfinityShift) & 1U;
 	}

@@ -71,8 +71,8 @@ Burger::eError Burger::DirectorySearch::open(Filename* pDirName) BURGER_NOEXCEPT
 
 			// If it's a directory and it's named "." or "..", skip them
 			if (Entry.m_bDir &&
-				(!StringCompare(".", LocalData.cFileName) ||
-					!StringCompare("..", LocalData.cFileName))) {
+				(!string_compare(".", LocalData.cFileName) ||
+					!string_compare("..", LocalData.cFileName))) {
 				uResult = kErrorNone;
 				continue;
 			}

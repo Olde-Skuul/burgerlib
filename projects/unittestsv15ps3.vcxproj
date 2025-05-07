@@ -593,6 +593,15 @@
     <ClCompile Include="..\unittest\testbrtypes.cpp" />
     <ClCompile Include="..\unittest\testcharset.cpp" />
     <ClCompile Include="..\unittest\testmacros.cpp" />
+    <ClCompile Include="..\source\asm\ps3_asm\atomic_add.s" />
+    <ClCompile Include="..\source\asm\ps3_asm\atomic_add64.s" />
+    <ClCompile Include="..\source\asm\ps3_asm\atomic_compare_and_set.s" />
+    <ClCompile Include="..\source\asm\ps3_asm\atomic_compare_and_set64.s" />
+    <ClCompile Include="..\source\asm\ps3_asm\atomic_get.s" />
+    <ClCompile Include="..\source\asm\ps3_asm\atomic_get64.s" />
+    <ClCompile Include="..\source\asm\ps3_asm\atomic_set.s" />
+    <ClCompile Include="..\source\asm\ps3_asm\atomic_set64.s" />
+    <ClCompile Include="..\source\asm\ps3_asm\atomic_trylock.s" />
     <ClCompile Include="..\source\asm\ps3_asm\floattointceil.s" />
     <ClCompile Include="..\source\asm\ps3_asm\floattointceilptr.s" />
     <ClCompile Include="..\source\asm\ps3_asm\floattointfloor.s" />

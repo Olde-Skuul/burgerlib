@@ -241,7 +241,7 @@ Burger::FileXML::Element * BURGER_API Burger::FileXML::Generic::GetNextElement(c
 		// Get the type
 		uType = pGeneric->GetType();
 		if (uType==XML_ELEMENT) {
-			if (!StringCompare(pElementName,static_cast<const Element *>(pGeneric)->GetName())) {
+			if (!string_compare(pElementName,static_cast<const Element *>(pGeneric)->GetName())) {
 				pElement = static_cast<Element *>(const_cast<Generic *>(pGeneric));
 				break;
 			}
@@ -635,7 +635,7 @@ void BURGER_API Burger::FileXML::Root::DeleteElements(const char *pElementName)
 		do {
 			Generic *pNext = pGeneric->GetNext();
 			if (pGeneric->GetType()==XML_ELEMENT) {
-				if (!StringCompare(pElementName,static_cast<const Element *>(pGeneric)->GetName())) {
+				if (!string_compare(pElementName,static_cast<const Element *>(pGeneric)->GetName())) {
 					delete_object(pGeneric);
 				}
 			}

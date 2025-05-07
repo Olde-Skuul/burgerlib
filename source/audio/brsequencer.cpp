@@ -1610,7 +1610,7 @@ void BURGER_API Burger::Sequencer::Sample8To32AddDelay(Channel_t *pChannel,int32
 				}
 
 				iSampleValue = ((iLeftWeight*iPreviousValue1Left) + (iRightWeight * pCurrent[iAccumulatorInteger+1])) >> cFixedPointShift;
-				iAccumulatorFraction += uStepValue;
+				iAccumulatorFraction += static_cast<int32_t>(uStepValue);
 				pLeft[0] += (iSampleValue * static_cast<int32_t>(uRightVolume));
 				pLeft += 2;
 				pRight[0] += (iSampleValue * static_cast<int32_t>(uLeftVolume));
@@ -1735,7 +1735,7 @@ void BURGER_API Burger::Sequencer::Sample16To32AddDelay(Channel_t *pChannel,int3
 				}
 
 				iSampleValue = ((iLeftWeight*iPreviousValue3Left) + (iRightWeight * pCurrent[iAccumulatorInteger+1])) >> cFixedPointShift;
-				iAccumulatorFraction += uStepValue;
+				iAccumulatorFraction += static_cast<int32_t>(uStepValue);
 				pLeft[0] += (iSampleValue * static_cast<int32_t>(uRightVolume)) >> 8;
 				pLeft += 2;
 				pRight[0] += (iSampleValue * static_cast<int32_t>(uLeftVolume)) >> 8;
@@ -1853,7 +1853,7 @@ void BURGER_API Burger::Sequencer::Sample8To16AddDelay(Channel_t *pChannel,int16
 				}
 
 				int iSampleValue = ((iLeftWeight * iPreviousValue1Left) + (iRightWeight * pCurrent[iAccumulatorInteger+1])) >> cFixedPointShift;
-				iAccumulatorFraction += uStepValue;
+				iAccumulatorFraction += static_cast<int32_t>(uStepValue);
 
 				pLeft[0] = static_cast<int16_t>(pLeft[0]+((iSampleValue*static_cast<int32_t>(uRightVolume))>>8));
 				pLeft += 2;
@@ -1976,7 +1976,7 @@ void BURGER_API Burger::Sequencer::Sample16To16AddDelay(Channel_t *pChannel,int1
 				}
 
 				int iSampleValue = ((iLeftWeight * iPreviousValue1Left) + (iRightWeight * pCurrent[(iAccumulatorInteger*2)+2])) >> cFixedPointShift;
-				iAccumulatorFraction += uStepValue;
+				iAccumulatorFraction += static_cast<int32_t>(uStepValue);
 
 				pLeft[0] = static_cast<int16_t>(pLeft[0]+((iSampleValue*static_cast<int32_t>(uRightVolume)) >> 8));
 				pLeft += 2;
@@ -2113,7 +2113,7 @@ void BURGER_API Burger::Sequencer::Sample8To32AddDelayStereo(Channel_t *pChannel
 				iSampleValueRight = ((iLeftWeight * iPreviousValue1Right) + (iRightWeight * pCurrent[iAccumulatorInteger+3]))>>cFixedPointShift;
 				pRight[0] += (iSampleValueRight * static_cast<int32_t>(uLeftVolume));
 				pRight += 2;
-				iAccumulatorFraction += uStepValue;
+				iAccumulatorFraction += static_cast<int32_t>(uStepValue);
 			} while (--uAccumBufferSize);
 		}
 
@@ -2246,7 +2246,7 @@ void BURGER_API Burger::Sequencer::Sample16To32AddDelayStereo(Channel_t *pChanne
 				iSampleValueRight = ((iLeftWeight * iPreviousValue3Right) + (iRightWeight * pCurrent[iAccumulatorInteger+3])) >> cFixedPointShift;
 				pRight[0] += (iSampleValueRight * static_cast<int32_t>(uLeftVolume)) >> 8;
 				pRight += 2;
-				iAccumulatorFraction += uStepValue;
+				iAccumulatorFraction += static_cast<int32_t>(uStepValue);
 			} while (--uAccumBufferSize);
 		}
 
@@ -2372,7 +2372,7 @@ void BURGER_API Burger::Sequencer::Sample8To16AddDelayStereo(Channel_t *pChannel
 				pRight[0] = static_cast<int16_t>(pRight[0]+((iSampleValueRight*static_cast<int32_t>(uLeftVolume))>>8));
 				pRight += 2;
 
-				iAccumulatorFraction += uStepValue;
+				iAccumulatorFraction += static_cast<int32_t>(uStepValue);
 			} while (--uAccumBufferSize);
 		}			
 
@@ -2503,7 +2503,7 @@ void BURGER_API Burger::Sequencer::Sample16To16AddDelayStereo(Channel_t *pChanne
 				iSampleValueRight = ((iLeftWeight * iPreviousValue1Right) + (iRightWeight * pCurrent[(iAccumulatorInteger*2)+6])) >> cFixedPointShift;
 				pRight[0] = static_cast<int16_t>(pRight[0] + ((iSampleValueRight*static_cast<int32_t>(uLeftVolume))>>8));
 				pRight += 2;
-				iAccumulatorFraction += uStepValue;
+				iAccumulatorFraction += static_cast<int32_t>(uStepValue);
 			} while (--uAccumBufferSize);
 		}
 
@@ -3009,13 +3009,13 @@ void BURGER_API Burger::Sequencer::DoEffect(Channel_t *pChannel,uint_t uStep)
 
 	case Command_t::EFFECT_DOWNSLIDE:
 		if (pChannel->m_uTimePeriod > cMinimumPitch) {
-			pChannel->m_uTimePeriod -= pChannel->m_iSlide*4;
+			pChannel->m_uTimePeriod -= static_cast<uint_t>(pChannel->m_iSlide*4);
 		}
 		break;
 
 	case Command_t::EFFECT_UPSLIDE:
 		if (pChannel->m_uTimePeriod < cMaximumPitch) {
-			pChannel->m_uTimePeriod += pChannel->m_iSlide*4;
+			pChannel->m_uTimePeriod += static_cast<uint_t>(pChannel->m_iSlide*4);
 		}
 		break;
 

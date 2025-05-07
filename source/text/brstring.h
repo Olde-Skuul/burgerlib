@@ -332,7 +332,7 @@ public:
 
 	BURGER_INLINE int Compare(const String& rInput) const BURGER_NOEXCEPT
 	{
-		return StringCompare(m_pData, rInput.c_str());
+		return string_compare(m_pData, rInput.c_str());
 	}
 	int BURGER_API Compare(const char* pInput) const BURGER_NOEXCEPT;
 	int BURGER_API Compare(char iInput) const BURGER_NOEXCEPT;
@@ -383,7 +383,7 @@ public:
 		String const& rInput1, String const& rInput2) BURGER_NOEXCEPT
 	{
 		return static_cast<uint_t>(
-			Burger::StringCompare(rInput1.c_str(), rInput2.c_str()) == 0);
+			Burger::string_compare(rInput1.c_str(), rInput2.c_str()) == 0);
 	}
 	BURGER_INLINE friend uint_t operator==(
 		String const& rInput1, const char* pInput2) BURGER_NOEXCEPT
@@ -409,7 +409,7 @@ public:
 		String const& rInput1, String const& rInput2) BURGER_NOEXCEPT
 	{
 		return static_cast<uint_t>(
-			Burger::StringCompare(rInput1.c_str(), rInput2.c_str()) != 0);
+			Burger::string_compare(rInput1.c_str(), rInput2.c_str()) != 0);
 	}
 	BURGER_INLINE friend uint_t operator!=(
 		String const& rInput1, const char* pInput2) BURGER_NOEXCEPT
@@ -435,7 +435,7 @@ public:
 		String const& rInput1, String const& rInput2) BURGER_NOEXCEPT
 	{
 		return static_cast<uint_t>(
-			Burger::StringCompare(rInput1.c_str(), rInput2.c_str()) < 0);
+			Burger::string_compare(rInput1.c_str(), rInput2.c_str()) < 0);
 	}
 	BURGER_INLINE friend uint_t operator<(
 		String const& rInput1, const char* pInput2) BURGER_NOEXCEPT
@@ -461,7 +461,7 @@ public:
 		String const& rInput1, String const& rInput2) BURGER_NOEXCEPT
 	{
 		return static_cast<uint_t>(
-			Burger::StringCompare(rInput1.c_str(), rInput2.c_str()) <= 0);
+			Burger::string_compare(rInput1.c_str(), rInput2.c_str()) <= 0);
 	}
 	BURGER_INLINE friend uint_t operator<=(
 		String const& rInput1, const char* pInput2) BURGER_NOEXCEPT
@@ -487,7 +487,7 @@ public:
 		String const& rInput1, String const& rInput2) BURGER_NOEXCEPT
 	{
 		return static_cast<uint_t>(
-			Burger::StringCompare(rInput1.c_str(), rInput2.c_str()) > 0);
+			Burger::string_compare(rInput1.c_str(), rInput2.c_str()) > 0);
 	}
 	BURGER_INLINE friend uint_t operator>(
 		String const& rInput1, const char* pInput2) BURGER_NOEXCEPT
@@ -513,7 +513,7 @@ public:
 		String const& rInput1, String const& rInput2) BURGER_NOEXCEPT
 	{
 		return static_cast<uint_t>(
-			Burger::StringCompare(rInput1.c_str(), rInput2.c_str()) >= 0);
+			Burger::string_compare(rInput1.c_str(), rInput2.c_str()) >= 0);
 	}
 	BURGER_INLINE friend uint_t operator>=(
 		String const& rInput1, const char* pInput2) BURGER_NOEXCEPT

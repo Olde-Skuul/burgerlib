@@ -2643,7 +2643,7 @@ int BURGER_API Burger::String::Compare(const char* pInput) const BURGER_NOEXCEPT
 	if (!pInput) {
 		pInput = g_EmptyString;
 	}
-	return StringCompare(m_pData, pInput);
+	return string_compare(m_pData, pInput);
 }
 
 /*! ************************************
@@ -2663,7 +2663,7 @@ int BURGER_API Burger::String::Compare(const char* pInput) const BURGER_NOEXCEPT
 int BURGER_API Burger::String::Compare(char iInput) const BURGER_NOEXCEPT
 {
 	const char Temp[2] = {iInput, 0};
-	return StringCompare(m_pData, Temp);
+	return string_compare(m_pData, Temp);
 }
 
 /*! ************************************

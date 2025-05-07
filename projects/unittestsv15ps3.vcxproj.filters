@@ -1303,6 +1303,33 @@
     <ClCompile Include="..\unittest\testmacros.cpp">
       <Filter>unittest</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\asm\ps3_asm\atomic_add.s">
+      <Filter>source\asm\ps3_asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\ps3_asm\atomic_add64.s">
+      <Filter>source\asm\ps3_asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\ps3_asm\atomic_compare_and_set.s">
+      <Filter>source\asm\ps3_asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\ps3_asm\atomic_compare_and_set64.s">
+      <Filter>source\asm\ps3_asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\ps3_asm\atomic_get.s">
+      <Filter>source\asm\ps3_asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\ps3_asm\atomic_get64.s">
+      <Filter>source\asm\ps3_asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\ps3_asm\atomic_set.s">
+      <Filter>source\asm\ps3_asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\ps3_asm\atomic_set64.s">
+      <Filter>source\asm\ps3_asm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\asm\ps3_asm\atomic_trylock.s">
+      <Filter>source\asm\ps3_asm</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\asm\ps3_asm\floattointceil.s">
       <Filter>source\asm\ps3_asm</Filter>
     </ClCompile>

@@ -338,8 +338,9 @@
     <ClInclude Include="..\source\memory\brglobalmemorymanager.h" />
     <ClInclude Include="..\source\memory\brmemoryhandle.h" />
     <ClInclude Include="..\source\memory\brmemorymanager.h" />
-    <ClInclude Include="..\source\platforms\psvita\brvitamemory.h" />
-    <ClInclude Include="..\source\platforms\psvita\brvitatypes.h" />
+    <ClInclude Include="..\source\platforms\psvita\psvita_memory.h" />
+    <ClInclude Include="..\source\platforms\psvita\psvita_types.h" />
+    <ClInclude Include="..\source\platforms\psvita\templatepsvita.h" />
     <ClInclude Include="..\source\random\brmersennetwist.h" />
     <ClInclude Include="..\source\random\brrandom.h" />
     <ClInclude Include="..\source\random\brrandombase.h" />
@@ -560,7 +561,7 @@
     <ClCompile Include="..\source\platforms\psvita\brthreadvita.cpp" />
     <ClCompile Include="..\source\platforms\psvita\brticksvita.cpp" />
     <ClCompile Include="..\source\platforms\psvita\brtimedatevita.cpp" />
-    <ClCompile Include="..\source\platforms\psvita\brvitamemory.cpp" />
+    <ClCompile Include="..\source\platforms\psvita\psvita_memory.cpp" />
     <ClCompile Include="..\source\random\brmersennetwist.cpp" />
     <ClCompile Include="..\source\random\brrandom.cpp" />
     <ClCompile Include="..\source\random\brrandombase.cpp" />

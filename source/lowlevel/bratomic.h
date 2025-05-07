@@ -1,8 +1,8 @@
 /***************************************
 
-	Atomic memory
+	Atomic operations
 
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -17,14 +17,6 @@
 
 #ifndef __BRTYPES_H__
 #include "brtypes.h"
-#endif
-
-#ifndef __BRWATCOM_H__
-#include "brwatcom.h"
-#endif
-
-#ifndef __BRVISUALSTUDIO_H__
-#include "brvisualstudio.h"
 #endif
 
 /* BEGIN */
@@ -291,7 +283,7 @@ extern uint_t BURGER_API has_68kFPU(void) BURGER_NOEXCEPT;
 #else
 BURGER_INLINE uint_t has_68kFPU(void) BURGER_NOEXCEPT
 {
-	return TRUE;
+	return FALSE;
 }
 #endif
 

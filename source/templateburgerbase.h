@@ -46,6 +46,7 @@
 /* IGNORE: "burgermac.h" */
 /* IGNORE: "burgermacosx.h" */
 /* IGNORE: "burgermsdos.h" */
+/* IGNORE: "burgerpsvita.h" */
 /* IGNORE: "burgerps4.h" */
 /* IGNORE: "burgerwindows.h" */
 /* IGNORE: "burgerdarwin.h" */
@@ -135,6 +136,7 @@
 #include "brwin1252.h"
 #include "brwin437.h"
 #include "brfphalf.h"
+#include "bratomic.h"
 #include "brfpinfo.h"
 #include "brfplargeint.h"
 #include "brfpprintinfo.h"
@@ -177,12 +179,10 @@
 #include "brlinuxtypes.h"
 #include "brandroidtypes.h"
 #include "brshieldtypes.h"
-#include "brvitatypes.h"
 #include "bralgorithm.h"
 #include "brargumenttype.h"
 #include "brcodelibrary.h"
 #include "brstdouthelpers.h"
-#include "bratomic.h"
 #include "brasciito.h"
 #include "brnumberto.h"
 #include "brstringfunctions.h"
@@ -390,6 +390,8 @@ typedef VertexBuffer VertexBufferDefault;
 #include "burgermsdos.h"
 #elif defined(BURGER_XBOX360)
 #include "burgerxbox360.h"
+#elif defined(BURGER_VITA)
+#include "burgerpsvita.h"
 #elif defined(BURGER_PS4) || defined(BURGER_PS5)
 #include "burgerps4.h"
 #elif defined(BURGER_SWITCH)

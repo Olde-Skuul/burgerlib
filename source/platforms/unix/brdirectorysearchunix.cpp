@@ -60,8 +60,8 @@ Burger::eError Burger::DirectorySearch::open(Filename* pDirName) BURGER_NOEXCEPT
 
 			// If it's a directory and it's named "." or "..", skip them
 			if ((pDirEntry->d_type == DT_DIR) &&
-				(!StringCompare(".", pDirEntry->d_name) ||
-					!StringCompare("..", pDirEntry->d_name))) {
+				(!string_compare(".", pDirEntry->d_name) ||
+					!string_compare("..", pDirEntry->d_name))) {
 				uResult = kErrorNone;
 				continue;
 			}

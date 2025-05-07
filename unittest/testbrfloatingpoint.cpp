@@ -21,6 +21,12 @@
 #include "common.h"
 #include <math.h>
 
+#define NANTEST 0x01    // NaN
+#define INFTEST 0x02    // Infinity
+#define FINITETEST 0x04 // Finite number
+#define NORMALTEST 0x08 // Normal number
+#define SIGNTEST 0x10   // Negative number
+
 struct FloatInt_t {
 	float m_fValue;
 	int m_iValue;
@@ -341,14 +347,72 @@ static uint_t BURGER_API TestSNANToQNAN(void) BURGER_NOEXCEPT
 }
 
 //
-// Test is_NaN(float)
+// Test is_NaN(uint16_t)
 //
 
-#define NANTEST 0x01    // NaN
-#define INFTEST 0x02    // Infinity
-#define FINITETEST 0x04 // Finite number
-#define NORMALTEST 0x08 // Normal number
-#define SIGNTEST 0x10   // Negative number
+static const uint16_t IsNanTestHalf[][2] = {
+	{0x0000U, FINITETEST},                         // 0.0f
+	{0x0001U, FINITETEST},                         // Lowest denormal
+	{0x0010U, FINITETEST},                         // Denormal
+	{0x0300U, FINITETEST},                         // Denormal
+	{0x03FFU, FINITETEST},                         // Highest denormal
+	{0x0400U, FINITETEST + NORMALTEST},            // Min
+	{0x1400U, FINITETEST + NORMALTEST},            // Epsilon
+	{0x3C00U, FINITETEST + NORMALTEST},            // 1.0f5
+	{0x7BFFU, FINITETEST + NORMALTEST},            // Max
+	{0x7C00U, INFTEST},                            // Inf
+	{0x7C01U, NANTEST},                            // Nan
+	{0x7DFFU, NANTEST},                            // Nan
+	{0x7FF0U, NANTEST},                            // QNan
+	{0x7FFFU, NANTEST},                            // QNan
+	{0x8000U, FINITETEST + SIGNTEST},              // -0.0f
+	{0x8001U, FINITETEST + SIGNTEST},              // Lowest denormal
+	{0x8010U, FINITETEST + SIGNTEST},              // Denormal
+	{0x8300U, FINITETEST + SIGNTEST},              // Denormal
+	{0x83FFU, FINITETEST + SIGNTEST},              // Highest denormal
+	{0x8400U, FINITETEST + NORMALTEST + SIGNTEST}, // Min
+	{0x9400U, FINITETEST + NORMALTEST + SIGNTEST}, // Epsilon
+	{0xBC00U, FINITETEST + NORMALTEST + SIGNTEST}, // 1.0f
+	{0xFBFFU, FINITETEST + NORMALTEST + SIGNTEST}, // Max
+	{0xFC00U, INFTEST + SIGNTEST},                 // Inf
+	{0xFC01U, NANTEST + SIGNTEST},                 // Nan
+	{0xFDFFU, NANTEST + SIGNTEST},                 // Nan
+	{0xFFF0U, NANTEST + SIGNTEST},                 // QNan
+	{0xFFFFU, NANTEST + SIGNTEST}                  // QNan
+};
+
+static uint_t BURGER_API TestIsNanHalf(void) BURGER_NOEXCEPT
+{
+	const uint16_t* pWork = IsNanTestHalf[0];
+	uintptr_t i = BURGER_ARRAYSIZE(IsNanTestHalf);
+	uint_t uResult = FALSE;
+	do {
+		const uint16_t fOriginal = pWork[0];
+		const uint_t uExpected = (pWork[1] & NANTEST) != 0;
+		pWork += 2;
+		Burger::Half TestHalf(fOriginal);
+		uint_t uTest = TestHalf.is_NaN();
+		uint_t uFailure = (uTest != uExpected);
+		uResult |= uFailure;
+		ReportFailure("Half::is_NaN(%.16g) = %u / Wanted %u", uFailure,
+			Burger::convert_to_float(fOriginal), uTest, uExpected);
+
+		// Test FPInfo
+		const Burger::FPInfo FPTest(fOriginal);
+		uTest = FPTest.is_NaN();
+		uFailure = (uTest != uExpected);
+		uResult |= uFailure;
+		ReportFailure(
+			"Burger::FPInfo::is_NaN((uint16_t)%.16g) = %u / Wanted %u",
+			uFailure, fOriginal, uTest, uExpected);
+
+	} while (--i);
+	return uResult;
+}
+
+//
+// Test is_NaN(float)
+//
 
 static const uint32_t IsNanTest[][2] = {
 	{0x00000000U, FINITETEST},                         // 0.0f
@@ -476,6 +540,39 @@ static uint_t BURGER_API TestIsNanDouble(void) BURGER_NOEXCEPT
 }
 
 //
+// Test is_infinite(uint16_t)
+//
+
+static uint_t BURGER_API TestIsInfHalf(void) BURGER_NOEXCEPT
+{
+	const uint16_t* pWork = IsNanTestHalf[0];
+	uintptr_t i = BURGER_ARRAYSIZE(IsNanTestHalf);
+	uint_t uResult = FALSE;
+	do {
+		const uint16_t fOriginal = pWork[0];
+		const uint_t uExpected = (pWork[1] & INFTEST) != 0;
+		pWork += 2;
+		Burger::Half TestHalf(fOriginal);
+		uint_t uTest = TestHalf.is_infinite();
+		uint_t uFailure = (uTest != uExpected);
+		uResult |= uFailure;
+		ReportFailure("Half::is_infinite(%.16g) = %u / Wanted %u", uFailure,
+			Burger::convert_to_float(fOriginal), uTest, uExpected);
+
+		// Test FPInfo
+		const Burger::FPInfo FPTest(fOriginal);
+		uTest = FPTest.is_infinite();
+		uFailure = (uTest != uExpected);
+		uResult |= uFailure;
+		ReportFailure(
+			"Burger::FPInfo::is_infinite((uint16_t)%.16g) = %u / Wanted %u",
+			uFailure, fOriginal, uTest, uExpected);
+
+	} while (--i);
+	return uResult;
+}
+
+//
 // Test is_infinite(float)
 //
 
@@ -501,11 +598,11 @@ static uint_t BURGER_API TestIsInfFloat(void) BURGER_NOEXCEPT
 
 		// Test FPInfo
 		const Burger::FPInfo FPTest(fOriginal);
-		uTest = FPTest.is_infinity();
+		uTest = FPTest.is_infinite();
 		uFailure = (uTest != uExpected);
 		uResult |= uFailure;
 		ReportFailure(
-			"Burger::FPInfo::is_infinity((float)%.16g) = %u / Wanted %u",
+			"Burger::FPInfo::is_infinite((float)%.16g) = %u / Wanted %u",
 			uFailure, fOriginal, uTest, uExpected);
 
 	} while (--i);
@@ -538,12 +635,45 @@ static uint_t BURGER_API TestIsInfDouble(void) BURGER_NOEXCEPT
 
 		// Test FPInfo
 		const Burger::FPInfo FPTest(dOriginal);
-		uTest = FPTest.is_infinity();
+		uTest = FPTest.is_infinite();
 		uFailure = (uTest != uExpected);
 		uResult |= uFailure;
 		ReportFailure(
-			"Burger::FPInfo::is_infinity((double)%.16g) = %u / Wanted %u",
+			"Burger::FPInfo::is_infinite((double)%.16g) = %u / Wanted %u",
 			uFailure, dOriginal, uTest, uExpected);
+	} while (--i);
+	return uResult;
+}
+
+//
+// Test is_finite(uint16_t)
+//
+
+static uint_t BURGER_API TestIsFiniteHalf(void) BURGER_NOEXCEPT
+{
+	const uint16_t* pWork = IsNanTestHalf[0];
+	uintptr_t i = BURGER_ARRAYSIZE(IsNanTestHalf);
+	uint_t uResult = FALSE;
+	do {
+		const uint16_t fOriginal = pWork[0];
+		const uint_t uExpected = (pWork[1] & FINITETEST) != 0;
+		pWork += 2;
+		Burger::Half TestHalf(fOriginal);
+		uint_t uTest = TestHalf.is_finite();
+		uint_t uFailure = (uTest != uExpected);
+		uResult |= uFailure;
+		ReportFailure("Half::is_finite(%.16g) = %u / Wanted %u", uFailure,
+			Burger::convert_to_float(fOriginal), uTest, uExpected);
+
+		// Test FPInfo
+		const Burger::FPInfo FPTest(fOriginal);
+		uTest = FPTest.is_finite();
+		uFailure = (uTest != uExpected);
+		uResult |= uFailure;
+		ReportFailure(
+			"Burger::FPInfo::is_finite((uint16_t)%.16g) = %u / Wanted %u",
+			uFailure, fOriginal, uTest, uExpected);
+
 	} while (--i);
 	return uResult;
 }
@@ -617,6 +747,30 @@ static uint_t BURGER_API TestIsFiniteDouble(void) BURGER_NOEXCEPT
 }
 
 //
+// Test is_normal(uint16_t)
+//
+
+static uint_t BURGER_API TestIsNormalHalf(void) BURGER_NOEXCEPT
+{
+	const uint16_t* pWork = IsNanTestHalf[0];
+	uintptr_t i = BURGER_ARRAYSIZE(IsNanTestHalf);
+	uint_t uResult = FALSE;
+	do {
+		const uint16_t fOriginal = pWork[0];
+		const uint_t uExpected = (pWork[1] & NORMALTEST) != 0;
+		pWork += 2;
+		Burger::Half TestHalf(fOriginal);
+		uint_t uTest = TestHalf.is_normal();
+		uint_t uFailure = (uTest != uExpected);
+		uResult |= uFailure;
+		ReportFailure("Half::is_normal((uint16_t)0x%04X) = %u / Wanted %u",
+			uFailure, fOriginal, uTest, uExpected);
+
+	} while (--i);
+	return uResult;
+}
+
+//
 // Test is_normal(float)
 //
 
@@ -662,6 +816,39 @@ static uint_t BURGER_API TestIsNormalDouble(void) BURGER_NOEXCEPT
 		uResult |= uFailure;
 		ReportFailure("Burger::is_normal((double)%.16g) = %u / Wanted %u",
 			uFailure, dOriginal, uTest, uExpected);
+	} while (--i);
+	return uResult;
+}
+
+//
+// Test is_negative(uint16_t)
+//
+
+static uint_t BURGER_API TestSignBitHalf(void) BURGER_NOEXCEPT
+{
+	const uint16_t* pWork = IsNanTestHalf[0];
+	uintptr_t i = BURGER_ARRAYSIZE(IsNanTestHalf);
+	uint_t uResult = FALSE;
+	do {
+		const uint16_t fOriginal = pWork[0];
+		const uint_t uExpected = (pWork[1] & SIGNTEST) != 0;
+		pWork += 2;
+		Burger::Half TestHalf(fOriginal);
+		uint_t uTest = TestHalf.is_negative();
+		uint_t uFailure = (uTest != uExpected);
+		uResult |= uFailure;
+		ReportFailure("Half::is_negative(%.16g) = %u / Wanted %u", uFailure,
+			Burger::convert_to_float(fOriginal), uTest, uExpected);
+
+		// Test FPInfo
+		const Burger::FPInfo FPTest(fOriginal);
+		uTest = FPTest.is_negative();
+		uFailure = (uTest != uExpected);
+		uResult |= uFailure;
+		ReportFailure(
+			"Burger::FPInfo::is_negative((uint16_t)%.16g) = %u / Wanted %u",
+			uFailure, fOriginal, uTest, uExpected);
+
 	} while (--i);
 	return uResult;
 }
@@ -2404,9 +2591,14 @@ static uint_t TestConvertToFloat(void) BURGER_NOEXCEPT
 		const uint_t uFailure = (pWork->m_fValue.w != Test.w);
 		uResult |= uFailure;
 		if (uFailure) {
-			ReportFailure(
-				"Burger::convert_to_float((uint16_t)0x%04X) = %.16g 0x%08X / Wanted 0x%08X",
-				uFailure, pWork->m_uValue, Test.f, Test.w, pWork->m_fValue.w);
+			// Nan has an alternate positive test
+			if (!Burger::is_NaN(Test.f) ||
+				((Test.w & 0x7FFFFFFFU) != 0x7FFFFFFFU)) {
+				ReportFailure(
+					"Burger::convert_to_float((uint16_t)0x%04X) = %.16g 0x%08X / Wanted 0x%08X",
+					uFailure, pWork->m_uValue, Test.f, Test.w,
+					pWork->m_fValue.w);
+			}
 		}
 		++pWork;
 	} while (--i);
@@ -2430,14 +2622,19 @@ int BURGER_API TestBrfloatingpoint(uint_t uVerbose) BURGER_NOEXCEPT
 	uResult |= TestSNANToQNAN();
 
 	// Test the test functions
+	uResult |= TestIsNanHalf();
 	uResult |= TestIsNanFloat();
 	uResult |= TestIsNanDouble();
+	uResult |= TestIsInfHalf();
 	uResult |= TestIsInfFloat();
 	uResult |= TestIsInfDouble();
+	uResult |= TestIsFiniteHalf();
 	uResult |= TestIsFiniteFloat();
 	uResult |= TestIsFiniteDouble();
+	uResult |= TestIsNormalHalf();
 	uResult |= TestIsNormalFloat();
 	uResult |= TestIsNormalDouble();
+	uResult |= TestSignBitHalf();
 	uResult |= TestSignBitFloat();
 	uResult |= TestSignBitDouble();
 

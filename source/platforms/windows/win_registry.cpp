@@ -453,7 +453,7 @@ uint32_t BURGER_API Burger::Win32::GetQTExtensionDirectoryA(
 			EndWithWindowsSlashes(SystemDirName);
 
 			// Was the folder found the Windows system folder?
-			if (!StringCompare(SystemDirName, QTFolderName)) {
+			if (!string_compare(SystemDirName, QTFolderName)) {
 				// Since it's the Windows folder that's found, append the
 				// string QuickTime\ to the end of the pathname
 				// to denote the old location of where Quicktime

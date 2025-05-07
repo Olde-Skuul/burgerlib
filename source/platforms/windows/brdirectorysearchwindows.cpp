@@ -81,9 +81,9 @@ Burger::eError Burger::DirectorySearch::open(Filename* pDirName) BURGER_NOEXCEPT
 
 			// If it's a directory and it's named "." or "..", skip them
 			if (Entry.m_bDir &&
-				(!StringCompare(reinterpret_cast<const uint16_t*>(L"."),
+				(!string_compare(reinterpret_cast<const uint16_t*>(L"."),
 					 reinterpret_cast<const uint16_t*>(LocalData.cFileName)) ||
-					!StringCompare(reinterpret_cast<const uint16_t*>(L".."),
+					!string_compare(reinterpret_cast<const uint16_t*>(L".."),
 						reinterpret_cast<const uint16_t*>(
 							LocalData.cFileName)))) {
 				uResult = kErrorNone;

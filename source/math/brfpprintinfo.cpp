@@ -181,7 +181,7 @@ void BURGER_API Burger::FPPrintInfo::clear(void) BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\fn Burger::FPPrintInfo::is_infinity(void) const
+	\fn Burger::FPPrintInfo::is_infinite(void) const
 	\brief Is the number infinity?
 
 	\return \ref TRUE if the number is INF
@@ -228,7 +228,7 @@ void BURGER_API Burger::FPPrintInfo::analyze_float(
 	}
 
 	// Infinity and beyond?
-	if (pFPInfo->is_infinity()) {
+	if (pFPInfo->is_infinite()) {
 
 		// Get the string and type depending if it is signed or not.
 		eResult uResult;

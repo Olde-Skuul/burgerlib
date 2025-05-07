@@ -63,44 +63,18 @@ public:
 		return u;
 	}
 
-	BURGER_INLINE uint_t is_finite() const BURGER_NOEXCEPT
-	{
-		return (static_cast<uint_t>(u) & (0x1FU << 10U)) < (31U << 10U);
-	}
+	uint_t BURGER_API is_finite(void) const BURGER_NOEXCEPT;
+	uint_t BURGER_API is_infinite(void) const BURGER_NOEXCEPT;
+	uint_t BURGER_API is_NaN(void) const BURGER_NOEXCEPT;
+	uint_t BURGER_API is_normal(void) const BURGER_NOEXCEPT;
+	uint_t BURGER_API is_denormalized(void) const BURGER_NOEXCEPT;
 
-	BURGER_INLINE uint_t is_infinity() const BURGER_NOEXCEPT
-	{
-		const uint_t uTemp = u;
-		return ((uTemp & (0x1FU << 10U)) == (31U << 10U)) &&
-			(!(uTemp & 0x3FFU));
-	}
-
-	BURGER_INLINE uint_t is_nan() const BURGER_NOEXCEPT
-	{
-		const uint_t uTemp = u;
-		return ((uTemp & (0x1FU << 10U)) == (31U << 10U)) && (uTemp & 0x3FFU);
-	}
-
-	BURGER_INLINE uint_t is_normalized() const BURGER_NOEXCEPT
-	{
-		const uint_t uTemp = static_cast<uint_t>(u) & (31U << 10U);
-		return uTemp && (uTemp < (31U << 10U));
-	}
-
-	BURGER_INLINE uint_t is_denormalized() const BURGER_NOEXCEPT
-	{
-		const uint_t uTemp = u;
-
-		// Zero exponent and a non-zero mantissa
-		return !(uTemp & (31U << 10U)) && (uTemp & 0x3FFU);
-	}
-
-	BURGER_INLINE uint_t is_zero() const BURGER_NOEXCEPT
+	BURGER_INLINE uint_t is_zero(void) const BURGER_NOEXCEPT
 	{
 		return (u & 0x7FFFU) != 0;
 	}
 
-	BURGER_INLINE uint_t is_negative() const BURGER_NOEXCEPT
+	BURGER_INLINE uint_t is_negative(void) const BURGER_NOEXCEPT
 	{
 		return (u & 0x8000U) != 0;
 	}

@@ -22,7 +22,7 @@
 				FavorSizeOrSpeed="1"
 				OptimizeForProcessor="3"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm\vs2003;..\source\asm\masm\vs2003_2005;..\source\asm\masm\vs2003_2008;..\source\asm\masm\vs2003_2010;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\random;..\source\text"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm\vs2003;..\source\asm\masm\vs2003_2005;..\source\asm\masm\vs2003_2008;..\source\asm\masm\vs2003_2010;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\xbox;..\source\random;..\source\text"
 				PreprocessorDefinitions="_DEBUG;_XBOX;_USE_XGMATH"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
@@ -65,7 +65,7 @@
 				EnableFiberSafeOptimizations="TRUE"
 				OptimizeForProcessor="3"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm\vs2003;..\source\asm\masm\vs2003_2005;..\source\asm\masm\vs2003_2008;..\source\asm\masm\vs2003_2010;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\random;..\source\text"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm\vs2003;..\source\asm\masm\vs2003_2005;..\source\asm\masm\vs2003_2008;..\source\asm\masm\vs2003_2010;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\xbox;..\source\random;..\source\text"
 				PreprocessorDefinitions="_DEBUG;_XBOX;_USE_XGMATH"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
@@ -107,7 +107,7 @@
 				EnableFiberSafeOptimizations="TRUE"
 				OptimizeForProcessor="3"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm\vs2003;..\source\asm\masm\vs2003_2005;..\source\asm\masm\vs2003_2008;..\source\asm\masm\vs2003_2010;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\random;..\source\text"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm\vs2003;..\source\asm\masm\vs2003_2005;..\source\asm\masm\vs2003_2008;..\source\asm\masm\vs2003_2010;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\xbox;..\source\random;..\source\text"
 				PreprocessorDefinitions="NDEBUG;_XBOX;_USE_XGMATH"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
@@ -150,7 +150,7 @@
 				EnableFiberSafeOptimizations="TRUE"
 				OptimizeForProcessor="3"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm\vs2003;..\source\asm\masm\vs2003_2005;..\source\asm\masm\vs2003_2008;..\source\asm\masm\vs2003_2010;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\random;..\source\text"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm\vs2003;..\source\asm\masm\vs2003_2005;..\source\asm\masm\vs2003_2008;..\source\asm\masm\vs2003_2010;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\xbox;..\source\random;..\source\text"
 				PreprocessorDefinitions="NDEBUG;_XBOX;_USE_XGMATH"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
@@ -2770,6 +2770,15 @@
 				<File
 					RelativePath="..\source\memory\brmemorymanager.h">
 				</File>
+			</Filter>
+			<Filter
+				Name="platforms">
+				<Filter
+					Name="xbox">
+					<File
+						RelativePath="..\source\platforms\xbox\brmemorymanagerxbox.cpp">
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="random">

@@ -2,7 +2,7 @@
 
 	Atomic memory
 
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -77,9 +77,8 @@
 	\struct Burger::CPUID_t
 	\brief Structure that holds the features of the CPU
 
-	On x86 and x64 CPUs, this structure will be filled by
-	the use of the instruction CPUID on Intel
-	architecture CPUs.
+	On x86 and x64 CPUs, this structure will be filled by the use of the
+	instruction CPUID on Intel architecture CPUs.
 
 	\note This structure only matters on systems with an x86 or x64 CPU
 
@@ -103,10 +102,11 @@
 
 /*! ************************************
 
-	\fn BURGER_INLINE uint_t Burger::CPUID_t::has_RTSC(void) const
+	\fn uint_t Burger::CPUID_t::has_RTSC(void) const
 	\brief Returns non-zero if the RTSC instruction is available
 
-	https://en.wikipedia.org/wiki/Time_Stamp_Counter
+	[Time Stamp Counter documentation](
+		https://en.wikipedia.org/wiki/Time_Stamp_Counter)
 
 	\note This structure only matters on systems with an x86 or x64 CPU
 
@@ -117,10 +117,11 @@
 
 /*! ************************************
 
-	\fn BURGER_INLINE uint_t Burger::CPUID_t::has_CMOV(void) const
+	\fn uint_t Burger::CPUID_t::has_CMOV(void) const
 	\brief Returns non-zero if the CMOV instructions are available
 
-	https://en.wikipedia.org/wiki/FCMOV
+	[Intel CMOV instruction documentation](
+		https://www.felixcloutier.com/x86/cmovcc)
 
 	\note This structure only matters on systems with an x86 or x64 CPU
 
@@ -131,122 +132,131 @@
 
 /*! ************************************
 
-	\fn BURGER_INLINE uint_t Burger::CPUID_t::has_MMX(void) const
+	\fn uint_t Burger::CPUID_t::has_MMX(void) const
 	\brief Returns non-zero if the MMX instructions are available
 
-	https://en.wikipedia.org/wiki/MMX_(instruction_set)
+	[Intel MMX Instruction set](
+		https://en.wikipedia.org/wiki/MMX_(instruction_set))
 
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the instructions are available, zero if not.
-	\sa void CPUID(CPUID_t *) or BURGER_INTEL
+	\sa void CPUID(CPUID_t *), has_SSE(void) const, or BURGER_INTEL
 
 ***************************************/
 
 /*! ************************************
 
-	\fn BURGER_INLINE uint_t Burger::CPUID_t::has_SSE(void) const
+	\fn uint_t Burger::CPUID_t::has_SSE(void) const
 	\brief Returns non-zero if SSE instructions are available
 
-	https://en.wikipedia.org/wiki/Streaming_SIMD_Extensions
+	[Intel SSE instructions](
+		https://en.wikipedia.org/wiki/Streaming_SIMD_Extensions)
 
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the instructions are available, zero if not.
-	\sa void CPUID(CPUID_t *) or BURGER_INTEL
+	\sa void CPUID(CPUID_t *), has_MMX(void) const, or BURGER_INTEL
 
 ***************************************/
 
 /*! ************************************
 
-	\fn BURGER_INLINE uint_t Burger::CPUID_t::has_SSE2(void) const
+	\fn uint_t Burger::CPUID_t::has_SSE2(void) const
 	\brief Returns non-zero if SSE2 instructions are available
 
-	https://en.wikipedia.org/wiki/SSE2
+	[Intel SSE2 instructions](
+		https://en.wikipedia.org/wiki/SSE2)
 
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the instructions are available, zero if not.
-	\sa void CPUID(CPUID_t *) or BURGER_INTEL
+	\sa void CPUID(CPUID_t *), has_SSE(void) const, or BURGER_INTEL
 
 ***************************************/
 
 /*! ************************************
 
-	\fn BURGER_INLINE uint_t Burger::CPUID_t::has_SSE3(void) const
+	\fn uint_t Burger::CPUID_t::has_SSE3(void) const
 	\brief Returns non-zero if SSE3 instructions are available
 
-	https://en.wikipedia.org/wiki/SSE3
+	[Intel SSE3 instructions](
+		https://en.wikipedia.org/wiki/SSE3)
 
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the instructions are available, zero if not.
-	\sa void CPUID(CPUID_t *) or BURGER_INTEL
+	\sa void CPUID(CPUID_t *), has_SSE(void) const, or BURGER_INTEL
 
 ***************************************/
 
 /*! ************************************
 
-	\fn BURGER_INLINE uint_t Burger::CPUID_t::has_SSSE3(void) const
+	\fn uint_t Burger::CPUID_t::has_SSSE3(void) const
 	\brief Returns non-zero if SSSE3 instructions are available
 
-	https://en.wikipedia.org/wiki/SSSE3
+	[Intel SSSE3 instructions](
+		https://en.wikipedia.org/wiki/SSSE3)
 
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the instructions are available, zero if not.
-	\sa void CPUID(CPUID_t *) or BURGER_INTEL
+	\sa void CPUID(CPUID_t *), has_SSE(void) const, or BURGER_INTEL
 
 ***************************************/
 
 /*! ************************************
 
-	\fn BURGER_INLINE uint_t Burger::CPUID_t::has_SSE4a(void) const
+	\fn uint_t Burger::CPUID_t::has_SSE4a(void) const
 	\brief Returns non-zero if SSE4a instructions are available
 
-	https://en.wikipedia.org/wiki/SSE4#SSE4a
+	[Intel SSE4a instructions](
+		https://en.wikipedia.org/wiki/SSE4#SSE4a)
 
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the instructions are available, zero if not.
-	\sa void CPUID(CPUID_t *) or BURGER_INTEL
+	\sa void CPUID(CPUID_t *), has_SSE(void) const, or BURGER_INTEL
 
 ***************************************/
 
 /*! ************************************
 
-	\fn BURGER_INLINE uint_t Burger::CPUID_t::has_SSE41(void) const
+	\fn uint_t Burger::CPUID_t::has_SSE41(void) const
 	\brief Returns non-zero if SSE4.1 instructions are available
 
-	https://en.wikipedia.org/wiki/SSE4#SSE4.1
+	[Intel SSE4.1 instructions](
+		https://en.wikipedia.org/wiki/SSE4#SSE4.1)
 
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the instructions are available, zero if not.
-	\sa void CPUID(CPUID_t *) or BURGER_INTEL
+	\sa void CPUID(CPUID_t *), has_SSE(void) const, or BURGER_INTEL
 
 ***************************************/
 
 /*! ************************************
 
-	\fn BURGER_INLINE uint_t Burger::CPUID_t::has_SSE42(void) const
+	\fn uint_t Burger::CPUID_t::has_SSE42(void) const
 	\brief Returns non-zero if SSE4.2 instructions are available
 
-	https://en.wikipedia.org/wiki/SSE4#SSE4.2
+	[Intel SSE4.2 instructions](
+		https://en.wikipedia.org/wiki/SSE4#SSE4.2)
 
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the instructions are available, zero if not.
-	\sa void CPUID(CPUID_t *) or BURGER_INTEL
+	\sa void CPUID(CPUID_t *), has_SSE(void) const, or BURGER_INTEL
 
 ***************************************/
 
 /*! ************************************
 
-	\fn BURGER_INLINE uint_t Burger::CPUID_t::has_MOVBE(void) const
+	\fn uint_t Burger::CPUID_t::has_MOVBE(void) const
 	\brief Returns non-zero if the MOVBE instruction is available
 
-	https://www.tptp.cc/mirrors/siyobik.info/instruction/MOVBE.html
+	[Intel MOVBE instructions](
+		https://www.felixcloutier.com/x86/movbe)
 
 	\note This structure only matters on systems with an x86 or x64 CPU
 
@@ -257,10 +267,11 @@
 
 /*! ************************************
 
-	\fn BURGER_INLINE uint_t Burger::CPUID_t::has_AES(void) const
+	\fn uint_t Burger::CPUID_t::has_AES(void) const
 	\brief Returns non-zero if AES instructions are available
 
-	https://en.wikipedia.org/wiki/AES_instruction_set
+	[Intel AES instructions](
+		https://en.wikipedia.org/wiki/AES_instruction_set)
 
 	\note This structure only matters on systems with an x86 or x64 CPU
 
@@ -271,10 +282,11 @@
 
 /*! ************************************
 
-	\fn BURGER_INLINE uint_t Burger::CPUID_t::has_AVX(void) const
+	\fn uint_t Burger::CPUID_t::has_AVX(void) const
 	\brief Returns non-zero if AVX instructions are available
 
-	https://en.wikipedia.org/wiki/Advanced_Vector_Extensions
+	[Intel AVX instructions](
+		https://en.wikipedia.org/wiki/Advanced_Vector_Extensions)
 
 	\note This structure only matters on systems with an x86 or x64 CPU
 
@@ -288,7 +300,8 @@
 	\fn BURGER_INLINE uint_t Burger::CPUID_t::has_AVX2(void) const
 	\brief Returns non-zero if AVX2 instructions are available
 
-	https://en.wikipedia.org/wiki/Advanced_Vector_Extensions
+	[Intel AVX2 instructions](
+		https://en.wikipedia.org/wiki/Advanced_Vector_Extensions)
 
 	\note This structure only matters on systems with an x86 or x64 CPU
 
@@ -302,7 +315,8 @@
 	\fn BURGER_INLINE uint_t Burger::CPUID_t::has_CMPXCHG16B(void) const
 	\brief Returns non-zero if the CMPXCHG16B instruction is available
 
-	http://www.felixcloutier.com/x86/CMPXCHG8B:CMPXCHG16B.html
+	[Intel CMPXCHG16B instructions](
+		http://www.felixcloutier.com/x86/CMPXCHG8B:CMPXCHG16B.html)
 
 	\note This structure only matters on systems with an x86 or x64 CPU
 
@@ -316,7 +330,8 @@
 	\fn BURGER_INLINE uint_t Burger::CPUID_t::has_F16C(void) const
 	\brief Returns non-zero if the F16C data type is supported
 
-	https://en.wikipedia.org/wiki/F16C
+	[Intel F16C support documentation](
+		https://en.wikipedia.org/wiki/F16C)
 
 	\note This structure only matters on systems with an x86 or x64 CPU
 
@@ -330,7 +345,8 @@
 	\fn BURGER_INLINE uint_t Burger::CPUID_t::has_FMA3(void) const
 	\brief Returns non-zero if FMA3 instructions are available
 
-	https://en.wikipedia.org/wiki/FMA_instruction_set
+	[Intel FMA3 instructions](
+		https://en.wikipedia.org/wiki/FMA_instruction_set)
 
 	\note This structure only matters on systems with an x86 or x64 CPU
 
@@ -344,7 +360,8 @@
 	\fn BURGER_INLINE uint_t Burger::CPUID_t::has_FMA4(void) const
 	\brief Returns non-zero if FMA4 instructions are available
 
-	https://en.wikipedia.org/wiki/FMA_instruction_set#FMA4_instruction_set
+	[Intel FMA4 instructions](
+		https://en.wikipedia.org/wiki/FMA_instruction_set#FMA4_instruction_set)
 
 	\note This structure only matters on systems with an x86 or x64 CPU
 
@@ -358,7 +375,11 @@
 	\fn BURGER_INLINE uint_t Burger::CPUID_t::has_LAHFSAHF(void) const
 	\brief Returns non-zero if LAHF and SAHF instructions support long mode
 
-	http://www.tptp.cc/mirrors/siyobik.info/instruction/LAHF.html
+	[Intel LAHF instruction](
+		https://www.felixcloutier.com/x86/lahf)
+
+	[Intel SAHF instruction](
+		https://www.felixcloutier.com/x86/sahf)
 
 	\note This structure only matters on systems with an x86 or x64 CPU
 
@@ -372,7 +393,8 @@
 	\fn BURGER_INLINE uint_t Burger::CPUID_t::has_PrefetchW(void) const
 	\brief Returns non-zero if PrefetchW instructions are available
 
-	http://www.felixcloutier.com/x86/PREFETCHW.html
+	[Intel PrefetchW instructions](
+		http://www.felixcloutier.com/x86/PREFETCHW.html)
 
 	\note This structure only matters on systems with an x86 or x64 CPU
 
@@ -386,7 +408,8 @@
 	\fn BURGER_INLINE uint_t Burger::CPUID_t::has_3DNOW(void) const
 	\brief Returns non-zero if AMD 3DNow! instructions are available
 
-	https://en.wikipedia.org/wiki/3DNow!
+	[AMD 3DNow! instructions](
+		https://en.wikipedia.org/wiki/3DNow!)
 
 	\note This structure only matters on systems with an x86 or x64 CPU
 
@@ -400,7 +423,8 @@
 	\fn BURGER_INLINE uint_t Burger::CPUID_t::has_extended3DNOW(void) const
 	\brief Returns non-zero if extended AMD 3DNow! instructions are available
 
-	https://en.wikipedia.org/wiki/3DNow!#3DNow_extensions
+	[AMD Extended 3DNow! instructions](
+		https://en.wikipedia.org/wiki/3DNow!#3DNow_extensions)
 
 	\note This structure only matters on systems with an x86 or x64 CPU
 
@@ -549,7 +573,7 @@ void BURGER_API Burger::CPUID(CPUID_t* pOutput) BURGER_NOEXCEPT
 	uintptr_t i = BURGER_ARRAYSIZE(g_CPUHashes);
 	const CPUHashes_t* pHash = g_CPUHashes;
 	do {
-		if (!StringCompare(pHash->m_CPUName, pOutput->m_CPUName)) {
+		if (!string_compare(pHash->m_CPUName, pOutput->m_CPUName)) {
 			pOutput->m_uCPUType = pHash->m_uCPU;
 			break;
 		}
@@ -567,7 +591,7 @@ void BURGER_API Burger::CPUID(CPUID_t* pOutput) BURGER_NOEXCEPT
 		pOutput->m_uCPUID1ECX = static_cast<uint32_t>(Results[2]);
 		pOutput->m_uCPUID1EDX = static_cast<uint32_t>(Results[3]);
 
-		// Test if xsave is allowed by the OS
+		// Test if xsave is allowed by the current CPU
 		if (pOutput->m_uCPUID1ECX & 0x08000000U) {
 			// Execute xgetbv if present
 			pOutput->m_uXGETBV = _xgetbv(0);
@@ -692,7 +716,7 @@ uint_t BURGER_API Burger::has_AltiVec(void) BURGER_NOEXCEPT
 	size_t uLength = sizeof(gHasAltivec);
 
 	// Ask for Altivec
-	int iError = sysctl(selector, 2, &gHasAltivec, &uLength, NULL, 0);
+	int iError = sysctl(selector, 2, &gHasAltivec, &uLength, nullptr, 0);
 	uint_t uResult = FALSE;
 	if (!iError) {
 
@@ -773,7 +797,7 @@ uint_t BURGER_API Burger::has_PPC_fsqrt(void) BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\brief Return \ref TRUE if floating point is supported in hardware
+	\brief Return \ref TRUE if 68000 floating point is supported in hardware
 
 	Most modern CPUs have floating point in hardware, and on most platforms,
 	this function will return \ref TRUE. On 680x0 platforms, this function will
@@ -824,28 +848,19 @@ uint_t BURGER_API Burger::has_68kFPU(void) BURGER_NOEXCEPT
 
 ***************************************/
 
+#if ((defined(BURGER_METROWERKS) && defined(BURGER_PPC)) || \
+	defined(BURGER_PS3) || defined(BURGER_WIIU)) && \
+	!defined(DOXYGEN)
+
+// Written in assembly
+
+#else
+
 uint_t BURGER_API Burger::atomic_compare_and_set(
 	volatile uint32_t* pOutput, uint32_t uOld, uint32_t uNew) BURGER_NOEXCEPT
 {
-	// MacOS PowerPC version
-#if defined(BURGER_METROWERKS) && defined(BURGER_PPC)
-	register uint32_t uOld2 = uOld;
-	register uint32_t uNew2 = uNew;
-	register volatile uint32_t* pOutput2 = pOutput;
-
-	register uint32_t uTemp;
-	asm {
-loop:	lwarx	uTemp,0,pOutput2
-		cmplw	uTemp,uOld2
-		bne-	abort
-		stwcx.	uNew2,0,pOutput2
-		bne-	loop
-abort:
-	}
-	return uTemp == uOld;
-
 	// MacOS 68k version using the OpenTransport API (Inline assembly)
-#elif defined(BURGER_MAC)
+#if defined(BURGER_MAC)
 	return OTCompareAndSwap32(uOld, uNew, const_cast<uint32_t*>(pOutput));
 
 	// Playstation Vita version
@@ -853,31 +868,6 @@ abort:
 	return sceAtomicCompareAndSwap32(
 			   reinterpret_cast<volatile int32_t*>(pOutput), uOld, uNew) ==
 		uOld;
-
-	// Playstation 3 version
-#elif defined(BURGER_PS3)
-	uint_t uResult;
-	do {
-		uint32_t uTemp = __lwarx(pOutput);
-		uResult = (uTemp == uOld);
-		if (!uResult) {
-			break;
-		}
-	} while (__stwcx(pOutput, uNew) == 0);
-	return uResult;
-
-	// Nintendo WiiU
-#elif defined(BURGER_WIIU)
-	uint_t uResult;
-	do {
-		uint32_t uTemp = __LWARX(const_cast<uint32_t*>(pOutput), 0);
-		uResult = (uTemp == uOld);
-		if (!uResult) {
-			break;
-		}
-		__DCBST(const_cast<uint32_t*>(pOutput), 0);
-	} while (__STWCX(const_cast<uint32_t*>(pOutput), 0, uNew) == 0);
-	return uResult;
 
 	// Microsoft Xbox classic is an outlier
 #elif defined(BURGER_XBOX)
@@ -917,6 +907,7 @@ abort:
 	return bResult;
 #endif
 }
+#endif
 
 /*! ************************************
 
@@ -932,27 +923,21 @@ abort:
 
 ***************************************/
 
+#if ((defined(BURGER_METROWERKS) && defined(BURGER_PPC)) || \
+	defined(BURGER_PS3) || defined(BURGER_WIIU)) && \
+	!defined(DOXYGEN)
+
+// Written in assembly
+
+#else
+
 uint32_t BURGER_API Burger::atomic_set(
 	volatile uint32_t* pOutput, uint32_t uInput) BURGER_NOEXCEPT
 {
-#if defined(BURGER_PPC) && defined(BURGER_METROWERKS)
-	register
-#endif
-		uint32_t uTemp;
-
-	// Metrowerks for PowerPC MacOS
-#if defined(BURGER_PPC) && defined(BURGER_METROWERKS)
-	// Assign to registers
-	register volatile uint32_t* pOutput2 = pOutput;
-	register uint32_t uInput2 = uInput;
-	asm {
-loop:	lwarx	uTemp,0,pOutput2
-		stwcx.	uInput2,0,pOutput2
-		bne-	loop
-	}
+	uint32_t uTemp;
 
 	// MacOS 68k version using the OpenTransport API (Inline assembly)
-#elif defined(BURGER_MAC)
+#if defined(BURGER_MAC)
 	do {
 		uTemp = pOutput[0];
 	} while (
@@ -963,19 +948,6 @@ loop:	lwarx	uTemp,0,pOutput2
 	uTemp = static_cast<uint32_t>(
 		sceAtomicExchange32(reinterpret_cast<volatile int32_t*>(pOutput),
 			static_cast<int32_t>(uInput)));
-
-	// Playstation 3 PowerPC
-#elif defined(BURGER_PS3)
-	do {
-		uTemp = __lwarx(pOutput);
-	} while (__stwcx(pOutput, uInput) == 0);
-
-	// Nintendo WiiU
-#elif defined(BURGER_WIIU)
-	do {
-		uTemp = __LWARX(const_cast<uint32_t*>(pOutput), 0);
-		__DCBST(const_cast<uint32_t*>(pOutput), 0);
-	} while (__STWCX(const_cast<uint32_t*>(pOutput), 0, uInput) == 0);
 
 // Xbox classic is an outlier
 #elif defined(BURGER_XBOX)
@@ -1011,6 +983,7 @@ loop:	lwarx	uTemp,0,pOutput2
 
 	return uTemp;
 }
+#endif
 
 /*! ************************************
 
@@ -1025,23 +998,19 @@ loop:	lwarx	uTemp,0,pOutput2
 
 ***************************************/
 
+#if ((defined(BURGER_METROWERKS) && defined(BURGER_PPC)) || \
+	defined(BURGER_PS3) || defined(BURGER_WIIU)) && \
+	!defined(DOXYGEN)
+
+// Written in assembly
+
+#else
+
 uint32_t BURGER_API Burger::atomic_get(
 	volatile uint32_t* pInput) BURGER_NOEXCEPT
 {
-	// Metrowerks for PowerPC MacOS
-#if defined(BURGER_PPC) && defined(BURGER_METROWERKS)
-	// Assign to registers
-	register uint32_t uTemp;
-	register volatile uint32_t* pInput2 = pInput;
-	asm {
-loop:	lwarx	uTemp,0,pInput2
-		stwcx.	uTemp,0,pInput2
-		bne-	loop
-	}
-	return uTemp;
-
 	// MacOS 68k version using the OpenTransport API (Inline assembly)
-#elif defined(BURGER_MAC)
+#if defined(BURGER_MAC)
 	return static_cast<uint32_t>(OTAtomicAdd32(
 		0, reinterpret_cast<SInt32*>(const_cast<uint32_t*>(pInput))));
 
@@ -1049,23 +1018,6 @@ loop:	lwarx	uTemp,0,pInput2
 #elif defined(BURGER_VITA)
 	return static_cast<uint32_t>(
 		sceAtomicLoad32(reinterpret_cast<volatile int32_t*>(pInput)));
-
-	// Playstation 3 PowerPC
-#elif defined(BURGER_PS3)
-	uint32_t uTemp;
-	do {
-		uTemp = __lwarx(pInput);
-	} while (__stwcx(pInput, uTemp) == 0);
-	return uTemp;
-
-	// Nintendo WiiU
-#elif defined(BURGER_WIIU)
-	uint32_t uTemp;
-	do {
-		uTemp = __LWARX(const_cast<uint32_t*>(pInput), 0);
-		__DCBST(const_cast<uint32_t*>(pInput), 0);
-	} while (__STWCX(const_cast<uint32_t*>(pInput), 0, uTemp) == 0);
-	return uTemp;
 
 	// Xbox classic is an outlier
 #elif defined(BURGER_XBOX)
@@ -1093,6 +1045,7 @@ loop:	lwarx	uTemp,0,pInput2
 	return pInput[0];
 #endif
 }
+#endif
 
 /*! ************************************
 
@@ -1110,25 +1063,20 @@ loop:	lwarx	uTemp,0,pInput2
 
 ***************************************/
 
+#if ((defined(BURGER_METROWERKS) && defined(BURGER_PPC)) || \
+	defined(BURGER_PS3) || defined(BURGER_WIIU)) && \
+	!defined(DOXYGEN)
+
+// Written in assembly
+
+#else
+
 uint32_t BURGER_API Burger::atomic_add(
 	volatile uint32_t* pOutput, uint32_t uInput) BURGER_NOEXCEPT
 {
-	// Metrowerks for PowerPC MacOS
-#if defined(BURGER_PPC) && defined(BURGER_METROWERKS)
-	// Assign to registers
-	register uint32_t uResult;
-	register uint32_t uValue = uInput;
-	register volatile uint32_t* pInput = pOutput;
-	asm {
-loop:	lwarx	uResult,0,pInput
-		add		uResult,uResult,uValue
-		stwcx.	uResult,0,pInput
-		bne-	loop
-	}
-	return uResult;
 
 	// MacOS 68k version using the OpenTransport API (Inline assembly)
-#elif defined(BURGER_MAC)
+#if defined(BURGER_MAC)
 	return static_cast<uint32_t>(OTAtomicAdd32(static_cast<SInt32>(uInput),
 		reinterpret_cast<SInt32*>(const_cast<uint32_t*>(pOutput))));
 
@@ -1137,23 +1085,6 @@ loop:	lwarx	uResult,0,pInput
 	return static_cast<uint32_t>(
 		sceAtomicAdd32(reinterpret_cast<volatile int32_t*>(pOutput),
 			static_cast<int32_t>(uInput)));
-
-	// Playstation 3 PowerPC
-#elif defined(BURGER_PS3)
-	uint32_t uTemp;
-	do {
-		uTemp = __lwarx(pOutput);
-	} while (__stwcx(pOutput, uTemp + uInput) == 0);
-	return uTemp;
-
-	// Nintendo WiiU
-#elif defined(BURGER_WIIU)
-	uint32_t uTemp;
-	do {
-		uTemp = __LWARX(const_cast<uint32_t*>(pOutput), 0);
-		__DCBST(const_cast<uint32_t*>(pOutput), 0);
-	} while (__STWCX(const_cast<uint32_t*>(pOutput), 0, uTemp + uInput) == 0);
-	return uTemp;
 
 // Xbox classic is an outlier
 #elif defined(BURGER_XBOX)
@@ -1185,6 +1116,7 @@ loop:	lwarx	uResult,0,pInput
 	return uTemp;
 #endif
 }
+#endif
 
 /*! ************************************
 
@@ -1200,6 +1132,14 @@ loop:	lwarx	uResult,0,pInput
 
 ***************************************/
 
+#if ((defined(BURGER_METROWERKS) && defined(BURGER_PPC)) || \
+	defined(BURGER_PS3) || defined(BURGER_WIIU)) && \
+	!defined(DOXYGEN)
+
+// Written in assembly
+
+#else
+
 uint_t BURGER_API Burger::atomic_trylock(
 	volatile uint32_t* pInput) BURGER_NOEXCEPT
 {
@@ -1207,22 +1147,6 @@ uint_t BURGER_API Burger::atomic_trylock(
 #if defined(BURGER_DARWIN)
 	BURGER_STATIC_ASSERT(sizeof(OSSpinLock) == sizeof(uint32_t));
 	return OSSpinLockTry(reinterpret_cast<volatile OSSpinLock*>(pInput));
-
-	// MacOS PowerPC version
-#elif defined(BURGER_METROWERKS) && defined(BURGER_PPC)
-	register uint32_t uNew = 1;
-	register volatile uint32_t* pInput2 = pInput;
-
-	register uint32_t uResult;
-	asm {
-loop:	lwarx	uResult,0,pInput2
-		cmpwi	uResult,0
-		bne-	abort
-		stwcx.	uNew,0,pInput2
-		bne-	loop
-abort:
-	}
-	return !uResult;
 
 	// MacOS 68k version using the OpenTransport API (Inline assembly)
 #elif defined(BURGER_MAC)
@@ -1234,29 +1158,6 @@ abort:
 #elif defined(BURGER_VITA)
 	return static_cast<uint32_t>(sceAtomicCompareAndSwap32(
 		reinterpret_cast<volatile int32_t*>(pInput), 0, 1));
-
-	// Playstation 3 version
-#elif defined(BURGER_PS3)
-	uint_t uResult;
-	do {
-		uResult = __lwarx(pInput);
-		if (uResult) {
-			break;
-		}
-	} while (__stwcx(pInput, 1) == 0);
-	return !uResult;
-
-	// Nintendo WiiU
-#elif defined(BURGER_WIIU)
-	uint_t uResult;
-	do {
-		uResult = __LWARX(const_cast<uint32_t*>(pInput), 0);
-		if (uResult) {
-			break;
-		}
-		__DCBST(const_cast<uint32_t*>(pInput), 0);
-	} while (__STWCX(const_cast<uint32_t*>(pInput), 0, 1) == 0);
-	return !uResult;
 
 // Microsoft for ARM is a special case
 #elif defined(BURGER_MSVC) && defined(BURGER_ARM)
@@ -1287,6 +1188,7 @@ abort:
 	return !uTemp;
 #endif
 }
+#endif
 
 /*! ************************************
 
@@ -1349,7 +1251,7 @@ void BURGER_API Burger::atomic_unlock(volatile uint32_t* pInput) BURGER_NOEXCEPT
 
 // MacOS PowerPC version
 #elif defined(BURGER_METROWERKS) && defined(BURGER_PPC)
-	*pInput = 0;
+	atomic_set(pInput, 0);
 
 	// MacOS 68k version using the OpenTransport API (Inline assembly)
 #elif defined(BURGER_MAC)
@@ -1384,7 +1286,7 @@ void BURGER_API Burger::atomic_unlock(volatile uint32_t* pInput) BURGER_NOEXCEPT
 // Generic code
 #else
 #warning atomic_unlock(uint32_t*)
-	*pInput = 0;
+	atomic_set(pInput, 0);
 #endif
 }
 
@@ -1404,23 +1306,18 @@ void BURGER_API Burger::atomic_unlock(volatile uint32_t* pInput) BURGER_NOEXCEPT
 ***************************************/
 
 #if defined(BURGER_64BITCPU) || defined(DOXYGEN)
+
+#if defined(BURGER_PS3) && !defined(DOXYGEN)
+
+// Written in assembly
+
+#else
+
 uint_t BURGER_API Burger::atomic_compare_and_set(
 	volatile uint64_t* pOutput, uint64_t uOld, uint64_t uNew) BURGER_NOEXCEPT
 {
-	// Playstation 3 version
-#if defined(BURGER_PS3)
-	uint_t uResult;
-	do {
-		uint64_t uTemp = __ldarx(pOutput);
-		uResult = (uTemp == uOld);
-		if (!uResult) {
-			break;
-		}
-	} while (__stdcx(pOutput, uNew) == 0);
-	return uResult;
-
 // Microsoft/Codewarrior/Watcom
-#elif defined(BURGER_MSVC)
+#if defined(BURGER_MSVC)
 
 	return _InterlockedCompareExchange64(
 			   reinterpret_cast<volatile __int64*>(pOutput),
@@ -1448,6 +1345,7 @@ uint_t BURGER_API Burger::atomic_compare_and_set(
 	return bResult;
 #endif
 }
+#endif
 
 /*! ************************************
 
@@ -1465,18 +1363,17 @@ uint_t BURGER_API Burger::atomic_compare_and_set(
 
 ***************************************/
 
+#if defined(BURGER_PS3) && !defined(DOXYGEN)
+
+// Written in assembly
+
+#else
+
 uint64_t BURGER_API Burger::atomic_set(
 	volatile uint64_t* pOutput, uint64_t uInput) BURGER_NOEXCEPT
 {
 	uint64_t uTemp;
-
-	// Playstation 3 PowerPC
-#if defined(BURGER_PS3)
-	do {
-		uTemp = __ldarx(pOutput);
-	} while (__stdcx(pOutput, uInput) == 0);
-
-#elif defined(BURGER_MSVC)
+#if defined(BURGER_MSVC)
 	uTemp = _InterlockedExchange64(
 		reinterpret_cast<volatile __int64*>(pOutput), uInput);
 
@@ -1503,6 +1400,7 @@ uint64_t BURGER_API Burger::atomic_set(
 
 	return uTemp;
 }
+#endif
 
 /*! ************************************
 
@@ -1517,19 +1415,17 @@ uint64_t BURGER_API Burger::atomic_set(
 
 ***************************************/
 
+#if defined(BURGER_PS3) && !defined(DOXYGEN)
+
+// Written in assembly
+
+#else
+
 uint64_t BURGER_API Burger::atomic_get(
 	volatile uint64_t* pInput) BURGER_NOEXCEPT
 {
-	// Playstation 3 PowerPC
-#if defined(BURGER_PS3)
-	uint64_t uTemp;
-	do {
-		uTemp = __ldarx(pInput);
-	} while (__stdcx(pInput, uTemp) == 0);
-	return uTemp;
-
 // Microsoft/Codewarrior/Watcom
-#elif defined(BURGER_MSVC)
+#if defined(BURGER_MSVC)
 	return static_cast<uint64_t>(_InterlockedExchangeAdd64(
 		reinterpret_cast<volatile __int64*>(pInput), 0));
 
@@ -1546,6 +1442,7 @@ uint64_t BURGER_API Burger::atomic_get(
 	return pInput[0];
 #endif
 }
+#endif
 
 /*! ************************************
 
@@ -1563,19 +1460,17 @@ uint64_t BURGER_API Burger::atomic_get(
 
 ***************************************/
 
+#if defined(BURGER_PS3) && !defined(DOXYGEN)
+
+// Written in assembly
+
+#else
+
 uint64_t BURGER_API Burger::atomic_add(
 	volatile uint64_t* pOutput, uint64_t uInput) BURGER_NOEXCEPT
 {
-	// Playstation 3 PowerPC
-#if defined(BURGER_PS3)
-	uint64_t uTemp;
-	do {
-		uTemp = __ldarx(pOutput);
-	} while (__stdcx(pOutput, uTemp + uInput) == 0);
-	return uTemp;
-
 // Microsoft/Codewarrior/Watcom
-#elif defined(BURGER_MSVC)
+#if defined(BURGER_MSVC)
 	return static_cast<uint64_t>(_InterlockedExchangeAdd64(
 		reinterpret_cast<volatile __int64*>(pOutput), uInput));
 
@@ -1596,4 +1491,7 @@ uint64_t BURGER_API Burger::atomic_add(
 	return uTemp;
 #endif
 }
+
+#endif
+
 #endif

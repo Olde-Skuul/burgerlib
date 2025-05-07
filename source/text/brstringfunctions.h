@@ -296,13 +296,13 @@ extern void BURGER_API StringConcatenate(
 extern void BURGER_API StringConcatenate(uint16_t* pOutput,
 	uintptr_t uOutputSize, const uint16_t* pInput) BURGER_NOEXCEPT;
 
-extern int BURGER_API StringCompare(
+extern int BURGER_API string_compare(
 	const char* pInput1, const char* pInput2) BURGER_NOEXCEPT;
-extern int BURGER_API StringCompare(const char* pInput1, const char* pInput2,
+extern int BURGER_API string_compare(const char* pInput1, const char* pInput2,
 	uintptr_t uMaxLength) BURGER_NOEXCEPT;
-extern int BURGER_API StringCompare(
+extern int BURGER_API string_compare(
 	const uint16_t* pInput1, const uint16_t* pInput2) BURGER_NOEXCEPT;
-extern int BURGER_API StringCompare(const uint16_t* pInput1,
+extern int BURGER_API string_compare(const uint16_t* pInput1,
 	const uint16_t* pInput2, uintptr_t uMaxLength) BURGER_NOEXCEPT;
 extern int BURGER_API StringCaseCompare(
 	const char* pInput1, const char* pInput2) BURGER_NOEXCEPT;

@@ -1175,7 +1175,7 @@ Burger::GameApp::GameApp(uintptr_t uDefaultMemorySize,
 	FileManager::get_prefix(&Name, 9);
 	const char* pFileName = Name.c_str();
 	uintptr_t uLength = string_length(pFileName);
-	if ((uLength > 7) && !StringCompare((pFileName + uLength) - 7, ":MacOS:")) {
+	if ((uLength > 7) && !string_compare((pFileName + uLength) - 7, ":MacOS:")) {
 
 		// Secondary test. Does the PkgInfo file exist?
 		if (FileManager::does_file_exist("9:..:PkgInfo")) {
