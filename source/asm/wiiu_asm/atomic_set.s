@@ -1,9 +1,9 @@
 ;
-; PowerPC32 assembly for Metrowerks tool chain
+; Espresso assembly for the WiiU
 ;
 ; Copyright 1995-2025 by Rebecca Ann Heineman becky@burgerbecky.com
 ;
-; Build with Metrowerks Codewarrior 10 for MacOSX Carbon
+; Build with WiiU tool chain
 ;
 ; uint32_t BURGER_API Burger::atomic_set(volatile uint32_t* pOutput,
 ;	uint32_t uInput) BURGER_NOEXCEPT
