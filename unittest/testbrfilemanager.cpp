@@ -127,7 +127,7 @@ static uint_t BURGER_API TestFilenameClass(void) BURGER_NOEXCEPT
 	// Test for default empty string
 	// If nullptr, the previous test would have reported the failure
 	if (pTest) {
-		uTest = StringCompare("", pTest) != 0;
+		uTest = string_compare("", pTest) != 0;
 		uFailure |= uTest;
 		ReportFailure("Filename = \"%s\", expected \"\"", uTest, pTest);
 	}
@@ -155,7 +155,7 @@ static uint_t BURGER_API TestFilenameSet(void) BURGER_NOEXCEPT
 			// Set the string
 			TestName.assign(pWork);
 			const char* pTest = TestName.c_str();
-			const uint_t uTest = StringCompare(pWork, pTest) != 0;
+			const uint_t uTest = string_compare(pWork, pTest) != 0;
 			uFailure |= uTest;
 			ReportFailure("Filename.Set(%s) = \"%s\", expected \"\"", uTest,
 				pTest, pWork);
@@ -169,7 +169,7 @@ static uint_t BURGER_API TestFilenameSet(void) BURGER_NOEXCEPT
 		// Set the string
 		Filename TestName2(pWork);
 		const char* pTest = TestName2.c_str();
-		const uint_t uTest = StringCompare(pWork, pTest) != 0;
+		const uint_t uTest = string_compare(pWork, pTest) != 0;
 		uFailure |= uTest;
 		ReportFailure(
 			"Filename(%s) = \"%s\", expected \"\"", uTest, pTest, pWork);
@@ -185,7 +185,7 @@ static uint_t BURGER_API TestFilenameSet(void) BURGER_NOEXCEPT
 			// Set the string
 			TestName3.assign(pWork);
 			const char* pTest = TestName3.c_str();
-			const uint_t uTest = StringCompare(pWork, pTest) != 0;
+			const uint_t uTest = string_compare(pWork, pTest) != 0;
 			uFailure |= uTest;
 			ReportFailure("Filename.Set(%s) = \"%s\", expected \"\"", uTest,
 				pTest, pWork);
@@ -199,7 +199,7 @@ static uint_t BURGER_API TestFilenameSet(void) BURGER_NOEXCEPT
 		// Set the string
 		Filename TestName4(pWork);
 		const char* pTest = TestName4.c_str();
-		const uint_t uTest = StringCompare(pWork, pTest) != 0;
+		const uint_t uTest = string_compare(pWork, pTest) != 0;
 		uFailure |= uTest;
 		ReportFailure(
 			"Filename(%s) = \"%s\", expected \"\"", uTest, pTest, pWork);
@@ -210,7 +210,7 @@ static uint_t BURGER_API TestFilenameSet(void) BURGER_NOEXCEPT
 	{
 		Filename Test;
 		Test.set_native("C:\\");
-		const uint_t uTest = StringCompare(Test.c_str(), ".D2:") != 0;
+		const uint_t uTest = string_compare(Test.c_str(), ".D2:") != 0;
 		uFailure |= uTest;
 		ReportFailure("set_native(\"C:\\\"), got \"%s\", expected \".D2:\" ",
 			uTest, Test.c_str());
@@ -350,14 +350,14 @@ static uint_t BURGER_API TestFilenameJoin(void) BURGER_NOEXCEPT
 	Filename Test(":BaseFilename");
 	Test.join("foo");
 
-	uint_t uTest = StringCompare(Test.c_str(), ":BaseFilename:foo:") != 0;
+	uint_t uTest = string_compare(Test.c_str(), ":BaseFilename:foo:") != 0;
 	uFailure |= uTest;
 	ReportFailure(
 		"Filename::join(\"foo\") = expected :BaseFilename:foo:, got %s", uTest,
 		Test.c_str());
 
 	Test.join("a:b:c:");
-	uTest = StringCompare(Test.c_str(), ":BaseFilename:foo:a:b:c:") != 0;
+	uTest = string_compare(Test.c_str(), ":BaseFilename:foo:a:b:c:") != 0;
 	uFailure |= uTest;
 	ReportFailure(
 		"Filename::join(\"a:b:c:\") = expected :BaseFilename:foo:a:b:c:, got %s",
@@ -365,14 +365,14 @@ static uint_t BURGER_API TestFilenameJoin(void) BURGER_NOEXCEPT
 
 	Test = "foo.txt";
 	Test.set_file_extension(".jpg");
-	uTest = StringCompare(Test.c_str(), "foo.jpg:") != 0;
+	uTest = string_compare(Test.c_str(), "foo.jpg:") != 0;
 	uFailure |= uTest;
 	ReportFailure(
 		"Filename::set_file_extension(\".jpg\") = expected foo.jpg:, got %s",
 		uTest, Test.c_str());
 
 	Test.set_file_extension("jpg");
-	uTest = StringCompare(Test.c_str(), "foo.jpg:") != 0;
+	uTest = string_compare(Test.c_str(), "foo.jpg:") != 0;
 	uFailure |= uTest;
 	ReportFailure(
 		"Filename::set_file_extension(\"jpg\") = expected foo.jpg:, got %s",
@@ -380,14 +380,14 @@ static uint_t BURGER_API TestFilenameJoin(void) BURGER_NOEXCEPT
 
 	Test = ".foo";
 	Test.set_file_extension(".bmp");
-	uTest = StringCompare(Test.c_str(), ".foo.bmp:") != 0;
+	uTest = string_compare(Test.c_str(), ".foo.bmp:") != 0;
 	uFailure |= uTest;
 	ReportFailure(
 		"Filename::set_file_extension(\".bmp\") = expected .foo.bmp:, got %s",
 		uTest, Test.c_str());
 
 	Test.set_file_extension("bmp");
-	uTest = StringCompare(Test.c_str(), ".foo.bmp:") != 0;
+	uTest = string_compare(Test.c_str(), ".foo.bmp:") != 0;
 	uFailure |= uTest;
 	ReportFailure(
 		"Filename::set_file_extension(\"bmp\") = expected .foo.bmp:, got %s",
@@ -396,41 +396,41 @@ static uint_t BURGER_API TestFilenameJoin(void) BURGER_NOEXCEPT
 	Test = ":foo:bar:foo.txt";
 	String Base;
 	Test.get_basename(&Base);
-	uTest = StringCompare(Base.c_str(), "foo.txt") != 0;
+	uTest = string_compare(Base.c_str(), "foo.txt") != 0;
 	uFailure |= uTest;
 	ReportFailure("Filename::get_basename(&String) = expected foo.txt, got %s",
 		uTest, Base.c_str());
 
 	Test.get_dirname(&Base);
 	Test.dirname();
-	uTest = StringCompare(Test.c_str(), ":foo:bar:") != 0;
+	uTest = string_compare(Test.c_str(), ":foo:bar:") != 0;
 	uFailure |= uTest;
 	ReportFailure(
 		"Filename::dirname(\":foo:bar:foo.txt\") = expected :foo:bar:, got %s",
 		uTest, Test.c_str());
-	uTest = StringCompare(Base.c_str(), ":foo:bar:") != 0;
+	uTest = string_compare(Base.c_str(), ":foo:bar:") != 0;
 	uFailure |= uTest;
 	ReportFailure("Filename::get_dirname(&Base) = expected :foo:bar:, got %s",
 		uTest, Base.c_str());
 
 	Test.get_dirname(&Base);
 	Test.dirname();
-	uTest = StringCompare(Test.c_str(), ":foo:") != 0;
+	uTest = string_compare(Test.c_str(), ":foo:") != 0;
 	uFailure |= uTest;
 	ReportFailure("Filename::dirname(\":foo:bar:\") = expected :foo:, got %s",
 		uTest, Test.c_str());
-	uTest = StringCompare(Base.c_str(), ":foo:") != 0;
+	uTest = string_compare(Base.c_str(), ":foo:") != 0;
 	uFailure |= uTest;
 	ReportFailure("Filename::get_dirname(&Base) = expected :foo:, got %s",
 		uTest, Base.c_str());
 
 	Test.get_dirname(&Base);
 	Test.dirname();
-	uTest = StringCompare(Test.c_str(), ":foo:") != 0;
+	uTest = string_compare(Test.c_str(), ":foo:") != 0;
 	uFailure |= uTest;
 	ReportFailure("Filename::dirname(\":foo:\") = expected :foo:, got %s",
 		uTest, Test.c_str());
-	uTest = StringCompare(Base.c_str(), ":foo:") != 0;
+	uTest = string_compare(Base.c_str(), ":foo:") != 0;
 	uFailure |= uTest;
 	ReportFailure("Filename::get_dirname(&Base) = expected :foo:, got %s",
 		uTest, Base.c_str());
@@ -580,7 +580,7 @@ static uint_t BURGER_API TestFilenameDirName(void) BURGER_NOEXCEPT
 		Filename Test(pTestDirName->m_pOriginal);
 		Test.dirname();
 		const uint_t uTest =
-			StringCompare(Test.c_str(), pTestDirName->m_pExpected) != 0;
+		string_compare(Test.c_str(), pTestDirName->m_pExpected) != 0;
 		uFailure |= uTest;
 		ReportFailure("DirName \"%s\" to \"%s\" but got \"%s\"", uTest,
 			pTestDirName->m_pOriginal, pTestDirName->m_pExpected, Test.c_str());
@@ -622,7 +622,7 @@ static uint_t BURGER_API TestFilenameAppend(void) BURGER_NOEXCEPT
 		Filename Test(pTestAppend->m_pOriginal);
 		Test.join(pTestAppend->m_pAppend);
 		const uint_t uTest =
-			StringCompare(Test.c_str(), pTestAppend->m_pExpected) != 0;
+		string_compare(Test.c_str(), pTestAppend->m_pExpected) != 0;
 		uFailure |= uTest;
 		ReportFailure(
 			"Append \"%s\" to \"%s\" but got \"%s\" and expected \"%s\"", uTest,
@@ -645,14 +645,14 @@ static uint_t BURGER_API TestExpandFull(const char* pInput) BURGER_NOEXCEPT
 
 	String TempString(pInput);
 	Filename MyFilename(pInput);
-	uint_t uTest = StringCompare(pInput, MyFilename.c_str()) != 0;
+	uint_t uTest = string_compare(pInput, MyFilename.c_str()) != 0;
 	uFailure |= uTest;
 	ReportFailure(
 		"TestExpandFull() Original is \"%s\"", uTest, MyFilename.c_str());
 
 	MyFilename.abs_path();
 	TempString += ':';
-	uTest = StringCompare(TempString.c_str(), MyFilename.c_str()) != 0;
+	uTest = string_compare(TempString.c_str(), MyFilename.c_str()) != 0;
 	uFailure |= uTest;
 	ReportFailure(
 		"TestExpandFull() abs_path from \"%s\" to \"%s\" but got \"%s\"", uTest,
@@ -674,7 +674,7 @@ static uint_t BURGER_API TestPrepend(
 	String TempString;
 
 	Filename MyFilename(pInput);
-	uint_t uTest = StringCompare(pInput, MyFilename.c_str()) != 0;
+	uint_t uTest = string_compare(pInput, MyFilename.c_str()) != 0;
 	uFailure |= uTest;
 	ReportFailure(
 		"TestPrepend() Original is \"%s\"", uTest, MyFilename.c_str());
@@ -683,7 +683,7 @@ static uint_t BURGER_API TestPrepend(
 	TempString.assign(pWorkDir->c_str());
 	TempString += pInput;
 	TempString += ':';
-	uTest = StringCompare(TempString.c_str(), MyFilename.c_str()) != 0;
+	uTest = string_compare(TempString.c_str(), MyFilename.c_str()) != 0;
 	uFailure |= uTest;
 	ReportFailure("abs_path from \"%s\" to \"%s\" but got \"%s\"", uTest,
 		pInput, TempString.c_str(), MyFilename.c_str());
@@ -710,7 +710,7 @@ static uint_t BURGER_API TestPopDir(const Filename* pWorkDir) BURGER_NOEXCEPT
 		MyFilename.assign(TempString);
 
 		uint_t uTest =
-			StringCompare(TempString.c_str(), MyFilename.c_str()) != 0;
+		string_compare(TempString.c_str(), MyFilename.c_str()) != 0;
 		uFailure |= uTest;
 		ReportFailure(
 			"TestPopDir() Original is \"%s\"", uTest, MyFilename.c_str());
@@ -726,7 +726,7 @@ static uint_t BURGER_API TestPopDir(const Filename* pWorkDir) BURGER_NOEXCEPT
 		}
 
 		TempDir.join(g_PeriodName + uPeriodCount + 1);
-		uTest = StringCompare(TempDir.c_str(), MyFilename.c_str()) != 0;
+		uTest = string_compare(TempDir.c_str(), MyFilename.c_str()) != 0;
 		uFailure |= uTest;
 		ReportFailure("abs_path from \"%s\" to \"%s\" but got \"%s\"", uTest,
 			TempString.c_str(), TempDir.c_str(), MyFilename.c_str());
@@ -747,7 +747,7 @@ static uint_t BURGER_API TestPrefixDir(
 	uint_t uFailure = FALSE;
 
 	Filename MyFilename(pInput);
-	uint_t uTest = StringCompare(pInput, MyFilename.c_str()) != 0;
+	uint_t uTest = string_compare(pInput, MyFilename.c_str()) != 0;
 	uFailure |= uTest;
 	ReportFailure(
 		"TestPrefixDir() Original is \"%s\"", uTest, MyFilename.c_str());
@@ -757,7 +757,7 @@ static uint_t BURGER_API TestPrefixDir(
 	FileManager::get_prefix(&TempString, uPrefix);
 	TempString.join(StringCharacter(pInput, ':') + 1);
 
-	uTest = StringCompare(TempString.c_str(), MyFilename.c_str()) != 0;
+	uTest = string_compare(TempString.c_str(), MyFilename.c_str()) != 0;
 	uFailure |= uTest;
 	ReportFailure("abs_path from \"%s\" to \"%s\" but got \"%s\"", uTest,
 		pInput, TempString.c_str(), MyFilename.c_str());

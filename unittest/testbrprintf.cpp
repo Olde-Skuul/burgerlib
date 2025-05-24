@@ -1315,7 +1315,7 @@ static uint_t BURGER_API UnitTestFormattingInt(intptr_t iStartWidth,
 				if ((uReturnedLength !=
 						static_cast<intptr_t>(isprintfResult)) ||
 					(uReturnedLength &&
-						Burger::StringCompare(ReferenceString, TestString,
+						Burger::string_compare(ReferenceString, TestString,
 							static_cast<uintptr_t>(uReturnedLength)))) {
 					uResult = TRUE;
 					ReportFailure(
@@ -1624,7 +1624,7 @@ static uint_t BURGER_API UnitTestFormattingString(int iStartWidth,
 
 			if ((uReturnedLength != static_cast<intptr_t>(isprintfResult)) ||
 				(uReturnedLength &&
-					Burger::StringCompare(ReferenceString, TestString,
+					Burger::string_compare(ReferenceString, TestString,
 						static_cast<uintptr_t>(uReturnedLength)) != 0)) {
 				uResult = TRUE;
 				ReportFailure(
@@ -1707,7 +1707,7 @@ static uint_t BURGER_API TestBinaryFormats(uint_t uVerbose)
 	do {
 		// Perform the test
 		Burger::Snprintf(Buffer, sizeof(Buffer), pTests->m_pFormat, 0x1234);
-		if (Burger::StringCompare(pTests->m_pExpectedResult, Buffer)) {
+		if (Burger::string_compare(pTests->m_pExpectedResult, Buffer)) {
 			uResult = 1;
 			ReportFailure(
 				"Binary reference %s didn't match Test %s, Burger format was %s",
@@ -1780,7 +1780,7 @@ static uint_t BURGER_API UnitTestFormattingReal(int iStartWidth, int iEndWidth,
 			}
 			if ((uReturnedLength != static_cast<intptr_t>(isprintfResult)) ||
 				(uReturnedLength &&
-					Burger::StringCompare(ReferenceString, TestString,
+					Burger::string_compare(ReferenceString, TestString,
 						static_cast<uintptr_t>(uReturnedLength)))) {
 				uResult = TRUE;
 				ReportFailure(

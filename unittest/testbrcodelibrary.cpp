@@ -82,7 +82,7 @@ static uint_t BURGER_API TestLoadDLL(void) BURGER_NOEXCEPT
 		} else {
 			const char* pString =
 				reinterpret_cast<const char*(DLL_CDECL*)(void)>(p)();
-			if (StringCompare(pString, "test_dll")) {
+			if (string_compare(pString, "test_dll")) {
 				uFailure = TRUE;
 				ReportFailure(
 					"CodeLibrary::get_function(\"test_string\") returned \"%s\"",

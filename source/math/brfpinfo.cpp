@@ -2,7 +2,7 @@
 
 	Floating point analysis
 
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -42,8 +42,8 @@
 
 	\brief Default constructor
 
-	All values are set to zero. Use the Init() functions or assignment operators
-	to perform floating point analysis.
+	All values are set to zero. Use the init_float(float) functions or
+	assignment operators to perform floating point analysis.
 
 	\sa init_float(float), or FPInfo::operator = (float)
 
@@ -64,7 +64,7 @@ Burger::FPInfo::FPInfo(void) BURGER_NOEXCEPT: m_uMantissa(0),
 
 	\param uValue 16 bit floating point number
 
-	\sa init_half(uint16_t), FPInfo(double) or FPInfo(float)
+	\sa Half, float16_t, init_half(uint16_t), FPInfo(double) or FPInfo(float)
 
 ***************************************/
 
@@ -197,6 +197,7 @@ void BURGER_API Burger::FPInfo::init_half(uint16_t uValue) BURGER_NOEXCEPT
 void BURGER_API Burger::FPInfo::init_float(float fValue) BURGER_NOEXCEPT
 {
 	// Get the binary representation of the float
+	// in a way that won't blow the minds of some compilers
 	uint32_float_t Converter;
 	Converter.set_float(fValue);
 	const uint32_t uTemp = Converter.get_uint32();
@@ -281,6 +282,8 @@ void BURGER_API Burger::FPInfo::init_float(float fValue) BURGER_NOEXCEPT
 
 void BURGER_API Burger::FPInfo::init_double(double dValue) BURGER_NOEXCEPT
 {
+	// Get the binary representation of the double
+	// in a way that won't blow the minds of some compilers
 	uint64_double_t Converter;
 	Converter.set_double(dValue);
 	const uint64_t uTemp = Converter.get_uint64();

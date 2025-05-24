@@ -2592,8 +2592,7 @@ static uint_t TestConvertToFloat(void) BURGER_NOEXCEPT
 		uResult |= uFailure;
 		if (uFailure) {
 			// Nan has an alternate positive test
-			if (!Burger::is_NaN(Test.f) ||
-				((Test.w & 0x7FFFFFFFU) != 0x7FFFFFFFU)) {
+			if (!Burger::is_NaN(Test.f) || !Burger::is_NaN(pWork->m_fValue.f)) {
 				ReportFailure(
 					"Burger::convert_to_float((uint16_t)0x%04X) = %.16g 0x%08X / Wanted 0x%08X",
 					uFailure, pWork->m_uValue, Test.f, Test.w,

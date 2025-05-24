@@ -78,19 +78,19 @@ static uint_t TestRTTI(void) BURGER_NOEXCEPT
 	foo* pBar5 = &bar5;
 	uint_t uTest;
 
-	uTest = StringCompare(pBar->get_class_name(), "foo") != 0;
+	uTest = string_compare(pBar->get_class_name(), "foo") != 0;
 	ReportFailure("pBar->get_class_name()!='foo'", uTest);
 	uResult |= uTest;
-	uTest = StringCompare(pBar2->get_class_name(), "foo2") != 0;
+	uTest = string_compare(pBar2->get_class_name(), "foo2") != 0;
 	ReportFailure("pBar2->get_class_name()!='foo2'", uTest);
 	uResult |= uTest;
-	uTest = StringCompare(pBar3->get_class_name(), "foo3") != 0;
+	uTest = string_compare(pBar3->get_class_name(), "foo3") != 0;
 	ReportFailure("pBar3->get_class_name()!='foo3'", uTest);
 	uResult |= uTest;
-	uTest = StringCompare(pBar4->get_class_name(), "foo4") != 0;
+	uTest = string_compare(pBar4->get_class_name(), "foo4") != 0;
 	ReportFailure("pBar4->get_class_name()!='foo4'", uTest);
 	uResult |= uTest;
-	uTest = StringCompare(pBar5->get_class_name(), "foo5") != 0;
+	uTest = string_compare(pBar5->get_class_name(), "foo5") != 0;
 	ReportFailure("pBar5->get_class_name()!='foo5'", uTest);
 	uResult |= uTest;
 

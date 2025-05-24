@@ -101,7 +101,7 @@ static void BURGER_API ShowMacro(
 	// BURGER_STRINGIZE treated the macro name as a literal string instead of a
 	// value.
 
-	if (Burger::StringCompare(pMacroName, pMacroData + 1)) {
+	if (Burger::string_compare(pMacroName, pMacroData + 1)) {
 		// Test if the string is "=" which is no data
 		if (pMacroData[1]) {
 			msg = "XX ";

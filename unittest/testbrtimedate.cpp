@@ -138,7 +138,7 @@ static uint_t BURGER_API TestPrintHexDigit(void) BURGER_NOEXCEPT
 
 	const char* pExpected = "8";
 	const uint_t uTest =
-		Burger::StringCompare(CapturedString.c_str(), pExpected) != 0;
+		Burger::string_compare(CapturedString.c_str(), pExpected) != 0;
 	ReportFailure("Burger::PrintHexDigit(0x12345678) = %s, expected %s", uTest,
 		CapturedString.c_str(), pExpected);
 	return uTest;
@@ -162,7 +162,7 @@ static uint_t BURGER_API TestPrintHexWord8(void) BURGER_NOEXCEPT
 
 	const char* pExpected = "12";
 	const uint_t uTest =
-		Burger::StringCompare(CapturedString.c_str(), pExpected) != 0;
+		Burger::string_compare(CapturedString.c_str(), pExpected) != 0;
 	ReportFailure(
 		"Burger::PrintHex(static_cast<uint8_t>(0x12)) = %s, expected %s", uTest,
 		CapturedString.c_str(), pExpected);
@@ -187,7 +187,7 @@ static uint_t BURGER_API TestPrintHexWord16(void) BURGER_NOEXCEPT
 
 	const char* pExpected = "1234";
 	const uint_t uTest =
-		Burger::StringCompare(CapturedString.c_str(), pExpected) != 0;
+		Burger::string_compare(CapturedString.c_str(), pExpected) != 0;
 	ReportFailure(
 		"Burger::PrintHex(static_cast<uint16_t>(0x1234)) = %s, expected %s",
 		uTest, CapturedString.c_str(), pExpected);
@@ -212,7 +212,7 @@ static uint_t BURGER_API TestPrintHexWord32(void) BURGER_NOEXCEPT
 
 	const char* pExpected = "12345678";
 	const uint_t uTest =
-		Burger::StringCompare(CapturedString.c_str(), pExpected) != 0;
+		Burger::string_compare(CapturedString.c_str(), pExpected) != 0;
 	ReportFailure(
 		"Burger::PrintHex(static_cast<uint32_t>(0x12345678)) = %s, expected %s",
 		uTest, CapturedString.c_str(), pExpected);
@@ -237,7 +237,7 @@ static uint_t BURGER_API TestPrintHexWord64(void) BURGER_NOEXCEPT
 
 	const char* pExpected = "0123456789ABCDEF";
 	const uint_t uTest =
-		Burger::StringCompare(CapturedString.c_str(), pExpected) != 0;
+		Burger::string_compare(CapturedString.c_str(), pExpected) != 0;
 	ReportFailure(
 		"Burger::PrintHex(static_cast<uint64_t>(0x123456789ABCDEFULL)) = %s, expected %s",
 		uTest, CapturedString.c_str(), pExpected);
@@ -275,7 +275,7 @@ static uint_t BURGER_API TestPrintHexFloat(void) BURGER_NOEXCEPT
 		Capture.Shutdown();
 
 		const uint_t uTest =
-			Burger::StringCompare(CapturedString.c_str(), pWork->m_pData) != 0;
+			Burger::string_compare(CapturedString.c_str(), pWork->m_pData) != 0;
 		ReportFailure(
 			"Burger::PrintHex(static_cast<float>(0x%08X)) = %s, expected %s",
 			uTest, pWork->m_uData, CapturedString.c_str(), pWork->m_pData);
@@ -317,7 +317,7 @@ static uint_t BURGER_API TestPrintHexDouble(void) BURGER_NOEXCEPT
 		Capture.Shutdown();
 
 		const uint_t uTest =
-			Burger::StringCompare(CapturedString.c_str(), pWork->m_pData) != 0;
+			Burger::string_compare(CapturedString.c_str(), pWork->m_pData) != 0;
 		if (uTest) {
 			Burger::NumberStringHex Input(pWork->m_uData);
 			ReportFailure(

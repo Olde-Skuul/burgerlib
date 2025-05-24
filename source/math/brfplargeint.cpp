@@ -2,7 +2,7 @@
 
 	Large integer parsing class.
 
-	Copyright (c) 2016-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 2016-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -30,15 +30,58 @@
 
 	It can perform modulo and multiplication across all bits of precision. Since
 	this class was designed for high precision integer to ASCII conversion, the
-	two main functions are multiply_return_overflow() to parse out digits from the
-	fractional side of a fixed point number and divide_return_remainder() to
+	two main functions are multiply_return_overflow() to parse out digits from
+	the fractional side of a fixed point number and divide_return_remainder() to
 	extract digits from the integer side of the fixed point number.
+
+	\code
+
+	// The code below will print "1.5" from the floating point number
+
+	// Parse the components of a floating point number
+	FPInfo Info(1.5f);
+
+	// Calculate the bits of precision needed
+	const uint32_t uBitsNeeded =
+		(1U << (Info.get_exponent_bit_count() - 1)) +
+		Info.get_mantissa_bit_count();
+
+	// Parse out both the integer and the fraction
+	FPLargeInt IntegerPart(uBitsNeeded);
+	FPLargeInt FractionalPart(uBitsNeeded);
+
+	// Initialize our high precision numbers and result status
+	separate_integer_fraction(&IntegerPart, &FractionalPart, pFPInfo);
+
+	// Print the integer of the float
+	while (IntegerPart.is_not_zero()) {
+		const uint32_t uTheDigit = IntegerPart.divide_return_remainder(10);
+		printf("%u", uTheDigit);
+	}
+
+	// Print the decimal point
+	printf(".");
+
+	// Print the fraction, can go forever, so put a limit on it.
+	uintptr_t i = 50U;
+	while (FractionalPart.is_not_zero()) {
+		const uint32_t uTheDigit = FractionalPart.multiply_return_overflow(10);
+		printf("%u", uTheDigit);
+		if (!--i) {
+			break;
+		}
+	}
+	\endcode
+
+	\sa FPInfo
 
 ***************************************/
 
 /*! ************************************
 
 	\brief Default constructor
+
+	Call init(uint32_t) to properly initialize the class.
 
 ***************************************/
 
@@ -108,7 +151,7 @@ void BURGER_API Burger::FPLargeInt::init(uint32_t uBitsNeeded) BURGER_NOEXCEPT
 	// Test for error
 	BURGER_ASSERT(uBitsNeeded && (uBitsNeeded <= kTotalBitsInTable));
 
-	// Round up to the next ChunkSize_t
+	// Round up to the next chunk_size_t
 	const uint32_t uCount =
 		(uBitsNeeded + (kBitsPerElement - 1)) / kBitsPerElement;
 	m_uEntryCount = uCount;
@@ -137,7 +180,7 @@ void BURGER_API Burger::FPLargeInt::init(uint32_t uBitsNeeded) BURGER_NOEXCEPT
 	\param uBits 32 bit data to shift in.
 	\param uShiftAmount Number of bits to shift (0 to \ref kTotalBitsInTable)
 	\sa insert_bits_at_start(uint32_t, uint32_t) or
-		insert_chunk_bits(ChunkSize_t, uint32_t)
+		insert_chunk_bits(chunk_size_t, uint32_t)
 
 ***************************************/
 
@@ -166,31 +209,33 @@ void BURGER_API Burger::FPLargeInt::insert_bits_at_end(
 			// If no shifting, use the fast path
 
 #if defined(BURGER_64BITCPU)
-			insert_chunk_bits(static_cast<ChunkSize_t>(uBits), uEntryIndex + 1);
+			insert_chunk_bits(
+				static_cast<chunk_size_t>(uBits), uEntryIndex + 1);
 #else
 			// 16 bit version need two writes.
 			insert_chunk_bits(
-				static_cast<ChunkSize_t>(uBits >> 16U), uEntryIndex + 1);
-			insert_chunk_bits(static_cast<ChunkSize_t>(uBits), uEntryIndex + 2);
+				static_cast<chunk_size_t>(uBits >> 16U), uEntryIndex + 1);
+			insert_chunk_bits(
+				static_cast<chunk_size_t>(uBits), uEntryIndex + 2);
 #endif
 
 		} else {
 
 #if defined(BURGER_64BITCPU)
-			insert_chunk_bits(static_cast<ChunkSize_t>(
-								uBits >> (kBitsPerElement - uShiftForBit)),
+			insert_chunk_bits(static_cast<chunk_size_t>(
+								  uBits >> (kBitsPerElement - uShiftForBit)),
 				uEntryIndex);
-			insert_chunk_bits(static_cast<ChunkSize_t>(uBits << uShiftForBit),
+			insert_chunk_bits(static_cast<chunk_size_t>(uBits << uShiftForBit),
 				uEntryIndex + 1);
 #else
 			// Copy the 32 bits into 3 16 bit entries
-			insert_chunk_bits(static_cast<ChunkSize_t>(uBits >>
-								((16 + kBitsPerElement) - uShiftForBit)),
+			insert_chunk_bits(static_cast<chunk_size_t>(uBits >>
+								  ((16 + kBitsPerElement) - uShiftForBit)),
 				uEntryIndex);
-			insert_chunk_bits(static_cast<ChunkSize_t>(
-								uBits >> (kBitsPerElement - uShiftForBit)),
+			insert_chunk_bits(static_cast<chunk_size_t>(
+								  uBits >> (kBitsPerElement - uShiftForBit)),
 				uEntryIndex + 1);
-			insert_chunk_bits(static_cast<ChunkSize_t>(uBits << uShiftForBit),
+			insert_chunk_bits(static_cast<chunk_size_t>(uBits << uShiftForBit),
 				uEntryIndex + 2);
 #endif
 		}
@@ -212,7 +257,7 @@ void BURGER_API Burger::FPLargeInt::insert_bits_at_end(
 	\param uShiftAmount Number of bits to shift (0 to \ref kTotalBitsInTable)
 
 	\sa insert_bits_at_end(uint32_t, uint32_t) or
-		insert_chunk_bits(ChunkSize_t, uint32_t)
+		insert_chunk_bits(chunk_size_t, uint32_t)
 
 ***************************************/
 
@@ -232,12 +277,13 @@ void BURGER_API Burger::FPLargeInt::insert_bits_at_start(
 
 	\param uBits 32 bit data to shift in
 	\param uEntryIndex Index into the entry table
-	\sa InsertLowBits(uint32_t, uint32_t) or InsertTopBits(uint32_t, uint32_t)
+	\sa insert_bits_at_end(uint32_t, uint32_t) or
+		insert_bits_at_start(uint32_t, uint32_t)
 
 ***************************************/
 
 void BURGER_API Burger::FPLargeInt::insert_chunk_bits(
-	ChunkSize_t uBits, uint32_t uEntryIndex) BURGER_NOEXCEPT
+	chunk_size_t uBits, uint32_t uEntryIndex) BURGER_NOEXCEPT
 {
 	// Sanity check
 	if (uEntryIndex < m_uEntryCount) {
@@ -287,7 +333,7 @@ uint32_t Burger::FPLargeInt::divide_return_remainder(
 	if (!m_bIsZero && uDivisor) {
 
 		// Accumulator for zero test
-		ChunkSize_t uBitsForZeroTest = 0;
+		chunk_size_t uBitsForZeroTest = 0;
 
 		// Standard long-division algorithm, scan from the first element to the
 		// last.
@@ -295,16 +341,16 @@ uint32_t Burger::FPLargeInt::divide_return_remainder(
 		if (i < m_uEntryCount) {
 			do {
 				// Perform a high precision divide
-				const MathSize_t uDividend =
-					(static_cast<MathSize_t>(uRemainder) << kBitsPerElement) +
+				const math_size_t uDividend =
+					(static_cast<math_size_t>(uRemainder) << kBitsPerElement) +
 					m_uDataTable[i];
 
-				const MathSize_t uDivisionResult = uDividend / uDivisor;
-				uRemainder = static_cast<ChunkSize_t>(uDividend % uDivisor);
+				const math_size_t uDivisionResult = uDividend / uDivisor;
+				uRemainder = static_cast<chunk_size_t>(uDividend % uDivisor);
 
 				// Get the new result.
-				const ChunkSize_t uDivisionResult32 =
-					static_cast<ChunkSize_t>(uDivisionResult);
+				const chunk_size_t uDivisionResult32 =
+					static_cast<chunk_size_t>(uDivisionResult);
 				m_uDataTable[i] = uDivisionResult32;
 				// Accumulate bits for zero test
 				uBitsForZeroTest |= uDivisionResult32;
@@ -346,22 +392,22 @@ uint32_t Burger::FPLargeInt::multiply_return_overflow(
 	// Only multiply if non-zero
 	if (!m_bIsZero) {
 
-		ChunkSize_t uBitsForZeroTest = 0;
+		chunk_size_t uBitsForZeroTest = 0;
 
 		// Scan from the highest entry to the first entry.
 		for (int32_t i = m_iHighestNonZeroElement; i >= 0; --i) {
 
 			// Perform the multiply using double the bits of precision
-			const MathSize_t uMultiplicand =
-				(static_cast<MathSize_t>(uMultiplier) * m_uDataTable[i]) +
+			const math_size_t uMultiplicand =
+				(static_cast<math_size_t>(uMultiplier) * m_uDataTable[i]) +
 				uOverflow;
 
 			// Get the bits beyond the precision.
 			uOverflow = static_cast<uint32_t>(uMultiplicand >> kBitsPerElement);
 
 			// Grab the result and zero test
-			const ChunkSize_t uTrimmed =
-				static_cast<ChunkSize_t>(uMultiplicand);
+			const chunk_size_t uTrimmed =
+				static_cast<chunk_size_t>(uMultiplicand);
 			m_uDataTable[i] = uTrimmed;
 			uBitsForZeroTest |= uTrimmed;
 		}

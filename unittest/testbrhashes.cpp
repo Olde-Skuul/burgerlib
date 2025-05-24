@@ -500,7 +500,7 @@ static uint_t TestGUID(void) BURGER_NOEXCEPT
 		// Convert the fake GUID to a string
 		Burger::GUID_to_string(TestStr, pTests->pGUID);
 		uint_t uTest = static_cast<uint_t>(
-			Burger::StringCompare(TestStr, pTests->pGUIDStr));
+			Burger::string_compare(TestStr, pTests->pGUIDStr));
 		uFailure |= uTest;
 		ReportFailure("Burger::GUID_to_string(%i) failure, found %s", uTest,
 			static_cast<uint_t>(i), TestStr);

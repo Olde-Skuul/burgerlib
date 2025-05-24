@@ -92,7 +92,7 @@ static uint_t BURGER_API TestParseQuotedString(void) BURGER_NOEXCEPT
 		uint_t uTest = (pTester != (pWork->m_pTest + pWork->m_uResult));
 		// Check the result string
 		uTest |=
-			static_cast<uint_t>(Burger::StringCompare(Buffer, pWork->m_pWild));
+			static_cast<uint_t>(Burger::string_compare(Buffer, pWork->m_pWild));
 		uFailure |= uTest;
 		if (uTest) {
 			ReportFailure(
@@ -134,14 +134,14 @@ static uint_t BURGER_API TestStringConstructors(void) BURGER_NOEXCEPT
 
 	Burger::String ShortString("Shorty");
 	uTest = ShortString.empty() || ShortString.length() != 6 ||
-		Burger::StringCompare("Shorty", ShortString.c_str());
+		Burger::string_compare("Shorty", ShortString.c_str());
 	uFailure |= uTest;
 	ReportFailure("String(\"Shorty\") = Did not match \"Shorty\"", uTest);
 
 	Burger::String LongString(gLargeString);
 	uTest = LongString.empty() ||
 		LongString.length() != (sizeof(gLargeString) - 1) ||
-		Burger::StringCompare(gLargeString, LongString.c_str());
+		Burger::string_compare(gLargeString, LongString.c_str());
 	uFailure |= uTest;
 	ReportFailure("String(\"%s\") = Did not match \"%s\"", uTest, gLargeString,
 		gLargeString);
@@ -157,7 +157,7 @@ static uint_t BURGER_API TestStringConstructors(void) BURGER_NOEXCEPT
 		DualString.length() != ((sizeof(gLargeString) - 1) * 2) ||
 		Burger::MemoryCompare(
 			gLargeString, DualString.c_str(), sizeof(gLargeString) - 1) ||
-		Burger::StringCompare(
+		Burger::string_compare(
 			gLargeString, DualString.c_str() + (sizeof(gLargeString) - 1));
 	uFailure |= uTest;
 	ReportFailure("String(\"%s\",\"%s\") = Did not match", uTest, gLargeString,
@@ -181,14 +181,14 @@ static uint_t BURGER_API TestStringAppend(void) BURGER_NOEXCEPT
 	Sample.push_back('b');
 	Sample.push_back('c');
 	uint_t uTest = Sample.length() != (sizeof(gLargeString) + 2) ||
-		Burger::StringCompare(
+		Burger::string_compare(
 			Sample.c_str() + (sizeof(gLargeString) - 1), "abc");
 	uFailure |= uTest;
 	ReportFailure("String::push_back() failure = %s", uTest, Sample.c_str());
 
 	Sample.append("unit test");
 	uTest = Sample.length() != (sizeof(gLargeString) + 2 + 9) ||
-		Burger::StringCompare(
+		Burger::string_compare(
 			Sample.c_str() + ((sizeof(gLargeString) - 1) + 3), "unit test");
 	uFailure |= uTest;
 	ReportFailure(
@@ -243,7 +243,7 @@ static uint_t BURGER_API TestStringFind(void) BURGER_NOEXCEPT
 
 	// Test if it works with Remove()
 	str.Remove(str.find(str2), str2.length());
-	uTest = Burger::StringCompare(str.c_str(),
+	uTest = Burger::string_compare(str.c_str(),
 				"There are two s in this haystack with needles.") != 0;
 	uFailure |= uTest;
 	ReportFailure(
@@ -273,7 +273,7 @@ static uint_t BURGER_API TestGetEnvironmentString(
 	const char* pTest = Burger::GetEnvironmentString("JAPANESE");
 	if (pTest) {
 		const uint_t uTest =
-			static_cast<uint_t>(Burger::StringCompare(pTest, SAILORMOON));
+			static_cast<uint_t>(Burger::string_compare(pTest, SAILORMOON));
 		uFailure |= uTest;
 		ReportFailure(
 			"Burger::GetEnvironmentString(\"JAPANESE\") = \"%s\", expected \"%s\"",
@@ -373,7 +373,7 @@ static uint_t TestStringToken(void) BURGER_NOEXCEPT
 			uTest = TRUE;
 			pToken = "No Token found";
 		} else {
-			uTest = Burger::StringCompare(pToken, ppWork[0]) != 0;
+			uTest = Burger::string_compare(pToken, ppWork[0]) != 0;
 		}
 		uFailure |= uTest;
 		if (uTest) {
