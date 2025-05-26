@@ -2,7 +2,7 @@
 
 	XBox 360 thread helpers
 
-	Copyright (c) 2010-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 2010-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -38,7 +38,10 @@ typedef struct tagTHREADNAME_INFO {
 	debugger that the currently executing thread has a name. This function will
 	throw that exception so the debugger can capture the name.
 
-	\sa Win32::throw_thread_naming_exception()
+	[Documentation on why this works.](
+	https://learn.microsoft.com/en-us/archive/blogs/stevejs/naming-threads-in-win32-and-net)
+
+	\sa Win32::throw_thread_naming_exception(uint32_t, const char*)
 
 ***************************************/
 
@@ -50,7 +53,7 @@ void Burger::Xbox360::set_thread_name(const char* pName, uint32_t uThreadID)
 
 	// Create the exception message
 	THREADNAME_INFO NewThreadName;
-	NewThreadName.dwType = 0x1000;
+	NewThreadName.dwType = 0x1000U;
 	NewThreadName.szName = pName;
 	NewThreadName.dwThreadID = uThreadID;
 	NewThreadName.dwFlags = 0;

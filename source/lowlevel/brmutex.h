@@ -2,7 +2,7 @@
 
 	Class to handle mutex objects
 
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -29,14 +29,14 @@ class Mutex {
 	BURGER_DISABLE_COPY(Mutex);
 
 protected:
-#if defined(BURGER_XBOX360) || defined(DOXYGEN)
+#if defined(BURGER_XBOX) || defined(BURGER_XBOX360) || defined(DOXYGEN)
 	/** Platform specific CRITICAL_SECTION or mutex object */
 	uint32_t m_PlatformMutex[7];
 
 #elif defined(BURGER_XBOXONE)
 	/** SRWLOCK for Mutex */
 	void* m_PlatformMutex[1];
-	/** ThreadID of the owner of this mutex */
+	/** thread_ID_t of the owner of this mutex */
 	uint32_t m_uOwnerThreadID;
 	/** Number of locks */
 	uint32_t m_uCount;
@@ -44,7 +44,7 @@ protected:
 #elif defined(BURGER_WINDOWS)
 	/** CRITICAL_SECTION or SRWLOCK object */
 	void* m_PlatformMutex[4U + ((sizeof(uint32_t) * 2U) / sizeof(void*))];
-	/** ThreadID of the owner of this mutex */
+	/** thread_ID_t of the owner of this mutex */
 	uint32_t m_uOwnerThreadID;
 	/** Number of locks */
 	uint32_t m_uCount;
@@ -68,6 +68,16 @@ protected:
 
 #elif defined(BURGER_SWITCH)
 	void* m_PlatformMutex[24 / sizeof(void*)];
+
+#elif defined(BURGER_MAC)
+	void* m_PlatformMutex[1];
+#if defined(BURGER_68K)
+	/** Number of locks on this Mutex */
+	uint32_t m_uLockCount;
+	/** Number of pending threads */
+	uint32_t m_uQueueCount;
+	uint32_t m_Queue[32];
+#endif
 
 #elif defined(BURGER_DARWIN) && defined(BURGER_64BITCPU)
 	uint64_t m_PlatformMutex[8];

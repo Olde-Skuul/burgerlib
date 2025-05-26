@@ -92,7 +92,7 @@ Burger::eError Burger::DirectorySearch::open(Filename* pDirName) BURGER_NOEXCEPT
 			Entry.m_bLocked = (uFlags & FILE_ATTRIBUTE_READONLY) != 0;
 
 			// Make a copy of the string and store it
-			const char* pName = StringDuplicate(LocalData.cFileName);
+			const char* pName = string_duplicate(LocalData.cFileName);
 			if (!pName) {
 				uResult = kErrorOutOfMemory;
 				break;

@@ -26,6 +26,17 @@ struct Point;
 /** Forward declaration for MacOS Rect */
 struct Rect;
 
+#if defined(BURGER_MAC) || defined(DOXYGEN)
+/** Forward declaration for MacOS Queue Header */
+struct QHdr;
+
+/** Forward declaration for MacOS Queue Entry */
+struct QElem;
+
+/** Forward declaration for MacOS Universal proc */
+struct RoutineDescriptor;
+#endif
+
 namespace Burger {
 
 /** 80 bit float(Extended) */

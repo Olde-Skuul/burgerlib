@@ -1,6 +1,6 @@
 /***************************************
 
-	Class to handle threads, PS3 version
+	Class to handle threads, Xbox classic version
 
 	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
@@ -14,10 +14,20 @@
 
 #include "brthread.h"
 
-#if defined(BURGER_PS3)
-#include "brstringfunctions.h"
+#if defined(BURGER_XBOX)
+#include "bratomic.h"
 
-#include <sys/ppu_thread.h>
+#define NOD3D
+#define NONET
+#define NODSOUND
+#include <xtl.h>
+
+#include <process.h>
+
+#if !defined(DOXYGEN)
+// Global Thread Local Storage index
+static DWORD gStorage = TlsAlloc();
+#endif
 
 /***************************************
 
@@ -36,12 +46,7 @@
 
 Burger::thread_ID_t BURGER_API Burger::get_ThreadID(void) BURGER_NOEXCEPT
 {
-	sys_ppu_thread_t uThreadID;
-	int iResult = sys_ppu_thread_get_id(&uThreadID);
-	if (iResult != CELL_OK) {
-		return 0;
-	}
-	return static_cast<thread_ID_t>(uThreadID);
+	return reinterpret_cast<thread_ID_t>(GetCurrentThread());
 }
 
 /***************************************
@@ -65,23 +70,23 @@ Burger::eThreadPriority BURGER_API Burger::get_thread_priority(
 	// Assume error
 	eThreadPriority uResult = kThreadPriorityInvalid;
 
-	// Get the priority value
-	int iPriority;
-	int iResult = sys_ppu_thread_get_priority(uThreadID, &iPriority);
+	// uThreadID is a thread handle
+	if (uThreadID) {
+		// Get the priority value
+		const int iPriority =
+			GetThreadPriority(reinterpret_cast<HANDLE>(uThreadID));
 
-	if (iResult == CELL_OK) {
-
-		// PS3 docs say priority 1001 is "default"
-
-		// Convert from enumeration to native priority values
-		if (iPriority > 1001) {
-			uResult = kThreadPriorityLow;
-		} else if (iPriority > 500) {
-			uResult = kThreadPriorityNormal;
-		} else if (iPriority >= 250) {
-			uResult = kThreadPriorityHigh;
-		} else {
-			uResult = kThreadPriorityRealTime;
+		if (iPriority != THREAD_PRIORITY_ERROR_RETURN) {
+			// Convert from enumeration to native priority values
+			if (iPriority <= THREAD_PRIORITY_LOWEST) {
+				uResult = kThreadPriorityLow;
+			} else if (iPriority <= THREAD_PRIORITY_NORMAL) {
+				uResult = kThreadPriorityNormal;
+			} else if (iPriority <= THREAD_PRIORITY_HIGHEST) {
+				uResult = kThreadPriorityHigh;
+			} else {
+				uResult = kThreadPriorityRealTime;
+			}
 		}
 	}
 
@@ -114,18 +119,16 @@ Burger::eError BURGER_API Burger::set_thread_priority(
 	// Convert from enumeration to native priority values
 	switch (uThreadPriority) {
 	case kThreadPriorityLow:
-		iPriority = 3071;
+		iPriority = THREAD_PRIORITY_LOWEST;
 		break;
-
 	case kThreadPriorityNormal:
-		// PS3 docs say priority 1001 is "default"
-		iPriority = 1001;
+		iPriority = THREAD_PRIORITY_NORMAL;
 		break;
 	case kThreadPriorityHigh:
-		iPriority = 500;
+		iPriority = THREAD_PRIORITY_HIGHEST;
 		break;
 	case kThreadPriorityRealTime:
-		iPriority = 0;
+		iPriority = THREAD_PRIORITY_TIME_CRITICAL;
 		break;
 	// Bad enumeration?
 	default:
@@ -136,16 +139,21 @@ Burger::eError BURGER_API Burger::set_thread_priority(
 	// If not a bad enumeration, set it
 	if (!uResult) {
 
-		// Get the thread handle from the thread_ID_t
-		int iResult = sys_ppu_thread_set_priority(uThreadID, iPriority);
-		if (iResult == ESRCH) {
-			// Bad thread
-			uResult = kErrorThreadNotFound;
-		} else if (iResult != CELL_OK) {
+		// Assume error
+		uResult = kErrorThreadNotFound;
+
+		// uThreadID is a thread handle
+		if (uThreadID) {
+			// Apply the new priority
+			const BOOL bResult = SetThreadPriority(
+				reinterpret_cast<HANDLE>(uThreadID), iPriority);
+
 			// Was it successful?
-			uResult = kErrorThreadNotModified;
-		} else {
-			uResult = kErrorNone;
+			if (!bResult) {
+				uResult = kErrorThreadNotModified;
+			} else {
+				uResult = kErrorNone;
+			}
 		}
 	}
 
@@ -155,36 +163,69 @@ Burger::eError BURGER_API Burger::set_thread_priority(
 
 /***************************************
 
+	\brief Get Thread Local Storage
+
+	Scan a private linked list for thread storage records and if found, return
+	the pointer to the thread_local_storage_record_t that is assigned to the
+	currently running thread.
+
+	\returns The thread_local_storage_record_t pointer or \ref nullptr
+
+	\sa tls_data_set(thread_local_storage_t*)
+
+***************************************/
+
+Burger::thread_local_storage_t* BURGER_API Burger::tls_data_get(
+	void) BURGER_NOEXCEPT
+{
+	if (gStorage == TLS_OUT_OF_INDEXES) {
+		return tls_data_get_fallback();
+	}
+	return static_cast<thread_local_storage_t*>(TlsGetValue(gStorage));
+}
+
+/***************************************
+
+	\brief Set a Thread Local Storage entry
+
+	Scan a private linked list for thread storage records and if found, set
+	the pointer to the thread_local_storage_record_t for the currently running
+	thread. If no record was found, allocate a new record and add the data to
+	this new record.
+
+	\param pInput Pointer to a thread_local_storage_t or \ref nullptr to delete
+		the record if found
+
+	\returns \ref kErrorNone or \ref kErrorOutOfMemory
+
+	\sa tls_data_get(void)
+
+***************************************/
+
+Burger::eError BURGER_API Burger::tls_data_set(
+	thread_local_storage_t* pInput) BURGER_NOEXCEPT
+{
+	if (gStorage == TLS_OUT_OF_INDEXES) {
+		return tls_data_set_fallback(pInput);
+	}
+	if (!TlsSetValue(gStorage, pInput)) {
+		return kErrorOutOfEntries;
+	}
+	return kErrorNone;
+}
+
+/***************************************
+
 	This code fragment calls the Run function that has
 	permission to access the members
 
 ***************************************/
 
-static void Dispatcher(uint64_t pThis) BURGER_NOEXCEPT
+static uint_t __stdcall Dispatcher(void* pThis) BURGER_NOEXCEPT
 {
-	Burger::Thread::run(reinterpret_cast<void*>(static_cast<uint32_t>(pThis)));
-	sys_ppu_thread_exit(0);
-}
-
-/*! ************************************
-
-	\brief Initialize a thread to power up defaults
-
-	No thread is launched, the class is set up.
-
-	\sa start(), or ~Thread()
-
-***************************************/
-
-Burger::Thread::Thread() BURGER_NOEXCEPT
-	: m_pFunction(nullptr),
-	  m_pData(nullptr),
-	  m_pName(nullptr),
-	  m_uStackSize(0),
-	  m_uResult(0),
-	  m_uThreadID(SYS_PPU_THREAD_ID_INVALID),
-	  m_uState(kStateInvalid)
-{
+	Burger::Thread::run(pThis);
+	_endthreadex(0);
+	return 0;
 }
 
 /***************************************
@@ -201,37 +242,38 @@ Burger::Thread::Thread() BURGER_NOEXCEPT
 
 Burger::eError BURGER_API Burger::Thread::platform_start(void) BURGER_NOEXCEPT
 {
-	uintptr_t uStackSize = m_uStackSize;
-	if (!uStackSize) {
-		// This is usually 4K, but let's double it to 8K
-		uStackSize = 0x2000U;
-		m_uStackSize = uStackSize;
+	// Set the flag to set the stack
+	// Note, create the thread, but DON'T START IT!
+
+	// Create the thread, and don't start it, yet.
+	uint_t uThreadID;
+	HANDLE hHandle = reinterpret_cast<HANDLE>(
+		_beginthreadex(nullptr, static_cast<uint_t>(m_uStackSize), Dispatcher,
+			this, CREATE_SUSPENDED, &uThreadID));
+
+	// On the Xbox, the default is 16K
+	if (!m_uStackSize) {
+		m_uStackSize = 0x4000U;
 	}
 
-	// There is a hard coded maximum name length of 28 bytes
-	char ThreadName[28];
-	const char* pTName;
-	if (m_pName) {
-		string_copy(ThreadName, 28U, m_pName);
-		pTName = ThreadName;
-	} else {
-		pTName = "Burgerlib Thread";
-	}
+	// Assume failure
+	eError uResult = kErrorThreadNotStarted;
+	if (hHandle) {
 
-	// Create the thread, but it's not started yet
-	// PS3 docs say priority 1001 is "default"
-	sys_ppu_thread_t pThread;
-	int iResult = sys_ppu_thread_create(&pThread, Dispatcher,
-		reinterpret_cast<uint64_t>(this), 1001, uStackSize,
-		SYS_PPU_THREAD_CREATE_JOINABLE, pTName);
+		// Store the found handles as the thread_ID_t
+		m_uThreadID = reinterpret_cast<thread_ID_t>(hHandle);
 
-	// Thread created?
-	if (iResult >= CELL_OK) {
+		// Mark as running
+		m_uState = kStateRunning;
+
+		// Fire it up!
+		ResumeThread(hHandle);
 
 		// All good!
-		return kErrorNone;
+		uResult = kErrorNone;
 	}
-	return kErrorThreadNotStarted;
+
+	return uResult;
 }
 
 /***************************************
@@ -251,13 +293,7 @@ Burger::eError BURGER_API Burger::Thread::platform_start(void) BURGER_NOEXCEPT
 Burger::eError BURGER_API Burger::Thread::platform_after_start(
 	void) BURGER_NOEXCEPT
 {
-	// Get the thread ID and store it in the class
-	sys_ppu_thread_t pThread;
-
-	// Should never fail
-	if (sys_ppu_thread_get_id(&pThread) == CELL_OK) {
-		m_uThreadID = pThread;
-	}
+	// Xbox Classic does not support named threads
 	return kErrorNone;
 }
 
@@ -277,18 +313,26 @@ Burger::eError BURGER_API Burger::Thread::platform_after_start(
 Burger::eError BURGER_API Burger::Thread::wait(void) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorThreadNotStarted;
-
-	// Was there a thread running?
-	if (m_uThreadID != SYS_PPU_THREAD_ID_INVALID) {
+	if (m_uThreadID) {
 
 		// Wait until the thread completes execution
-		uint64_t uExitStatus;
-		int iResult = sys_ppu_thread_join(m_uThreadID, &uExitStatus);
-		if (iResult == CELL_OK) {
+		// Note: This also updates the thread's state
+		const DWORD uError = WaitForSingleObjectEx(
+			reinterpret_cast<HANDLE>(m_uThreadID), INFINITE, FALSE);
 
-			// Allow restarting
-			m_uThreadID = SYS_PPU_THREAD_ID_INVALID;
+		// Close it down!
+		CloseHandle(reinterpret_cast<HANDLE>(m_uThreadID));
+
+		// Allow restarting
+		m_uThreadID = 0;
+
+		// Shutdown fine?
+		if (uError == WAIT_OBJECT_0) {
 			uResult = kErrorNone;
+
+			// Timeout!
+		} else if (uError == WAIT_TIMEOUT) {
+			uResult = kErrorTimeout;
 		}
 	}
 	return uResult;
@@ -308,16 +352,11 @@ Burger::eError BURGER_API Burger::Thread::wait(void) BURGER_NOEXCEPT
 
 Burger::eError BURGER_API Burger::Thread::platform_detach(void) BURGER_NOEXCEPT
 {
-	if (m_uThreadID == SYS_PPU_THREAD_ID_INVALID) {
-		return kErrorThreadNotStarted;
-	}
 	// Release control of the thread
-	if (sys_ppu_thread_detach(m_uThreadID) != CELL_OK) {
-		return kErrorThreadCantStop;
-	}
+	CloseHandle(reinterpret_cast<HANDLE>(m_uThreadID));
 
 	// Dispose of the internal reference
-	m_uThreadID = SYS_PPU_THREAD_ID_INVALID;
+	m_uThreadID = 0;
 
 	// Detached, and possibly still running
 	m_uState = kStateDetached;

@@ -820,7 +820,7 @@ uint_t Burger::Unix::DBusInstance::x11_screen_saver_disable(
 						const char* pReply = nullptr;
 						if (send_and_receive(m_pSession, pAnswer,
 								DBUS_TYPE_OBJECT_PATH, &pReply)) {
-							m_pDisableObject = StringDuplicate(pReply);
+							m_pDisableObject = string_duplicate(pReply);
 							bResult = TRUE;
 						}
 					}

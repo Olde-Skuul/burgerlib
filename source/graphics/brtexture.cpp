@@ -653,7 +653,7 @@ void BURGER_API Burger::Texture::LoadTGA(const char *pFilename)
 	// Get rid of any previous loader
 	ShutdownImageMemory();
 	if (pFilename) {
-		m_pUserData = StringDuplicate(pFilename);
+		m_pUserData = string_duplicate(pFilename);
 		m_pLoader = CallbackFileTGA;
 		m_uDirty |= DIRTY_IMAGE;
 	}
@@ -845,7 +845,7 @@ void BURGER_API Burger::Texture::LoadPNG(const char *pFilename)
 	// Get rid of any previous loader
 	ShutdownImageMemory();
 	if (pFilename) {
-		m_pUserData = StringDuplicate(pFilename);
+		m_pUserData = string_duplicate(pFilename);
 		m_pLoader = CallbackFilePNG;
 		m_uDirty |= DIRTY_IMAGE;
 	}
@@ -1037,7 +1037,7 @@ void BURGER_API Burger::Texture::LoadBMP(const char *pFilename)
 	// Get rid of any previous loader
 	ShutdownImageMemory();
 	if (pFilename) {
-		m_pUserData = StringDuplicate(pFilename);
+		m_pUserData = string_duplicate(pFilename);
 		m_pLoader = CallbackFileBMP;
 		m_uDirty |= DIRTY_IMAGE;
 	}
@@ -1270,7 +1270,7 @@ void BURGER_API Burger::Texture::LoadGIF(const char *pFilename)
 	// Get rid of any previous loader
 	ShutdownImageMemory();
 	if (pFilename) {
-		m_pUserData = StringDuplicate(pFilename);
+		m_pUserData = string_duplicate(pFilename);
 		m_pLoader = CallbackFileGIF;
 		m_uDirty |= DIRTY_IMAGE;
 	}

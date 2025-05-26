@@ -33,7 +33,7 @@ const char* BURGER_API Burger::GetEnvironmentString(
 {
 	const char* pValue = getenv(pKey);
 	if (pValue) {
-		pValue = StringDuplicate(pValue);
+		pValue = string_duplicate(pValue);
 	}
 	return pValue;
 }

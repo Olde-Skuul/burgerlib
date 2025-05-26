@@ -1,6 +1,6 @@
 /***************************************
 
-	Class to handle mutex objects, Xbox 360 version
+	Class to handle mutex objects, Xbox Classic version
 
 	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
@@ -14,9 +14,10 @@
 
 #include "brmutex.h"
 
-#if defined(BURGER_XBOX360)
+#if defined(BURGER_XBOX)
 #define NOD3D
 #define NONET
+#define NODSOUND
 #include <xtl.h>
 
 /***************************************
@@ -25,9 +26,6 @@
 
 	Sets up operating system defaults to the data
 
-	Initialize the spin count to 1000 since this class is usually used for quick
-	data locks
-
 ***************************************/
 
 Burger::Mutex::Mutex() BURGER_NOEXCEPT
@@ -35,8 +33,8 @@ Burger::Mutex::Mutex() BURGER_NOEXCEPT
 	// Safety switch to verify the declaration matches the real thing
 	BURGER_STATIC_ASSERT(sizeof(CRITICAL_SECTION) == sizeof(m_PlatformMutex));
 
-	RtlInitializeCriticalSectionAndSpinCount(
-		reinterpret_cast<CRITICAL_SECTION*>(m_PlatformMutex), 1000);
+	RtlInitializeCriticalSection(
+		reinterpret_cast<CRITICAL_SECTION*>(m_PlatformMutex));
 }
 
 /***************************************

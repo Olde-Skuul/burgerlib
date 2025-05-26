@@ -279,11 +279,11 @@ extern void BURGER_API string_copy(uint16_t* pOutput, uintptr_t uOutputSize,
 extern void BURGER_API string_copy(uint16_t* pOutput, uintptr_t uOutputSize,
 	const uint16_t* pInput, uintptr_t uInputSize) BURGER_NOEXCEPT;
 
-extern char* BURGER_API StringDuplicate(const char* pInput) BURGER_NOEXCEPT;
-extern char* BURGER_API StringDuplicate(
+extern char* BURGER_API string_duplicate(const char* pInput) BURGER_NOEXCEPT;
+extern char* BURGER_API string_duplicate(
 	const char* pInput, uintptr_t uPadding) BURGER_NOEXCEPT;
 
-extern void BURGER_API StringDelete(const char* pInput) BURGER_NOEXCEPT;
+extern void BURGER_API string_delete(const char* pInput) BURGER_NOEXCEPT;
 
 extern void BURGER_API StringConcatenate(
 	char* pOutput, const char* pInput) BURGER_NOEXCEPT;

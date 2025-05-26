@@ -140,7 +140,7 @@ Burger::eError Burger::DirectorySearch::open(Filename* pDirName) BURGER_NOEXCEPT
 
 			// First, grab the filename
 			char* pName =
-				StringDuplicate(reinterpret_cast<char*>(&DirEntry.name) +
+				string_duplicate(reinterpret_cast<char*>(&DirEntry.name) +
 					DirEntry.name.attr_dataoffset);
 
 			// Failed to allocate memory for the filename?

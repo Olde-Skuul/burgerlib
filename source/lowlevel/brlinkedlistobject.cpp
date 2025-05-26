@@ -941,7 +941,7 @@ void Burger::LinkedListObjects::prepend(
 
 void Burger::LinkedListObjects::append(const char* pString) BURGER_NOEXCEPT
 {
-	char* pStringCopy = StringDuplicate(pString);
+	char* pStringCopy = string_duplicate(pString);
 	if (pStringCopy) {
 
 		// Create the new object
@@ -969,7 +969,7 @@ void Burger::LinkedListObjects::append(const char* pString) BURGER_NOEXCEPT
 
 void Burger::LinkedListObjects::prepend(const char* pString) BURGER_NOEXCEPT
 {
-	char* pStringCopy = StringDuplicate(pString);
+	char* pStringCopy = string_duplicate(pString);
 	if (pStringCopy) {
 		// Create the new object
 		Object* pObject = Object::new_object(pStringCopy);

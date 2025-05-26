@@ -99,7 +99,7 @@ Burger::SimpleString::SimpleString(const char* pInput1)
 {
 	const char* pOutput = g_EmptyString; // Empty
 	if (pInput1 && pInput1[0]) {         // Non empty string?
-		char* pTemp = StringDuplicate(pInput1);
+		char* pTemp = string_duplicate(pInput1);
 		if (pTemp) {
 			pOutput = pTemp;
 		}
@@ -351,7 +351,7 @@ Burger::SimpleString::SimpleString(const Burger::SimpleString& rInput)
 	const char* pInput = rInput.m_pData;
 	const char* pOutput = g_EmptyString; // Empty
 	if (pInput[0]) {
-		char* pTemp = StringDuplicate(pInput);
+		char* pTemp = string_duplicate(pInput);
 		if (pTemp) {
 			pOutput = pTemp;
 		}
@@ -440,7 +440,7 @@ Burger::SimpleString& Burger::SimpleString::operator=(const char* pInput)
 	if (!pInput || !pInput[0]) { // Empty?
 		m_pData = g_EmptyString; // Set it empty
 	} else {
-		char* pData2 = StringDuplicate(pInput);
+		char* pData2 = string_duplicate(pInput);
 		if (!pData2) {
 			m_pData = g_EmptyString;
 		} else {
@@ -477,7 +477,7 @@ Burger::SimpleString& Burger::SimpleString::operator=(
 		if (!pData[0]) {             // Empty?
 			m_pData = g_EmptyString; // Set it empty
 		} else {
-			char* pData2 = StringDuplicate(pData);
+			char* pData2 = string_duplicate(pData);
 			if (!pData2) {
 				m_pData = g_EmptyString;
 			} else {

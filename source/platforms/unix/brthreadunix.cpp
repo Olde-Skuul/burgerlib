@@ -1,8 +1,8 @@
 /***************************************
 
-	Class to handle critical sections, Unix version
+	Class to handle threads, Unix version
 
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -55,11 +55,11 @@ static pthread_key_t gStorage = pthread_key_create();
 
 ***************************************/
 
-Burger::ThreadID BURGER_API Burger::get_ThreadID(void) BURGER_NOEXCEPT
+Burger::thread_ID_t BURGER_API Burger::get_ThreadID(void) BURGER_NOEXCEPT
 {
 	// Can't use reinterpret_cast<> because some platforms use a uintptr_t and
 	// others are a pthread_t *
-	return (ThreadID)pthread_self();
+	return (thread_ID_t)pthread_self();
 }
 
 #if !defined(BURGER_LINUX)
@@ -67,19 +67,19 @@ Burger::ThreadID BURGER_API Burger::get_ThreadID(void) BURGER_NOEXCEPT
 
 	\brief Get the execution priority of a thread
 
-	Get the execution priority of any thread using a \ref ThreadID.
+	Get the execution priority of any thread using a \ref thread_ID_t.
 
 	If \ref kThreadPriorityInvalid is returned, this feature is not
 	supported.
 
 	\returns An \ref eThreadPriority enumeration.
 
-	\sa \ref Thread, or set_thread_priority(ThreadID, eThreadPriority)
+	\sa \ref Thread, or set_thread_priority(thread_ID_t, eThreadPriority)
 
 ***************************************/
 
 Burger::eThreadPriority BURGER_API Burger::get_thread_priority(
-	ThreadID uThreadID) BURGER_NOEXCEPT
+	thread_ID_t uThreadID) BURGER_NOEXCEPT
 {
 	// Assume error
 	eThreadPriority uResult = kThreadPriorityInvalid;
@@ -138,19 +138,19 @@ Burger::eThreadPriority BURGER_API Burger::get_thread_priority(
 
 	\brief Set the execution priority of a thread
 
-	Set the execution priority of any thread using a \ref ThreadID.
+	Set the execution priority of any thread using a \ref thread_ID_t.
 
 	If \ref kErrorNotSupportedOnThisPlatform is returned, this feature is not
 	supported.
 
 	\returns Zero if no error, non-zero on error.
 
-	\sa \ref Thread, or get_thread_priority(ThreadID)
+	\sa \ref Thread, or get_thread_priority(thread_ID_t)
 
 ***************************************/
 
 Burger::eError BURGER_API Burger::set_thread_priority(
-	ThreadID uThreadID, eThreadPriority uThreadPriority) BURGER_NOEXCEPT
+	thread_ID_t uThreadID, eThreadPriority uThreadPriority) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorThreadNotFound;
 	sched_param Param;
@@ -246,23 +246,23 @@ Burger::eError BURGER_API Burger::set_thread_priority(
 	\brief Get Thread Local Storage
 
 	Scan a private linked list for thread storage records and if found, return
-	the pointer to the ThreadLocalStorageRecord_t that is assigned to the
+	the pointer to the thread_local_storage_record_t that is assigned to the
 	currently running thread.
 
-	\returns The ThreadLocalStorageRecord_t pointer or \ref nullptr
+	\returns The thread_local_storage_record_t pointer or \ref nullptr
 
-	\sa tls_data_set(ThreadLocalStorage_t*)
+	\sa tls_data_set(thread_local_storage_t*)
 
 ***************************************/
 
-Burger::ThreadLocalStorage_t* BURGER_API Burger::tls_data_get(
+Burger::thread_local_storage_t* BURGER_API Burger::tls_data_get(
 	void) BURGER_NOEXCEPT
 {
 	if (gStorage == INT32_MAX) {
 		return tls_data_get_fallback();
 	}
 	BURGER_MEMORYBARRIER();
-	return static_cast<ThreadLocalStorage_t*>(pthread_getspecific(gStorage));
+	return static_cast<thread_local_storage_t*>(pthread_getspecific(gStorage));
 }
 
 /***************************************
@@ -270,11 +270,11 @@ Burger::ThreadLocalStorage_t* BURGER_API Burger::tls_data_get(
 	\brief Set a Thread Local Storage entry
 
 	Scan a private linked list for thread storage records and if found, set
-	the pointer to the ThreadLocalStorageRecord_t for the currently running
+	the pointer to the thread_local_storage_record_t for the currently running
 	thread. If no record was found, allocate a new record and add the data to
 	this new record.
 
-	\param pInput Pointer to a ThreadLocalStorage_t or \ref nullptr to delete
+	\param pInput Pointer to a thread_local_storage_t or \ref nullptr to delete
 		the record if found
 
 	\returns \ref kErrorNone or \ref kErrorOutOfMemory
@@ -284,7 +284,7 @@ Burger::ThreadLocalStorage_t* BURGER_API Burger::tls_data_get(
 ***************************************/
 
 Burger::eError BURGER_API Burger::tls_data_set(
-	ThreadLocalStorage_t* pInput) BURGER_NOEXCEPT
+	thread_local_storage_t* pInput) BURGER_NOEXCEPT
 {
 	if (gStorage == INT32_MAX) {
 		return tls_data_set_fallback(pInput);
@@ -409,7 +409,7 @@ Burger::eError BURGER_API Burger::Thread::platform_after_start(
 	void) BURGER_NOEXCEPT
 {
 	// Make sure this is set before anything else
-	m_uThreadID = (ThreadID)pthread_self();
+	m_uThreadID = (thread_ID_t)pthread_self();
 
 	// Name the thread
 	const char* pName = m_pName;

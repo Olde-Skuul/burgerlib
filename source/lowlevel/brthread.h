@@ -2,7 +2,7 @@
 
 	Class to manage threads
 
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -39,49 +39,49 @@ enum eThreadPriority {
 	kThreadPriorityRealTime
 };
 
-typedef uintptr_t ThreadID;
-typedef void(BURGER_API* TLSShutdownProc)(void* pThis);
+typedef uintptr_t thread_ID_t;
+typedef void(BURGER_API* TLS_shutdown_proc_t)(void* pThis);
 
-struct ThreadLocalStorageEntry_t {
+struct thread_local_storage_entry_t {
 	/** Callback to issue when this entry is released */
-	TLSShutdownProc m_pShutdown;
-	/** "this" pointer to pass as parameter for m_pShutdown */
+	TLS_shutdown_proc_t m_pShutdown;
+	/** `this` pointer to pass as parameter for m_pShutdown */
 	void* m_pThis;
 };
 
-struct ThreadLocalStorage_t {
+struct thread_local_storage_t {
 	/** Number of m_Entries in the array */
 	uint32_t m_uCount;
-	/** Array of ThreadLocalStorageEntry_t */
-	ThreadLocalStorageEntry_t m_Entries[1];
+	/** Array of thread_local_storage_entry_t */
+	thread_local_storage_entry_t m_Entries[1];
 };
 
-struct ThreadLocalStorageRecord_t {
-	/** ThreadID of the owner thread */
-	ThreadID m_uThreadID;
+struct thread_local_storage_record_t {
+	/** thread_ID_t of the owner thread */
+	thread_ID_t m_uThreadID;
 	/** Pointer to array of shutdown procs */
-	ThreadLocalStorage_t* m_pThreadLocalStorage;
+	thread_local_storage_t* m_pThreadLocalStorage;
 	/** Pointer to the next entry in the list */
-	ThreadLocalStorageRecord_t* m_pNext;
+	thread_local_storage_record_t* m_pNext;
 };
 
-extern ThreadID BURGER_API get_ThreadID(void) BURGER_NOEXCEPT;
+extern thread_ID_t BURGER_API get_ThreadID(void) BURGER_NOEXCEPT;
 extern eThreadPriority BURGER_API get_thread_priority(
-	ThreadID uThreadID) BURGER_NOEXCEPT;
+	thread_ID_t uThreadID) BURGER_NOEXCEPT;
 extern eError BURGER_API set_thread_priority(
-	ThreadID uThreadID, eThreadPriority uThreadPriority) BURGER_NOEXCEPT;
+	thread_ID_t uThreadID, eThreadPriority uThreadPriority) BURGER_NOEXCEPT;
 
 extern uint32_t BURGER_API tls_new_index(void) BURGER_NOEXCEPT;
-extern ThreadLocalStorage_t* BURGER_API tls_data_get_fallback(
+extern thread_local_storage_t* BURGER_API tls_data_get_fallback(
 	void) BURGER_NOEXCEPT;
 extern eError BURGER_API tls_data_set_fallback(
-	ThreadLocalStorage_t* pInput) BURGER_NOEXCEPT;
-extern ThreadLocalStorage_t* BURGER_API tls_data_get(void) BURGER_NOEXCEPT;
+	thread_local_storage_t* pInput) BURGER_NOEXCEPT;
+extern thread_local_storage_t* BURGER_API tls_data_get(void) BURGER_NOEXCEPT;
 extern eError BURGER_API tls_data_set(
-	ThreadLocalStorage_t* pInput) BURGER_NOEXCEPT;
+	thread_local_storage_t* pInput) BURGER_NOEXCEPT;
 extern void* BURGER_API tls_get(uint32_t uIndex) BURGER_NOEXCEPT;
 extern eError BURGER_API tls_set(uint32_t uIndex, const void* pThis,
-	TLSShutdownProc pShutdown = nullptr) BURGER_NOEXCEPT;
+	TLS_shutdown_proc_t pShutdown = nullptr) BURGER_NOEXCEPT;
 extern void BURGER_API tls_release(void) BURGER_NOEXCEPT;
 
 class Thread {
@@ -100,11 +100,11 @@ public:
 	};
 
 	/** Thread entry prototype */
-	typedef uintptr_t(BURGER_API* FunctionPtr)(void* pThis);
+	typedef uintptr_t(BURGER_API* function_proc_t)(void* pThis);
 
 protected:
 	/** Pointer to the thread */
-	FunctionPtr m_pFunction;
+	function_proc_t m_pFunction;
 
 	/** Data pointer for the thread */
 	void* m_pData;
@@ -118,8 +118,8 @@ protected:
 	/** Result code of the thread on exit */
 	uintptr_t m_uResult;
 
-	/** ThreadID assigned to this thread */
-	ThreadID m_uThreadID;
+	/** thread_ID_t assigned to this thread */
+	thread_ID_t m_uThreadID;
 
 	/** State of the thread, see /ref eState */
 	uint32_t m_uState;
@@ -143,7 +143,7 @@ public:
 	Thread() BURGER_NOEXCEPT;
 	~Thread();
 
-	eError BURGER_API start(FunctionPtr pFunction, void* pData,
+	eError BURGER_API start(function_proc_t pFunction, void* pData,
 		const char* pName = nullptr, uintptr_t uStackSize = 0) BURGER_NOEXCEPT;
 	eError BURGER_API wait(void) BURGER_NOEXCEPT;
 	eError BURGER_API detach(void) BURGER_NOEXCEPT;

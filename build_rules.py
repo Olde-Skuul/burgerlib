@@ -89,6 +89,8 @@ SUPER_HEADERS = (
      "burgerlinux.h", "burgerlinux_stripped.h"),
     ("platforms" + os.sep + "xbox360" + os.sep + "templatexbox360.h",
      "burgerxbox360.h", "burgerxbox360_stripped.h"),
+    ("platforms" + os.sep + "xbox" + os.sep + "templatexbox.h",
+     "burgerxbox.h", "burgerxbox_stripped.h"),
     ("platforms" + os.sep + "msdos" + os.sep + "templatemsdos.h",
      "burgermsdos.h", "burgermsdos_stripped.h")
 )
@@ -103,6 +105,10 @@ UNIQUE_HEADERS = (
     # MSDos
     ("bin" + os.sep + "burgermsdos_stripped.h",
         "msdos" + os.sep + "burgerlib" + os.sep + "burgermsdos.h"),
+
+    # Xbox
+    ("bin" + os.sep + "burgerxbox_stripped.h",
+        "xbox" + os.sep + "burgerlib" + os.sep + "burgerxbox.h"),
 
     # Xbox 360
     ("bin" + os.sep + "burgerxbox360_stripped.h",

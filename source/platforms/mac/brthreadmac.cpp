@@ -2,7 +2,7 @@
 
 	Class to handle threads, MacOS version
 
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -42,12 +42,12 @@
 
 ***************************************/
 
-Burger::ThreadID BURGER_API Burger::get_ThreadID(void) BURGER_NOEXCEPT
+Burger::thread_ID_t BURGER_API Burger::get_ThreadID(void) BURGER_NOEXCEPT
 {
-	// ProcessSerialNumber is a 64 bit value
-	::ThreadID ID;
+	// ThreadID is a 32 bit number
+	ThreadID ID;
 
-	// Get the ThreadID
+	// Get the MacOS ThreadID
 	if (MacGetCurrentThread(&ID)) {
 		return 0;
 	}

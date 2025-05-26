@@ -1,8 +1,8 @@
 /***************************************
 
-	Class to handle critical sections, Linux version
+	Class to handle threads, Linux version
 
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -29,19 +29,19 @@
 
 	\brief Get the execution priority of a thread
 
-	Get the execution priority of any thread using a \ref ThreadID.
+	Get the execution priority of any thread using a \ref thread_ID_t.
 
 	If \ref kThreadPriorityInvalid is returned, this feature is not
 	supported.
 
 	\returns An \ref eThreadPriority enumeration.
 
-	\sa \ref Thread, or set_thread_priority(ThreadID, eThreadPriority)
+	\sa \ref Thread, or set_thread_priority(thread_ID_t, eThreadPriority)
 
 ***************************************/
 
 Burger::eThreadPriority BURGER_API Burger::get_thread_priority(
-	ThreadID uThreadID) BURGER_NOEXCEPT
+	thread_ID_t uThreadID) BURGER_NOEXCEPT
 {
 	// Assume error
 	eThreadPriority uResult = kThreadPriorityInvalid;
@@ -85,19 +85,19 @@ Burger::eThreadPriority BURGER_API Burger::get_thread_priority(
 
 	\brief Set the execution priority of a thread
 
-	Set the execution priority of any thread using a \ref ThreadID.
+	Set the execution priority of any thread using a \ref thread_ID_t.
 
 	If \ref kErrorNotSupportedOnThisPlatform is returned, this feature is not
 	supported.
 
 	\returns Zero if no error, non-zero on error.
 
-	\sa \ref Thread, or get_thread_priority(ThreadID)
+	\sa \ref Thread, or get_thread_priority(thread_ID_t)
 
 ***************************************/
 
 Burger::eError BURGER_API Burger::set_thread_priority(
-	ThreadID uThreadID, eThreadPriority uThreadPriority) BURGER_NOEXCEPT
+	thread_ID_t uThreadID, eThreadPriority uThreadPriority) BURGER_NOEXCEPT
 {
 	// Assume uThreadID is bogus
 	eError uResult = kErrorThreadNotFound;

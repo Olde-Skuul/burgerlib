@@ -2,7 +2,7 @@
 
 	Class to manage threads
 
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -14,8 +14,8 @@
 
 #include "brthread.h"
 #include "bratomic.h"
-#include "brmutex.h"
 #include "brglobalmemorymanager.h"
+#include "brmutex.h"
 #include "brstringfunctions.h"
 
 #include <stdlib.h>
@@ -23,7 +23,7 @@
 #if !defined(DOXYGEN)
 // Used by tls_data_get_fallback() and tls_data_set_fallback()
 // Root point to linked list of thread local storage records
-static Burger::ThreadLocalStorageRecord_t* g_pThreadLocalStorageRecords;
+static Burger::thread_local_storage_record_t* g_pThreadLocalStorageRecords;
 static Burger::Mutex g_TLSRecordsCriticalSection;
 #endif
 
@@ -32,27 +32,30 @@ static Burger::Mutex g_TLSRecordsCriticalSection;
 	\enum Burger::eThreadPriority
 	\brief Thread priority setting
 
-	When calling Burger::set_thread_priority(Burger::ThreadID,
+	When calling Burger::set_thread_priority(Burger::thread_ID_t,
 	Burger::eThreadPriority), this is the enumeration used to set the thread
 	priority in a cross platform way.
 
 	\note \ref kThreadPriorityInvalid is used as an error code for functions
 		that fail to retrieve a thread priority.
 
-	\sa \ref Burger::Thread, or Burger::set_thread_priority(Burger::ThreadID,
+	\sa \ref Burger::Thread, or Burger::set_thread_priority(Burger::thread_ID_t,
 		Burger::eThreadPriority)
 
 ***************************************/
 
 /*! ************************************
 
-	\typedef Burger::ThreadID
+	\typedef Burger::thread_ID_t
 	\brief Platform Thread ID
 
 	Every thread has a thread identification number. The number itself is not
-	important, and if 0 it means it's invalid. If non-zero, it's a value that is
-	used by the platform to identify a thread. This ID is not a pointer, but an
-	integer value used by the operating system.
+	important, and if it is 0, it means it's invalid. If non-zero, it's a value
+	that is used by the platform to identify a thread. This ID is not a pointer,
+	but an integer value used by the operating system.
+
+	\note On Xbox Classic, this is a thread handle. On Xbox 360, Xbox ONE, and
+		Windows, this is a ThreadID
 
 	\sa \ref Burger::Thread
 
@@ -60,26 +63,26 @@ static Burger::Mutex g_TLSRecordsCriticalSection;
 
 /*! ************************************
 
-	\typedef Burger::TLSShutdownProc
+	\typedef Burger::TLS_shutdown_proc_t
 	\brief Callback prototype for TLS shutdown
 
-	typedef void(BURGER_API* TLSShutdownProc)(void *pThis);
+	typedef void(BURGER_API* TLS_shutdown_proc_t)(void* pThis);
 
-	When ttls_set(uint32_t, const void*, TLSShutdownProc) is called, the passed
-	pointer can be cleaned up using a callback function that matches this
+	When tls_set(uint32_t, const void*, TLS_shutdown_proc_t) is called, the
+	passed pointer can be cleaned up using a callback function that matches this
 	prototype. The data pointer is passed as the ``pThis`` parameter to the
 	callback when \ref tls_release() is called.
 
-	\sa tls_set(uint32_t, const void*, TLSShutdownProc) or, tls_release()
+	\sa tls_set(uint32_t, const void*, TLS_shutdown_proc_t) or, tls_release()
 
 ***************************************/
 
 /*! ************************************
 
-	\struct Burger::ThreadLocalStorageEntry_t
+	\struct Burger::thread_local_storage_entry_t
 	\brief Thread local storage for shutdown callback
 
-	Every thread has memory assigned to each thread that contains a "this"
+	Every thread has memory assigned to each thread that contains a `this`
 	pointer and a callback function. If the function is set to \ref nullptr, no
 	callback is issued. Otherwise, when the thread is shutdown, the function
 	will be called to handle any sort of memory or resource cleanup needed for
@@ -88,34 +91,34 @@ static Burger::Mutex g_TLSRecordsCriticalSection;
 	\note This structure is managed by the Thread manager and should not be used
 	by applications directly
 
-	\sa \ref Burger::Thread, or \ref Burger::ThreadLocalStorage_t
+	\sa \ref Burger::Thread, or \ref Burger::thread_local_storage_t
 
 ***************************************/
 
 /*! ************************************
 
-	\struct Burger::ThreadLocalStorage_t
-	\brief Simple array of ThreadLocalStorageEntry_t records
+	\struct Burger::thread_local_storage_t
+	\brief Simple array of thread_local_storage_entry_t records
 
-	Every thread has memory assigned to each thread that contains a "this"
+	Every thread has memory assigned to each thread that contains a `this`
 	pointer and a callback function. This array contains all of the records for
 	all threads in the application.
 
 	\note This structure is managed by the Thread manager and should not be used
 	by applications directly
 
-	\sa \ref Burger::Thread, or \ref Burger::ThreadLocalStorageEntry_t
+	\sa \ref Burger::Thread, or \ref Burger::thread_local_storage_entry_t
 
 ***************************************/
 
 /*! ************************************
 
-	\struct Burger::ThreadLocalStorageRecord_t
-	\brief Internal record to match ThreadLocalStorage_t to a thread.
+	\struct Burger::thread_local_storage_record_t
+	\brief Internal record to match thread_local_storage_t to a thread.
 
 	The functions tls_data_get_fallback() and
-	tls_data_set_fallback(ThreadLocalStorage_t*) maintain a linked list of these
-	records to match up threads to their ThreadLocalStorage_t entries.
+	tls_data_set_fallback(thread_local_storage_t*) maintain a linked list of
+	these records to match up threads to their thread_local_storage_t entries.
 
 	\note This structure is managed by the Thread manager and should not be used
 	by applications directly
@@ -139,12 +142,13 @@ static Burger::Mutex g_TLSRecordsCriticalSection;
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || \
-	defined(BURGER_XBOXONE) || defined(BURGER_VITA) || defined(BURGER_PS3) || \
-	defined(BURGER_PS4) || defined(BURGER_PS5) || defined(BURGER_WIIU) || \
-	defined(BURGER_SWITCH) || defined(BURGER_UNIX) || defined(BURGER_MAC)) || \
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX) || \
+	defined(BURGER_XBOX360) || defined(BURGER_XBOXONE) || \
+	defined(BURGER_VITA) || defined(BURGER_PS3) || defined(BURGER_PS4) || \
+	defined(BURGER_PS5) || defined(BURGER_WIIU) || defined(BURGER_SWITCH) || \
+	defined(BURGER_UNIX) || defined(BURGER_MAC)) || \
 	defined(DOXYGEN)
-Burger::ThreadID BURGER_API Burger::get_ThreadID(void) BURGER_NOEXCEPT
+Burger::thread_ID_t BURGER_API Burger::get_ThreadID(void) BURGER_NOEXCEPT
 {
 	// Not supported, pretty much just MSDos
 	return 0;
@@ -155,24 +159,25 @@ Burger::ThreadID BURGER_API Burger::get_ThreadID(void) BURGER_NOEXCEPT
 
 	\brief Get the execution priority of a thread
 
-	Get the execution priority of any thread using a \ref ThreadID.
+	Get the execution priority of any thread using a \ref thread_ID_t.
 
 	If \ref kThreadPriorityInvalid is returned, this feature is not
 	supported.
 
 	\returns An \ref eThreadPriority enumeration.
 
-	\sa \ref Thread, or set_thread_priority(ThreadID, eThreadPriority)
+	\sa \ref Thread, or set_thread_priority(thread_ID_t, eThreadPriority)
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || \
-	defined(BURGER_XBOXONE) || defined(BURGER_VITA) || defined(BURGER_PS3) || \
-	defined(BURGER_PS4) || defined(BURGER_PS5) || defined(BURGER_WIIU) || \
-	defined(BURGER_SWITCH) || defined(BURGER_UNIX)) || \
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX) || \
+	defined(BURGER_XBOX360) || defined(BURGER_XBOXONE) || \
+	defined(BURGER_VITA) || defined(BURGER_PS3) || defined(BURGER_PS4) || \
+	defined(BURGER_PS5) || defined(BURGER_WIIU) || defined(BURGER_SWITCH) || \
+	defined(BURGER_UNIX)) || \
 	defined(DOXYGEN)
 Burger::eThreadPriority BURGER_API Burger::get_thread_priority(
-	ThreadID uThreadID) BURGER_NOEXCEPT
+	thread_ID_t uThreadID) BURGER_NOEXCEPT
 {
 	// Not supported
 	BURGER_UNUSED(uThreadID);
@@ -183,19 +188,19 @@ Burger::eThreadPriority BURGER_API Burger::get_thread_priority(
 
 	\brief Set the execution priority of a thread
 
-	Set the execution priority of any thread using a \ref ThreadID.
+	Set the execution priority of any thread using a \ref thread_ID_t.
 
 	If \ref kErrorNotSupportedOnThisPlatform is returned, this feature is not
 	supported.
 
 	\returns Zero if no error, non-zero on error.
 
-	\sa \ref Thread, or get_thread_priority(ThreadID)
+	\sa \ref Thread, or get_thread_priority(thread_ID_t)
 
 ***************************************/
 
 Burger::eError BURGER_API Burger::set_thread_priority(
-	ThreadID uThreadID, eThreadPriority uThreadPriority) BURGER_NOEXCEPT
+	thread_ID_t uThreadID, eThreadPriority uThreadPriority) BURGER_NOEXCEPT
 {
 	BURGER_UNUSED(uThreadID);
 	BURGER_UNUSED(uThreadPriority);
@@ -241,32 +246,32 @@ uint32_t BURGER_API Burger::tls_new_index(void) BURGER_NOEXCEPT
 	native operating system is full, this function will perform the same task.
 
 	Scan a private linked list for thread storage records and if found, return
-	the pointer to the ThreadLocalStorageRecord_t that is assigned to the
+	the pointer to the thread_local_storage_record_t that is assigned to the
 	currently running thread.
 
 	\note This is a private function, call \ref tls_data_get() instead to use
 		the native platform's version.
 
-	\returns The ThreadLocalStorageRecord_t pointer or \ref nullptr
+	\returns The thread_local_storage_record_t pointer or \ref nullptr
 
-	\sa tls_data_set_fallback(ThreadLocalStorage_t*)
+	\sa tls_data_set_fallback(thread_local_storage_t*)
 
 ***************************************/
 
-Burger::ThreadLocalStorage_t* BURGER_API Burger::tls_data_get_fallback(
+Burger::thread_local_storage_t* BURGER_API Burger::tls_data_get_fallback(
 	void) BURGER_NOEXCEPT
 {
 	// Assume failure
-	ThreadLocalStorage_t* pResult = nullptr;
+	thread_local_storage_t* pResult = nullptr;
 
 	// Obtain the current thread ID
-	const ThreadID uThreadID = get_ThreadID();
+	const thread_ID_t uThreadID = get_ThreadID();
 
 	// Lock the data
 	g_TLSRecordsCriticalSection.lock();
 
 	// Traverse the linked list
-	ThreadLocalStorageRecord_t* pRecord = g_pThreadLocalStorageRecords;
+	thread_local_storage_record_t* pRecord = g_pThreadLocalStorageRecords;
 	if (pRecord) {
 
 		do {
@@ -297,15 +302,15 @@ Burger::ThreadLocalStorage_t* BURGER_API Burger::tls_data_get_fallback(
 	native operating system is full, this function will perform the same task.
 
 	Scan a private linked list for thread storage records and if found, set
-	the pointer to the ThreadLocalStorageRecord_t for the currently running
+	the pointer to the thread_local_storage_record_t for the currently running
 	thread. If no record was found, allocate a new record and add the data to
 	this new record.
 
 	\note This is a private function, call \ref
-		tls_data_set(ThreadLocalStorage_t*) instead to use the native platform's
-		version.
+		tls_data_set(thread_local_storage_t*) instead to use the native
+		platform's version.
 
-	\param pInput Pointer to a ThreadLocalStorage_t or \ref nullptr to delete
+	\param pInput Pointer to a thread_local_storage_t or \ref nullptr to delete
 		the record if found
 
 	\returns \ref kErrorNone or \ref kErrorOutOfMemory
@@ -315,23 +320,23 @@ Burger::ThreadLocalStorage_t* BURGER_API Burger::tls_data_get_fallback(
 ***************************************/
 
 Burger::eError BURGER_API Burger::tls_data_set_fallback(
-	ThreadLocalStorage_t* pInput) BURGER_NOEXCEPT
+	thread_local_storage_t* pInput) BURGER_NOEXCEPT
 {
 	// Assume success
 	eError uResult = kErrorNone;
 
 	// Obtain the current thread ID
-	const ThreadID uThreadID = get_ThreadID();
+	const thread_ID_t uThreadID = get_ThreadID();
 
 	// Lock the data below
 	g_TLSRecordsCriticalSection.lock();
 
 	// Traverse the list for a match
-	ThreadLocalStorageRecord_t* pRecord = g_pThreadLocalStorageRecords;
+	thread_local_storage_record_t* pRecord = g_pThreadLocalStorageRecords;
 	if (pRecord) {
 
 		// Needed for removing a record
-		ThreadLocalStorageRecord_t* pPrev = nullptr;
+		thread_local_storage_record_t* pPrev = nullptr;
 
 		do {
 			// Match?
@@ -371,8 +376,8 @@ Burger::eError BURGER_API Burger::tls_data_set_fallback(
 	if (!pRecord && pInput) {
 
 		// Allocate a new record
-		pRecord = static_cast<ThreadLocalStorageRecord_t*>(
-			allocate_memory(sizeof(ThreadLocalStorageRecord_t)));
+		pRecord = static_cast<thread_local_storage_record_t*>(
+			allocate_memory(sizeof(thread_local_storage_record_t)));
 
 		// Allocation failure?
 		if (!pRecord) {
@@ -398,20 +403,21 @@ Burger::eError BURGER_API Burger::tls_data_set_fallback(
 	\brief Get Thread Local Storage
 
 	Scan a private linked list for thread storage records and if found, return
-	the pointer to the ThreadLocalStorageRecord_t that is assigned to the
+	the pointer to the thread_local_storage_record_t that is assigned to the
 	currently running thread.
 
-	\returns The ThreadLocalStorageRecord_t pointer or \ref nullptr
+	\returns The thread_local_storage_record_t pointer or \ref nullptr
 
-	\sa tls_data_set(ThreadLocalStorage_t*)
+	\sa tls_data_set(thread_local_storage_t*)
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || \
-	defined(BURGER_XBOXONE) || defined(BURGER_PS4) || defined(BURGER_PS5) || \
-	defined(BURGER_WIIU) || defined(BURGER_SWITCH) || defined(BURGER_UNIX)) || \
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX) || \
+	defined(BURGER_XBOX360) || defined(BURGER_XBOXONE) || \
+	defined(BURGER_PS4) || defined(BURGER_PS5) || defined(BURGER_WIIU) || \
+	defined(BURGER_SWITCH) || defined(BURGER_UNIX)) || \
 	defined(DOXYGEN)
-Burger::ThreadLocalStorage_t* BURGER_API Burger::tls_data_get(
+Burger::thread_local_storage_t* BURGER_API Burger::tls_data_get(
 	void) BURGER_NOEXCEPT
 {
 	return tls_data_get_fallback();
@@ -422,11 +428,11 @@ Burger::ThreadLocalStorage_t* BURGER_API Burger::tls_data_get(
 	\brief Set a Thread Local Storage entry
 
 	Scan a private linked list for thread storage records and if found, set
-	the pointer to the ThreadLocalStorageRecord_t for the currently running
+	the pointer to the thread_local_storage_record_t for the currently running
 	thread. If no record was found, allocate a new record and add the data to
 	this new record.
 
-	\param pInput Pointer to a ThreadLocalStorage_t or \ref nullptr to delete
+	\param pInput Pointer to a thread_local_storage_t or \ref nullptr to delete
 		the record if found
 
 	\returns \ref kErrorNone or \ref kErrorOutOfMemory
@@ -436,7 +442,7 @@ Burger::ThreadLocalStorage_t* BURGER_API Burger::tls_data_get(
 ***************************************/
 
 Burger::eError BURGER_API Burger::tls_data_set(
-	ThreadLocalStorage_t* pInput) BURGER_NOEXCEPT
+	thread_local_storage_t* pInput) BURGER_NOEXCEPT
 {
 	return tls_data_set_fallback(pInput);
 }
@@ -448,20 +454,20 @@ Burger::eError BURGER_API Burger::tls_data_set(
 
 	Every thread is assigned an array of entries for data that is specific to
 	each thread. Given an index that starts with 1, retrieve data stored by a
-	previous call to tls_set(uint32_t, const void*, TLSShutdownProc).
+	previous call to tls_set(uint32_t, const void*, TLS_shutdown_proc_t).
 
 	If the index is out of bounds, or no data entry exists for this thread, a
 	\ref nullptr is returned.
 
 	\note A \ref nullptr doesn't always mean an error, it's possible that a
-		previous call to tls_set(uint32_t, const void*, TLSShutdownProc) passed
-	\ref nullptr as the data.
+		previous call to tls_set(uint32_t, const void*, TLS_shutdown_proc_t)
+		passed \ref nullptr as the data.
 
 	\param uIndex Index that starts with 1 or higher.
 
 	\returns Previously stored data pointer or \ref nullptr
 
-	\sa TLSShutdownProc, tls_set(uint32_t, const void*, TLSShutdownProc)
+	\sa TLS_shutdown_proc_t, tls_set(uint32_t, const void*, TLS_shutdown_proc_t)
 
 ***************************************/
 
@@ -475,7 +481,7 @@ void* BURGER_API Burger::tls_get(uint32_t uIndex) BURGER_NOEXCEPT
 		--uIndex;
 
 		// Get the data
-		const ThreadLocalStorage_t* pTLS = tls_data_get();
+		const thread_local_storage_t* pTLS = tls_data_get();
 
 		// Valid pointer and not out of bounds?
 		if (pTLS && (uIndex < pTLS->m_uCount)) {
@@ -506,12 +512,12 @@ void* BURGER_API Burger::tls_get(uint32_t uIndex) BURGER_NOEXCEPT
 	\returns 0 if no error or, \ref kErrorInvalidParameter or \ref
 		kErrorOutOfMemory
 
-	\sa TLSShutdownProc, tls_get(uint32_t), or tls_release()
+	\sa TLS_shutdown_proc_t, tls_get(uint32_t), or tls_release()
 
 ***************************************/
 
 Burger::eError BURGER_API Burger::tls_set(uint32_t uIndex, const void* pThis,
-	TLSShutdownProc pShutdown) BURGER_NOEXCEPT
+	TLS_shutdown_proc_t pShutdown) BURGER_NOEXCEPT
 {
 	// Assume error
 	eError uResult = kErrorInvalidParameter;
@@ -523,7 +529,7 @@ Burger::eError BURGER_API Burger::tls_set(uint32_t uIndex, const void* pThis,
 		uResult = kErrorNone;
 
 		// Get the thread storage infomation
-		ThreadLocalStorage_t* pTLS = tls_data_get();
+		thread_local_storage_t* pTLS = tls_data_get();
 
 		// Record found?
 		if (!pTLS || (uIndex >= pTLS->m_uCount)) {
@@ -536,11 +542,11 @@ Burger::eError BURGER_API Burger::tls_set(uint32_t uIndex, const void* pThis,
 			const uint32_t uNewCount = uIndex + 8U;
 
 			// Reallocate the buffer for the new entries
-			// The -1 is because ThreadLocalStorage_t has a single record
+			// The -1 is because thread_local_storage_t has a single record
 			// already
-			pTLS = static_cast<ThreadLocalStorage_t*>(reallocate_memory(pTLS,
-				sizeof(ThreadLocalStorage_t) +
-					((uNewCount - 1) * sizeof(ThreadLocalStorageEntry_t))));
+			pTLS = static_cast<thread_local_storage_t*>(reallocate_memory(pTLS,
+				sizeof(thread_local_storage_t) +
+					((uNewCount - 1) * sizeof(thread_local_storage_entry_t))));
 
 			// Mark the error condition if pTLS is nullptr
 			uResult = kErrorOutOfMemory;
@@ -550,7 +556,7 @@ Burger::eError BURGER_API Burger::tls_set(uint32_t uIndex, const void* pThis,
 				pTLS->m_uCount = uNewCount;
 
 				// Fill in the new records with nothing
-				ThreadLocalStorageEntry_t* pWork =
+				thread_local_storage_entry_t* pWork =
 					&pTLS->m_Entries[uCurrentCount];
 				uCurrentCount = uNewCount - uCurrentCount;
 				do {
@@ -566,7 +572,7 @@ Burger::eError BURGER_API Burger::tls_set(uint32_t uIndex, const void* pThis,
 
 		// Update the data in the record, if no error
 		if (!uResult) {
-			ThreadLocalStorageEntry_t* pWork2 = &pTLS->m_Entries[uIndex];
+			thread_local_storage_entry_t* pWork2 = &pTLS->m_Entries[uIndex];
 			pWork2->m_pThis = const_cast<void*>(pThis);
 			pWork2->m_pShutdown = pShutdown;
 		}
@@ -585,22 +591,22 @@ Burger::eError BURGER_API Burger::tls_set(uint32_t uIndex, const void* pThis,
 	data stored within, the shutdown function will be called to perform any
 	additional cleanup.
 
-	\sa TLSShutdownProc, tls_get(uint32_t), or tls_set(uint32_t,
-		const void*, TLSShutdownProc)
+	\sa TLS_shutdown_proc_t, tls_get(uint32_t), or tls_set(uint32_t,
+		const void*, TLS_shutdown_proc_t)
 
 ***************************************/
 
 void BURGER_API Burger::tls_release(void) BURGER_NOEXCEPT
 {
 	// Any data cached?
-	ThreadLocalStorage_t* pTLS = tls_data_get();
+	thread_local_storage_t* pTLS = tls_data_get();
 	if (pTLS) {
 
 		// Any records stored within?
 		uint32_t uCount = pTLS->m_uCount;
 		if (uCount) {
 			// Iterate over the records
-			ThreadLocalStorageEntry_t* pWork = pTLS->m_Entries;
+			thread_local_storage_entry_t* pWork = pTLS->m_Entries;
 			do {
 				// Is there a shutdown function?
 				if (pWork->m_pShutdown) {
@@ -613,7 +619,7 @@ void BURGER_API Burger::tls_release(void) BURGER_NOEXCEPT
 			} while (--uCount);
 		}
 
-		// Unlink the ThreadLocalStorage_t record from the linked list
+		// Unlink the thread_local_storage_t record from the linked list
 		tls_data_set(nullptr);
 
 		// Actually dispose of the memory
@@ -690,7 +696,8 @@ Burger::Thread::Thread() BURGER_NOEXCEPT: m_pFunction(nullptr),
 
 	Wait until the thread completes and then release resources
 
-	\sa wait(), start(FunctionPtr, void*, const char*, uintptr_t) or Thread()
+	\sa wait(), start(function_proc_t, void*, const char*, uintptr_t) or
+		Thread()
 
 ***************************************/
 
@@ -736,7 +743,7 @@ Burger::Thread::~Thread()
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::Thread::start(FunctionPtr pFunction,
+Burger::eError BURGER_API Burger::Thread::start(function_proc_t pFunction,
 	void* pData, const char* pName, uintptr_t uStackSize) BURGER_NOEXCEPT
 {
 	// Already started?
@@ -749,7 +756,7 @@ Burger::eError BURGER_API Burger::Thread::start(FunctionPtr pFunction,
 	// Set up all the thread's values
 	m_pFunction = pFunction;
 	m_pData = pData;
-	m_pName = StringDuplicate(pName);
+	m_pName = string_duplicate(pName);
 	m_uStackSize = uStackSize;
 
 	// Assume result is zero
@@ -785,10 +792,11 @@ Burger::eError BURGER_API Burger::Thread::start(FunctionPtr pFunction,
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || \
-	defined(BURGER_XBOXONE) || defined(BURGER_VITA) || defined(BURGER_PS3) || \
-	defined(BURGER_PS4) || defined(BURGER_PS5) || defined(BURGER_WIIU) || \
-	defined(BURGER_SWITCH) || defined(BURGER_UNIX)) || \
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX) || \
+	defined(BURGER_XBOX360) || defined(BURGER_XBOXONE) || \
+	defined(BURGER_VITA) || defined(BURGER_PS3) || defined(BURGER_PS4) || \
+	defined(BURGER_PS5) || defined(BURGER_WIIU) || defined(BURGER_SWITCH) || \
+	defined(BURGER_UNIX)) || \
 	defined(DOXYGEN)
 Burger::eError BURGER_API Burger::Thread::wait(void) BURGER_NOEXCEPT
 {
@@ -943,10 +951,11 @@ void BURGER_API Burger::Thread::run(void* pThis) BURGER_NOEXCEPT
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || \
-	defined(BURGER_XBOXONE) || defined(BURGER_VITA) || defined(BURGER_PS3) || \
-	defined(BURGER_PS4) || defined(BURGER_PS5) || defined(BURGER_WIIU) || \
-	defined(BURGER_SWITCH) || defined(BURGER_UNIX)) || \
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX) || \
+	defined(BURGER_XBOX360) || defined(BURGER_XBOXONE) || \
+	defined(BURGER_VITA) || defined(BURGER_PS3) || defined(BURGER_PS4) || \
+	defined(BURGER_PS5) || defined(BURGER_WIIU) || defined(BURGER_SWITCH) || \
+	defined(BURGER_UNIX)) || \
 	defined(DOXYGEN)
 Burger::eError BURGER_API Burger::Thread::platform_start(void) BURGER_NOEXCEPT
 {
@@ -970,16 +979,17 @@ Burger::eError BURGER_API Burger::Thread::platform_start(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || \
-	defined(BURGER_XBOXONE) || defined(BURGER_VITA) || defined(BURGER_PS3) || \
-	defined(BURGER_PS4) || defined(BURGER_PS5) || defined(BURGER_WIIU) || \
-	defined(BURGER_SWITCH) || defined(BURGER_UNIX)) || \
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX) || \
+	defined(BURGER_XBOX360) || defined(BURGER_XBOXONE) || \
+	defined(BURGER_VITA) || defined(BURGER_PS3) || defined(BURGER_PS4) || \
+	defined(BURGER_PS5) || defined(BURGER_WIIU) || defined(BURGER_SWITCH) || \
+	defined(BURGER_UNIX)) || \
 	defined(DOXYGEN)
 Burger::eError BURGER_API Burger::Thread::platform_after_start(
 	void) BURGER_NOEXCEPT
 {
-	// Fake ThreadID
-	m_uThreadID = reinterpret_cast<ThreadID>(this);
+	// Fake thread_ID_t
+	m_uThreadID = reinterpret_cast<thread_ID_t>(this);
 
 	// Seriously, not supported
 	return kErrorNotSupportedOnThisPlatform;
@@ -998,10 +1008,10 @@ Burger::eError BURGER_API Burger::Thread::platform_after_start(
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || \
-	defined(BURGER_XBOXONE) || defined(BURGER_PS3) || defined(BURGER_PS4) || \
-	defined(BURGER_PS5) || defined(BURGER_WIIU) || defined(BURGER_SWITCH) || \
-	defined(BURGER_UNIX)) || \
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX) || \
+	defined(BURGER_XBOX360) || defined(BURGER_XBOXONE) || \
+	defined(BURGER_PS3) || defined(BURGER_PS4) || defined(BURGER_PS5) || \
+	defined(BURGER_WIIU) || defined(BURGER_SWITCH) || defined(BURGER_UNIX)) || \
 	defined(DOXYGEN)
 Burger::eError BURGER_API Burger::Thread::platform_detach(void) BURGER_NOEXCEPT
 {

@@ -17,9 +17,11 @@
 #if defined(BURGER_MAC) || defined(DOXYGEN)
 #include <AEDataModel.h>
 #include <AEInteraction.h>
+#include <CodeFragments.h>
 #include <Gestalt.h>
 #include <Patches.h>
 #include <Processes.h>
+#include <Threads.h>
 #include <Traps.h>
 
 /*! ************************************
@@ -330,6 +332,89 @@ Burger::MacOS::ePowerMacType BURGER_API Burger::MacOS::get_power_mac_type(
 		}
 	}
 	return uResult;
+}
+
+/*! ************************************
+
+	\brief Test if the Thread Manager is present
+
+	Using Gestalt(), determine if the Thread Manager is presently installed on
+	this mac.
+
+	\maconly
+
+	\return \ref TRUE if the Thread Manager is present
+
+***************************************/
+
+uint_t BURGER_API Burger::MacOS::has_thread_manager(void) BURGER_NOEXCEPT
+{
+	// Assume failure
+	uint_t bResult = FALSE;
+
+	// First test, only for CFM, check if the pointer resolves
+	// for creating a thread
+#if defined(BURGER_CFM)
+	if (NewThread != (void*)kUnresolvedCFragSymbolAddress) {
+#endif
+
+		// Get information on the Thread Manager
+		long lGestalt;
+		if (!Gestalt(gestaltThreadMgrAttr, &lGestalt)) {
+#if defined(BURGER_PPC)
+			const long lMask = (1 << gestaltThreadMgrPresent) |
+				(1 << gestaltSpecificMatchSupport) |
+				(1 << gestaltThreadsLibraryPresent);
+#else
+			const long lMask = (1 << gestaltThreadMgrPresent) |
+				(1 << gestaltSpecificMatchSupport);
+#endif
+			if ((lGestalt & lMask) == lMask) {
+				bResult = TRUE;
+			}
+		}
+
+#if defined(BURGER_CFM)
+	}
+#endif
+	return bResult;
+}
+
+/*! ************************************
+
+	\brief Test if the Multiprocessing API is present.
+
+	This API is only available to Mac computers with the PowerPC processor,
+	since only PowerPC based macs ever had more than one CPU.
+
+	On 680x0 Macs, this function always returns \ref FALSE. On PowerPC macs, the
+	api is tested for existence and if found, it's tested to see if it's
+	initialized.
+
+	\maconly
+
+	\return \ref TRUE if the Multiprocessing API is present
+
+***************************************/
+
+uint_t BURGER_API Burger::MacOS::has_multiprocessing(void) BURGER_NOEXCEPT
+{
+	// Not available on 68x00
+#if defined(BURGER_68K)
+	return FALSE;
+#else
+
+	// Assume failure
+	uint_t bResult = FALSE;
+
+	// Check if the call is present
+	if (reinterpret_cast<uintptr_t>(_MPIsFullyInitialized) !=
+		static_cast<uintptr_t>(kMPUnresolvedCFragSymbolAddress)) {
+		// Check if it's available
+		bResult = _MPIsFullyInitialized();
+	}
+	return bResult;
+#endif
 }
 
 #endif

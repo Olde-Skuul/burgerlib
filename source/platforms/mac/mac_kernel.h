@@ -44,7 +44,8 @@ extern void BURGER_API kill_process(
 	ProcessSerialNumber* pVictim) BURGER_NOEXCEPT;
 extern void BURGER_API kill_other_processes(void) BURGER_NOEXCEPT;
 extern ePowerMacType BURGER_API get_power_mac_type(void) BURGER_NOEXCEPT;
-
+extern uint_t BURGER_API has_thread_manager(void) BURGER_NOEXCEPT;
+extern uint_t BURGER_API has_multiprocessing(void) BURGER_NOEXCEPT;
 }}
 
 /* END */

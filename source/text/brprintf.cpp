@@ -1907,7 +1907,7 @@ uintptr_t BURGER_API Burger::SafePrint::ParamInfo_t::FormatBinary(
 			}
 		} while (uBitMask);
 		// move to next byte according to endian-ness
-		uOffset += iDelta;
+		uOffset += static_cast<uintptr_t>(iDelta);
 		--uByteCount;
 	}
 	return GetOutputLength();

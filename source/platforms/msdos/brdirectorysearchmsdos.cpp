@@ -146,7 +146,7 @@ static Burger::eError BURGER_API OldWay(
 					TempName, sizeof(TempName), pDOSData->m_FileName);
 
 				// Make a copy of the string and store it
-				const char* pName = Burger::StringDuplicate(TempName);
+				const char* pName = Burger::string_duplicate(TempName);
 				if (!pName) {
 					uResult = Burger::kErrorOutOfMemory;
 					break;
@@ -263,7 +263,7 @@ static Burger::eError BURGER_API NewWay(
 					TempName, sizeof(TempName), pDOSData->m_FileName);
 
 				// Make a copy of the string and store it
-				const char* pName = Burger::StringDuplicate(TempName);
+				const char* pName = Burger::string_duplicate(TempName);
 				if (!pName) {
 					uResult = Burger::kErrorOutOfMemory;
 					break;

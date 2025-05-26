@@ -313,7 +313,8 @@ void BURGER_API Burger::Win32::ReleaseSRWLockExclusive(
 	More reading:
 	https://learn.microsoft.com/en-us/visualstudio/debugger/how-to-set-a-thread-name-in-native-code?view=vs-2022
 
-	\sa get_hintflags(), or kHintWin32DisableThreadNamingException
+	\sa Xbox360::set_thread_name(const char*, uint32_t),
+		get_hintflags(), or kHintWin32DisableThreadNamingException
 
 ***************************************/
 
@@ -340,7 +341,7 @@ void BURGER_API Burger::Win32::throw_thread_naming_exception(
 		// Do NOT throw the exception if no debugger is present
 		if (Win32::IsDebuggerPresent()) {
 
-			// Force the ThreadID to this process ID
+			// Force the thread_ID_t to this process ID
 			if (!uThreadID) {
 				uThreadID = static_cast<uint32_t>(-1);
 			}
@@ -377,7 +378,8 @@ void BURGER_API Burger::Win32::throw_thread_naming_exception(
 		the \ref eHintFlags \ref kHintWin32DisableThreadNamingException to
 		disable this function.
 
-	\sa SetThreadDescription(), throw_thread_naming_exception(), or
+	\sa SetThreadDescription(),
+		throw_thread_naming_exception(uint32_t, const char*), or
 		kHintWin32DisableThreadNamingException
 
 ***************************************/

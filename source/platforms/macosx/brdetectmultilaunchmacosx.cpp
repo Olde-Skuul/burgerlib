@@ -100,7 +100,7 @@ uint_t Burger::DetectMultiLaunch::is_multi_launched(
 			int iResult = sem_trywait(pSemaphore);
 			if (!iResult) {
 				// Got the lock! Keep it around
-				m_pName = StringDuplicate(pSignature);
+				m_pName = string_duplicate(pSignature);
 				uResult = FALSE;
 			}
 		}

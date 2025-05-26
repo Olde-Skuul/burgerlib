@@ -3091,7 +3091,7 @@ void BURGER_API Burger::string_copy(uint16_t* pOutput, uintptr_t uOutputSize,
 	The "C" string passed by pInput will be copied into a buffer allocated by
 	\ref Burger::allocate_memory(uintptr_t). The buffer is exactly the same size of the
 	string. You must eventually dispose of the string with a call to
-	Burger::StringDelete(const char *).
+	Burger::string_delete(const char *).
 
 	\param pInput Pointer to the "C" string to copy. A \ref nullptr pointer will
 		page fault.
@@ -3099,12 +3099,12 @@ void BURGER_API Burger::string_copy(uint16_t* pOutput, uintptr_t uOutputSize,
 	\return A pointer to the copy of the string. Or \ref nullptr if a memory
 		error occurs.
 
-	\sa Burger::StringDuplicate(const char *,uintptr_t) or
-		Burger::StringDelete(const char *).
+	\sa Burger::string_duplicate(const char *,uintptr_t) or
+		Burger::string_delete(const char *).
 
 ***************************************/
 
-char* BURGER_API Burger::StringDuplicate(const char* pInput) BURGER_NOEXCEPT
+char* BURGER_API Burger::string_duplicate(const char* pInput) BURGER_NOEXCEPT
 {
 	// Get the length
 	const uintptr_t uLength = string_length(pInput) + 1;
@@ -3121,7 +3121,7 @@ char* BURGER_API Burger::StringDuplicate(const char* pInput) BURGER_NOEXCEPT
 	Burger::allocate_memory(uintptr_t). The buffer is the same size of the string plus the
 	padding value. The extra memory is not initialized but the string does
 	terminate with a zero. You must eventually dispose of the string with a call
-	to Burger::StringDelete(const char *).
+	to Burger::string_delete(const char *).
 
 	\param pInput Pointer to the "C" string to copy. A null pointer will page
 		fault.
@@ -3130,12 +3130,12 @@ char* BURGER_API Burger::StringDuplicate(const char* pInput) BURGER_NOEXCEPT
 	\return A pointer to the copy of the string. Or \ref nullptr if a memory
 		error occurred.
 
-	\sa Burger::StringDuplicate(const char *) or Burger::StringDelete(
+	\sa Burger::string_duplicate(const char *) or Burger::string_delete(
 		const char *)
 
 ***************************************/
 
-char* BURGER_API Burger::StringDuplicate(
+char* BURGER_API Burger::string_duplicate(
 	const char* pInput, uintptr_t uPadding) BURGER_NOEXCEPT
 {
 	const uintptr_t uLength = string_length(pInput) + 1; // Get the length
@@ -3151,19 +3151,19 @@ char* BURGER_API Burger::StringDuplicate(
 
 	\brief Delete an allocated string.
 
-	If a string was allocated with Burger::StringDuplicate(const char *) or
-	Burger::StringDuplicate(const char *,uintptr_t) then you must dispose of it
+	If a string was allocated with Burger::string_duplicate(const char *) or
+	Burger::string_duplicate(const char *,uintptr_t) then you must dispose of it
 	with this function.
 
 	\param pInput Pointer to the "C" string to delete. A \ref nullptr pointer
 		will do nothing and is okay to pass.
 
-	\sa Burger::StringDuplicate(const char *) or Burger::StringDuplicate(const
+	\sa Burger::string_duplicate(const char *) or Burger::string_duplicate(const
 		char *,uintptr_t)
 
 ***************************************/
 
-void BURGER_API Burger::StringDelete(const char* pInput) BURGER_NOEXCEPT
+void BURGER_API Burger::string_delete(const char* pInput) BURGER_NOEXCEPT
 {
 	free_memory(pInput);
 }

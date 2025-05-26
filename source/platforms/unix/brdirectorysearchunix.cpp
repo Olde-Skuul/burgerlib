@@ -70,7 +70,7 @@ Burger::eError Burger::DirectorySearch::open(Filename* pDirName) BURGER_NOEXCEPT
 
 			Entry.m_bDir = pDirEntry->d_type == DT_DIR;
 			// Make a copy of the string and store it
-			const char* pName = StringDuplicate(pDirEntry->d_name);
+			const char* pName = string_duplicate(pDirEntry->d_name);
 			if (!pName) {
 				uResult = kErrorOutOfMemory;
 				break;

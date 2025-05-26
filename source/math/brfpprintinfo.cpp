@@ -2,7 +2,7 @@
 
 	High precision floating point print class.
 
-	Copyright (c) 2020-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 2020-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -22,10 +22,14 @@
 	\brief Digit printing class for floating point
 
 	Analyze the floating point number. Determine if it is a 'special' form
-	and where the digits start and end on each side of the decimal point.
+	and where the digits start and end on each side of the decimal point. It is
+	used to determine exactly how the final result of the string would be for
+	the floating point number in question. With this information, a floating
+	point number can be printed at any precision.
 
-	We also support optional significant digit cutoff, in order to emulate RTLs
-	that quit after a set number of digits (looking at you Microsoft)
+	It also supports optional significant digit cutoff, in order to emulate run
+	time libraries that quit after a set number of digits (looking at you
+	Microsoft)
 
 ***************************************/
 
@@ -312,10 +316,10 @@ void BURGER_API Burger::FPPrintInfo::analyze_float(
 	// Get integer digits from the integer part
 
 	while (IntegerPart.is_not_zero()) {
-		const uint32_t uTheDigit = IntegerPart.divide_return_remainder(10);
+		const uint32_t uTheDigit = IntegerPart.divide_return_remainder(10U);
 		++uIntDigitsReturned;
 
-		// Leading zero?
+		// Found the first non zero digit
 		if (uTheDigit && !bNonZeroDigitFound) {
 			bNonZeroDigitFound = TRUE;
 			m_uFirstNonZeroIntDigitPos = uIntDigitsReturned;
@@ -323,7 +327,7 @@ void BURGER_API Burger::FPPrintInfo::analyze_float(
 
 		// We track all 9's for the special case when we round all 9s up
 		// and create an extra digit
-		if (!bIntPartisNotAll9s && (uTheDigit != 9)) {
+		if (!bIntPartisNotAll9s && (uTheDigit != 9U)) {
 			bIntPartisNotAll9s = TRUE;
 		}
 	}
@@ -345,17 +349,18 @@ void BURGER_API Burger::FPPrintInfo::analyze_float(
 
 	while (FractionalPart.is_not_zero() &&
 		(uFracDigitsReturned < uPrecisionDigits)) {
-		const uint32_t uTheDigit = FractionalPart.multiply_return_overflow(10);
+		const uint32_t uTheDigit = FractionalPart.multiply_return_overflow(10U);
 		++uFracDigitsReturned;
 
+		// Found the first non zero digit.
 		if (uTheDigit && !bNonZeroDigitFound) {
 			m_uFirstNonZeroFracDigitPos = uFracDigitsReturned;
 			bNonZeroDigitFound = TRUE;
 		}
 
-		// we track all 9's for the special case when we round all 9s up
+		// Track all 9's for the special case when we round all 9s up
 		// and create an extra digit
-		if (!bFracPartIsNotAll9s && (uTheDigit != 9)) {
+		if (!bFracPartIsNotAll9s && (uTheDigit != 9U)) {
 			bFracPartIsNotAll9s = TRUE;
 		}
 	}
@@ -366,10 +371,10 @@ void BURGER_API Burger::FPPrintInfo::analyze_float(
 	// Check for rounding up the fraction.
 	if (FractionalPart.is_not_zero()) {
 		// Get next digit...
-		const uint32_t uTheDigit = FractionalPart.multiply_return_overflow(10);
+		const uint32_t uTheDigit = FractionalPart.multiply_return_overflow(10U);
 
 		// do we round up or truncate?
-		if (uTheDigit >= 5) {
+		if (uTheDigit >= 5U) {
 			// Special case: the number is all '9's up to this point!
 			if (!bFracPartIsNotAll9s && !bIntPartisNotAll9s) {
 				// Add a digit to the int part, it's '1' plus some

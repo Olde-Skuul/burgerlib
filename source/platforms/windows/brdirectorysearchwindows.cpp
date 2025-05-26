@@ -112,7 +112,7 @@ Burger::eError Burger::DirectorySearch::open(Filename* pDirName) BURGER_NOEXCEPT
 			}
 
 			// Make a copy of the string and store it
-			const char* pName = StringDuplicate(TempFilename.c_str());
+			const char* pName = string_duplicate(TempFilename.c_str());
 			if (!pName) {
 				uResult = kErrorOutOfMemory;
 				break;

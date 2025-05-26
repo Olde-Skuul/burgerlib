@@ -2,7 +2,7 @@
 
 	Class to handle mutex objects
 
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -37,10 +37,11 @@
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || \
-	defined(BURGER_XBOXONE) || defined(BURGER_PS3) || defined(BURGER_PS4) || \
-	defined(BURGER_PS5) || defined(BURGER_VITA) || defined(BURGER_WIIU) || \
-	defined(BURGER_SWITCH) || defined(BURGER_UNIX) || defined(BURGER_MAC)) || \
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX) || \
+	defined(BURGER_XBOX360) || defined(BURGER_XBOXONE) || \
+	defined(BURGER_PS3) || defined(BURGER_PS4) || defined(BURGER_PS5) || \
+	defined(BURGER_VITA) || defined(BURGER_WIIU) || defined(BURGER_SWITCH) || \
+	defined(BURGER_UNIX) || defined(BURGER_MAC)) || \
 	defined(DOXYGEN)
 Burger::Mutex::Mutex() BURGER_NOEXCEPT {}
 
@@ -122,12 +123,13 @@ void Burger::Mutex::unlock() BURGER_NOEXCEPT {}
 	\fn Burger::Mutex::get_threadID()
 	\brief Access the owner thread ID for the SRWLock
 
-	On Windows and Xbox ONE, if the Mutex is managed by an SRWLock, a ThreadID
-	of the owner thread is maintained. If it's zero, there is no owner.
+	On Windows and Xbox ONE, if the Mutex is managed by an SRWLock, a
+	thread_ID_t of the owner thread is maintained. If it's zero, there is no
+	owner.
 
 	\note Available on Xbox ONE and Windows only
 
-	\return ThreadID of the owner of this Mutex
+	\return thread_ID_t of the owner of this Mutex
 
 	\sa get_count(), or set_state(uint32_t, uint32_t)
 
@@ -279,7 +281,7 @@ Burger::MutexStatic::~MutexStatic()
 
 /*! ************************************
 
-	\fn Burger::MutexLock::MutexLock(Mutex *pMutex)
+	\fn Burger::MutexLock::MutexLock(Mutex* pMutex)
 	\brief Obtain a lock on a mutex
 
 	Locks the critical section upon construction. Will release it when the class
@@ -300,6 +302,6 @@ Burger::MutexStatic::~MutexStatic()
 
 	Unlocks the critical section upon destruction.
 
-	\sa \ref MutexLock and MutexLock(Mutex *)
+	\sa \ref MutexLock and MutexLock(Mutex*)
 
 ***************************************/

@@ -138,7 +138,7 @@ static Burger::eError BURGER_API OldWay(int fp, attrlist* pAttrlist,
 				reinterpret_cast<const FInfoAttrBuf*>(pBuffer);
 
 			// Make a copy of the string and store it
-			const char* pName = Burger::StringDuplicate(
+			const char* pName = Burger::string_duplicate(
 				reinterpret_cast<const char*>(&pDirEntry->m_Name) +
 				pDirEntry->m_Name.attr_dataoffset);
 
@@ -284,7 +284,7 @@ static Burger::eError BURGER_API NewWay(int fp, attrlist* pAttrlist,
 			}
 
 			// Copy the string
-			pName = Burger::StringDuplicate(pName);
+			pName = Burger::string_duplicate(pName);
 			if (!pName) {
 				uResult = Burger::kErrorOutOfMemory;
 				break;

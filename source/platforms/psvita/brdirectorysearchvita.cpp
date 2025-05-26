@@ -60,7 +60,7 @@ Burger::eError Burger::DirectorySearch::open(
 			DirectoryEntry_t Entry;
 
 			// Make a copy of the string and store it
-			const char* pName = StringDuplicate(DirEntry.d_name);
+			const char* pName = string_duplicate(DirEntry.d_name);
 			if (!pName) {
 				uResult = kErrorOutOfMemory;
 				break;

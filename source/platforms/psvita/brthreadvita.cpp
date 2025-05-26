@@ -1,8 +1,8 @@
 /***************************************
 
-	Class to handle critical sections, Playstation Vita version
+	Class to handle threads, Playstation Vita version
 
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -52,28 +52,28 @@
 
 ***************************************/
 
-Burger::ThreadID BURGER_API Burger::get_ThreadID(void) BURGER_NOEXCEPT
+Burger::thread_ID_t BURGER_API Burger::get_ThreadID(void) BURGER_NOEXCEPT
 {
-	return static_cast<ThreadID>(sceKernelGetThreadId());
+	return static_cast<thread_ID_t>(sceKernelGetThreadId());
 }
 
 /***************************************
 
 	\brief Get the execution priority of a thread
 
-	Get the execution priority of any thread using a \ref ThreadID.
+	Get the execution priority of any thread using a \ref thread_ID_t.
 
 	If \ref kThreadPriorityInvalid is returned, this feature is not
 	supported.
 
 	\returns An \ref eThreadPriority enumeration.
 
-	\sa \ref Thread, or set_thread_priority(ThreadID, eThreadPriority)
+	\sa \ref Thread, or set_thread_priority(thread_ID_t, eThreadPriority)
 
 ***************************************/
 
 Burger::eThreadPriority BURGER_API Burger::get_thread_priority(
-	ThreadID uThreadID) BURGER_NOEXCEPT
+	thread_ID_t uThreadID) BURGER_NOEXCEPT
 {
 	// Get the information about the thread of interest
 	SceKernelThreadInfo Info;
@@ -105,19 +105,19 @@ Burger::eThreadPriority BURGER_API Burger::get_thread_priority(
 
 	\brief Set the execution priority of a thread
 
-	Set the execution priority of any thread using a \ref ThreadID.
+	Set the execution priority of any thread using a \ref thread_ID_t.
 
 	If \ref kErrorNotSupportedOnThisPlatform is returned, this feature is not
 	supported.
 
 	\returns Zero if no error, non-zero on error.
 
-	\sa \ref Thread, or get_thread_priority(ThreadID)
+	\sa \ref Thread, or get_thread_priority(thread_ID_t)
 
 ***************************************/
 
 Burger::eError BURGER_API Burger::set_thread_priority(
-	ThreadID uThreadID, eThreadPriority uThreadPriority) BURGER_NOEXCEPT
+	thread_ID_t uThreadID, eThreadPriority uThreadPriority) BURGER_NOEXCEPT
 {
 	// Make sure LOWER is higher in value than highest
 	BURGER_STATIC_ASSERT(
@@ -261,7 +261,7 @@ Burger::eError BURGER_API Burger::Thread::platform_start(void) BURGER_NOEXCEPT
 	char ThreadName[32];
 	const char* pTName;
 	if (m_pName) {
-		string_copy(ThreadName, 32, m_pName);
+		string_copy(ThreadName, 32U, m_pName);
 		pTName = ThreadName;
 	} else {
 		pTName = "Burgerlib Thread";
@@ -275,7 +275,7 @@ Burger::eError BURGER_API Burger::Thread::platform_start(void) BURGER_NOEXCEPT
 	if (iThreadID >= SCE_OK) {
 
 		// Update the thread ID
-		m_uThreadID = static_cast<ThreadID>(iThreadID);
+		m_uThreadID = static_cast<thread_ID_t>(iThreadID);
 
 		// Create record to send to the thread
 		Thread* pData = this;

@@ -140,8 +140,8 @@
 #include "brfpinfo.h"
 #include "brfplargeint.h"
 #include "brfpprintinfo.h"
-#include "brthread.h"
 #include "brmutex.h"
+#include "brthread.h"
 #include "brsemaphore.h"
 #include "brconditionvariable.h"
 #include "brdoublelinkedlist.h"
@@ -388,6 +388,8 @@ typedef VertexBuffer VertexBufferDefault;
 #include "burgerwindows.h"
 #elif defined(BURGER_MSDOS)
 #include "burgermsdos.h"
+#elif defined(BURGER_XBOX)
+#include "burgerxbox.h"
 #elif defined(BURGER_XBOX360)
 #include "burgerxbox360.h"
 #elif defined(BURGER_VITA)

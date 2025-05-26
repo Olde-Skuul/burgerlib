@@ -2,7 +2,7 @@
 
 	XBox 360 thread helpers
 
-	Copyright (c) 2010-2024 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 2010-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying

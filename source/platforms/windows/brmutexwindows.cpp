@@ -1,8 +1,8 @@
 /***************************************
 
-	Class to handle mutex objects
+	Class to handle mutex objects, Windows version
 
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -104,7 +104,7 @@ void Burger::Mutex::lock(void) BURGER_NOEXCEPT
 
 			// Since we won the lock race, take ownership
 			m_uOwnerThreadID = uThreadID;
-			m_uCount = 1;
+			m_uCount = 1U;
 		} else {
 
 			// Just increase the reference count

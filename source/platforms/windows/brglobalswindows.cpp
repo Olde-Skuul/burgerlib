@@ -848,7 +848,7 @@ const char* BURGER_API Burger::GetEnvironmentString(
 				if (!Final.assign(Output.c_str())) {
 
 					// Return a copy
-					pValue = StringDuplicate(Final.c_str());
+					pValue = string_duplicate(Final.c_str());
 				}
 			}
 		}

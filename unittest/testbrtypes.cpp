@@ -782,6 +782,9 @@ static void BURGER_API ShowPlatformFeatures(uint_t uVerbose) BURGER_NOEXCEPT
 		uTest = Burger::MacOS::is_trap_available(0xA05C);
 		Message("Burger::MacOS::is_trap_available(0xA05C) = %u", uTest);
 
+		uTest = Burger::MacOS::has_thread_manager();
+		Message("Burger::MacOS::has_thread_manager() = %u", uTest);
+
 		uTest = Burger::MacOS::get_quicktime_version();
 		Message("Burger::MacOS::get_quicktime_version() = 0x%04X", uTest);
 
