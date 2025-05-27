@@ -243,7 +243,7 @@ void Burger::Mutex::unlock() BURGER_NOEXCEPT
 			break;
 		}
 
-		// Set to invalid in case the look exits
+		// Set to invalid in case the loop exits
 		pNextThread = kNoThreadID;
 	}
 

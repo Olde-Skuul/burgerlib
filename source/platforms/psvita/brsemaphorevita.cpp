@@ -1,10 +1,8 @@
 /***************************************
 
-	Class for semaphores
+	Class for semaphores, Playstation Vita version
 
-	Playstation Vita version
-
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -84,7 +82,7 @@ Burger::eError BURGER_API Burger::Semaphore::signal(void)
 	if (m_iSemaphore >= SCE_OK) {
 		// Release the count immediately, because it's
 		// possible that another thread, waiting for this semaphore,
-		// can execute before the call to ReleaseSemaphore()
+		// can execute before the call to sceKernelSignalSema()
 		// returns
 		sceAtomicIncrement32(reinterpret_cast<volatile int32_t*>(&m_uCount));
 		if (sceKernelSignalSema(m_iSemaphore, 1) < SCE_OK) {

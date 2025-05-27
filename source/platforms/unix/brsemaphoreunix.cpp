@@ -1,10 +1,8 @@
 /***************************************
 
-	Class for semaphores
+	Class for semaphores, Unix version
 
-	Unix version
-
-	Copyright (c) 2021-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 2021-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying

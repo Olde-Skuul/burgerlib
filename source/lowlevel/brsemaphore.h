@@ -2,7 +2,7 @@
 
 	Class for semaphores
 
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -42,7 +42,7 @@ protected:
 	/** TRUE if using Win 8 WakeAddress API */
 	uint32_t m_bUsingWakeAddress;
 
-#elif defined(BURGER_XBOX360)
+#elif defined(BURGER_XBOX) || defined(BURGER_XBOX360)
 	/** Platform specific semaphore data */
 	void* m_pSemaphore;
 
@@ -66,6 +66,16 @@ protected:
 #elif defined(BURGER_SWITCH)
 	void* m_Semaphore[28 / sizeof(void*)];
 
+#elif defined(BURGER_MAC)
+#if defined(BURGER_PPC)
+	void* m_pSemaphore;
+#else
+	uint32_t m_Owners[32];
+	uint32_t m_OwnersCount[32];
+	uint32_t m_Waiting[32];
+	uint32_t m_uWaitingCount;
+	uint32_t m_uOwnersCount;
+#endif
 #elif defined(BURGER_DARWIN)
 	/** Darwin semaphore_t */
 	uint32_t m_uSemaphore;

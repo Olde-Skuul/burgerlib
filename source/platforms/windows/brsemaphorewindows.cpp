@@ -1,10 +1,8 @@
 /***************************************
 
-	Class for semaphores
+	Class for semaphores, Windows version
 
-	Windows version
-
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -17,10 +15,10 @@
 #include "brsemaphore.h"
 
 #if defined(BURGER_WINDOWS)
+#include "brintrinsics.h"
 #include "brtick.h"
 #include "brvisualstudio.h"
 #include "brwatcom.h"
-#include "brintrinsics.h"
 #include "win_synchapi.h"
 #include "win_version.h"
 #include "win_windows.h"
@@ -123,7 +121,7 @@ Burger::eError BURGER_API Burger::Semaphore::signal(void) BURGER_NOEXCEPT
 
 		// Release the count immediately, because it's
 		// possible that another thread, waiting for this semaphore,
-		// can execute before the call to wait_for_signal()
+		// can execute before the call to WakeByAddressSingle()
 		// returns
 
 		_InterlockedIncrement(reinterpret_cast<volatile long*>(&m_uCount));
@@ -292,6 +290,8 @@ Burger::eError BURGER_API Burger::Semaphore::wait_for_signal(
 						const uint32_t uNewMark = Tick::read_ms();
 						uint32_t uElapsed = uNewMark - uMark;
 						uMark = uNewMark;
+
+						// Handle timing overflow
 						if (uElapsed >= uMilliseconds) {
 							uElapsed = uMilliseconds;
 						}

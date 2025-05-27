@@ -1,10 +1,8 @@
 /***************************************
 
-	Class for semaphores
+	Class for semaphores, Darwin version
 
-	Darwin version
-
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -24,7 +22,7 @@
 
 // Workaround. The header for task.h for 64 bit Intel CPUs is MISSING! Manually
 // inserted the prototypes
-#if defined(__x86_64__)
+#if defined(BURGER_AMD64)
 extern kern_return_t semaphore_create(
 	task_t task, semaphore_t* semaphore, int policy, int value);
 extern kern_return_t semaphore_destroy(task_t task, semaphore_t semaphore);
@@ -96,7 +94,7 @@ Burger::eError BURGER_API Burger::Semaphore::signal(void) BURGER_NOEXCEPT
 
 	// Release the count immediately, because it's
 	// possible that another thread, waiting for this semaphore,
-	// can execute before the call to ReleaseSemaphore()
+	// can execute before the call to semaphore_signal()
 	// returns
 	atomic_add(&m_uCount, 1);
 	if (semaphore_signal(m_uSemaphore) != KERN_SUCCESS) {

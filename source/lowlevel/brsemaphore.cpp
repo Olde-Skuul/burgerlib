@@ -2,7 +2,7 @@
 
 	Class for semaphores
 
-	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -34,10 +34,11 @@
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || \
-	defined(BURGER_XBOXONE) || defined(BURGER_PS3) || defined(BURGER_PS4) || \
-	defined(BURGER_PS5) || defined(BURGER_VITA) || defined(BURGER_WIIU) || \
-	defined(BURGER_SWITCH) || defined(BURGER_UNIX)) || \
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX) || \
+	defined(BURGER_XBOX360) || defined(BURGER_XBOXONE) || \
+	defined(BURGER_PS3) || defined(BURGER_PS4) || defined(BURGER_PS5) || \
+	defined(BURGER_VITA) || defined(BURGER_WIIU) || defined(BURGER_SWITCH) || \
+	defined(BURGER_UNIX) || defined(BURGER_MAC)) || \
 	defined(DOXYGEN)
 
 /*! ************************************

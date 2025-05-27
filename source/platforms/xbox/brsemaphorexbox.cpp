@@ -1,6 +1,6 @@
 /***************************************
 
-	Class for semaphores, Playstation 3 version
+	Class for semaphores, Xbox Classic version
 
 	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
@@ -14,9 +14,11 @@
 
 #include "brsemaphore.h"
 
-#if defined(BURGER_PS3)
-#include <cell/atomic.h>
-#include <sys/synchronization.h>
+#if defined(BURGER_XBOX)
+#define NOD3D
+#define NONET
+#define NODSOUND
+#include <xtl.h>
 
 /***************************************
 
@@ -34,10 +36,8 @@
 
 Burger::Semaphore::Semaphore(uint32_t uCount) BURGER_NOEXCEPT: m_uCount(uCount)
 {
-	sys_semaphore_attribute_t attr;
-	sys_semaphore_attribute_initialize(attr);
-	sys_semaphore_create(&m_uSemaphore, &attr,
-		static_cast<sys_semaphore_value_t>(uCount), 32768);
+	// Create an artificial limit of 32K deep semaphores
+	m_pSemaphore = CreateSemaphoreA(nullptr, uCount, 32768, nullptr);
 }
 
 /***************************************
@@ -56,7 +56,12 @@ Burger::Semaphore::Semaphore(uint32_t uCount) BURGER_NOEXCEPT: m_uCount(uCount)
 
 Burger::Semaphore::~Semaphore()
 {
-	sys_semaphore_destroy(m_uSemaphore);
+	HANDLE hSemaphore = m_pSemaphore;
+	if (hSemaphore) {
+		CloseHandle(hSemaphore);
+		m_pSemaphore = nullptr;
+	}
+	m_uCount = 0;
 }
 
 /***************************************
@@ -75,88 +80,70 @@ Burger::Semaphore::~Semaphore()
 Burger::eError BURGER_API Burger::Semaphore::signal(void) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorCantUnlock;
+	HANDLE hSemaphore = m_pSemaphore;
+	if (hSemaphore) {
 
-	// Release the count immediately, because it's
-	// possible that another thread, waiting for this semaphore,
-	// can execute before the call to sys_semaphore_post()
-	// returns
-	cellAtomicIncr32(const_cast<uint32_t*>(&m_uCount));
-	if (sys_semaphore_post(m_uSemaphore, 1) != CELL_OK) {
-		// Error!!! Undo the cellAtomicIncr32()
-		cellAtomicDecr32(const_cast<uint32_t*>(&m_uCount));
-	} else {
-		// A-Okay!
-		uResult = kErrorNone;
+		// Release the count immediately, because it's
+		// possible that another thread, waiting for this semaphore,
+		// can execute before the call to ReleaseSemaphore()
+		// returns
+		_InterlockedIncrement(
+			reinterpret_cast<long*>(const_cast<uint32_t*>(&m_uCount)));
+		if (ReleaseSemaphore(hSemaphore, 1, nullptr) == FALSE) {
+
+			// Error!!! Undo the _InterlockedIncrement()
+			_InterlockedDecrement(
+				reinterpret_cast<long*>(const_cast<uint32_t*>(&m_uCount)));
+		} else {
+
+			// A-Okay!
+			uResult = kErrorNone;
+		}
 	}
-
 	return uResult;
 }
 
-/*! ************************************
+/***************************************
 
-	\brief Wait for a resource with a timeout.
+	\brief Acquire a lock on a semaphore resource with a timeout
 
 	If the semaphore's resource count has not gone to zero or less, decrement
 	the count and immediately return. Otherwise, block until another thread
-	posts to the semaphore or the time in milliseconds has elapsed. If the
-	timeout is zero, do not block.
+	releases the semaphore or the time in milliseconds has elapsed. If the
+	timeout is zero, return immediately with a non-zero error code.
 
 	\param uMilliseconds Number of milliseconds to wait for the resource, 0
-		means no wait, UINT32_MAX means never time out
+		means no wait, \ref UINT32_MAX means infinite
 
-	\return Zero on success, \ref kErrorTimeout on a timeout, or other error
-		code in case of a semaphore failure
+	\return Zero on success, One on a timeout, and non Zero or One in the case
+		of a semaphore failure
 
-	\sa signal(void)
+	\sa acquire(void) or release(void)
 
 ***************************************/
 
 Burger::eError BURGER_API Burger::Semaphore::wait_for_signal(
 	uint32_t uMilliseconds) BURGER_NOEXCEPT
 {
-	eError uResult;
+	// Assume failure
+	eError uResult = kErrorCantLock;
+	HANDLE hSemaphore = m_pSemaphore;
+	if (hSemaphore) {
 
-	// Do a trywait instead?
-	if (!uMilliseconds) {
+		// Wait for a signal
+		// If dwMilliseconds is zero, then it will immediately return
+		// If dwMilliseconds is UINT32_MAX, it will wait FOREVER
+		DWORD uWait = WaitForSingleObject(hSemaphore, uMilliseconds);
+		if (uWait == WAIT_OBJECT_0) {
 
-		// Try to acquire, but don't wait
-		int iResult = sys_semaphore_trywait(m_uSemaphore);
-		if (iResult == CELL_OK) {
+			// Got the signal. Decrement the count
+			_InterlockedDecrement(
+				reinterpret_cast<long*>(const_cast<uint32_t*>(&m_uCount)));
 			uResult = kErrorNone;
-		} else if (iResult == EBUSY) {
-			uResult = kErrorTimeout;
-		} else {
-			uResult = kErrorCantLock;
-		}
-	} else {
-
-		// Perform a timeout
-		usecond_t uMilliseconds64;
-
-		// Convert milliseconds to microseconds
-		if (uMilliseconds == UINT32_MAX) {
-
-			// PS3 uses zero for infinity
-			uMilliseconds64 = 0;
-		} else {
-			uMilliseconds64 = static_cast<usecond_t>(uMilliseconds) * 1000ULL;
-		}
-
-		// Acquire a resource
-		int iResult = sys_semaphore_wait(m_uSemaphore, uMilliseconds64);
-
-		if (iResult == CELL_OK) {
-
-			// Got the lock. Decrement the count
-			cellAtomicDecr32(const_cast<uint32_t*>(&m_uCount));
-			uResult = kErrorNone;
-
-		} else if (iResult == ETIMEDOUT) {
+		} else if (uWait == WAIT_TIMEOUT) {
 
 			// Timeout gets a special error
 			uResult = kErrorTimeout;
-		} else {
-			uResult = kErrorCantLock;
 		}
 	}
 	return uResult;
