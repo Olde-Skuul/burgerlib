@@ -492,7 +492,7 @@ static uint_t TestGUID(void) BURGER_NOEXCEPT
 {
 	GUID Test;
 	uint_t uFailure = FALSE;
-	char TestStr[32];
+	char TestStr[40];
 
 	uintptr_t i = 0;
 	const GUID_Tests_t* pTests = g_GUIDTests;

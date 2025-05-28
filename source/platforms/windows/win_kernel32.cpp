@@ -391,10 +391,10 @@ void BURGER_API Burger::Win32::set_thread_name(
 	String16 TempName(pName);
 
 	// Use the new Windows API
-	Win32::SetThreadDescription(hThread, TempName.c_str());
-
-	// Throw the exception
-	throw_thread_naming_exception(uThreadId, pName);
+	if (FAILED(Win32::SetThreadDescription(hThread, TempName.c_str()))) {
+		// Throw the exception using the old API
+		throw_thread_naming_exception(uThreadId, pName);
+	}
 }
 
 #endif
