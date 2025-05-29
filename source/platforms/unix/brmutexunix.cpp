@@ -34,7 +34,7 @@ Burger::Mutex::Mutex() BURGER_NOEXCEPT
 	// Set the flavor to recursive for Unix
 	pthread_mutexattr_t attr;
 	pthread_mutexattr_init(&attr);
-	pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+	pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_NORMAL);
 	pthread_mutex_init(
 		reinterpret_cast<pthread_mutex_t*>(m_PlatformMutex), &attr);
 }

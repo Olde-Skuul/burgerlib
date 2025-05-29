@@ -1,6 +1,6 @@
 /***************************************
 
-	Class to handle mutex objects, Xbox 360 version
+	Class to handle recursive mutex objects, Unix version
 
 	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
@@ -12,12 +12,11 @@
 
 ***************************************/
 
-#include "brmutex.h"
+#include "brrecursivemutex.h"
 
-#if defined(BURGER_XBOX360)
-#define NOD3D
-#define NONET
-#include <xtl.h>
+#if defined(BURGER_UNIX)
+#include <errno.h>
+#include <pthread.h>
 
 /***************************************
 
@@ -25,18 +24,19 @@
 
 	Sets up operating system defaults to the data
 
-	Initialize the spin count to 1000 since this class is usually used for quick
-	data locks
-
 ***************************************/
 
-Burger::Mutex::Mutex() BURGER_NOEXCEPT: m_uThreadID(UINT32_MAX)
+Burger::RecursiveMutex::RecursiveMutex() BURGER_NOEXCEPT
 {
-	// Safety switch to verify the declaration matches the real thing
-	BURGER_STATIC_ASSERT(sizeof(CRITICAL_SECTION) == sizeof(m_PlatformMutex));
+	// Verify the the Burgerlib opaque version is the same size as the real one
+	BURGER_STATIC_ASSERT(sizeof(pthread_mutex_t) == sizeof(m_PlatformMutex));
 
-	RtlInitializeCriticalSectionAndSpinCount(
-		reinterpret_cast<CRITICAL_SECTION*>(m_PlatformMutex), 1000);
+	// Set the flavor to recursive for Unix
+	pthread_mutexattr_t attr;
+	pthread_mutexattr_init(&attr);
+	pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+	pthread_mutex_init(
+		reinterpret_cast<pthread_mutex_t*>(m_PlatformMutex), &attr);
 }
 
 /***************************************
@@ -48,10 +48,9 @@ Burger::Mutex::Mutex() BURGER_NOEXCEPT: m_uThreadID(UINT32_MAX)
 
 ***************************************/
 
-Burger::Mutex::~Mutex()
+Burger::RecursiveMutex::~RecursiveMutex()
 {
-	RtlDeleteCriticalSection(
-		reinterpret_cast<CRITICAL_SECTION*>(m_PlatformMutex));
+	pthread_mutex_destroy(reinterpret_cast<pthread_mutex_t*>(m_PlatformMutex));
 }
 
 /***************************************
@@ -66,14 +65,9 @@ Burger::Mutex::~Mutex()
 
 ***************************************/
 
-void Burger::Mutex::lock() BURGER_NOEXCEPT
+void BURGER_API Burger::RecursiveMutex::lock(void) BURGER_NOEXCEPT
 {
-	DWORD uThreadID = GetCurrentThreadId();
-	if (uThreadID != m_uThreadID) {
-		RtlEnterCriticalSection(
-			reinterpret_cast<CRITICAL_SECTION*>(m_PlatformMutex));
-		m_uThreadID = uThreadID;
-	}
+	pthread_mutex_lock(reinterpret_cast<pthread_mutex_t*>(m_PlatformMutex));
 }
 
 /***************************************
@@ -87,18 +81,10 @@ void Burger::Mutex::lock() BURGER_NOEXCEPT
 
 ***************************************/
 
-uint_t Burger::Mutex::try_lock() BURGER_NOEXCEPT
+uint_t BURGER_API Burger::RecursiveMutex::try_lock(void) BURGER_NOEXCEPT
 {
-	// Assume failure
-	uint_t bResult = FALSE;
-	DWORD uThreadID = GetCurrentThreadId();
-	if (uThreadID != m_uThreadID) {
-		RtlEnterCriticalSection(
-			reinterpret_cast<CRITICAL_SECTION*>(m_PlatformMutex));
-		m_uThreadID = uThreadID;
-		bResult = TRUE;
-	}
-	return bResult;
+	return pthread_mutex_trylock(
+			   reinterpret_cast<pthread_mutex_t*>(m_PlatformMutex)) != EBUSY;
 }
 
 /***************************************
@@ -117,14 +103,9 @@ uint_t Burger::Mutex::try_lock() BURGER_NOEXCEPT
 
 ***************************************/
 
-void Burger::Mutex::unlock() BURGER_NOEXCEPT
+void BURGER_API Burger::RecursiveMutex::unlock(void) BURGER_NOEXCEPT
 {
-	DWORD uThreadID = GetCurrentThreadId();
-	if (m_uThreadID == uThreadID) {
-		RtlLeaveCriticalSection(
-			reinterpret_cast<CRITICAL_SECTION*>(m_PlatformMutex));
-		m_uThreadID = UINT32_MAX;
-	}
+	pthread_mutex_unlock(reinterpret_cast<pthread_mutex_t*>(m_PlatformMutex));
 }
 
 #endif

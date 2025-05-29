@@ -12,27 +12,28 @@
 
 ***************************************/
 
-#include "brmutex.h"
+#include "brrecursivemutex.h"
 
 /*! ************************************
 
-	\class Burger::Mutex
-	\brief Class for creating a Mutex for a critical section of data
+	\class Burger::RecursiveMutex
+	\brief Class for creating a RecursiveMutex for a critical section of data
 
 	This synchronization primitive is used to protect shared data from being
 	simultaneously accessed by multiple threads.
 
 	This class enforces these rules:
-	- A calling thread owns the Mutex after a successfull call to lock() or
-		try_lock() until a call to unlock() is performed.
-	- When a thread owns a Mutex, all other threads will block or return \ref
-		FALSE for try_lock()
-	- Multiple calls by the owning thread to lock() are not allowed.
+	- A calling thread owns the RecursiveMutex after a successfull call to
+		lock() or try_lock() until a call to unlock() is performed.
+	- When a thread owns a RecursiveMutex, all other threads other than the
+		owning thread will block or return \ref FALSE for try_lock()
+	- Multiple calls by the owning thread to lock() are allowed. They must be
+		matched by an equal number of calls to unlock().
 
-	This is a functional equivalent to [std::mutex](
-	https://en.cppreference.com/w/cpp/thread/mutex/)
+	This is a functional equivalent to [std::recursive_mutex](
+	https://en.cppreference.com/w/cpp/thread/recursive_mutex.html)
 
-	\sa \ref MutexStatic and \ref MutexLock
+	\sa \ref RecursiveMutexStatic and \ref RecursiveMutexLock
 
 ***************************************/
 
@@ -44,13 +45,14 @@
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX) || \
-	defined(BURGER_XBOX360) || defined(BURGER_XBOXONE) || \
+#if !(/* defined(BURGER_WINDOWS) || defined(BURGER_XBOX) || */ \
+	defined(BURGER_XBOX360) || /* defined(BURGER_XBOXONE) || \
 	defined(BURGER_PS3) || defined(BURGER_PS4) || defined(BURGER_PS5) || \
 	defined(BURGER_VITA) || defined(BURGER_WIIU) || defined(BURGER_SWITCH) || \
-	defined(BURGER_UNIX) || defined(BURGER_MAC)) || \
+  */ \
+	defined(BURGER_UNIX) /* || defined(BURGER_MAC) */) || \
 	defined(DOXYGEN)
-Burger::Mutex::Mutex() BURGER_NOEXCEPT {}
+Burger::RecursiveMutex::RecursiveMutex() BURGER_NOEXCEPT {}
 
 /*! ************************************
 
@@ -61,7 +63,7 @@ Burger::Mutex::Mutex() BURGER_NOEXCEPT {}
 
 ***************************************/
 
-Burger::Mutex::~Mutex() {}
+Burger::RecursiveMutex::~RecursiveMutex() {}
 
 /*! ************************************
 
@@ -75,7 +77,7 @@ Burger::Mutex::~Mutex() {}
 
 ***************************************/
 
-void Burger::Mutex::lock() BURGER_NOEXCEPT {}
+void BURGER_API Burger::RecursiveMutex::lock() BURGER_NOEXCEPT {}
 
 /*! ************************************
 
@@ -88,9 +90,8 @@ void Burger::Mutex::lock() BURGER_NOEXCEPT {}
 
 ***************************************/
 
-uint_t Burger::Mutex::try_lock(void) BURGER_NOEXCEPT
+uint_t BURGER_API Burger::RecursiveMutex::try_lock(void) BURGER_NOEXCEPT
 {
-	// Always fail
 	return FALSE;
 }
 
@@ -110,11 +111,11 @@ uint_t Burger::Mutex::try_lock(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-void Burger::Mutex::unlock() BURGER_NOEXCEPT {}
+void BURGER_API Burger::RecursiveMutex::unlock() BURGER_NOEXCEPT {}
 
 /*! ************************************
 
-	\fn Burger::Mutex::get_platform_mutex()
+	\fn Burger::RecursiveMutex::get_platform_mutex()
 	\brief Access the platform mutex data
 
 	On platforms that support mutexes, a structure is needed to contain the
@@ -128,7 +129,7 @@ void Burger::Mutex::unlock() BURGER_NOEXCEPT {}
 
 /*! ************************************
 
-	\fn Burger::Mutex::get_threadID()
+	\fn Burger::RecursiveMutex::get_threadID()
 	\brief Access the owner thread ID for the SRWLock
 
 	On Windows and Xbox ONE, if the Mutex is managed by an SRWLock, a
@@ -137,7 +138,7 @@ void Burger::Mutex::unlock() BURGER_NOEXCEPT {}
 
 	\note Available on Xbox ONE and Windows only
 
-	\return thread_ID_t of the owner of this Mutex
+	\return thread_ID_t of the owner of this RecursiveMutex
 
 	\sa get_count(), or set_state(uint32_t, uint32_t)
 
@@ -145,16 +146,16 @@ void Burger::Mutex::unlock() BURGER_NOEXCEPT {}
 
 /*! ************************************
 
-	\fn Burger::Mutex::get_count()
+	\fn Burger::RecursiveMutex::get_count()
 	\brief Get the lock count for a SRWLock
 
-	On Windows and Xbox ONE, if the Mutex is managed by an SRWLock, a count is
-	maintained for the number of times a lock was obtained for recursion. Return
-	that count.
+	On Windows and Xbox ONE, if the RecursiveMutex is managed by an SRWLock, a
+	count is maintained for the number of times a lock was obtained for
+	recursion. Return that count.
 
 	\note Available on Xbox ONE and Windows only
 
-	\return Levels of recursion for this Mutex, usually zero.
+	\return Levels of recursion for this RecursiveMutex, usually zero.
 
 	\sa get_threadID(), or set_state(uint32_t, uint32_t)
 
@@ -162,7 +163,7 @@ void Burger::Mutex::unlock() BURGER_NOEXCEPT {}
 
 /*! ************************************
 
-	\fn Burger::Mutex::set_state(uint32_t, uint32_t)
+	\fn Burger::RecursiveMutex::set_state(uint32_t, uint32_t)
 	\brief Set the SRWLock state
 
 	On Windows and Xbox ONE, CondionalVariable may need to override the values
@@ -179,12 +180,12 @@ void Burger::Mutex::unlock() BURGER_NOEXCEPT {}
 
 /*! ************************************
 
-	\fn Burger::Mutex::is_using_SRWlock()
-	\brief Is the Mutex using Window 7 APIs
+	\fn Burger::RecursiveMutex::is_using_SRWlock()
+	\brief Is the RecursiveMutex using Window 7 APIs
 
-	On Windows 7 or higher, Mutex is implemented by using the lightweight
-	SRWLock API. On Windows XP and Vista, Mutex will use a CRITICAL_SECTION.
-	Test which API is being used.
+	On Windows 7 or higher, RecursiveMutex is implemented by using the
+	lightweight SRWLock API. On Windows XP and Vista, RecursiveMutex will use a
+	CRITICAL_SECTION. Test which API is being used.
 
 	\windowsonly
 
@@ -196,9 +197,9 @@ void Burger::Mutex::unlock() BURGER_NOEXCEPT {}
 
 /*! ************************************
 
-	\class Burger::MutexStatic
-	\brief Class for creating a Mutex for a statically allocated critical
-		section of data
+	\class Burger::RecursiveMutexStatic
+	\brief Class for creating a RecursiveMutex for a statically allocated
+		critical section of data
 
 	When an object is created in static memory, the order of startup and
 	shutdown is indeterminate in a cross platform way. To avoid an accidental
@@ -209,7 +210,7 @@ void Burger::Mutex::unlock() BURGER_NOEXCEPT {}
 	to ensure that unknown startup/shutdown sequences won't accidentally thread
 	lock.
 
-	\sa \ref Mutex
+	\sa \ref RecursiveMutex
 
 ***************************************/
 
@@ -219,7 +220,10 @@ void Burger::Mutex::unlock() BURGER_NOEXCEPT {}
 
 ***************************************/
 
-Burger::MutexStatic::MutexStatic() BURGER_NOEXCEPT: m_bValid(TRUE) {}
+Burger::RecursiveMutexStatic::RecursiveMutexStatic() BURGER_NOEXCEPT
+	: m_bValid(TRUE)
+{
+}
 
 /*! ************************************
 
@@ -227,7 +231,7 @@ Burger::MutexStatic::MutexStatic() BURGER_NOEXCEPT: m_bValid(TRUE) {}
 
 ***************************************/
 
-Burger::MutexStatic::~MutexStatic()
+Burger::RecursiveMutexStatic::~RecursiveMutexStatic()
 {
 	m_bValid = FALSE;
 }
@@ -236,14 +240,14 @@ Burger::MutexStatic::~MutexStatic()
 
 	\brief Locks a mutex if initialized
 
-	\sa Mutex::lock() and \ref unlock()
+	\sa RecursiveMutexStatic::lock() and \ref unlock()
 
 ***************************************/
 
-void Burger::MutexStatic::lock(void) BURGER_NOEXCEPT
+void BURGER_API Burger::RecursiveMutexStatic::lock(void) BURGER_NOEXCEPT
 {
 	if (m_bValid) {
-		Mutex::lock();
+		RecursiveMutex::lock();
 	}
 }
 
@@ -251,39 +255,40 @@ void Burger::MutexStatic::lock(void) BURGER_NOEXCEPT
 
 	\brief Tries to lock a mutex if initialized
 
-	\sa Mutex::try_lock() and \ref lock()
+	\sa RecursiveMutexStatic::try_lock() and \ref lock()
 
 ***************************************/
 
-uint_t BURGER_API Burger::MutexStatic::try_lock(void) BURGER_NOEXCEPT
+uint_t BURGER_API Burger::RecursiveMutexStatic::try_lock(void) BURGER_NOEXCEPT
 {
 	if (m_bValid) {
-		return Mutex::try_lock();
+		return RecursiveMutex::try_lock();
 	}
 	return FALSE;
 }
 
 /*! ************************************
 
+	\fn Burger::RecursiveMutexStatic::unlock(void)
 	\brief Unlocks a mutex if initialized
 
-	\sa Mutex::unlock() and \ref lock()
+	\sa RecursiveMutexStatic::unlock() and \ref lock()
 
 ***************************************/
 
-void BURGER_API Burger::MutexStatic::unlock(void) BURGER_NOEXCEPT
+void BURGER_API Burger::RecursiveMutexStatic::unlock(void) BURGER_NOEXCEPT
 {
 	if (m_bValid) {
-		Mutex::unlock();
+		RecursiveMutex::unlock();
 	}
 }
 
 /*! ************************************
 
-	\class Burger::MutexLock
+	\class Burger::RecursiveMutexLock
 	\brief Class for locking and releasing a mutex in a function
 
-	To ease the obtaining and releasing a lock on a Burger::Mutex, this
+	To ease the obtaining and releasing a lock on a Burger::RecursiveMutex, this
 	class is passed a pointer to a mutex and obtains a lock immediately. When
 	the function that has this class locally stored exits, the lock is released.
 
@@ -292,23 +297,23 @@ void BURGER_API Burger::MutexStatic::unlock(void) BURGER_NOEXCEPT
 
 	\code
 	// Statically created mutex
-	static Burger::MutexStatic g_Lock;
+	static Burger::RecursiveMutexStatic g_Lock;
 	void foo(void)
 	{
 		// Obtain a lock on mutex
-		Burger::MutexLock(&g_Lock);
+		Burger::RecursiveMutexLock(&g_Lock);
 		printf("Do stuff");
 		// Lock is released on function exit
 	}
 	\endcode
 
-	\sa \ref MutexStatic and \ref Mutex
+	\sa \ref RecursiveMutexStatic and \ref RecursiveMutex
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::MutexLock::MutexLock(Mutex* pMutex)
+	\fn Burger::RecursiveMutexLock::RecursiveMutexLock(RecursiveMutex* pMutex)
 	\brief Obtain a lock on a mutex
 
 	Locks the critical section upon construction. Will release it when the class
@@ -318,17 +323,17 @@ void BURGER_API Burger::MutexStatic::unlock(void) BURGER_NOEXCEPT
 
 	\param pMutex Pointer to a valid Mutex
 
-	\sa \ref Mutex, \ref MutexLock and ~MutexLock()
+	\sa \ref RecursiveMutex, \ref RecursiveMutexLock and ~RecursiveMutexLock()
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::MutexLock::~MutexLock()
+	\fn Burger::RecursiveMutexLock::~RecursiveMutexLock()
 	\brief Release a locked mutex
 
 	Unlocks the critical section upon destruction.
 
-	\sa \ref MutexLock and MutexLock(Mutex*)
+	\sa \ref RecursiveMutexLock and RecursiveMutexLock(Mutex*)
 
 ***************************************/

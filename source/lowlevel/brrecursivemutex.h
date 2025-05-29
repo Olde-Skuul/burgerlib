@@ -1,6 +1,6 @@
 /***************************************
 
-	Class to handle mutex objects
+	Class to handle recursive mutex objects
 
 	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
@@ -12,8 +12,8 @@
 
 ***************************************/
 
-#ifndef __BRMUTEX_H__
-#define __BRMUTEX_H__
+#ifndef __BRRECURSIVEMUTEX_H__
+#define __BRRECURSIVEMUTEX_H__
 
 #ifndef __BRTYPES_H__
 #include "brtypes.h"
@@ -25,14 +25,13 @@
 
 /* BEGIN */
 namespace Burger {
-class Mutex {
-	BURGER_DISABLE_COPY(Mutex);
+class RecursiveMutex {
+	BURGER_DISABLE_COPY(RecursiveMutex);
 
 protected:
 #if defined(BURGER_XBOX) || defined(BURGER_XBOX360) || defined(DOXYGEN)
 	/** Platform specific CRITICAL_SECTION or mutex object */
 	uint32_t m_PlatformMutex[7];
-	uint32_t m_uThreadID;
 
 #elif defined(BURGER_XBOXONE)
 	/** SRWLOCK for Mutex */
@@ -106,8 +105,8 @@ protected:
 #endif
 
 public:
-	Mutex() BURGER_NOEXCEPT;
-	~Mutex();
+	RecursiveMutex() BURGER_NOEXCEPT;
+	~RecursiveMutex();
 	void BURGER_API lock(void) BURGER_NOEXCEPT;
 	uint_t BURGER_API try_lock(void) BURGER_NOEXCEPT;
 	void BURGER_API unlock(void) BURGER_NOEXCEPT;
@@ -142,34 +141,34 @@ public:
 #endif
 };
 
-class MutexStatic: public Mutex {
-	BURGER_DISABLE_COPY(MutexStatic);
+class RecursiveMutexStatic: public RecursiveMutex {
+	BURGER_DISABLE_COPY(RecursiveMutexStatic);
 
 protected:
 	/** Set to \ref TRUE when constructed */
 	uint_t m_bValid;
 
 public:
-	MutexStatic() BURGER_NOEXCEPT;
-	~MutexStatic();
+	RecursiveMutexStatic() BURGER_NOEXCEPT;
+	~RecursiveMutexStatic();
 	void BURGER_API lock(void) BURGER_NOEXCEPT;
 	uint_t BURGER_API try_lock(void) BURGER_NOEXCEPT;
 	void BURGER_API unlock(void) BURGER_NOEXCEPT;
 };
 
-class MutexLock {
-	BURGER_DISABLE_COPY(MutexLock);
+class RecursiveMutexLock {
+	BURGER_DISABLE_COPY(RecursiveMutexLock);
 
 	/** Pointer to the lock held */
-	Mutex* m_pMutex;
+	RecursiveMutex* m_pMutex;
 
 public:
-	MutexLock(Mutex* pMutex) BURGER_NOEXCEPT: m_pMutex(pMutex)
+	RecursiveMutexLock(RecursiveMutex* pMutex) BURGER_NOEXCEPT: m_pMutex(pMutex)
 	{
 		m_pMutex->lock();
 	}
 
-	~MutexLock()
+	~RecursiveMutexLock()
 	{
 		m_pMutex->unlock();
 	}

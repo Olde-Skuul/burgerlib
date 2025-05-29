@@ -117,7 +117,7 @@ Burger::GameApp::GameApp(uintptr_t uDefaultMemorySize,
 	// Also disable OLE 1.0, since any code from XP on shouldn't use that
 
 	if (CoInitializeEx(
-			NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE) == S_OK) {
+			nullptr, COINIT_MULTITHREADED | COINIT_DISABLE_OLE1DDE) == S_OK) {
 		m_bCoCreateInstanceInit = TRUE;
 	}
 

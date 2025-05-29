@@ -13,15 +13,27 @@
 ***************************************/
 
 #include "testbrtimedate.h"
+#include "bratomic.h"
 #include "brcapturestdout.h"
 #include "brfloatingpoint.h"
+#include "brmutex.h"
 #include "brnumberstringhex.h"
+#include "brrecursivemutex.h"
 #include "brstdouthelpers.h"
 #include "brstructs.h"
 #include "brthread.h"
 #include "brtick.h"
 #include "brtimedate.h"
 #include "common.h"
+
+// Pointer not tested for nullness
+BURGER_MSVC_PUSH_DISABLE_WARNING(26429)
+// Don't use static_cast
+BURGER_MSVC_PUSH_DISABLE_WARNING(26472)
+// Don't use pointer arithmetic
+BURGER_MSVC_PUSH_DISABLE_WARNING(26481)
+// No array to pointer decay
+BURGER_MSVC_PUSH_DISABLE_WARNING(26485)
 
 /***************************************
 
@@ -319,7 +331,7 @@ static uint_t BURGER_API TestPrintHexDouble(void) BURGER_NOEXCEPT
 		const uint_t uTest =
 			Burger::string_compare(CapturedString.c_str(), pWork->m_pData) != 0;
 		if (uTest) {
-			Burger::NumberStringHex Input(pWork->m_uData);
+			const Burger::NumberStringHex Input(pWork->m_uData);
 			ReportFailure(
 				"Burger::PrintHex(static_cast<double>(0x%s)) = %s, expected %s",
 				uTest, Input.c_str(), CapturedString.c_str(), pWork->m_pData);
@@ -432,10 +444,295 @@ static void BURGER_API TestTick(uint_t uVerbose) BURGER_NOEXCEPT
 }
 
 // Used for thread manager testing
-static uintptr_t BURGER_API Code(void* pInput) BURGER_NOEXCEPT
+
+/***************************************
+
+	Add 1 to the pointer and return the value + 1000
+
+***************************************/
+
+static uintptr_t BURGER_API Add1000(void* pInput) BURGER_NOEXCEPT
 {
-	++static_cast<uint32_t*>(pInput)[0];
-	return static_cast<uint32_t*>(pInput)[0] + 10000;
+	volatile uint32_t* pThis = static_cast<volatile uint32_t*>(pInput);
+	Burger::atomic_add(pThis, 1);
+	return pThis[0] + static_cast<uintptr_t>(1000U);
+}
+
+/***************************************
+
+	Try to lock a locked mutex, wait for release, and then set value
+
+***************************************/
+
+struct MutexTest_t {
+	Burger::Mutex* m_pMutex1;
+	Burger::Mutex* m_pMutex2;
+	volatile uint32_t m_uValue;
+	volatile uint32_t m_uTest;
+};
+
+static uintptr_t BURGER_API MutexThread(void* pInput) BURGER_NOEXCEPT
+{
+	MutexTest_t* pMutex = static_cast<MutexTest_t*>(pInput);
+
+	// Lock the calling thread
+	pMutex->m_pMutex2->lock();
+
+	// Alert that the thread ran to the mutex
+	Burger::atomic_set(&pMutex->m_uTest, 1234);
+
+	// This should freeze this thread until the main thread releases
+	pMutex->m_pMutex1->lock();
+
+	// Alert that the this thread got the lock
+	Burger::atomic_set(&pMutex->m_uValue, 1234);
+	pMutex->m_pMutex1->unlock();
+
+	// Allow the main thread to continue
+	pMutex->m_pMutex2->unlock();
+	return 0;
+}
+
+/***************************************
+
+	Test the Mutex
+
+***************************************/
+
+static uint_t BURGER_API TestMutex(void) BURGER_NOEXCEPT
+{
+	uint_t uFailure = FALSE;
+
+	// Thread for testing
+	Burger::Thread Bar;
+
+	// Mutex to test
+	Burger::Mutex Foo;
+	Burger::Mutex Foo2;
+
+	// Test for double locking
+	Foo.lock();
+	uint_t uResult = Foo.try_lock();
+
+	// If it locked, unlock the double lock to prevent a hang
+	if (uResult) {
+		Foo.unlock();
+	}
+	Foo.unlock();
+
+	// Did it lock a second time?
+	uint_t uTest = uResult != FALSE;
+	uFailure |= uTest;
+	ReportFailure("Mutex allowed a double lock", uTest);
+
+	// Try lock test
+	uResult = Foo.try_lock();
+	Foo.unlock();
+	uTest = uResult != TRUE;
+	uFailure |= uTest;
+	ReportFailure("Mutex try_lock couldn't lock a Mutex", uTest);
+
+	// Spawn a thread and test if it locks
+	MutexTest_t MutexData;
+	MutexData.m_pMutex1 = &Foo;
+	MutexData.m_pMutex2 = &Foo2;
+	MutexData.m_uValue = 666U;
+	MutexData.m_uTest = 555U;
+
+	// Lock to halt the child thread
+	Foo.lock();
+
+	// Run the child thread
+	Bar.start(MutexThread, &MutexData, "MutexTest");
+
+	// Wait for the thread to hit the lock
+	// There's a timeout in case of error
+	const uint32_t uTick = Burger::Tick::read_ms();
+	uTest = FALSE;
+	while (Burger::atomic_get(&MutexData.m_uTest) == 555U) {
+		Burger::sleep_ms(0);
+		if ((Burger::Tick::read_ms() - uTick) > 20U) {
+			uTest = TRUE;
+			break;
+		}
+	}
+	uFailure |= uTest;
+	ReportFailure("Timeout on Mutex test 555", uTest);
+
+	uTest = MutexData.m_uValue != 666;
+	uFailure |= uTest;
+	ReportFailure("Mutex didn't halt child thread", uTest);
+
+	// Release execution of the child thread
+	Foo.unlock();
+
+	// Block until it's updated
+	Foo2.lock();
+	uTest = MutexData.m_uValue != 1234;
+	uFailure |= uTest;
+	ReportFailure("Mutex didn't release child thread", uTest);
+	Foo2.unlock();
+
+	return uFailure;
+}
+
+/***************************************
+
+	Try to lock a locked mutex, wait for release, and then set value
+
+***************************************/
+
+struct RecursiveMutexTest_t {
+	Burger::RecursiveMutex* m_pMutex1;
+	Burger::RecursiveMutex* m_pMutex2;
+	volatile uint32_t m_uValue;
+	volatile uint32_t m_uTest;
+};
+
+static uintptr_t BURGER_API RecursiveMutexThread(void* pInput) BURGER_NOEXCEPT
+{
+	RecursiveMutexTest_t* pMutex = static_cast<RecursiveMutexTest_t*>(pInput);
+
+	// Lock the calling thread
+	pMutex->m_pMutex2->lock();
+
+	// Alert that the thread ran to the mutex
+	Burger::atomic_set(&pMutex->m_uTest, 1234);
+
+	// This should freeze this thread until the main thread releases
+	pMutex->m_pMutex1->lock();
+
+	// Alert that the this thread got the lock
+	Burger::atomic_set(&pMutex->m_uValue, 1234);
+	pMutex->m_pMutex1->unlock();
+
+	// Allow the main thread to continue
+	pMutex->m_pMutex2->unlock();
+	return 0;
+}
+
+/***************************************
+
+	Test the RecursiveMutex
+
+***************************************/
+
+static uint_t BURGER_API TestRecursiveMutex(void) BURGER_NOEXCEPT
+{
+	uint_t uFailure = FALSE;
+
+	// Thread for testing
+	Burger::Thread Bar;
+
+	// Mutex to test
+	Burger::RecursiveMutex Foo;
+	Burger::RecursiveMutex Foo2;
+
+	// Test for double locking
+	Foo.lock();
+	uint_t uResult = Foo.try_lock();
+
+	// If it locked, unlock the double lock to prevent a hang
+	if (uResult) {
+		Foo.unlock();
+	}
+	Foo.unlock();
+
+	// Did it lock a second time?
+	uint_t uTest = uResult != TRUE;
+	uFailure |= uTest;
+	ReportFailure("RecursiveMutex didn't allow a double lock", uTest);
+
+	// Try lock test
+	uResult = Foo.try_lock();
+	Foo.unlock();
+	uTest = uResult != TRUE;
+	uFailure |= uTest;
+	ReportFailure("RecursiveMutex try_lock couldn't lock a Mutex", uTest);
+
+	// Spawn a thread and test if it locks
+	RecursiveMutexTest_t MutexData;
+	MutexData.m_pMutex1 = &Foo;
+	MutexData.m_pMutex2 = &Foo2;
+	MutexData.m_uValue = 666U;
+	MutexData.m_uTest = 555U;
+
+	// Lock to halt the child thread
+	Foo.lock();
+	// Use a triple lock
+	Foo.lock();
+	Foo.lock();
+
+	// Run the child thread
+	Bar.start(RecursiveMutexThread, &MutexData, "RecursiveMutexTest");
+
+	// Wait for the thread to hit the lock
+	// There's a timeout in case of error
+	const uint32_t uTick = Burger::Tick::read_ms();
+	uTest = FALSE;
+	while (Burger::atomic_get(&MutexData.m_uTest) == 555U) {
+		Burger::sleep_ms(0);
+		if ((Burger::Tick::read_ms() - uTick) > 20U) {
+			uTest = TRUE;
+			break;
+		}
+	}
+	uFailure |= uTest;
+	ReportFailure("Timeout on RecursiveMutex test 555", uTest);
+
+	uTest = MutexData.m_uValue != 666;
+	uFailure |= uTest;
+	ReportFailure("RecursiveMutex didn't halt child thread", uTest);
+
+	// First of three unlocks
+	Foo.unlock();
+	// Check if the thread is STILL blocked
+	uTest = MutexData.m_uValue != 666;
+	uFailure |= uTest;
+	ReportFailure("RecursiveMutex unlocked on a single unlock", uTest);
+
+	// second of three unlocks
+	Foo.unlock();
+	// Check if the thread is STILL blocked
+	uTest = MutexData.m_uValue != 666;
+	uFailure |= uTest;
+	ReportFailure("RecursiveMutex unlocked on a second unlock", uTest);
+
+	// Actually release the lock
+	Foo.unlock();
+
+	// Block until it's updated
+	Foo2.lock();
+	uTest = MutexData.m_uValue != 1234;
+	uFailure |= uTest;
+	ReportFailure("RecursiveMutex didn't release child thread", uTest);
+	Foo2.unlock();
+
+	return uFailure;
+}
+
+/***************************************
+
+	Test the Semaphore
+
+***************************************/
+
+static uint_t BURGER_API TestSemaphore(void) BURGER_NOEXCEPT
+{
+	uint_t uFailure = FALSE;
+	return uFailure;
+}
+
+/***************************************
+
+	Test the Conditional Variable
+
+***************************************/
+
+static uint_t BURGER_API TestConditionalVariable(void) BURGER_NOEXCEPT
+{
+	uint_t uFailure = FALSE;
+	return uFailure;
 }
 
 /***************************************
@@ -454,37 +751,48 @@ static uint_t BURGER_API TestThread(uint_t uVerbose) BURGER_NOEXCEPT
 
 	uint32_t uValue = 666;
 	Burger::Thread bar;
-	Burger::eError uResult = bar.start(Code, &uValue, "Thread1");
+
+	// Check if threading is available on this platform
+	const Burger::eError uResult = bar.start(Add1000, &uValue, "Thread1");
 	if (uResult == Burger::kErrorNotSupportedOnThisPlatform) {
 		Message("Threading not available on this platform");
 	} else {
+		// Wait for the thread to terminate
 		bar.wait();
 
+		// Did it execute?
 		uint_t uTest = uValue != 667;
 		uFailure |= uTest;
-		ReportFailure("Thread(666) returned %u, expected 667", uTest, uValue);
+		ReportFailure("Add1000(666) returned %u, expected 667", uTest, uValue);
 
 		uintptr_t uThreadResult = bar.get_result();
-		uTest = uThreadResult != 10667;
+		uTest = uThreadResult != 1667;
 		uFailure |= uTest;
-		ReportFailure("Thread(666).get_result() returned %u, expected 10667",
+		ReportFailure("Add1000(666).get_result() returned %u, expected 1667",
 			uTest, static_cast<uint32_t>(uThreadResult));
 
-		uValue = 9999;
+		// Perform another thread test
+		uValue = 9999U;
 		Burger::Thread bar2;
-		bar2.start(Code, &uValue, "Thread2");
+		bar2.start(Add1000, &uValue, "Thread2");
 		bar2.wait();
 
-		uTest = uValue != 10000;
+		uTest = uValue != 10000U;
 		uFailure |= uTest;
 		ReportFailure(
 			"Thread(9999) returned %u, expected 10000", uTest, uValue);
 
 		uThreadResult = bar2.get_result();
-		uTest = uThreadResult != 20000;
+		uTest = uThreadResult != 11000;
 		uFailure |= uTest;
-		ReportFailure("Thread(9999).get_result() returned %u, expected 20000",
+		ReportFailure("Thread(9999).get_result() returned %u, expected 11000",
 			uTest, static_cast<uint32_t>(uThreadResult));
+
+		// Test the thread primitives
+		uFailure |= TestMutex();
+		uFailure |= TestRecursiveMutex();
+		uFailure |= TestSemaphore();
+		uFailure |= TestConditionalVariable();
 	}
 	return uFailure;
 }
