@@ -163,7 +163,9 @@ Burger::eError BURGER_API Burger::set_thread_priority(
 static void Dispatcher(uint64_t pThis) BURGER_NOEXCEPT
 {
 	Burger::Thread::run(reinterpret_cast<void*>(static_cast<uint32_t>(pThis)));
-	sys_ppu_thread_exit(0);
+	sys_ppu_thread_exit(
+		reinterpret_cast<Burger::Thread*>(static_cast<uint32_t>(pThis))
+			->get_result());
 }
 
 /*! ************************************
@@ -227,7 +229,8 @@ Burger::eError BURGER_API Burger::Thread::platform_start(void) BURGER_NOEXCEPT
 
 	// Thread created?
 	if (iResult >= CELL_OK) {
-
+		// Ensure that the thread gets some CPU time
+		sys_ppu_thread_yield();
 		// All good!
 		return kErrorNone;
 	}

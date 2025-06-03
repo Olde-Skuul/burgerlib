@@ -34,7 +34,6 @@ Burger::Mutex::Mutex() BURGER_NOEXCEPT
 
 	sys_lwmutex_attribute_t lwattr;
 	sys_lwmutex_attribute_initialize(lwattr);
-	lwattr.attr_recursive = SYS_SYNC_RECURSIVE;
 	sys_lwmutex_create(
 		reinterpret_cast<sys_lwmutex_t*>(m_PlatformMutex), &lwattr);
 }

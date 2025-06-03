@@ -30,8 +30,7 @@
 
 ***************************************/
 
-Burger::Mutex::Mutex() BURGER_NOEXCEPT: m_uOwnerThreadID(0),
-										m_uCount(0),
+Burger::Mutex::Mutex() BURGER_NOEXCEPT: m_uOwnerThreadID(UINT32_MAX),
 										m_bUseSRWLock(FALSE)
 {
 	// Sanity check to verify the declaration matches the real thing
@@ -39,13 +38,13 @@ Burger::Mutex::Mutex() BURGER_NOEXCEPT: m_uOwnerThreadID(0),
 
 	// Only test if the SDK has this declared
 #if defined(_WIN32_WINNT_VISTA)
-	BURGER_STATIC_ASSERT(sizeof(SRWLOCK) <= sizeof(m_PlatformMutex));
+	BURGER_STATIC_ASSERT(sizeof(_RTL_SRWLOCK) <= sizeof(m_PlatformMutex));
 #endif
 
-	// If running on Windows 7 or higher, use SRWLOCK
+	// If running on Windows 7 or higher, use _RTL_SRWLOCK
 	if (Win32::is_7_or_higher()) {
 
-		// Init the SRWLOCK
+		// Init the _RTL_SRWLOCK
 		m_bUseSRWLock = TRUE;
 		Win32::InitializeSRWLock(
 			reinterpret_cast<_RTL_SRWLOCK*>(m_PlatformMutex));
@@ -68,7 +67,7 @@ Burger::Mutex::Mutex() BURGER_NOEXCEPT: m_uOwnerThreadID(0),
 
 Burger::Mutex::~Mutex()
 {
-	// Fun fact, a SRWLOCK doesn't need to be disposed of
+	// Fun fact, a _RTL_SRWLOCK doesn't need to be disposed of
 	if (!m_bUseSRWLock) {
 		::DeleteCriticalSection(
 			reinterpret_cast<CRITICAL_SECTION*>(m_PlatformMutex));
@@ -87,29 +86,25 @@ Burger::Mutex::~Mutex()
 
 ***************************************/
 
-void Burger::Mutex::lock(void) BURGER_NOEXCEPT
+void BURGER_API Burger::Mutex::lock(void) BURGER_NOEXCEPT
 {
-	if (!m_bUseSRWLock) {
-		::EnterCriticalSection(
-			reinterpret_cast<CRITICAL_SECTION*>(m_PlatformMutex));
+	// Is already owned by this thread?
+	DWORD uThreadID = GetCurrentThreadId();
+	if (m_uOwnerThreadID == uThreadID) {
+		do_assert("Double locking a Mutex will freeze this thread!", __FILE__,
+			__LINE__);
 	} else {
-
-		// Is already owned by this thread?
-		DWORD uThreadID = GetCurrentThreadId();
-		if (m_uOwnerThreadID != uThreadID) {
-
+		if (!m_bUseSRWLock) {
+			::EnterCriticalSection(
+				reinterpret_cast<CRITICAL_SECTION*>(m_PlatformMutex));
+		} else {
 			// No, try to take it
 			Win32::AcquireSRWLockExclusive(
 				reinterpret_cast<_RTL_SRWLOCK*>(m_PlatformMutex));
-
-			// Since we won the lock race, take ownership
-			m_uOwnerThreadID = uThreadID;
-			m_uCount = 1U;
-		} else {
-
-			// Just increase the reference count
-			++m_uCount;
 		}
+
+		// Since we won the lock race, take ownership
+		m_uOwnerThreadID = uThreadID;
 	}
 }
 
@@ -124,38 +119,30 @@ void Burger::Mutex::lock(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-uint_t Burger::Mutex::try_lock(void) BURGER_NOEXCEPT
+uint_t BURGER_API Burger::Mutex::try_lock(void) BURGER_NOEXCEPT
 {
-	if (!m_bUseSRWLock) {
-		return static_cast<uint_t>(::TryEnterCriticalSection(
-			reinterpret_cast<CRITICAL_SECTION*>(m_PlatformMutex)));
-	}
-
-	// Assume success
-	uint_t uResult = TRUE;
+	// Assume failure
+	uint_t bResult = FALSE;
 
 	// Is already owned by this thread?
 	DWORD uThreadID = GetCurrentThreadId();
 	if (m_uOwnerThreadID != uThreadID) {
 
 		// No, try to take it
-		if (Win32::TryAcquireSRWLockExclusive(
-				reinterpret_cast<_RTL_SRWLOCK*>(m_PlatformMutex))) {
+		if (!m_bUseSRWLock) {
+			bResult = static_cast<uint_t>(::TryEnterCriticalSection(
+				reinterpret_cast<CRITICAL_SECTION*>(m_PlatformMutex)));
+		} else {
+			bResult = Win32::TryAcquireSRWLockExclusive(
+				reinterpret_cast<_RTL_SRWLOCK*>(m_PlatformMutex));
+		}
+		if (bResult) {
 
 			// Since we won the lock race, take ownership
 			m_uOwnerThreadID = uThreadID;
-			m_uCount = 1;
-
-		} else {
-			// Not this time
-			uResult = FALSE;
 		}
-	} else {
-
-		// Just increase the reference count
-		++m_uCount;
 	}
-	return uResult;
+	return bResult;
 }
 
 /***************************************
@@ -174,28 +161,24 @@ uint_t Burger::Mutex::try_lock(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-void Burger::Mutex::unlock(void) BURGER_NOEXCEPT
+void BURGER_API Burger::Mutex::unlock(void) BURGER_NOEXCEPT
 {
-	if (!m_bUseSRWLock) {
-		::LeaveCriticalSection(
-			reinterpret_cast<CRITICAL_SECTION*>(m_PlatformMutex));
+	// Are we screwed?
+	DWORD uThreadID = GetCurrentThreadId();
+	if (m_uOwnerThreadID != uThreadID) {
+		do_assert("Unlocking a Mutex that's not owned by this thread!",
+			__FILE__, __LINE__);
 	} else {
 
-		// Are we screwed?
-		if (m_uOwnerThreadID != GetCurrentThreadId()) {
-			do_assert("Unlocking a Mutex that's not owned by this thread!",
-				__FILE__, __LINE__);
+		// Release the mutex, note, execute on another thread/process will
+		// occur during the call, so release the owner now
+		m_uOwnerThreadID = UINT32_MAX;
+		if (!m_bUseSRWLock) {
+			::LeaveCriticalSection(
+				reinterpret_cast<CRITICAL_SECTION*>(m_PlatformMutex));
 		} else {
-
-			// Release a reference
-			if (!--m_uCount) {
-
-				// Release the mutex, note, execute on another thread/process
-				// will occur during the call, so release the owner now
-				m_uOwnerThreadID = 0;
-				Win32::ReleaseSRWLockExclusive(
-					reinterpret_cast<_RTL_SRWLOCK*>(m_PlatformMutex));
-			}
+			Win32::ReleaseSRWLockExclusive(
+				reinterpret_cast<_RTL_SRWLOCK*>(m_PlatformMutex));
 		}
 	}
 }

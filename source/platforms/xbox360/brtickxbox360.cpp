@@ -45,10 +45,14 @@
 void BURGER_API Burger::sleep_ms(
 	uint32_t uMilliseconds, uint_t bAlertable) BURGER_NOEXCEPT
 {
-	// Sleep until the time expires or something
-	// occurs that could cause the main thread to take notice
-	// like a I/O service routine
-	::SleepEx(uMilliseconds, bAlertable);
+	if (uMilliseconds) {
+		// Sleep until the time expires or something
+		// occurs that could cause the main thread to take notice
+		// like a I/O service routine
+		::SleepEx(uMilliseconds, bAlertable);
+	} else {
+		SwitchToThread();
+	}
 }
 
 /***************************************

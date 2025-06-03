@@ -19,8 +19,6 @@
 #define NONET
 #include <xtl.h>
 
-#include <allocators>
-
 /***************************************
 
 	\brief Initialize the data in the class.
@@ -68,7 +66,7 @@ Burger::RecursiveMutex::~RecursiveMutex()
 
 ***************************************/
 
-void Burger::RecursiveMutex::lock() BURGER_NOEXCEPT
+void BURGER_API Burger::RecursiveMutex::lock() BURGER_NOEXCEPT
 {
 	RtlEnterCriticalSection(
 		reinterpret_cast<CRITICAL_SECTION*>(m_PlatformMutex));
@@ -85,7 +83,7 @@ void Burger::RecursiveMutex::lock() BURGER_NOEXCEPT
 
 ***************************************/
 
-uint_t Burger::RecursiveMutex::try_lock() BURGER_NOEXCEPT
+uint_t BURGER_API Burger::RecursiveMutex::try_lock() BURGER_NOEXCEPT
 {
 	return RtlTryEnterCriticalSection(
 		reinterpret_cast<CRITICAL_SECTION*>(m_PlatformMutex));
@@ -107,7 +105,7 @@ uint_t Burger::RecursiveMutex::try_lock() BURGER_NOEXCEPT
 
 ***************************************/
 
-void Burger::RecursiveMutex::unlock() BURGER_NOEXCEPT
+void BURGER_API Burger::RecursiveMutex::unlock() BURGER_NOEXCEPT
 {
 	RtlLeaveCriticalSection(
 		reinterpret_cast<CRITICAL_SECTION*>(m_PlatformMutex));

@@ -1,6 +1,6 @@
 /***************************************
 
-	Class to handle mutex objects, Xbox Classic version
+	Class to handle recursive mutex objects, Playstation 3 version
 
 	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
@@ -12,15 +12,12 @@
 
 ***************************************/
 
-#include "brmutex.h"
+#include "brrecursivemutex.h"
 
-#if defined(BURGER_XBOX)
-#include "brassert.h"
+#if defined(BURGER_PS3)
+#include "brmemoryfunctions.h"
 
-#define NOD3D
-#define NONET
-#define NODSOUND
-#include <xtl.h>
+#include <sys/synchronization.h>
 
 /***************************************
 
@@ -30,13 +27,16 @@
 
 ***************************************/
 
-Burger::Mutex::Mutex() BURGER_NOEXCEPT: m_uOwnerThreadID(UINT32_MAX)
+Burger::RecursiveMutex::RecursiveMutex() BURGER_NOEXCEPT
 {
-	// Safety switch to verify the declaration matches the real thing
-	BURGER_STATIC_ASSERT(sizeof(CRITICAL_SECTION) == sizeof(m_PlatformMutex));
+	// Create a recursive lock to mimic the PC CRITICAL_SECTION
+	BURGER_STATIC_ASSERT(sizeof(sys_lwmutex_t) == sizeof(m_PlatformMutex));
 
-	RtlInitializeCriticalSection(
-		reinterpret_cast<CRITICAL_SECTION*>(m_PlatformMutex));
+	sys_lwmutex_attribute_t lwattr;
+	sys_lwmutex_attribute_initialize(lwattr);
+	lwattr.attr_recursive = SYS_SYNC_RECURSIVE;
+	sys_lwmutex_create(
+		reinterpret_cast<sys_lwmutex_t*>(m_PlatformMutex), &lwattr);
 }
 
 /***************************************
@@ -48,10 +48,9 @@ Burger::Mutex::Mutex() BURGER_NOEXCEPT: m_uOwnerThreadID(UINT32_MAX)
 
 ***************************************/
 
-Burger::Mutex::~Mutex()
+Burger::RecursiveMutex::~RecursiveMutex()
 {
-	RtlDeleteCriticalSection(
-		reinterpret_cast<CRITICAL_SECTION*>(m_PlatformMutex));
+	sys_lwmutex_destroy(reinterpret_cast<sys_lwmutex_t*>(m_PlatformMutex));
 }
 
 /***************************************
@@ -66,20 +65,9 @@ Burger::Mutex::~Mutex()
 
 ***************************************/
 
-void BURGER_API Burger::Mutex::lock() BURGER_NOEXCEPT
+void Burger::RecursiveMutex::lock() BURGER_NOEXCEPT
 {
-	// Is already owned by this thread?
-	DWORD uThreadID = GetCurrentThreadId();
-	if (m_uOwnerThreadID == uThreadID) {
-		do_assert("Double locking a Mutex will freeze this thread!", __FILE__,
-			__LINE__);
-	} else {
-		RtlEnterCriticalSection(
-			reinterpret_cast<CRITICAL_SECTION*>(m_PlatformMutex));
-
-		// Since we won the lock race, take ownership
-		m_uOwnerThreadID = uThreadID;
-	}
+	sys_lwmutex_lock(reinterpret_cast<sys_lwmutex_t*>(m_PlatformMutex), 0);
 }
 
 /***************************************
@@ -93,25 +81,10 @@ void BURGER_API Burger::Mutex::lock() BURGER_NOEXCEPT
 
 ***************************************/
 
-uint_t BURGER_API Burger::Mutex::try_lock() BURGER_NOEXCEPT
+uint_t Burger::RecursiveMutex::try_lock() BURGER_NOEXCEPT
 {
-	// Assume failure
-	uint_t bResult = FALSE;
-
-	// Is already owned by this thread?
-	DWORD uThreadID = GetCurrentThreadId();
-	if (m_uOwnerThreadID != uThreadID) {
-
-		// No, try to take it
-		bResult = RtlTryEnterCriticalSection(
-			reinterpret_cast<CRITICAL_SECTION*>(m_PlatformMutex));
-		if (bResult) {
-
-			// Since we won the lock race, take ownership
-			m_uOwnerThreadID = uThreadID;
-		}
-	}
-	return bResult;
+	return sys_lwmutex_trylock(
+			   reinterpret_cast<sys_lwmutex_t*>(m_PlatformMutex)) == CELL_OK;
 }
 
 /***************************************
@@ -130,18 +103,9 @@ uint_t BURGER_API Burger::Mutex::try_lock() BURGER_NOEXCEPT
 
 ***************************************/
 
-void BURGER_API Burger::Mutex::unlock() BURGER_NOEXCEPT
+void Burger::RecursiveMutex::unlock() BURGER_NOEXCEPT
 {
-	// Are we screwed?
-	DWORD uThreadID = GetCurrentThreadId();
-	if (m_uOwnerThreadID != uThreadID) {
-		do_assert("Unlocking a Mutex that's not owned by this thread!",
-			__FILE__, __LINE__);
-	} else {
-		m_uOwnerThreadID = UINT32_MAX;
-		RtlLeaveCriticalSection(
-			reinterpret_cast<CRITICAL_SECTION*>(m_PlatformMutex));
-	}
+	sys_lwmutex_unlock(reinterpret_cast<sys_lwmutex_t*>(m_PlatformMutex));
 }
 
 #endif

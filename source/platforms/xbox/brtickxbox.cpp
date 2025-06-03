@@ -1,8 +1,8 @@
 /***************************************
 
-	Incremental tick Manager Class, Playstation 3 version
+	Incremental tick Manager Class, Xbox Classic version
 
-	Copyright (c) 2015-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -14,11 +14,11 @@
 
 #include "brtick.h"
 
-#if defined(BURGER_PS3)
-#include <sys/ppu_thread.h>
-#include <sys/sys_time.h>
-#include <sys/time_util.h>
-#include <sys/timer.h>
+#if defined(BURGER_XBOX)
+#define NOD3D
+#define NONET
+#define NODSOUND
+#include <xtl.h>
 
 /***************************************
 
@@ -43,17 +43,15 @@
 ***************************************/
 
 void BURGER_API Burger::sleep_ms(
-	uint32_t uMilliseconds, uint_t /* bAlertable */) BURGER_NOEXCEPT
+	uint32_t uMilliseconds, uint_t bAlertable) BURGER_NOEXCEPT
 {
-	usecond_t uMicroseconds;
-	// Sleep in Microseconds, so, convert
-	if (!uMilliseconds) {
-		// 0 means just yield
-		sys_ppu_thread_yield();
+	if (uMilliseconds) {
+		// Sleep until the time expires or something
+		// occurs that could cause the main thread to take notice
+		// like a I/O service routine
+		::SleepEx(uMilliseconds, bAlertable);
 	} else {
-		// Convert milliseconds to Microseconds
-		uMicroseconds = static_cast<usecond_t>(uMilliseconds) * 1000U;
-		sys_timer_usleep(uMicroseconds);
+		SwitchToThread();
 	}
 }
 
@@ -72,7 +70,11 @@ void BURGER_API Burger::sleep_ms(
 
 uint64_t BURGER_API Burger::Tick::get_high_precision_rate(void) BURGER_NOEXCEPT
 {
-	return sys_time_get_timebase_frequency();
+	// Get the time mark
+	LARGE_INTEGER Freq;
+	QueryPerformanceFrequency(&Freq);
+
+	return static_cast<uint64_t>(Freq.QuadPart);
 }
 
 /***************************************
@@ -89,10 +91,10 @@ uint64_t BURGER_API Burger::Tick::get_high_precision_rate(void) BURGER_NOEXCEPT
 uint64_t BURGER_API Burger::Tick::read_high_precision(void) BURGER_NOEXCEPT
 {
 	// Get the time mark
-	register uint64_t uNewTick;
-	SYS_TIMEBASE_GET(uNewTick);
+	LARGE_INTEGER NewTick;
+	QueryPerformanceCounter(&NewTick);
 
-	return uNewTick;
+	return static_cast<uint64_t>(NewTick.QuadPart);
 }
 
 #endif

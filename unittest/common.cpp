@@ -54,6 +54,12 @@ using namespace Burger;
 #include <objbase.h>
 #endif
 
+#if defined(BURGER_XBOX)
+#define NOD3D
+#define NODSOUND
+#include <xtl.h>
+#endif
+
 #if (defined(_MSC_VER) && (_MSC_VER < 1400)) || \
 	(defined(BURGER_METROWERKS) && !defined(__MSL__))
 #else
@@ -117,7 +123,7 @@ void BURGER_ANSIAPI ReportFailure(
 		}
 		TempString[uEndMark] = '\n';
 		fwrite(TempString, 1, uEndMark + 1, stdout);
-#if defined(BURGER_WINDOWS) || defined(BURGER_XBOXONE)
+#if defined(BURGER_WINDOWS) || defined(BURGER_XBOXONE) || defined(BURGER_XBOX)
 		TempString[uEndMark + 1] = '\0';
 		OutputDebugStringA(TempString);
 #endif
@@ -151,7 +157,7 @@ void BURGER_ANSIAPI Message(const char* pMessage, ...) BURGER_NOEXCEPT
 		va_end(Args); // End parm passing
 		TempString[uEndMark] = '\n';
 		fwrite(TempString, 1, uEndMark + 1, stdout);
-#if defined(BURGER_WINDOWS) || defined(BURGER_XBOXONE)
+#if defined(BURGER_WINDOWS) || defined(BURGER_XBOXONE) || defined(BURGER_XBOX)
 		TempString[uEndMark + 1] = '\0';
 		OutputDebugStringA(TempString);
 #endif
@@ -378,6 +384,13 @@ int BURGER_ANSIAPI main(int argc, const char** argv)
 
 	fflush(stdout);
 	MyApp.PauseOnError();
+
+	// OG Xbox can't return
+#if defined(BURGER_XBOX)
+	for (;;) {
+		SwitchToThread();
+	}
+#endif
 	return iResult;
 }
 

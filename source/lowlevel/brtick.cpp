@@ -41,7 +41,7 @@ Burger::Tick Burger::Tick::g_Tick;
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || \
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX) || defined(BURGER_XBOX360) || \
 	defined(BURGER_XBOXONE) || defined(BURGER_VITA) || defined(BURGER_PS3) || \
 	defined(BURGER_PS4) || defined(BURGER_PS5) || defined(BURGER_WIIU) || \
 	defined(BURGER_SWITCH) || defined(BURGER_UNIX)) || \
@@ -249,7 +249,7 @@ void BURGER_API Burger::Tick::shutdown(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || \
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX) || defined(BURGER_XBOX360) || \
 	defined(BURGER_XBOXONE) || defined(BURGER_VITA) || defined(BURGER_PS3) || \
 	defined(BURGER_PS4) || defined(BURGER_PS5) || defined(BURGER_WIIU) || \
 	defined(BURGER_SWITCH) || defined(BURGER_UNIX) || defined(BURGER_MAC)) || \

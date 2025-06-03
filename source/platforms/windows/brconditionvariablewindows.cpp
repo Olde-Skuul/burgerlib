@@ -185,7 +185,7 @@ Burger::eError BURGER_API Burger::ConditionVariable::wait(
 		if (pMutex->is_using_SRWlock()) {
 
 			// Force the mutex to released state
-			pMutex->set_state(0, 0);
+			pMutex->set_state(0);
 
 			// Sleep until the stars are right
 			if (!Win32::SleepConditionVariableSRW(
@@ -207,7 +207,7 @@ Burger::eError BURGER_API Burger::ConditionVariable::wait(
 			}
 
 			// Restore the mutex to locked state
-			pMutex->set_state(1, GetCurrentThreadId());
+			pMutex->set_state(GetCurrentThreadId());
 		} else {
 
 			// The Mutex is using a CRITICAL_SECTION

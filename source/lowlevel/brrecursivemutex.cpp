@@ -1,6 +1,6 @@
 /***************************************
 
-	Class to handle mutex objects
+	Class to handle recursive mutex objects
 
 	Copyright (c) 1995-2025 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
@@ -45,11 +45,11 @@
 
 ***************************************/
 
-#if !(/* defined(BURGER_WINDOWS) || defined(BURGER_XBOX) || */ \
-	defined(BURGER_XBOX360) || /* defined(BURGER_XBOXONE) || \
-	defined(BURGER_PS3) || defined(BURGER_PS4) || defined(BURGER_PS5) || \
-	defined(BURGER_VITA) || defined(BURGER_WIIU) || defined(BURGER_SWITCH) || \
-  */ \
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX) || \
+	defined(BURGER_XBOX360) || defined(BURGER_XBOXONE) || \
+	defined(BURGER_PS3) || defined(BURGER_PS4) || \
+	defined(BURGER_PS5) || /* defined(BURGER_VITA) || */ \
+	defined(BURGER_WIIU) || defined(BURGER_SWITCH) || \
 	defined(BURGER_UNIX) /* || defined(BURGER_MAC) */) || \
 	defined(DOXYGEN)
 Burger::RecursiveMutex::RecursiveMutex() BURGER_NOEXCEPT {}

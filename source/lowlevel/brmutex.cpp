@@ -75,7 +75,7 @@ Burger::Mutex::~Mutex() {}
 
 ***************************************/
 
-void Burger::Mutex::lock() BURGER_NOEXCEPT {}
+void BURGER_API Burger::Mutex::lock() BURGER_NOEXCEPT {}
 
 /*! ************************************
 
@@ -88,7 +88,7 @@ void Burger::Mutex::lock() BURGER_NOEXCEPT {}
 
 ***************************************/
 
-uint_t Burger::Mutex::try_lock(void) BURGER_NOEXCEPT
+uint_t BURGER_API Burger::Mutex::try_lock(void) BURGER_NOEXCEPT
 {
 	// Always fail
 	return FALSE;
@@ -110,7 +110,7 @@ uint_t Burger::Mutex::try_lock(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-void Burger::Mutex::unlock() BURGER_NOEXCEPT {}
+void BURGER_API Burger::Mutex::unlock() BURGER_NOEXCEPT {}
 
 /*! ************************************
 

@@ -32,28 +32,24 @@ protected:
 #if defined(BURGER_XBOX) || defined(BURGER_XBOX360) || defined(DOXYGEN)
 	/** Platform specific CRITICAL_SECTION or mutex object */
 	uint32_t m_PlatformMutex[7];
-	uint32_t m_uThreadID;
+	uint32_t m_uOwnerThreadID;
 
 #elif defined(BURGER_XBOXONE)
 	/** SRWLOCK for Mutex */
 	void* m_PlatformMutex[1];
 	/** thread_ID_t of the owner of this mutex */
 	uint32_t m_uOwnerThreadID;
-	/** Number of locks */
-	uint32_t m_uCount;
 
 #elif defined(BURGER_WINDOWS)
 	/** CRITICAL_SECTION or SRWLOCK object */
 	void* m_PlatformMutex[4U + ((sizeof(uint32_t) * 2U) / sizeof(void*))];
 	/** thread_ID_t of the owner of this mutex */
 	uint32_t m_uOwnerThreadID;
-	/** Number of locks */
-	uint32_t m_uCount;
 	/** Use SRWLOCK or CRITICAL_SECTION */
 	uint_t m_bUseSRWLock;
 
 #elif defined(BURGER_PS3)
-	uint32_t m_PlatformMutex[6];
+	uint64_t m_PlatformMutex[3];
 
 #elif defined(BURGER_PS4) || defined(BURGER_PS5)
 	void* m_PlatformMutex[1];
@@ -63,6 +59,8 @@ protected:
 
 #elif defined(BURGER_WIIU)
 	uint32_t m_PlatformMutex[11];
+	/** Pointer to OSThread record */
+	void* m_pOSThread;
 
 #elif defined(BURGER_SWITCH) && defined(BURGER_64BITCPU)
 	void* m_PlatformMutex[8 / sizeof(void*)];
@@ -122,14 +120,8 @@ public:
 	{
 		return m_uOwnerThreadID;
 	}
-	BURGER_INLINE uint32_t get_count(void) const BURGER_NOEXCEPT
+	BURGER_INLINE void set_state(uint32_t uThreadID) BURGER_NOEXCEPT
 	{
-		return m_uCount;
-	}
-	BURGER_INLINE void set_state(
-		uint32_t uCount, uint32_t uThreadID) BURGER_NOEXCEPT
-	{
-		m_uCount = uCount;
 		m_uOwnerThreadID = uThreadID;
 	}
 #endif

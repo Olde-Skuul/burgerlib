@@ -432,7 +432,7 @@
 
 ***************************************/
 
-#if defined(__ARM_NEON__) || defined(DOXYGEN)
+#if defined(__ARM_NEON__) || defined(__ARM_NEON) || defined(DOXYGEN)
 #define BURGER_NEON
 #endif
 
@@ -1223,8 +1223,14 @@
 
 // Handle disabling and enabling warnings on Visual Studio
 #if defined(BURGER_MSVC) || defined(DOXYGEN)
+#if (BURGER_MSVC >= 140000000)
 #define BURGER_MSVC_PUSH_DISABLE_WARNING(__T) \
 	__pragma(warning(push)) __pragma(warning(disable : __T))
+#else
+// Disable value out of range for Visual Studio 2003
+#define BURGER_MSVC_PUSH_DISABLE_WARNING(__T) \
+	__pragma(warning(push)) __pragma(warning(disable : 4616 __T))
+#endif
 #define BURGER_MSVC_POP_WARNING __pragma(warning(pop))
 #else
 #define BURGER_MSVC_PUSH_DISABLE_WARNING(__T)
@@ -1421,7 +1427,7 @@ typedef uint64_t ulong2uint_t;
 #elif defined(BURGER_INTEL_COMPILER) || defined(BURGER_CLANG) || \
 	defined(BURGER_GNUC) || defined(_WCHAR_T_DEFINED) || \
 	defined(_NATIVE_WCHAR_T_DEFINED) || defined(BURGER_MINGW) || \
-	defined(__WCHAR_T_IS_KEYWORD) || defined(DOXYGEN)
+	defined(__WCHAR_T_IS_KEYWORD) || defined(_WCHAR_T) || defined(DOXYGEN)
 #define BURGER_HAS_WCHAR_T
 #endif
 

@@ -52,7 +52,7 @@ protected:
 	uint_t m_bUseSRWLock;
 
 #elif defined(BURGER_PS3)
-	uint32_t m_PlatformMutex[6];
+	uint64_t m_PlatformMutex[3];
 
 #elif defined(BURGER_PS4) || defined(BURGER_PS5)
 	void* m_PlatformMutex[1];
