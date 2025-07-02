@@ -546,6 +546,7 @@
     <ClInclude Include="..\source\lowlevel\brpair.h" />
     <ClInclude Include="..\source\lowlevel\brperforce.h" />
     <ClInclude Include="..\source\lowlevel\brqueue.h" />
+    <ClInclude Include="..\source\lowlevel\brrecursivemutex.h" />
     <ClInclude Include="..\source\lowlevel\brrunqueue.h" />
     <ClInclude Include="..\source\lowlevel\brsemaphore.h" />
     <ClInclude Include="..\source\lowlevel\brsimplearray.h" />
@@ -792,6 +793,7 @@
     <ClCompile Include="..\source\lowlevel\brpair.cpp" />
     <ClCompile Include="..\source\lowlevel\brperforce.cpp" />
     <ClCompile Include="..\source\lowlevel\brqueue.cpp" />
+    <ClCompile Include="..\source\lowlevel\brrecursivemutex.cpp" />
     <ClCompile Include="..\source\lowlevel\brrunqueue.cpp" />
     <ClCompile Include="..\source\lowlevel\brsemaphore.cpp" />
     <ClCompile Include="..\source\lowlevel\brsimplearray.cpp" />
@@ -838,6 +840,7 @@
     <ClCompile Include="..\source\platforms\xbox360\brmutexxbox360.cpp" />
     <ClCompile Include="..\source\platforms\xbox360\brpoint2dxbox360.cpp" />
     <ClCompile Include="..\source\platforms\xbox360\brrectxbox360.cpp" />
+    <ClCompile Include="..\source\platforms\xbox360\brrecursivemutexxbox360.cpp" />
     <ClCompile Include="..\source\platforms\xbox360\brsemaphorexbox360.cpp" />
     <ClCompile Include="..\source\platforms\xbox360\brsoundxbox360.cpp" />
     <ClCompile Include="..\source\platforms\xbox360\brtexturexbox360.cpp" />

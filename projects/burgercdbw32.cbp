@@ -411,6 +411,8 @@
 		<Unit filename="../source/lowlevel/brperforce.h" />
 		<Unit filename="../source/lowlevel/brqueue.cpp" />
 		<Unit filename="../source/lowlevel/brqueue.h" />
+		<Unit filename="../source/lowlevel/brrecursivemutex.cpp" />
+		<Unit filename="../source/lowlevel/brrecursivemutex.h" />
 		<Unit filename="../source/lowlevel/brrunqueue.cpp" />
 		<Unit filename="../source/lowlevel/brrunqueue.h" />
 		<Unit filename="../source/lowlevel/brsemaphore.cpp" />

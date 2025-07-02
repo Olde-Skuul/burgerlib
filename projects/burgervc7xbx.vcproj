@@ -2555,6 +2555,12 @@
 					RelativePath="..\source\lowlevel\brqueue.h">
 				</File>
 				<File
+					RelativePath="..\source\lowlevel\brrecursivemutex.cpp">
+				</File>
+				<File
+					RelativePath="..\source\lowlevel\brrecursivemutex.h">
+				</File>
+				<File
 					RelativePath="..\source\lowlevel\brrunqueue.cpp">
 				</File>
 				<File
@@ -2777,6 +2783,24 @@
 					Name="xbox">
 					<File
 						RelativePath="..\source\platforms\xbox\brmemorymanagerxbox.cpp">
+					</File>
+					<File
+						RelativePath="..\source\platforms\xbox\brmutexxbox.cpp">
+					</File>
+					<File
+						RelativePath="..\source\platforms\xbox\brrecursivemutexxbox.cpp">
+					</File>
+					<File
+						RelativePath="..\source\platforms\xbox\brsemaphorexbox.cpp">
+					</File>
+					<File
+						RelativePath="..\source\platforms\xbox\brthreadxbox.cpp">
+					</File>
+					<File
+						RelativePath="..\source\platforms\xbox\brtickxbox.cpp">
+					</File>
+					<File
+						RelativePath="..\source\platforms\xbox\templatexbox.h">
 					</File>
 				</Filter>
 			</Filter>

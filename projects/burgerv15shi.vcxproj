@@ -967,6 +967,7 @@
     <ClInclude Include="..\source\lowlevel\brpair.h" />
     <ClInclude Include="..\source\lowlevel\brperforce.h" />
     <ClInclude Include="..\source\lowlevel\brqueue.h" />
+    <ClInclude Include="..\source\lowlevel\brrecursivemutex.h" />
     <ClInclude Include="..\source\lowlevel\brrunqueue.h" />
     <ClInclude Include="..\source\lowlevel\brsemaphore.h" />
     <ClInclude Include="..\source\lowlevel\brsimplearray.h" />
@@ -1167,6 +1168,7 @@
     <ClCompile Include="..\source\lowlevel\brpair.cpp" />
     <ClCompile Include="..\source\lowlevel\brperforce.cpp" />
     <ClCompile Include="..\source\lowlevel\brqueue.cpp" />
+    <ClCompile Include="..\source\lowlevel\brrecursivemutex.cpp" />
     <ClCompile Include="..\source\lowlevel\brrunqueue.cpp" />
     <ClCompile Include="..\source\lowlevel\brsemaphore.cpp" />
     <ClCompile Include="..\source\lowlevel\brsimplearray.cpp" />
@@ -1213,6 +1215,7 @@
     <ClCompile Include="..\source\platforms\unix\brfileunix.cpp" />
     <ClCompile Include="..\source\platforms\unix\brmutexunix.cpp" />
     <ClCompile Include="..\source\platforms\unix\brosstringfunctionsunix.cpp" />
+    <ClCompile Include="..\source\platforms\unix\brrecursivemutexunix.cpp" />
     <ClCompile Include="..\source\platforms\unix\brsemaphoreunix.cpp" />
     <ClCompile Include="..\source\platforms\unix\brthreadunix.cpp" />
     <ClCompile Include="..\source\platforms\unix\brtickunix.cpp" />

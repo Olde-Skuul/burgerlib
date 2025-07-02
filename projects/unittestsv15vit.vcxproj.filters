@@ -421,6 +421,9 @@
     <ClInclude Include="..\source\lowlevel\brqueue.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brrecursivemutex.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\lowlevel\brrunqueue.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
@@ -1067,6 +1070,9 @@
       <Filter>source\lowlevel</Filter>
     </ClCompile>
     <ClCompile Include="..\source\lowlevel\brqueue.cpp">
+      <Filter>source\lowlevel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\lowlevel\brrecursivemutex.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
     <ClCompile Include="..\source\lowlevel\brrunqueue.cpp">

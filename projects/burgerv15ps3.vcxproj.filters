@@ -409,6 +409,9 @@
     <ClInclude Include="..\source\lowlevel\brqueue.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brrecursivemutex.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\lowlevel\brrunqueue.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
@@ -979,6 +982,9 @@
     <ClCompile Include="..\source\lowlevel\brqueue.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\lowlevel\brrecursivemutex.cpp">
+      <Filter>source\lowlevel</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\lowlevel\brrunqueue.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
@@ -1085,6 +1091,9 @@
       <Filter>source\platforms\ps3</Filter>
     </ClCompile>
     <ClCompile Include="..\source\platforms\ps3\brmutexps3.cpp">
+      <Filter>source\platforms\ps3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\ps3\brrecursivemutexps3.cpp">
       <Filter>source\platforms\ps3</Filter>
     </ClCompile>
     <ClCompile Include="..\source\platforms\ps3\brsemaphoreps3.cpp">

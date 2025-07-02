@@ -183,6 +183,7 @@
 		A7B985271AE8B5B377709032 /* brrandombase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB4444CB8D39C5720680F49F /* brrandombase.cpp */; };
 		A7C40E11D0C6222501AB47A7 /* vsstaticpositiongl.glsl in Sources */ = {isa = PBXBuildFile; fileRef = DCA95482E04E2001061C1FDE /* vsstaticpositiongl.glsl */; };
 		AA5DF680988C8D3F1B366962 /* brmersennetwist.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4DA14411AA6EF84ACCABA32 /* brmersennetwist.cpp */; };
+		AB022FEA7C24E6352B87FA7C /* brrecursivemutex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CC4E6F9F5C24E92478BB9335 /* brrecursivemutex.cpp */; };
 		AB456087CA63733F72F52047 /* brdetectmultilaunchmacosx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4482834670C2187E83B1E2E /* brdetectmultilaunchmacosx.cpp */; };
 		AB7192AAFA63220B5BEE81E1 /* floattointceilptr.x86 in Sources */ = {isa = PBXBuildFile; fileRef = DF646FCC6933431FD28DD8E6 /* floattointceilptr.x86 */; };
 		AD8F29EA8A1B73E550CB2C30 /* brvector4d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E8F0C71148CA11912153CC0 /* brvector4d.cpp */; };
@@ -225,6 +226,7 @@
 		CA24181381889988DE93C24A /* brshader2dcolorvertex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BBF2E45D878CEA82C5D0BFFB /* brshader2dcolorvertex.cpp */; };
 		CB5E6574DC40D2DF8980B4B3 /* brdecompress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CCB5CFEDB0137EDB28A4C3BD /* brdecompress.cpp */; };
 		CB9994DD256C85BD68CC121E /* bratomic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 969055E14444B7C489CEBE1B /* bratomic.cpp */; };
+		CF3FD915A886A4DFEDCA12B0 /* brrecursivemutexunix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8201CA43E089C355181664F4 /* brrecursivemutexunix.cpp */; };
 		CF85AB682FFE20E7ECF5D1A5 /* brendian.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB9ED054A25182A0570CF068 /* brendian.cpp */; };
 		CF86908B66F8A1660F869488 /* brrenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 263234ADA0B616ECD7D67370 /* brrenderer.cpp */; };
 		CFD89411BE26E6D1754F454D /* brvertexbufferopengl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F51BBA7E577E8BB9C51D2CE /* brvertexbufferopengl.cpp */; };
@@ -570,6 +572,7 @@
 		80A507AD4F49F573B10D8A80 /* brflashstream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brflashstream.cpp; path = ../source/flashplayer/brflashstream.cpp; sourceTree = SOURCE_ROOT; };
 		8179BAF2EEFF06CDF7B6AB4A /* brglut.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = brglut.h; path = ../source/brglut.h; sourceTree = SOURCE_ROOT; };
 		81D76D2B4C7D977952B4F8EB /* brdebugunix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brdebugunix.cpp; path = ../source/platforms/unix/brdebugunix.cpp; sourceTree = SOURCE_ROOT; };
+		8201CA43E089C355181664F4 /* brrecursivemutexunix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brrecursivemutexunix.cpp; path = ../source/platforms/unix/brrecursivemutexunix.cpp; sourceTree = SOURCE_ROOT; };
 		8248EEC97778E5451063AFBD /* brstaticrtti.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brstaticrtti.cpp; path = ../source/lowlevel/brstaticrtti.cpp; sourceTree = SOURCE_ROOT; };
 		84956AA68E188955F9BF1AB9 /* brmousemacosx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brmousemacosx.cpp; path = ../source/platforms/macosx/brmousemacosx.cpp; sourceTree = SOURCE_ROOT; };
 		8496E95EC05E3B7387378F72 /* brfilexml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = brfilexml.h; path = ../source/file/brfilexml.h; sourceTree = SOURCE_ROOT; };
@@ -676,7 +679,9 @@
 		CA33737582BD398499A370F5 /* brperforce.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = brperforce.h; path = ../source/lowlevel/brperforce.h; sourceTree = SOURCE_ROOT; };
 		CA7A8CB7C734989EC95C06D8 /* get8087precision.x86 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm.asm; name = get8087precision.x86; path = ../source/asm/xcodeasm/get8087precision.x86; sourceTree = SOURCE_ROOT; };
 		CB6E3265CA7115CB28B3421A /* brvector2d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = brvector2d.h; path = ../source/math/brvector2d.h; sourceTree = SOURCE_ROOT; };
+		CB7882EA06903A668FC50146 /* brrecursivemutex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = brrecursivemutex.h; path = ../source/lowlevel/brrecursivemutex.h; sourceTree = SOURCE_ROOT; };
 		CC12B02E9F5C7760435BC6D5 /* brflashdisasmactionscript.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brflashdisasmactionscript.cpp; path = ../source/flashplayer/brflashdisasmactionscript.cpp; sourceTree = SOURCE_ROOT; };
+		CC4E6F9F5C24E92478BB9335 /* brrecursivemutex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brrecursivemutex.cpp; path = ../source/lowlevel/brrecursivemutex.cpp; sourceTree = SOURCE_ROOT; };
 		CCAAB39106B36087AC19DFD0 /* breffectpositiontexturecolor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = breffectpositiontexturecolor.cpp; path = ../source/graphics/effects/breffectpositiontexturecolor.cpp; sourceTree = SOURCE_ROOT; };
 		CCB5CFEDB0137EDB28A4C3BD /* brdecompress.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = brdecompress.cpp; path = ../source/compression/brdecompress.cpp; sourceTree = SOURCE_ROOT; };
 		CD23764505E1E0B286FCEA9E /* brpair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = brpair.h; path = ../source/lowlevel/brpair.h; sourceTree = SOURCE_ROOT; };
@@ -887,6 +892,8 @@
 				CA33737582BD398499A370F5 /* brperforce.h */,
 				67AA368F4AB487865DA5E54E /* brqueue.cpp */,
 				B85BE32FD0EDB7E090B968D5 /* brqueue.h */,
+				CC4E6F9F5C24E92478BB9335 /* brrecursivemutex.cpp */,
+				CB7882EA06903A668FC50146 /* brrecursivemutex.h */,
 				8E57D08043B6A8E246A4B5F5 /* brrunqueue.cpp */,
 				4F545001125AB6DAA870E572 /* brrunqueue.h */,
 				1CB8D18C846C5886C5CF979D /* brsemaphore.cpp */,
@@ -1441,6 +1448,7 @@
 				2D97BBF95B23C4427136C897 /* brfileunix.cpp */,
 				72C13E22C606A07DDB43CD34 /* brmutexunix.cpp */,
 				484D194BDEE9D89A65427739 /* brosstringfunctionsunix.cpp */,
+				8201CA43E089C355181664F4 /* brrecursivemutexunix.cpp */,
 				00634F2117A0F61D38233B3C /* brsemaphoreunix.cpp */,
 				632885712676DE3FBCDE1EA6 /* brthreadunix.cpp */,
 				D36F3C75322C7A5CB94DE641 /* brtickunix.cpp */,
@@ -1770,6 +1778,8 @@
 				A7B985271AE8B5B377709032 /* brrandombase.cpp in Sources */,
 				490B709A5805789918797298 /* brrect.cpp in Sources */,
 				B286727124D2AC408F7FB8E7 /* brrectmacosx.cpp in Sources */,
+				AB022FEA7C24E6352B87FA7C /* brrecursivemutex.cpp in Sources */,
+				CF3FD915A886A4DFEDCA12B0 /* brrecursivemutexunix.cpp in Sources */,
 				CF86908B66F8A1660F869488 /* brrenderer.cpp in Sources */,
 				F0154367F82CE0F5CA081276 /* brrenderersoftware16.cpp in Sources */,
 				3E5B4A2E1ADDDEAAC28346A4 /* brrenderersoftware8.cpp in Sources */,

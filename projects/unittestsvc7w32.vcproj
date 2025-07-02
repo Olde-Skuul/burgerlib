@@ -3337,6 +3337,12 @@
 					RelativePath="..\source\lowlevel\brqueue.h">
 				</File>
 				<File
+					RelativePath="..\source\lowlevel\brrecursivemutex.cpp">
+				</File>
+				<File
+					RelativePath="..\source\lowlevel\brrecursivemutex.h">
+				</File>
+				<File
 					RelativePath="..\source\lowlevel\brrunqueue.cpp">
 				</File>
 				<File

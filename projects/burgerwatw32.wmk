@@ -506,6 +506,7 @@ OBJS= $(A)/bitreverse32.obj &
 	$(A)/brrandombase.obj &
 	$(A)/brrect.obj &
 	$(A)/brrectwindows.obj &
+	$(A)/brrecursivemutex.obj &
 	$(A)/brrenderer.obj &
 	$(A)/brrenderersoftware16.obj &
 	$(A)/brrenderersoftware8.obj &

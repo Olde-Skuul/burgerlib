@@ -407,6 +407,8 @@ OBJS:= $(TEMP_DIR)/bradler16.o \
 	$(TEMP_DIR)/brrandom.o \
 	$(TEMP_DIR)/brrandombase.o \
 	$(TEMP_DIR)/brrect.o \
+	$(TEMP_DIR)/brrecursivemutex.o \
+	$(TEMP_DIR)/brrecursivemutexunix.o \
 	$(TEMP_DIR)/brrenderer.o \
 	$(TEMP_DIR)/brrenderersoftware16.o \
 	$(TEMP_DIR)/brrenderersoftware8.o \
@@ -653,6 +655,8 @@ DEPS:= $(TEMP_DIR)/bradler16.d \
 	$(TEMP_DIR)/brrandom.d \
 	$(TEMP_DIR)/brrandombase.d \
 	$(TEMP_DIR)/brrect.d \
+	$(TEMP_DIR)/brrecursivemutex.d \
+	$(TEMP_DIR)/brrecursivemutexunix.d \
 	$(TEMP_DIR)/brrenderer.d \
 	$(TEMP_DIR)/brrenderersoftware16.d \
 	$(TEMP_DIR)/brrenderersoftware8.d \
@@ -886,6 +890,7 @@ DEPS:= $(TEMP_DIR)/bradler16.d \
 ../source/lowlevel/brpair.cpp \
 ../source/lowlevel/brperforce.cpp \
 ../source/lowlevel/brqueue.cpp \
+../source/lowlevel/brrecursivemutex.cpp \
 ../source/lowlevel/brrunqueue.cpp \
 ../source/lowlevel/brsemaphore.cpp \
 ../source/lowlevel/brsimplearray.cpp \
@@ -938,6 +943,7 @@ DEPS:= $(TEMP_DIR)/bradler16.d \
 ../source/platforms/unix/brfileunix.cpp \
 ../source/platforms/unix/brmutexunix.cpp \
 ../source/platforms/unix/brosstringfunctionsunix.cpp \
+../source/platforms/unix/brrecursivemutexunix.cpp \
 ../source/platforms/unix/brsemaphoreunix.cpp \
 ../source/platforms/unix/brthreadunix.cpp \
 ../source/platforms/unix/brtickunix.cpp \
@@ -1285,6 +1291,8 @@ $(TEMP_DIR)/brperforce.o: ../source/lowlevel/brperforce.cpp ; $(BUILD_CPP)
 
 $(TEMP_DIR)/brqueue.o: ../source/lowlevel/brqueue.cpp ; $(BUILD_CPP)
 
+$(TEMP_DIR)/brrecursivemutex.o: ../source/lowlevel/brrecursivemutex.cpp ; $(BUILD_CPP)
+
 $(TEMP_DIR)/brrunqueue.o: ../source/lowlevel/brrunqueue.cpp ; $(BUILD_CPP)
 
 $(TEMP_DIR)/brsemaphore.o: ../source/lowlevel/brsemaphore.cpp ; $(BUILD_CPP)
@@ -1388,6 +1396,8 @@ $(TEMP_DIR)/brfileunix.o: ../source/platforms/unix/brfileunix.cpp ; $(BUILD_CPP)
 $(TEMP_DIR)/brmutexunix.o: ../source/platforms/unix/brmutexunix.cpp ; $(BUILD_CPP)
 
 $(TEMP_DIR)/brosstringfunctionsunix.o: ../source/platforms/unix/brosstringfunctionsunix.cpp ; $(BUILD_CPP)
+
+$(TEMP_DIR)/brrecursivemutexunix.o: ../source/platforms/unix/brrecursivemutexunix.cpp ; $(BUILD_CPP)
 
 $(TEMP_DIR)/brsemaphoreunix.o: ../source/platforms/unix/brsemaphoreunix.cpp ; $(BUILD_CPP)
 

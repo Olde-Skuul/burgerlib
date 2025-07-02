@@ -409,6 +409,9 @@
     <ClInclude Include="..\source\lowlevel\brqueue.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brrecursivemutex.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\lowlevel\brrunqueue.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
@@ -1000,6 +1003,9 @@
     <ClCompile Include="..\source\lowlevel\brqueue.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\lowlevel\brrecursivemutex.cpp">
+      <Filter>source\lowlevel</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\lowlevel\brrunqueue.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
@@ -1127,6 +1133,9 @@
       <Filter>source\platforms\unix</Filter>
     </ClCompile>
     <ClCompile Include="..\source\platforms\unix\brosstringfunctionsunix.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\brrecursivemutexunix.cpp">
       <Filter>source\platforms\unix</Filter>
     </ClCompile>
     <ClCompile Include="..\source\platforms\unix\brsemaphoreunix.cpp">

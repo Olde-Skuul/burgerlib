@@ -433,6 +433,9 @@
     <ClInclude Include="..\source\lowlevel\brqueue.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brrecursivemutex.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\lowlevel\brrunqueue.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
@@ -1102,6 +1105,9 @@
     <ClCompile Include="..\source\lowlevel\brqueue.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\lowlevel\brrecursivemutex.cpp">
+      <Filter>source\lowlevel</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\lowlevel\brrunqueue.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
@@ -1238,6 +1244,9 @@
       <Filter>source\platforms\xbox360</Filter>
     </ClCompile>
     <ClCompile Include="..\source\platforms\xbox360\brrectxbox360.cpp">
+      <Filter>source\platforms\xbox360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\xbox360\brrecursivemutexxbox360.cpp">
       <Filter>source\platforms\xbox360</Filter>
     </ClCompile>
     <ClCompile Include="..\source\platforms\xbox360\brsemaphorexbox360.cpp">
