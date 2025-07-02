@@ -3645,6 +3645,9 @@
 						RelativePath="..\source\platforms\windows\brrectwindows.cpp">
 					</File>
 					<File
+						RelativePath="..\source\platforms\windows\brrecursivemutexwindows.cpp">
+					</File>
+					<File
 						RelativePath="..\source\platforms\windows\brsemaphorewindows.cpp">
 					</File>
 					<File

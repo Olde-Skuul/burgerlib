@@ -517,6 +517,7 @@
 		<Unit filename="../source/platforms/windows/brperforcewindows.cpp" />
 		<Unit filename="../source/platforms/windows/brpoint2dwindows.cpp" />
 		<Unit filename="../source/platforms/windows/brrectwindows.cpp" />
+		<Unit filename="../source/platforms/windows/brrecursivemutexwindows.cpp" />
 		<Unit filename="../source/platforms/windows/brsemaphorewindows.cpp" />
 		<Unit filename="../source/platforms/windows/brsequencerwindows.cpp" />
 		<Unit filename="../source/platforms/windows/brsoundwindows.cpp" />

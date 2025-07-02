@@ -904,6 +904,7 @@
     <ClCompile Include="..\source\platforms\windows\brperforcewindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brpoint2dwindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brrectwindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brrecursivemutexwindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brsemaphorewindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brsequencerwindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brsoundwindows.cpp" />

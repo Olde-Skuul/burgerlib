@@ -392,6 +392,7 @@ static void BURGER_API ShowCompilerMacros(uint_t uVerbose) BURGER_NOEXCEPT
 		SHOW_MACRO(_MT);
 		SHOW_MACRO(_NATIVE_WCHAR_T_DEFINED);
 		SHOW_MACRO(_WCHAR_T_DEFINED);
+		SHOW_MACRO(_WCHAR_T);
 		SHOW_MACRO(_OPENMP);
 		SHOW_MACRO(_PREFAST_);
 		SHOW_MACRO(_VC_NODEFAULTLIB);
@@ -490,10 +491,12 @@ static void BURGER_API ShowCompilerMacros(uint_t uVerbose) BURGER_NOEXCEPT
 		SHOW_MACRO(__arm__);
 		SHOW_MACRO(__arm64__);
 		SHOW_MACRO(__aarch64__);
+		SHOW_MACRO(__ARM_NEON);
 		SHOW_MACRO(__ARM_NEON__);
 		SHOW_MACRO(_M_ARM_FP);
 		SHOW_MACRO(__ARM_FP);
 		SHOW_MACRO(__ARM_NEON_FP16_INTRINSICS);
+		SHOW_MACRO(__ARM_FEATURE_SIMD32);
 
 		// C++ feature macros, usually found in GNU or clang
 

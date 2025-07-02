@@ -35,6 +35,15 @@ struct QElem;
 
 /** Forward declaration for MacOS Universal proc */
 struct RoutineDescriptor;
+
+/** Forward declaration for MacOS Multiprocessing ID */
+struct OpaqueMPTaskID;
+
+/** Forward declaration for MacOS Multiprocessing queue ID */
+struct OpaqueMPQueueID;
+
+/** Forward declaration for MacOS Multiprcessing event ID */
+struct OpaqueMPEventID;
 #endif
 
 namespace Burger {

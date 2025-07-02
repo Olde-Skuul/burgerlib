@@ -1345,6 +1345,9 @@
     <ClCompile Include="..\source\platforms\windows\brrectwindows.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\platforms\windows\brrecursivemutexwindows.cpp">
+      <Filter>source\platforms\windows</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\platforms\windows\brsemaphorewindows.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>

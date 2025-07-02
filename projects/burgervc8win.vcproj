@@ -6326,6 +6326,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\source\platforms\windows\brrecursivemutexwindows.cpp"
+						>
+					</File>
+					<File
 						RelativePath="..\source\platforms\windows\brsemaphorewindows.cpp"
 						>
 					</File>
